@@ -1,17 +1,19 @@
-trait Position {
-  val x: Double
-  val y: Double
-}
+class Town(name: String, xPos: Double, yPos: Double)
+extends PositionnedVertice {
+  class Route(_destination: Town, _length: Double) {
+    val destination: Town = _destination
+    val length: Double = _length
+  }
 
-class Town(name: String, x_pos: Double, y_pos: Double) extends Position {
-  class Route(destination: Town, length: Double)
+  val x: Double = xPos
+  val y: Double = yPos
+  private var _routes: List[Route] = List()
 
-  val x:Double = x_pos
-  val y:Double = y_pos
-  private var _routes:List[Route] = List()
-
-  def routes:List[Route] = _routes
-  def add_route(newRoute: Route): Unit = {
+  def routes: List[Route] = _routes
+  def addRoute(newRoute: Route): Unit = {
     _routes = newRoute::_routes
+  }
+  def iterateNeighbours(action: Vertice=>Unit): Unit = {
+    this.routes.foreach((route: Route) => action(route.destination))
   }
 }
