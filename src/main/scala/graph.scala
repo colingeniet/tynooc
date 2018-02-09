@@ -4,26 +4,31 @@
 trait Graph {
   /** A vertice of the graph. */
   trait Vertice {
-    /** Iterate over all adjacent edges.
-     * @param action the function called for each edge.
-     *  takes the destination Vertice as parameter. */
+    /** Iterates over all adjacent edges.
+     *
+     *  @param action the function called for each edge.
+     *  Takes the destination Vertice as parameter.
+     */
     def iterateEdges(action: Vertice => Unit): Unit
   }
 }
 
 
 /** A graph with weighted edges.
- * @param Weight the weight type. */
+ * @param Weight the weight type.
+ */
 trait WeightedGraph[Weight] extends Graph {
   /** A vertice of the graph. */
   trait WeightedVertice extends Vertice {
-    /** Iterate over all adjacent edges.
-     * @param action the function called for each edge.
-     *  takes the destination Vertice and the edge weight as parameters. */
+    /** Iterates over all adjacent edges.
+     *
+     *  @param action the function called for each edge.
+     *  Takes the destination Vertice and the edge weight as parameters.
+     */
     def iterateWeightedEdges(action: (Vertice, Weight) => Unit): Unit
 
-    /* Default implementation : use iterateWeightedEdges and
-     * ignore weight parameter. */
+    /* Default implementation : uses iterateWeightedEdges and
+     * ignorse weight parameter. */
     def iterateEdges(action: Vertice => Unit): Unit = {
       this.iterateWeightedEdges((vertice:Vertice, _) => action(vertice))
     }
@@ -43,7 +48,9 @@ trait PositionGraph extends Graph {
 }
 
 /** A graph with weighted edges and positionned vertices.
- * @param Weight the weight type. */
+ *
+ *  @param Weight the weight type.
+ */
 trait PositionWeightedGraph[Weight]
 extends WeightedGraph[Weight] with PositionGraph {
   /** A vertice of the graph. */
