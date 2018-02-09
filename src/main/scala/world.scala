@@ -4,7 +4,8 @@ class World extends PositionWeightedGraph[Double] {
    * @param name the town name.
    * @param xPos the town x coordonate.
    * @param yPos the town y coordonate. */
-  class Town(name: String, xPos: Double, yPos: Double) extends PositionVertice {
+  class Town(name: String, xPos: Double, yPos: Double)
+  extends PositionWeightedVertice {
     /** A route starting from this town.
      * @param _destination the route destination town.
      * @param _length the route length. */
@@ -33,7 +34,7 @@ class World extends PositionWeightedGraph[Double] {
     /** Iterate over all adjacent edges.
      * @param action the function called for each edge.
      *  takes the destination Vertice and the edge weight as parameters. */
-    def iterateEdges(action: (Vertice, Double)=>Unit): Unit = {
+    def iterateWeightedEdges(action: (Vertice, Double)=>Unit): Unit = {
       this.routes.foreach((route: Route) => action(route.destination, route.length))
     }
   }
