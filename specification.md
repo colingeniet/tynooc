@@ -136,6 +136,7 @@ Les PNJs ne sont jamais vus, ni visibles. On ne les voit qu’à travers leurs d
 (et leurs éventuels achats). Sinon, un PNJ est caractérisé par une certaine 
 quantité d’argent représentée grossièrement (ce n’est pas ce qui nous intéresse ici),
 peut-être juste par un statut `RICHE`, `PAUVRE`, `AISÉ`.
+Un PNJ peut compter comme un groupe de plusieurs personnes.
 
 ## Comment choisit-il sa destination
 
