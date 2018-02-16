@@ -50,6 +50,6 @@ class Train() {
 
   def weight: Double = {
     (if (engine == null) 0 else engine.model.weight)
-    + carriages.foldLeft[Int](0, _+(_.model.weight))
+    + carriages.foldLeft[Double](0) { (acc, v) => acc + v.model.weight }
   }
 }
