@@ -1,10 +1,12 @@
 import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
+import scalafx.application.Platform
 
 class MainStage extends JFXApp.PrimaryStage {
-  var mainMenuScene: DisplayScene = new MainMenuScene(changeScene)
-  var gameScene: DisplayScene = new GameScene(changeScene)
+  private var mainMenuScene: DisplayScene = new MainMenuScene(changeScene)
+  private var gameScene: DisplayScene = new GameScene(changeScene)
+  private var optionsScene: DisplayScene = new OptionsScene(changeScene)
 
   title.value = "Tynooc"
   scene = mainMenuScene
@@ -14,7 +16,8 @@ class MainStage extends JFXApp.PrimaryStage {
       case DisplayStates.MainMenu => scene = mainMenuScene
       case DisplayStates.GameMenu => ()
       case DisplayStates.Game => scene = gameScene
-      case DisplayStates.Options => ()
+      case DisplayStates.Options => scene = optionsScene
+      case DisplayStates.Quit => Platform.exit ()
     }
   }
 }

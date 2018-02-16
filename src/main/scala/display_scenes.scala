@@ -8,6 +8,7 @@ object DisplayStates {
   case object GameMenu extends Val
   case object Game     extends Val
   case object Options  extends Val
+  case object Quit     extends Val
 }
 
 abstract class DisplayScene(sceneModifier: DisplayStates.Val=>Unit) extends Scene
