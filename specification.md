@@ -222,3 +222,35 @@ En première instance, l’IA essaie juste de ne pas couler, elle améliore rare
 trains et vend ses tickets un peu plus cher que ce que va lui coûter le voyage (
 consommation, personnel, etc.) histoire de faire du bénéfice. Elle décide de faire
 partir des trains des lieux où il y a beaucoup de personnes.
+
+# Jeu général
+
+Pour le jeu général, il se déroule de la manière suivante. Chaque tour, on récupère
+les actions de l'utilisateur, puis celles des IA et on les exécute. Puis, on met à jour
+tout ce qui doit être mis à jour avant de réafficher. La boucle principale de jeu sera
+alors la suivante.
+
+
+```
+Tant qu'on joue
+    Actions joueur
+    Actions IA
+    Pour chaque ville
+        Mettre à jour la ville
+    Pour chaque Joueur
+        Mettre à jour le joueur
+    Mettre à jour l'affichage
+```
+
+La mise à jour d'une ville consiste à mettre à jour chacun des joueurs qui la compose, 
+et la mise à jour d'un joueur dépend de son état. S'il est SETTLED, elle consiste à 
+regarder s'il veut migrer, s'il est WAITING, elle consiste à regarder s'il y a un train
+pour là où il veut aller, et s'il est ON_ROAD, elle consiste à regarder s'il veut 
+consommer (si fonctionnalité de consommation il y a).
+
+La mise à jour d'un joueur consiste à mettre à jour chacun de ces trains. La mise à jour 
+d'un train consiste à mettre à jour sa position et son carburant et à diminuer les points
+de vie de sa locomotive et de chacun des ses wagons.
+
+NOTE : Reste à voir à quelle unité de temps correspond un tour du jeu et à fixer comment
+les valeurs sont affectées.
