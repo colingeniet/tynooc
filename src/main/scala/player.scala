@@ -8,14 +8,25 @@ class Travel(t: Train, l : List[Route])
   val percent: Double = 0 //What percent has been done on the road i
   private val current: Int //The road you're taking
 
-  def timeRemaining = {
+  def timeRemaining : Double = {
     d = stops.takeRight(stops.length-i+1).foldLeft[Double](0) { (acc, r) => acc + r.length }
     d += stops[i].length*percent
     return max(0, d/(t.engine.model.speed)
   }
 
-  def next = {
-    return stops[i]
+  def next = : Town {
+    return stops[i].destination
+  }
+}
+
+object PriceSimulation() {
+  
+  def upgradePrice(from: Engine, to: EngineModel): Double = {
+    return to.price-from.model.price
+  }
+  
+  def upgradePrice(from: Carriage, to: CarriageModel): Double = {
+    return to.price-from.model.price
   }
 }
 
@@ -26,9 +37,9 @@ class Player() {
   var travels: List[Travel] = List()
 
 
-  var money: int
+  var money: Double
 
-  def buyEngine (name: String) = {
+  def buyEngine (name: String) : Unit = {
     c = EngineModel(name)
     if (c.price >= money) {
       money -= c.price
@@ -36,7 +47,7 @@ class Player() {
     }
   }
 
-  def buyCarriage (name: String) = {
+  def buyCarriage (name: String) : Unit = {
     c = CarriageModel(name)
     if (c.price >= money) {
       money -= c.price
@@ -44,13 +55,33 @@ class Player() {
     }
   }
 
-  def assembleTrain (e: Engine, c: List[Carriage]) = {
+  def assembleTrain (e: Engine, c: List[Carriage]) : Unit = {
     engines = engines diff List(e)
     c.foreach { carriages = carriages diff List(c)}
     trains = (new Train(e, c))::trains
   }
 
-  def launchTravel(train:Train, to:Town) = {
-    (new Travel(train, train.where.FindPath(to)))::travels
+  def launchTravel(train:Train, to:Town) : Unit = {
+    (new Travel(train, World.Findpath(train.where, to)))::travels
+  }
+  
+  def editEngine (old: Engine, model: EngineModel) : Unit =
+  {
+    if money >= PriceSimulation.upgradePrice(old, model)
+    {
+      old = new Engine(model)
+      money -= PriceSimulation.upgradePrice(old, model)
+    }
+  }
+  /**
+  I DONT KNOW IF old ACTS LIKE A POINTER IF NOT THIS IS INVALID
+  **/
+  def editCarriage (old: Carriage, model: CarriageModel) : Unit =
+  {
+    if money >= PriceSimulation.upgradePrice(old, model)
+    {
+      old = new Carriage(model)
+      money -= PriceSimulation.upgradePrice(old, model)
+    }
   }
 }

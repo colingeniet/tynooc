@@ -1,54 +1,56 @@
+/** A route starting from this town.
+ *
+ *  @constructor creates a route to another `Town`.
+ *  @param _destination the route destination town.
+ *  @param _length the route length.
+ */
+class Route(_destination: Town, _length: Double) {
+  /** The route destination. */
+  val destination: Town = _destination
+  /** The route length. */
+  val length: Double = _length
+}
+
+/** A town in the world.
+ *
+ *  @constructor creates a town in the `World`.
+ *  @param name the town name.
+ *  @param xPos the town x coordonate.
+ *  @param yPos the town y coordonate.
+ */
+class Town(name: String, xPos: Double, yPos: Double)
+extends PositionWeightedVertice {
+
+  /** The town x coordonate in the world. */
+  val x: Double = xPos
+  /** The town y coordonate in the world. */
+  val y: Double = yPos
+
+
+  private var _routes: List[Route] = List()
+
+  /** The list of routes. */
+  def routes: List[Route] = _routes
+  /** Adds a route.
+   *
+   *  @param newRoute the route to add.
+   */
+  def addRoute(newRoute: Route): Unit = {
+    _routes = newRoute::_routes
+  }
+
+  /** Iterates over all adjacent edges.
+   *
+   *  @param action the function called for each edge.
+   *  Takes the destination Vertice and the edge weight as parameters.
+   */
+  def iterateWeightedEdges(action: (Vertice, Double)=>Unit): Unit = {
+    this.routes.foreach((route: Route) => action(route.destination, route.length))
+  }
+}
+
 /** World representation */
 class World extends PositionWeightedGraph[Double] {
-  /** A town in the world.
-   *
-   *  @constructor creates a town in the `World`.
-   *  @param name the town name.
-   *  @param xPos the town x coordonate.
-   *  @param yPos the town y coordonate.
-   */
-  class Town(name: String, xPos: Double, yPos: Double)
-  extends PositionWeightedVertice {
-    /** A route starting from this town.
-     *
-     *  @constructor creates a route to another `Town`.
-     *  @param _destination the route destination town.
-     *  @param _length the route length.
-     */
-    class Route(_destination: Town, _length: Double) {
-      /** The route destination. */
-      val destination: Town = _destination
-      /** The route length. */
-      val length: Double = _length
-    }
-
-    /** The town x coordonate in the world. */
-    val x: Double = xPos
-    /** The town y coordonate in the world. */
-    val y: Double = yPos
-
-
-    private var _routes: List[Route] = List()
-
-    /** The list of routes. */
-    def routes: List[Route] = _routes
-    /** Adds a route.
-     *
-     *  @param newRoute the route to add.
-     */
-    def addRoute(newRoute: Route): Unit = {
-      _routes = newRoute::_routes
-    }
-
-    /** Iterates over all adjacent edges.
-     *
-     *  @param action the function called for each edge.
-     *  Takes the destination Vertice and the edge weight as parameters.
-     */
-    def iterateWeightedEdges(action: (Vertice, Double)=>Unit): Unit = {
-      this.routes.foreach((route: Route) => action(route.destination, route.length))
-    }
-  }
 
   private var _towns: List[Town] = List()
 
