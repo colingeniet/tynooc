@@ -1,6 +1,6 @@
 import scalafx.Includes._
 import scalafx.application.JFXApp
 
-object ScalaFXHelloWorld extends JFXApp {
+object MainJFXApp extends JFXApp {
   stage = new MainStage
 }

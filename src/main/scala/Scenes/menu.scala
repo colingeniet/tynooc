@@ -1,11 +1,12 @@
 import scalafx.Includes._
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
+import scalafx.scene.control.Label
 import scalafx.event.ActionEvent
 import scalafx.scene.layout.VBox
 import scalafx.geometry._
-
 import scalafx.geometry.Insets
+
 
 class MainMenuScene(sceneModifier: DisplayStates.Val=>Unit)
 extends DisplayScene(sceneModifier) {
@@ -13,10 +14,15 @@ extends DisplayScene(sceneModifier) {
   private var optionsBtn = sceneSwitchButton("Options", DisplayStates.Options)
   private var quitBtn = sceneSwitchButton("Quit", DisplayStates.Quit)
 
+  private var title = new Label("Welcome to Tynooc") {
+    padding = Insets(10.0)
+  }
+
+
   root = new VBox(10.0) {
     alignment = Pos.CENTER
-    padding = Insets(50)
-    children = List(gameBtn, optionsBtn, quitBtn)
+    padding = Insets(20.0)
+    children = List(title, gameBtn, optionsBtn, quitBtn)
   }
 
 

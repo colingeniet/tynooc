@@ -7,7 +7,7 @@ import scalafx.geometry.Insets
 
 class OptionsScene(sceneModifier: DisplayStates.Val=>Unit)
 extends DisplayScene(sceneModifier) {
-  var menuBtn = new Button("Main Menu")
+  private var menuBtn = new Button("Main Menu")
   menuBtn.onAction = (event: ActionEvent) => {
     sceneModifier(DisplayStates.MainMenu)
   }
