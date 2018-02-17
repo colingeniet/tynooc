@@ -18,6 +18,7 @@ extends DisplayScene(sceneModifier) {
     padding = Insets(10.0)
   }
 
+  stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
 
   root = new VBox(10.0) {
     alignment = Pos.CENTER

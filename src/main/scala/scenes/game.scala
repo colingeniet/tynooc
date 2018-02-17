@@ -1,3 +1,5 @@
+/* Main game display */
+
 import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
@@ -11,6 +13,8 @@ extends DisplayScene(sceneModifier) {
   menuBtn.onAction = (event: ActionEvent) => {
     sceneModifier(DisplayStates.MainMenu)
   }
+
+  stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
 
   root = new BorderPane(
     new WorldPane,
