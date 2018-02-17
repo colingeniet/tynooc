@@ -1,5 +1,5 @@
-object EngineModel //Static HashMap
-{
+//Static HashMap
+object EngineModel {
   private var models : HashMap[String, EngineModel] =
     HashMap(
       ("Basic", new EngineModel(50,50,70,25,15))
@@ -7,8 +7,8 @@ object EngineModel //Static HashMap
     )
 }
 
-object CarriageModel //Static HashMap
-{
+//Static HashMap
+object CarriageModel {
   private var models : HashMap[String, CarriageModel] =
     HashMap(
       ("Basic", new EngineModel(50,50,10))
@@ -70,7 +70,7 @@ class Carriage(_model: CarriageModel) {
 }
 
 
-class Train (e: Engine, c: List[Carriage]){
+class Train (e: Engine, c: List[Carriage]) {
   var engine: Engine = e
   var carriages: List[Carriage] = c
 
