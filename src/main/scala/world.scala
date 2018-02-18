@@ -47,6 +47,10 @@ extends PositionWeightedVertice {
   def iterateWeightedEdges(action: (Vertice, Double)=>Unit): Unit = {
     this.routes.foreach((route: Route) => action(route.destination, route.length))
   }
+  
+  def neighbours: List[Town] = {
+    routes.map(r => r.destination) 
+  }
 }
 
 /** World representation */
