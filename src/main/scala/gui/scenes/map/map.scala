@@ -1,4 +1,4 @@
-package gui.scenes.world
+package gui.scenes.map
 
 import scalafx.Includes._
 import scalafx.scene._
@@ -8,11 +8,21 @@ import scalafx.event._
 import scalafx.geometry._
 import scalafx.scene.paint.Color._
 
-class World extends Canvas(800, 600) {
-  drawTown(100, 200)
-  drawTown(300, 300)
-  drawRoute(100, 200, 300, 300)
-  drawTrain(100, 200, 300, 300, 0.7)
+import world.World
+
+class Map(world: World) extends Canvas(800, 600) {
+  world.towns.foreach {
+    town => {
+      drawTown(town.x, town.y)
+      town.routes.foreach {
+        route => drawRoute(
+                   route.start.x,
+                   route.start.y,
+                   route.end.x,
+                   route.end.y)
+      }
+    }
+  }
 
   def drawTown(x: Double, y: Double): Unit = {
     graphicsContext2D.fill = Black

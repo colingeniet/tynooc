@@ -6,4 +6,4 @@ package object panes
 
 /** Provides world map for the game screen.
  */
-package object world
+package object map

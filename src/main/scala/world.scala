@@ -1,3 +1,5 @@
+package world
+
 /** World representation
  */
 class World extends PositionWeightedGraph[Double] {
@@ -52,6 +54,15 @@ object World {
      */
     def addRoute(newRoute: Route): Unit = {
       _routes = newRoute :: _routes
+    }
+    /** Creates a route and add it.
+     *
+     *  The new route starts from `this`.
+     *  @param to the route destination.
+     *  @param length the route length.
+     */
+    def addRoute(to: Town, length: Double): Unit = {
+      addRoute(new Route(this, to, length))
     }
 
     def incidentEdges: List[Route] = routes
