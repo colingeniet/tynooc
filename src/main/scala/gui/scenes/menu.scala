@@ -1,3 +1,5 @@
+package gui.scenes
+
 import scalafx.Includes._
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
@@ -7,8 +9,9 @@ import scalafx.scene.layout.VBox
 import scalafx.geometry._
 import scalafx.geometry.Insets
 
+import gui.MainStage
 
-class MainMenuScene(sceneModifier: MainStage.States.Val=>Unit)
+class MainMenu(sceneModifier: MainStage.States.Val=>Unit)
 extends MainStage.Scene(sceneModifier) {
   private var gameBtn = sceneSwitchButton("Play", MainStage.States.Game)
   private var optionsBtn = sceneSwitchButton("Options", MainStage.States.Options)

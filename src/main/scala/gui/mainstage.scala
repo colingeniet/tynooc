@@ -1,9 +1,13 @@
 /* Main Window -- Primary Stage */
 
+package gui
+
 import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
+
+import gui.scenes._
 
 
 /** Main window manager companion object.
@@ -35,9 +39,9 @@ object MainStage {
  */
 class MainStage extends JFXApp.PrimaryStage {
   /* Actual scenes displayed. */
-  private var mainMenuScene: MainStage.Scene = new MainMenuScene(changeScene)
-  private var gameScene: MainStage.Scene = new GameScene(changeScene)
-  private var optionsScene: MainStage.Scene = new OptionsScene(changeScene)
+  private var mainMenuScene: MainStage.Scene = new MainMenu(changeScene)
+  private var gameScene: MainStage.Scene = new Game(changeScene)
+  private var optionsScene: MainStage.Scene = new Options(changeScene)
 
   /* Stage configuration. */
   title.value = "Tynooc"
