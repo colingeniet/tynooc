@@ -8,11 +8,11 @@ import scalafx.geometry._
 import scalafx.geometry.Insets
 
 
-class MainMenuScene(sceneModifier: DisplayStates.Val=>Unit)
-extends DisplayScene(sceneModifier) {
-  private var gameBtn = sceneSwitchButton("Play", DisplayStates.Game)
-  private var optionsBtn = sceneSwitchButton("Options", DisplayStates.Options)
-  private var quitBtn = sceneSwitchButton("Quit", DisplayStates.Quit)
+class MainMenuScene(sceneModifier: MainStage.States.Val=>Unit)
+extends MainStage.Scene(sceneModifier) {
+  private var gameBtn = sceneSwitchButton("Play", MainStage.States.Game)
+  private var optionsBtn = sceneSwitchButton("Options", MainStage.States.Options)
+  private var quitBtn = sceneSwitchButton("Quit", MainStage.States.Quit)
 
   private var title = new Label("Welcome to Tynooc") {
     padding = Insets(10.0)
@@ -27,7 +27,7 @@ extends DisplayScene(sceneModifier) {
   }
 
 
-  def sceneSwitchButton(text: String, newScene: DisplayStates.Val): Button = {
+  def sceneSwitchButton(text: String, newScene: MainStage.States.Val): Button = {
     var button: Button = new Button(text)
     button.onAction = (event: ActionEvent) => {
       sceneModifier(newScene)

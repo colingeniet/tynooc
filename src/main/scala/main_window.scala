@@ -5,24 +5,29 @@ import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
 
-/** Scenes available to display by the MainStage.
+
+/** Main window manager companion object.
  */
-object DisplayStates {
-  sealed trait Val
-  case object MainMenu extends Val
-  case object GameMenu extends Val
-  case object Game     extends Val
-  case object Options  extends Val
-  case object Quit     extends Val
+object MainStage {
+  /** Scenes available to display by the MainStage.
+   */
+  object States {
+    sealed trait Val
+    case object MainMenu extends Val
+    case object GameMenu extends Val
+    case object Game     extends Val
+    case object Options  extends Val
+    case object Quit     extends Val
+  }
+
+  /** The type of a scene manipulated by the MainStage.
+   *
+   *  @param sceneModifier a callback that can be used to switch to
+   *    a different scene.
+   */
+  abstract class Scene(sceneModifier: States.Val=>Unit)
+  extends scalafx.scene.Scene
 }
-
-/** The type of a scene manipulated by the MainStage.
- *
- *  @param sceneModifier a callback that can be used to switch to
- *    a different scene.
- */
-abstract class DisplayScene(sceneModifier: DisplayStates.Val=>Unit) extends Scene
-
 
 /** Main window manager.
  *
@@ -30,9 +35,9 @@ abstract class DisplayScene(sceneModifier: DisplayStates.Val=>Unit) extends Scen
  */
 class MainStage extends JFXApp.PrimaryStage {
   /* Actual scenes displayed. */
-  private var mainMenuScene: DisplayScene = new MainMenuScene(changeScene)
-  private var gameScene: DisplayScene = new GameScene(changeScene)
-  private var optionsScene: DisplayScene = new OptionsScene(changeScene)
+  private var mainMenuScene: MainStage.Scene = new MainMenuScene(changeScene)
+  private var gameScene: MainStage.Scene = new GameScene(changeScene)
+  private var optionsScene: MainStage.Scene = new OptionsScene(changeScene)
 
   /* Stage configuration. */
   title.value = "Tynooc"
@@ -44,13 +49,13 @@ class MainStage extends JFXApp.PrimaryStage {
    *
    *  @param newScene the scene to switch to.
    */
-  def changeScene(newScene: DisplayStates.Val): Unit = {
+  def changeScene(newScene: MainStage.States.Val): Unit = {
     newScene match {
-      case DisplayStates.MainMenu => scene = mainMenuScene
-      case DisplayStates.GameMenu => ()
-      case DisplayStates.Game => scene = gameScene
-      case DisplayStates.Options => scene = optionsScene
-      case DisplayStates.Quit => Platform.exit ()
+      case MainStage.States.MainMenu => scene = mainMenuScene
+      case MainStage.States.GameMenu => ()
+      case MainStage.States.Game => scene = gameScene
+      case MainStage.States.Options => scene = optionsScene
+      case MainStage.States.Quit => Platform.exit ()
     }
   }
 }

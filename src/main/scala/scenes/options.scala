@@ -5,11 +5,11 @@ import scalafx.event.ActionEvent
 import scalafx.scene.layout.StackPane
 import scalafx.geometry.Insets
 
-class OptionsScene(sceneModifier: DisplayStates.Val=>Unit)
-extends DisplayScene(sceneModifier) {
+class OptionsScene(sceneModifier: MainStage.States.Val=>Unit)
+extends MainStage.Scene(sceneModifier) {
   private var menuBtn = new Button("Main Menu")
   menuBtn.onAction = (event: ActionEvent) => {
-    sceneModifier(DisplayStates.MainMenu)
+    sceneModifier(MainStage.States.MainMenu)
   }
 
   root = new StackPane {

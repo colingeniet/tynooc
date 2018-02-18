@@ -7,11 +7,11 @@ import scalafx.event._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
-class GameScene(sceneModifier: DisplayStates.Val=>Unit)
-extends DisplayScene(sceneModifier) {
+class GameScene(sceneModifier: MainStage.States.Val=>Unit)
+extends MainStage.Scene(sceneModifier) {
   private var menuBtn = new Button("Menu")
   menuBtn.onAction = (event: ActionEvent) => {
-    sceneModifier(DisplayStates.MainMenu)
+    sceneModifier(MainStage.States.MainMenu)
   }
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
