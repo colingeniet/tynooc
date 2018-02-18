@@ -63,7 +63,8 @@ class CarriageModel(
 class Engine(_model: EngineModel) {
   var health: Double = 100
   var fuel: Double = model.fuelCapacity
-
+  var used: Boolean = false
+  
   def model: EngineModel = _model
 
   def apply(s: String): Engine = {
@@ -77,7 +78,8 @@ class Engine(_model: EngineModel) {
  */
 class Carriage(_model: CarriageModel) {
   var health: Double = 100
-
+  var used: Boolean = false
+  
   def model: CarriageModel = _model
 
   def apply(s: String): Carriage = {
@@ -89,7 +91,8 @@ class Carriage(_model: CarriageModel) {
 class Train (e: Engine, c: List[Carriage]) {
   var engine: Engine = e
   var carriages: List[Carriage] = c
-
+  var onRoad: Boolean = false
+  
   def weight: Double = {
     (if (engine == null) 0 else engine.model.weight)
     + carriages.foldLeft[Double](0) { (acc, v) => acc + v.model.weight }
