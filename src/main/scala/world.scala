@@ -25,13 +25,12 @@ extends PositionWeightedVertice {
   val x: Double = xPos
   /** The town y coordonate in the world. */
   val y: Double = yPos
-
+  /* The welcoming level of a town, between 0 and 1 */
+  val welcomingLevel: Double = w
 
   private var _routes: List[Route] = List()
 
-  val population: Int = 0 
-  /* The welcoming level of a town, between 0 and 1 */
-  val welcomingLevel: Double = w
+  var population: Int = 0
   
   /** The list of routes. */
   def routes: List[Route] = _routes
