@@ -1,51 +1,98 @@
 /* Graph manipulation */
 
-/** A graph. */
+/** A graph.
+ */
 trait Graph {
+  /** The graph vertices
+   */
+  def vertices: List[Graph.Vertice]
+}
+
+/** Graph object companion.
+ */
+object Graph {
   /** A vertice of the graph. */
   trait Vertice {
-    /** Iterates over all adjacent edges.
+    /** Incident edges list.
      *
-     *  @param action the function called for each edge.
-     *  Takes the destination Vertice as parameter.
+     *  An edge is incident if its `start` is `this`.
      */
-    def iterateEdges(action: Vertice => Unit): Unit
+    def incidentEdges: List[Edge]
+  }
+
+  /** An edge of the graph.
+   */
+  trait Edge {
+    val start: Vertice
+    val end: Vertice
   }
 }
+
 
 
 /** A graph with weighted edges.
- * @param Weight the weight type.
+ *
+ *  @param Weight the weight type.
  */
 trait WeightedGraph[Weight] extends Graph {
-  /** A vertice of the graph. */
-  trait WeightedVertice extends Vertice {
-    /** Iterates over all adjacent edges.
-     *
-     *  @param action the function called for each edge.
-     *  Takes the destination Vertice and the edge weight as parameters.
-     */
-    def iterateWeightedEdges(action: (Vertice, Weight) => Unit): Unit
+  /** The graph vertices */
+  def vertices: List[WeightedGraph.WeightedVertice[Weight]]
+}
 
-    /* Default implementation : uses iterateWeightedEdges and
-     * ignorse weight parameter. */
-    def iterateEdges(action: Vertice => Unit): Unit = {
-      this.iterateWeightedEdges((vertice:Vertice, _) => action(vertice))
-    }
+/** WeightedGraph object companion.
+ */
+object WeightedGraph {
+  /** A vertice of the graph.
+   *
+   *  @param Weight the weight type.
+   */
+  trait WeightedVertice[Weight] extends Graph.Vertice {
+    /** Incident edges list.
+     *
+     *  An edge is incident if its `start` is `this`.
+     */
+    def incidentEdges: List[WeightedEdge[Weight]]
+  }
+
+  /** An edge of the graph.
+   *
+   *  @param Weight the weight type.
+   */
+  trait WeightedEdge[Weight] extends Graph.Edge {
+    val weight: Double
   }
 }
 
-/** A point in the plane */
+
+
+
+/** A point in the plane
+ */
 trait Position {
   val x: Double
   val y: Double
 }
 
-/** A graph with positionned vertices. */
+/** A graph with positionned vertices.
+ */
 trait PositionGraph extends Graph {
- /** A vertice of the graph. */
- trait PositionVertice extends Vertice with Position
+  /** The graph vertices
+   */
+  def vertices: List[PositionGraph.PositionVertice]
 }
+
+/** PositionGraph object companion.
+ */
+object PositionGraph {
+ /** A vertice of the graph.
+  */
+ trait PositionVertice extends Graph.Vertice with Position
+ /** An edge of the graph.
+  */
+ trait Edge extends Graph.Edge
+}
+
+
 
 /** A graph with weighted edges and positionned vertices.
  *
@@ -53,6 +100,20 @@ trait PositionGraph extends Graph {
  */
 trait PositionWeightedGraph[Weight]
 extends WeightedGraph[Weight] with PositionGraph {
-  /** A vertice of the graph. */
-  trait PositionWeightedVertice extends WeightedVertice with PositionVertice
+  /** The graph vertices
+   */
+  def vertices: List[PositionWeightedGraph.PositionWeightedVertice[Weight]]
+}
+
+/** PositionWeightedGraph object companion.
+ */
+object PositionWeightedGraph {
+  /** A vertice of the graph.
+   *
+   *  @param Weight the weight type.
+   */
+  trait PositionWeightedVertice[Weight]
+  extends WeightedGraph.WeightedVertice[Weight] with PositionGraph.PositionVertice
+
+  trait WeightedEdge[Weight] extends WeightedGraph.WeightedEdge[Weight]
 }
