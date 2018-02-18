@@ -18,7 +18,7 @@ class Route(_destination: Town, _length: Double) {
  *  @param xPos the town x coordonate.
  *  @param yPos the town y coordonate.
  */
-class Town(name: String, xPos: Double, yPos: Double, w: Int)
+class Town(name: String, xPos: Double, yPos: Double, w: Double)
 extends PositionWeightedVertice {
 
   /** The town x coordonate in the world. */
@@ -30,7 +30,8 @@ extends PositionWeightedVertice {
   private var _routes: List[Route] = List()
 
   val population: Int = 0 
-  val welcomingLevel: Int = w
+  /* The welcoming level of a town, between 0 and 1 */
+  val welcomingLevel: Double = w
   
   /** The list of routes. */
   def routes: List[Route] = _routes
@@ -55,9 +56,9 @@ extends PositionWeightedVertice {
     routes.map(r => r.destination) 
   }
   
-  def note: Int = {
+  def note: Double = {
     /* Formulas to find */
-    welcomingLevel / population 
+    welcomingLevel / population
   }  
 }
 
