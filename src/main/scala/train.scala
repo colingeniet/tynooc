@@ -2,8 +2,8 @@
 object EngineModel {
   private var models : HashMap[String, EngineModel] =
     HashMap(
-      ("Basic", new EngineModel(50,50,70,25,15,["Advanced"],20))
-      ("Advanced", new EngineModel(25,100,140,50,5,[],5))
+      ("Basic", new EngineModel(50,50,70,25,15,List("Advanced"),20))
+      ("Advanced", new EngineModel(25,100,140,50,5,List(),5))
     )
 }
 
@@ -29,13 +29,12 @@ class EngineModel(
     def power: Double = _power
     def speed: Double = _speed
     def fuelCapacity: Double = _fuelCapacity
-    def consumption: Double = _consumption
     def price: Double = _price
     def consumption: Double = _consumption
     def upgrades: List[String] = _upgrades
 
     def apply(s: String): EngineModel = {
-      return models[s]
+      models(s)
     }
 }
 
@@ -49,11 +48,11 @@ class CarriageModel(
     def weight: Double = _weight
     def capacity: Int = _capacity
     def comfort: Double = _comfort
-    def _upgrades: List[String] = _upgrades
+    def upgrades: List[String] = _upgrades
     def price: Double = _price
 
     def apply(s: String): CarriageModel = {
-      return models[s]
+      models(s)
     }
 }
 
@@ -66,9 +65,9 @@ class Engine(_model: EngineModel) {
   var fuel: Double = model.fuelCapacity
 
   def model: EngineModel = _model
-  
+
   def apply(s: String): Engine = {
-    return new Engine(new EngineModel(s))
+    new Engine(new EngineModel(s))
   }
 }
 
@@ -80,9 +79,9 @@ class Carriage(_model: CarriageModel) {
   var health: Double = 100
 
   def model: CarriageModel = _model
-  
+
   def apply(s: String): Carriage = {
-    return new Carriage(new CarriageModel(s))
+    new Carriage(new CarriageModel(s))
   }
 }
 
