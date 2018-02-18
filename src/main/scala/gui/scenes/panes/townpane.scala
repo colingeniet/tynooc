@@ -7,6 +7,6 @@ import scalafx.event._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
-class Town extends VBox {
+class Town extends HBox {
   children = List(new Label("Town pane"))
 }

@@ -7,6 +7,6 @@ import scalafx.event._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
-class Train extends HBox {
+class Train extends VBox {
   children = List(new Label("Train pane"))
 }
