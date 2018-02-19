@@ -1,8 +1,8 @@
 # Les trains
 
-Un train est composé d’une locomotive et de plusieurs wagons. Ceux-ci peuvent 
-être dans plusieurs états (voir comment cela sera représenté dans le jeu, 2 états 
-peuvent suffire).
+Un train est composé d’une locomotive et de plusieurs wagons. Ceux-ci peuvent être 
+dans plusieurs états (voir comment cela sera représenté dans le jeu, 2 états 
+peuvent suffire). 
 
 1. **Non utilisé** , ce qui signifie qu’ils peuvent être utilisés pour créer un 
 nouveau train (**assemblage de train**), ou qu’ils peuvent être modifiés 
@@ -11,9 +11,12 @@ nouveau train (**assemblage de train**), ou qu’ils peuvent être modifiés
 Si on veut les modifier ou les affecter à un autre train, il faudra désassembler
 le train (voir s’il est nécessaire de tout désassembler ou si un train peut être
 traité comme une pile).
-3. **Sur la route**, ce qui signifie qu’ils sont sur la route. On ne peut bien 
+
+Un train peut lui aussi être dans deux états. 
+
+1. **Sur la route**, ce qui signifie qu’ils est sur la route. On ne peut bien 
 sûr pas désassembler un train qui est en train de rouler.
-4. **En cours de modification**,  auquel cas ils ne peuvent pas être utilisé
+2. **En cours de modification**,  auquel cas ils ne peuvent pas être utilisé
 pour un nouveau train jusqu’à la fin de la modification.
 
 Ces éléments ont une composante **état**, une locomotive en trop mauvais état ne 
@@ -34,34 +37,44 @@ Class Train
 
 ## Les locomotives
 
-Une locomotive a une puissance qui lui permet de tirer plus ou moins de wagons.
-Si le nombre de wagons est OK, le train peut rouler, sa vitesse est déterminée 
-à l’aide de sa puissance (formule à fixer).
+Une locomotive a un poids, une puissance qui lui permet de tirer un poids plus
+ou moins important et une vitesse. Si le poids est OK, la locomotive peut rouler.
 
 Une locomotive a aussi une consommation qui dépend de sa puissance (seulement ?).
-Plus elle est puissante, plus elle consomme.
+Plus elle est puissante, plus elle consomme. Et finalement, elle a un réservoir 
+d'une certaine capacité.
+
+Il y a plusieurs modèles de locomotive plus ou moins efficace.
+
 
 ```
 Class Locomotive
     Méthodes
-        Améliorer()
-        
+        Améliorer()                
         
     Attributs
         Puissance :
-        État : NonUsed, Used, OnRoad
+        Poids :
+        Vitesse :
+        Consommation :
+        CapacitéEssence :
+        État : NonUsed, Used
+        Santé :
 ```
 
 ## Les wagons
 
-Un wagon a une capacité (nombre de personnes qu’il peut prendre) et une « note
+Un wagon a une capacité (nombre de personnes qu’il peut prendre), un poids, et une « note
 de confort », ce qui permettra au joueur de fixer son prix (c’est bien sûr le 
 joueur qui décide, mais par exemple vendre cher un wagon peu confortable sera 
 une mauvaise idée). Bien sûr, on n’est pas obligé de remplir un wagon ; on peut
 imaginer un wagon-affaire très confortable et où on ne met pas trop de personnes.
 Il y a donc la capacité du wagon, mais aussi le nombre de places fixées par le
-joueur.
+joueur (ce n'est pas dans les attributs du wagon, mais simplement fixé par le nombre de places
+que le joueur décide de vendre).
 
+On a alors ue classe pour les modèles de Wagon et une classe pour les Wagons en eux-mêmes.
+ 
 En seconde instance, un wagon pourrait aussi avoir des choses à vendre 
 (nourriture, etc.), et qui produisent du bénéfice supplémentaire (ou pas...).
 
@@ -72,9 +85,13 @@ Class Wagon
     
     Attributs
         Capacité : 20 - 50 - 100
+        Poids :
+        Confort :
         Prix : 
+        Santé :
         Capacité_utilisable :
 ``` 
+
 
 ## Modification de trains
 
@@ -135,13 +152,20 @@ pousserait également les gens à y aller ou à s’en aller.
 Les PNJs ne sont jamais vus, ni visibles. On ne les voit qu’à travers leurs déplacements
 (et leurs éventuels achats). Sinon, un PNJ est caractérisé par une certaine 
 quantité d’argent représentée grossièrement (ce n’est pas ce qui nous intéresse ici),
-peut-être juste par un statut `RICHE`, `PAUVRE`, `AISÉ`.
+peut-être juste par un statut `RICHE`, `PAUVRE`, `AISÉ`. Il a également un état,
+`WAITING`, `ON_ROAD`, `SETTLED`, qui permet de savoir quelle action il peut entreprendre
+et une ville correspondant à celle où il est actuellement.
+
+Un PNJ peut compter comme un groupe de plusieurs personnes (cela permettra avec 1000 PNJ
+par exemple d'en simuler 1 000 000).
 
 ## Comment choisit-il sa destination
 
-Un PNJ a ue probabilité de migrer qui dépend du nombre de personnes dans sa ville.
+Un PNJ a une probabilité de migrer qui dépend du nombre de personnes dans sa ville.
 Il migre alors dans une ville voisine où il y a moins de personnes (en seconde 
 instance, ces deux choses pourraient dépendre du niveau d’accueil de la ville).
+S'il choisit de migrer, il passe dans l'état `IS_WAITING` signifiant qu'il attend
+un train.
 
 En seconde instance, il pourrait également ne pas choisir d’aller dans une ville 
 voisine, mais d’aller plus loin encore chose facilitée par les plans de route
@@ -149,12 +173,19 @@ voisine, mais d’aller plus loin encore chose facilitée par les plans de route
 
 ## Comment choisit-il son train
 
-Un joueur choisit son train en fonction de la destination déjà (ouf). Si plusieurs
-trains vont dans la destination souhaitée, il choisit un train avec un wagon 
-correspond à son statut (wagon-affaire par exemple). S’il y en a toujours plusieurs,
-il choisit le moins cher/au hasard/celui avec la plus bonne réputation.
+La destination du joueur étant fixée, il choisit son train en fonction de cette 
+destination déjà (ouf). Si plusieurs trains vont dans la destination souhaitée, 
+il choisit un train avec un wagon correspond à son statut (wagon-affaire par
+exemple). S’il y en a toujours plusieurs, il choisit 
+le moins cher/au hasard/celui avec la plus bonne réputation.
 
-On va considérer que l’heure d’arrivée ne lui importe pas. 
+On va considérer que l’heure d’arrivée ne lui importe pas.
+
+S'il n'y a aucun train allant là où il veut, il attend le tour suivant. Une fois
+qu'il a choisi un train, il passe dans l'état ON_ROAD.
+
+Quand le train **est arrivé** à destination, le satut et la ville du PNJ
+changent et deviennent respectivement SETTLED et sa nouvelle ville.
  
 NOTE : On peut décider que le PNJ a une caractéristique représentant son envie
 de migrer (celle liée au niveau d'accueil et on nombre de personne dans la ville),
@@ -190,5 +221,36 @@ ce qu’elle fait y sont.
 En première instance, l’IA essaie juste de ne pas couler, elle améliore rarement ses
 trains et vend ses tickets un peu plus cher que ce que va lui coûter le voyage (
 consommation, personnel, etc.) histoire de faire du bénéfice. Elle décide de faire
-partir des trains des lieux où il y a beaucoup de personnes. 
- 
+partir des trains des lieux où il y a beaucoup de personnes.
+
+# Jeu général
+
+Pour le jeu général, il se déroule de la manière suivante. Chaque tour, on récupère
+les actions de l'utilisateur, puis celles des IA et on les exécute. Puis, on met à jour
+tout ce qui doit être mis à jour avant de réafficher. La boucle principale de jeu sera
+alors la suivante.
+
+
+```
+Tant qu'on joue
+    Actions joueur
+    Actions IA
+    Pour chaque ville
+        Mettre à jour la ville
+    Pour chaque Joueur
+        Mettre à jour le joueur
+    Mettre à jour l'affichage
+```
+
+La mise à jour d'une ville consiste à mettre à jour chacun des joueurs qui la compose, 
+et la mise à jour d'un joueur dépend de son état. S'il est SETTLED, elle consiste à 
+regarder s'il veut migrer, s'il est WAITING, elle consiste à regarder s'il y a un train
+pour là où il veut aller, et s'il est ON_ROAD, elle consiste à regarder s'il veut 
+consommer (si fonctionnalité de consommation il y a).
+
+La mise à jour d'un joueur consiste à mettre à jour chacun de ces trains. La mise à jour 
+d'un train consiste à mettre à jour sa position et son carburant et à diminuer les points
+de vie de sa locomotive et de chacun des ses wagons.
+
+NOTE : Reste à voir à quelle unité de temps correspond un tour du jeu et à fixer comment
+les valeurs sont affectées.
