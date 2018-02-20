@@ -1,141 +1,3 @@
-# Les trains
-
-Un train est composé d’une locomotive et de plusieurs wagons. Ceux-ci peuvent être 
-dans plusieurs états (voir comment cela sera représenté dans le jeu, 2 états 
-peuvent suffire). 
-
-1. **Non utilisé** , ce qui signifie qu’ils peuvent être utilisés pour créer un 
-nouveau train (**assemblage de train**), ou qu’ils peuvent être modifiés 
-(voir plus bas).
-2. **Utilisé**, ce qui signifie qu’ils sont actuellement une partie d’un train.
-Si on veut les modifier ou les affecter à un autre train, il faudra désassembler
-le train (voir s’il est nécessaire de tout désassembler ou si un train peut être
-traité comme une pile).
-
-Un train peut lui aussi être dans deux états. 
-
-1. **Sur la route**, ce qui signifie qu’ils est sur la route. On ne peut bien 
-sûr pas désassembler un train qui est en train de rouler.
-2. **En cours de modification**,  auquel cas ils ne peuvent pas être utilisé
-pour un nouveau train jusqu’à la fin de la modification.
-
-Ces éléments ont une composante **état**, une locomotive en trop mauvais état ne 
-pouvant pas fonctionner.
-
-```
-Class Train
-    Méthodes
-        SetOnRails(roadPlan) : 
-        
-    
-    Attributs
-        État : OnRoad, NotOnRoad
-        Position : 
-        Locomotive : 
-        Wagons : List of wagons
-```
-
-## Les locomotives
-
-Une locomotive a un poids, une puissance qui lui permet de tirer un poids plus
-ou moins important et une vitesse. Si le poids est OK, la locomotive peut rouler.
-
-Une locomotive a aussi une consommation qui dépend de sa puissance (seulement ?).
-Plus elle est puissante, plus elle consomme. Et finalement, elle a un réservoir 
-d'une certaine capacité.
-
-Il y a plusieurs modèles de locomotive plus ou moins efficace.
-
-
-```
-Class Locomotive
-    Méthodes
-        Améliorer()                
-        
-    Attributs
-        Puissance :
-        Poids :
-        Vitesse :
-        Consommation :
-        CapacitéEssence :
-        État : NonUsed, Used
-        Santé :
-```
-
-## Les wagons
-
-Un wagon a une capacité (nombre de personnes qu’il peut prendre), un poids, et une « note
-de confort », ce qui permettra au joueur de fixer son prix (c’est bien sûr le 
-joueur qui décide, mais par exemple vendre cher un wagon peu confortable sera 
-une mauvaise idée). Bien sûr, on n’est pas obligé de remplir un wagon ; on peut
-imaginer un wagon-affaire très confortable et où on ne met pas trop de personnes.
-Il y a donc la capacité du wagon, mais aussi le nombre de places fixées par le
-joueur (ce n'est pas dans les attributs du wagon, mais simplement fixé par le nombre de places
-que le joueur décide de vendre).
-
-On a alors ue classe pour les modèles de Wagon et une classe pour les Wagons en eux-mêmes.
- 
-En seconde instance, un wagon pourrait aussi avoir des choses à vendre 
-(nourriture, etc.), et qui produisent du bénéfice supplémentaire (ou pas...).
-
-```
-Class Wagon
-    Méthodes
-        
-    
-    Attributs
-        Capacité : 20 - 50 - 100
-        Poids :
-        Confort :
-        Prix : 
-        Santé :
-        Capacité_utilisable :
-``` 
-
-
-## Modification de trains
-
-On peut modifier un train, un wagon ou une locomotive de plusieurs manières.
-
-1. Améliorer de la puissance d’une locomotive (bien sûr, il y a une puissance
-limite)
-2. Réparer d’une locomotive.
-3. Rendre un wagon plus confortable.
-4. Restaurer un wagon.
-5. Assembler un train (nécessite une locomotive).
-6. Désassembler un train.
-7. Ajouter ou retirer le dernier wagon d’un train ?
-
-# Les joueurs
-
-Un joueur dispose de ses locomotives, de ses wagons, de sa compagnie et d’argent.
-Il peut acheter des wagons et des locomotives, les améliorer (voir plus haut), etc.
-Pour cela, il peut voir quelles wagons/locomotives sont libres, etc. 
-
-Il décide également du prix que coûte les billets suivant le wagon, la destination,
-etc. Suivant cela, sa « côte de popularité » peut varier, ce qui emmène les gens à 
-acheter plus ou moins ses billets.
-
-Il planifie chaque voyage de train. En première instance, les voyages ne sont 
-que des directs d’une ville à son voisin, mais on peut ensuite imaginer
-des voyages qui vont d’une ville à une autre en passant par d’autres villes (en 
-s’arrêtant ou pas) => plan de route.
-
-Il gère son argent et l’état de sa compagnie et de ses trains, son but étant 
-de rester dans le positif (et de couler les autres joueurs). Les frais qu’il aura à payer sont les suivants.
-
-- Achat, réparation et amélioration de trains.
-- Personnel ; on fait simple, pour un voyage dans un train, le prix du personnel
-est `f(puissance_de_la_locomotive)` (on considère que plus la locomotive est puissante, 
-plus il faut un pilote compétent) plus le salaire des hôtes.
-- Carburant (dépendant de la distance parcourue et de la puissance de la locomotive).
-
-```
-Class Joueur
-
-
-```
-
 # Les routes
 
 Les routes relient deux villes (le départ et l’arrivée) en 
@@ -159,6 +21,7 @@ Class Route
    Méthodes 
 ```
 
+
 # Les voyages
 
 Un voyage est composé d’un train, d’une liste de route à emprunter, d’une ville,
@@ -175,7 +38,7 @@ Class Voyage
       ville : la ville actuelle
       route : la route actuelle
       distance_parcourue : la distance parcourue sur la route actuelle
-      liste_tickets : liste de tickets pour ce voyage
+      liste_places : liste de places pour ce voyage
       état : ON_ROAD, ARRIVAL ou WAITING      
       
    Méthodes
@@ -187,7 +50,7 @@ Class Voyage
                état = ARRIVAL
             Fin Si
          Sinon si ARRIVAL
-            train.diminuer_vie(route)
+            train.détériorer(route)
             état = WAITING
             liste_routes = tl(liste_routes)
             route = hd(liste_routes)
@@ -196,12 +59,13 @@ Class Voyage
             ville = route.destination
          Fin Si
 
-      def tickets_disponibles
-          [ticket de liste_tickets où ticket.disponible]
+      def places_disponibles
+          [place de liste_places où place.disponible]
           
       def est_terminé
          liste_routes = []
 ```
+
 
 # Les PNJs
 
@@ -222,7 +86,7 @@ encore chose facilitée par les plans de route (voir partie sur les joueurs).
 ## Comment choisit-il son train
 
 La destination du joueur étant fixée, il regarde tous les voyages vers cette
-destination, et choisit le ticket suivant son statut (`RICHE` => confortable, 
+destination, et choisit la place suivant son statut (`RICHE` => confortable, 
 `PAUVRE` => le moins cher, `AISÉ` => le premier). En seconde instance, la 
 réputation du joueur pourrait être prise en compte.
 
@@ -246,7 +110,7 @@ class PNJ
       ville : la ville où il est
       probabilité : la probabilité de bouger
       destination : la destination
-      ticket : le ticket qu’il a acheté
+      place : la place qu’il a acheté
       
    Méthodes
       def veut_migrer
@@ -264,23 +128,23 @@ class PNJ
       def chercher_voyage
          voyages = monde.voyages.filtrer(voyage.état = WAITING et voyage.ville = ville)
          Retourner Si pas de voyages 
-         tickets = voyages.flatMap (voyage => voyage.tickets_disponibles)
-         ticket = match statut with
-            RICH   => tickets.maxPar(confort)
-            PAUVRE => tickets.minPar(Prix)
-            AISÉ   => hd(tickets)
-          ticket.acheter
-          ticket = ticket
+         places = voyages.flatMap (voyage => voyage.places_disponibles)
+         place = match statut with
+            RICH   => places.maxPar(confort)
+            PAUVRE => places.minPar(Prix)
+            AISÉ   => hd(places)
+          place.acheter
+          place = place
           état = ON_ROAD
           ville.supprimer_habitant
           
       def voyager 
-         Si ticket.voyage = ARRIVAL et ticket.voyage.ville = destination
-            ticket.libérer
+         Si place.voyage = ARRIVAL et place.voyage.ville = destination
+            place.libérer
             ville = destination
             ville.ajouterHabitant
             état = SETTLED
-            ticket = null
+            place = null
             destination = null
          Sinon   
             /* Consommer quand ce sera là */ 
@@ -292,17 +156,18 @@ class PNJ
             ON_ROAD => voyager     
 ```
 
-# Les tickets (A REMPLACER PAR PLACE)
 
-Un ticket est associé à un voyage et à un wagon et a un prix. Un ticket représente 
-en fait plusieurs tickets et a un attribut places. On peut acheter un 
-ticket, savoir s’il est disponible, etc.
+# Les places
+
+Une place est associé à un voyage et à un wagon et a un prix. Une place représente 
+en fait plusieurs places et a un attribut places. On peut acheter un 
+place, savoir s’il est disponible, etc.
 
 ```
-Class Ticket
+Class Place
    Attributs 
-      voyage : le voyage du ticket
-      prix : le prix du ticket
+      voyage : le voyage de la place
+      prix : le prix de la place
       wagon : le wagon auquel il est associé
       places : le nombre de place disponible
       
@@ -323,6 +188,7 @@ Class Ticket
          wagon.niveau_de_confort
          
 ``` 
+
 
 # Le monde 
 
@@ -356,7 +222,8 @@ Class Monde
          Fin Pour
          liste_voyages = liste_voyage.filtrer(voyage.est_terminé)               
 ```  
- 
+
+
 # Les villes
 
 Une ville a une position, un niveau d’accueil, et des routes. Elle a un 
@@ -392,6 +259,168 @@ Class Ville
 ```
 
 
+# Les moteurs
+
+Un moteur a un poids, une puissance qui lui permet de tirer un certain poids. Il 
+a aussi une vitesse, une consommation, et un réservoir d’une certaine capacité.
+
+Finalement, il a des points de vie, un état (dans un train, ou libre) et une 
+éventuelle amélioration.
+
+```
+class Moteur
+   Attributs 
+      poids : le poids du moteur
+      puissance : la puissance du moteur
+      vitesse : la vitesse du moteur
+      capacité_essence : la capacité du réservoir
+      consommation : la consommation du moteur
+      état : TRAIN ou FREE
+      PV : les points de vie du moteur
+      modèle : le modèle du moteur 
+      PV_initial : les points de vie initiaux /* Peut être obtenu avec le modèle */
+      amélioration (optionnelle) : l’amélioration du moteur
+      
+   Méthode
+      def améliorer 
+         Si amélioration et FREE
+            améliorer
+            /* Soit changer les caractéristiques, soit 
+               supprimer ce moteur et en renvoyer un nouveau
+            */
+      
+      def détériorer(arg)
+         PV = max (0, PV - arg)
+         
+      def réparer
+         points_de_vie = PV
+         
+```
+
+
+# Les wagons
+
+Un wagon a une capacité (nombre de personnes qu’il peut prendre), un poids et 
+une « note de confort ». En seconde instance, un wagon pourrait aussi avoir des
+choses à vendre (nourriture, etc.) qui produisent du bénéfice supplémentaire.
+
+Tout comme le moteur, il a des points de vie, un état et une éventuelle 
+amélioration (son confort actuel dépend de ses PVs).
+
+```
+Class Wagon
+   Attributs
+      poids : le poids du wagon
+      capacité : la capacité du wagon
+      confort : le confort du wagon
+      amélioration (optionnelle) : l’amélioration du wagon
+      PV : les points de vie du moteur
+      modèle : le modèle de wagon
+      PV_initial : les points de vie initiaux /* Peut être obtenu avec le modèle */
+      confort_initial : la note de confort du wagon /* Entre 0 et 1 */
+      état : TRAIN ou FREE
+      
+    Méthodes
+       def améliorer
+          Si amélioration et FREE
+             améliorer
+             /* Soit changer les caractéristiques, soit 
+                supprimer ce moteur et en renvoyer un nouveau
+             */
+       
+       def détériorer(arg)
+          PV = max (0, PV - arg)
+         
+       def restaurer
+          points_de_vie = PV
+          
+       def confort 
+          confort_initial * PV / PV_initial
+```
+
+# Les trains
+
+Un train est composé d’un moteur et de plusieurs wagons. Ceux-ci peuvent être 
+dans plusieurs états (voir comment cela sera représenté dans le jeu, 2 états 
+peuvent suffire). 
+
+1. **Non utilisé** , ce qui signifie qu’ils peuvent être utilisés pour créer un 
+nouveau train (**assemblage de train**), ou qu’ils peuvent être modifiés 
+(voir plus bas).
+2. **Utilisé**, ce qui signifie qu’ils sont actuellement une partie d’un train.
+Si on veut les modifier ou les affecter à un autre train, il faudra désassembler
+le train (voir s’il est nécessaire de tout désassembler ou si un train peut être
+traité comme une pile).
+
+Un train peut lui aussi être dans deux états. 
+
+1. **Sur la route**, ce qui signifie qu’ils est sur la route. On ne peut bien 
+sûr pas désassembler un train qui est en train de rouler.
+2. **En cours de modification**,  auquel cas ils ne peuvent pas être utilisé
+pour un nouveau train jusqu’à la fin de la modification.
+
+Ces éléments ont une composante **état**, une locomotive en trop mauvais état ne 
+pouvant pas fonctionner.
+
+```
+Class Train
+    Méthodes
+        SetOnRails(roadPlan) : 
+        
+    
+    Attributs
+        État : OnRoad, NotOnRoad
+        Position : 
+        Locomotive : 
+        Wagons : List of wagons
+```
+
+
+
+
+## Modification de trains
+
+On peut modifier un train, un wagon ou une locomotive de plusieurs manières.
+
+1. Améliorer de la puissance d’une locomotive (bien sûr, il y a une puissance
+limite)
+2. Réparer d’une locomotive.
+3. Rendre un wagon plus confortable.
+4. Restaurer un wagon.
+5. Assembler un train (nécessite une locomotive).
+6. Désassembler un train.
+7. Ajouter ou retirer le dernier wagon d’un train ?
+
+
+# Les joueurs
+
+Un joueur dispose de ses locomotives, de ses wagons, de sa compagnie et d’argent.
+Il peut acheter des wagons et des locomotives, les améliorer (voir plus haut), etc.
+Pour cela, il peut voir quelles wagons/locomotives sont libres, etc. 
+
+Il décide également du prix que coûte les billets suivant le wagon, la destination,
+etc. Suivant cela, sa « côte de popularité » peut varier, ce qui emmène les gens à 
+acheter plus ou moins ses billets.
+
+Il planifie chaque voyage de train. En première instance, les voyages ne sont 
+que des directs d’une ville à son voisin, mais on peut ensuite imaginer
+des voyages qui vont d’une ville à une autre en passant par d’autres villes (en 
+s’arrêtant ou pas) => plan de route.
+
+Il gère son argent et l’état de sa compagnie et de ses trains, son but étant 
+de rester dans le positif (et de couler les autres joueurs). Les frais qu’il aura à payer sont les suivants.
+
+- Achat, réparation et amélioration de trains.
+- Personnel ; on fait simple, pour un voyage dans un train, le prix du personnel
+est `f(puissance_de_la_locomotive)` (on considère que plus la locomotive est puissante, 
+plus il faut un pilote compétent) plus le salaire des hôtes.
+- Carburant (dépendant de la distance parcourue et de la puissance de la locomotive).
+
+```
+Class Joueur
+
+
+```
 
 
 # L’IA
@@ -401,9 +430,10 @@ et n’utilise **que** l’interface de `Joueur`. Toutes les méthodes nécessai
 ce qu’elle fait y sont.
 
 En première instance, l’IA essaie juste de ne pas couler, elle améliore rarement ses
-trains et vend ses tickets un peu plus cher que ce que va lui coûter le voyage (
+trains et vend ses places un peu plus cher que ce que va lui coûter le voyage (
 consommation, personnel, etc.) histoire de faire du bénéfice. Elle décide de faire
 partir des trains des lieux où il y a beaucoup de personnes.
+
 
 # Jeu général
 
@@ -411,7 +441,6 @@ Le jeu général se déroule de la manière suivante. À chaque tour, on récup�
 les actions de l'utilisateur, puis celles des IA et on les exécute. Puis, on met à jour
 tout ce qui doit être mis à jour. La boucle principale de jeu sera
 alors la suivante.
-
 
 ```
 Tant qu'on joue
@@ -421,6 +450,21 @@ Tant qu'on joue
     Mettre à jour l'affichage
 ```
 
-**Le carburant est géré au début du voyage (l’argent est pris sur le compte du 
+
+# Gestion des déplacements
+
+La longueur d’une route correspond au nombre de *frames* qu’il faudra à un train 
+de vitesse 1 pour faire le voyage. Ainsi, une longueur de 500 correspondra à une
+dizaine de secondes pour un train de vitesse 1. 
+
+Pour simplifier les choses, les données seront représentées avec cette unité
+même si autre chose pourra être affiché. Ainsi, des vitesses entre 1 et 3 et 
+des longueurs autour de 80 seront bien (=> voyages autour de la dizaine
+de seconde). 
+
+
+# Gestion des ressources
+
+Le carburant est géré au début du voyage (l’argent est pris sur le compte du 
 joueur correspondant), les points de vie diminuent à la fin de chaque étape du 
 voyage.
