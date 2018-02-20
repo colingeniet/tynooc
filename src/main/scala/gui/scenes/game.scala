@@ -21,8 +21,9 @@ extends MainStage.Scene(sceneModifier) {
   private var trainPane = new panes.Train
   private var townPane = new panes.Town
   private var playerPane = new panes.Player
-  private var mapDisplay = new map.Map(world)
-
+  private var mapDisplay = new map.Map(world,
+                                       townPane.displayTown,
+                                       townPane.displayRoute)
   private var pane: BorderPane = new BorderPane(
     mapDisplay,
     menuPane,
@@ -43,6 +44,8 @@ extends MainStage.Scene(sceneModifier) {
 
   def world_=(newWorld: World): Unit = {
     _world = newWorld
-    pane.center = new map.Map(world)
+    pane.center = new map.Map(world,
+                              townPane.displayTown,
+                              townPane.displayRoute)
   }
 }

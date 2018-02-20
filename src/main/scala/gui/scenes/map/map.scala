@@ -6,11 +6,17 @@ import scalafx.scene.control._
 import scalafx.scene.shape._
 import scalafx.scene.layout._
 import scalafx.event._
+import javafx.scene.input.MouseEvent
+import javafx.event.EventHandler
 import scalafx.scene.paint.Color._
 
 import world.World
 
-class Map(world: World) extends Pane {
+class Map(
+  world: World,
+  displayTown: World.Town => Unit,
+  displayRoute: World.Route => Unit)
+extends Pane {
   world.towns.foreach {
     town => {
       addTown(town)
@@ -24,6 +30,11 @@ class Map(world: World) extends Pane {
     point.centerY = town.y
     point.radius = 15
     point.fill = Black
+    point.onMouseClicked = new EventHandler[MouseEvent] {
+      override def handle(event: MouseEvent) {
+        displayTown(town)
+      }
+    }
     children.add(point)
   }
 
@@ -34,6 +45,11 @@ class Map(world: World) extends Pane {
     line.endX = route.end.x
     line.endY = route.end.y
     line.stroke = Black
+    line.onMouseClicked = new EventHandler[MouseEvent] {
+      override def handle(event: MouseEvent) {
+        displayRoute(route)
+      }
+    }
     children.add(line)
   }
 
