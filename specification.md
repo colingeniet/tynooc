@@ -136,81 +136,263 @@ Class Joueur
 
 ```
 
-# Les villes
-
-Une ville est caractérisé par sa taille, sa position et ses voisins. Elle a un 
-certain nombre d’habitants qui varie suivant les déplacements des PNJs. Peut-être
-ajouter une « capacité », c’est-à-dire le nombre maximum de personnes qu’il peut 
-y avoir dans une ville (elle est liée à la taille de la ville). Cette capacité 
-permettrait aux PNJs de savoir comment voyager. 
-
-En seconde instance, une ville pourrait être plus ou moins accueillante, ce qui 
-pousserait également les gens à y aller ou à s’en aller. 
-
-# Les PNJs
-
-Les PNJs ne sont jamais vus, ni visibles. On ne les voit qu’à travers leurs déplacements
-(et leurs éventuels achats). Sinon, un PNJ est caractérisé par une certaine 
-quantité d’argent représentée grossièrement (ce n’est pas ce qui nous intéresse ici),
-peut-être juste par un statut `RICHE`, `PAUVRE`, `AISÉ`. Il a également un état,
-`WAITING`, `ON_ROAD`, `SETTLED`, qui permet de savoir quelle action il peut entreprendre
-et une ville correspondant à celle où il est actuellement.
-
-Un PNJ peut compter comme un groupe de plusieurs personnes (cela permettra avec 1000 PNJ
-par exemple d'en simuler 1 000 000).
-
-## Comment choisit-il sa destination
-
-Un PNJ a une probabilité de migrer qui dépend du nombre de personnes dans sa ville.
-Il migre alors dans une ville voisine où il y a moins de personnes (en seconde 
-instance, ces deux choses pourraient dépendre du niveau d’accueil de la ville).
-S'il choisit de migrer, il passe dans l'état `IS_WAITING` signifiant qu'il attend
-un train.
-
-En seconde instance, il pourrait également ne pas choisir d’aller dans une ville 
-voisine, mais d’aller plus loin encore chose facilitée par les plans de route
-(voir partie sur les joueurs).
-
-## Comment choisit-il son train
-
-La destination du joueur étant fixée, il choisit son train en fonction de cette 
-destination déjà (ouf). Si plusieurs trains vont dans la destination souhaitée, 
-il choisit un train avec un wagon correspond à son statut (wagon-affaire par
-exemple). S’il y en a toujours plusieurs, il choisit 
-le moins cher/au hasard/celui avec la plus bonne réputation.
-
-On va considérer que l’heure d’arrivée ne lui importe pas.
-
-S'il n'y a aucun train allant là où il veut, il attend le tour suivant. Une fois
-qu'il a choisi un train, il passe dans l'état ON_ROAD.
-
-Quand le train **est arrivé** à destination, le satut et la ville du PNJ
-changent et deviennent respectivement SETTLED et sa nouvelle ville.
- 
-NOTE : On peut décider que le PNJ a une caractéristique représentant son envie
-de migrer (celle liée au niveau d'accueil et on nombre de personne dans la ville),
-et qu’une fois qu’il a choisit de migrer, il le fait immédiatement en choisissant 
-la ville la plus propice parmi toutes les directions actuellement possible, ou qu’il 
-choisit sa destination, puis attend un train qui y mène.
-
-## Comment consomme-t-il (s’il le fait) ?
-
-Un joueur consomme en fonction de la réputation du wagon et de son statut. Le système 
-n’a pas à être très élaboré. Un wagon a par exemple 100 trucs qui coûtent chacun 
-10 euros, à chaque tour, le PNJ a une probabilité d’en acheter un. Cela rend également
-le système d’achat/vente plus simple (s’il est implémenté). Le joueur achète simplement
-des trucs (on pourrait prévoir 3 trucs, un à 10, un à 30 et un à 100), et choisit 
-le prix de vente qu’il fixe par wagon ou par train.  
-
 # Les routes
 
-Les routes sont considérées comme n’ayant pas de sens, et relient deux villes en 
+Les routes relient deux villes (le départ et l’arrivée) en 
 première instance. Elles ont juste besoin d’une longueur.
 
 En troisième instance, elles pourraient être plus ou moins propices aux accidents
 (un accident est provoqué avec une certaine probabilité et détruit une locomotive 
 en plus de faire baisser la réputation du joueur).
 et abîmer plus ou moins les locomotives et les wagons.
+
+La distance d’une route correspond au nombre de *frames* qu’il faudra pour la 
+parcourir avec une vitesse de un.
+
+```
+Class Route
+   Attributs
+      longueur : la longueur de la route
+      départ : la ville de départ
+      arrivée : la ville de fin
+      
+   Méthodes 
+```
+
+# Les voyages
+
+Un voyage est composé d’un train, d’une liste de route à emprunter, d’une ville,
+de la route actuelle et de la distance déjà parcourue sur cette route. 
+
+Il a également un état `ON_ROAD` ou `WAITING`, `WAITING` signifiant qu’il est 
+sur une ville et attend des passagers et une liste de billets.
+
+```
+Class Voyage
+   Attributs 
+      train : le train du voyage
+      liste_routes : la liste des routes à emprunter
+      ville : la ville actuelle
+      route : la route actuelle
+      distance_parcourue : la distance parcourue sur la route actuelle
+      liste_tickets : liste de tickets pour ce voyage
+      état : ON_ROAD, ARRIVAL ou WAITING      
+      
+   Méthodes
+      def update
+         Si ON_ROAD
+            distance_parcourue += train.vitesse
+            Si distance_parcourure >= route.distance
+               distance_parcourure = 0
+               état = ARRIVAL
+            Fin Si
+         Sinon si ARRIVAL
+            train.diminuer_vie(route)
+            état = WAITING
+            liste_routes = tl(liste_routes)
+            route = hd(liste_routes)
+         Sinon /* état = WAITING */  
+            état = ON_ROAD
+            ville = route.destination
+         Fin Si
+
+      def tickets_disponibles
+          [ticket de liste_tickets où ticket.disponible]
+          
+      def est_terminé
+         liste_routes = []
+```
+
+# Les PNJs
+
+Un PNJ est juste une donnée et n’est jamais vu. Il a un statut `RICHE`, `PAUVRE`, 
+`AISÉ` et un état, `WAITING`, `ON_ROAD`, `SETTLED`, qui permet de savoir quelle
+action il peut entreprendre et une ville correspondant à celle où il est.
+
+Un PNJ peut compter comme un groupe de plusieurs personnes (cela permettra avec 
+1000 PNJ par exemple d'en simuler 1 000 000).
+
+## Comment choisit-il sa destination
+
+Un PNJ a une probabilité de migrer qui dépend de la note de sa ville. Il migre 
+dans la ville voisine qui a la meilleure note. En seconde instance, il pourrait 
+également ne pas choisir d’aller dans une ville voisine, mais d’aller plus loin 
+encore chose facilitée par les plans de route (voir partie sur les joueurs).
+
+## Comment choisit-il son train
+
+La destination du joueur étant fixée, il regarde tous les voyages vers cette
+destination, et choisit le ticket suivant son statut (`RICHE` => confortable, 
+`PAUVRE` => le moins cher, `AISÉ` => le premier). En seconde instance, la 
+réputation du joueur pourrait être prise en compte.
+
+S'il n'y a aucun train allant là où il veut, il attend le tour suivant.
+
+## Comment consomme-t-il (s’il le fait) ?
+
+Un joueur consomme en fonction de son statut (et de la réputation du wagon en 
+troisième instance). Le système n’a pas à être très élaboré. Un wagon a par 
+exemple 100 trucs qui coûtent chacun 10 euros, à chaque tour, le PNJ a une 
+probabilité d’en acheter un. Cela rend également le système d’achat/vente plus 
+simple (s’il est implémenté). Le joueur achète simplement des trucs (on pourrait 
+prévoir 3 trucs, un à 10, un à 30 et un à 100), et choisit le prix de vente qu’il
+fixe par wagon ou par train.  
+
+```
+class PNJ
+   Attributs 
+      statut : RICHE, PAUVRE ou AISÉ
+      état : WAITING, ON_ROAD ou SETTLED
+      ville : la ville où il est
+      probabilité : la probabilité de bouger
+      destination : la destination
+      ticket : le ticket qu’il a acheté
+      
+   Méthodes
+      def veut_migrer
+         ville.note < probabilité
+         
+      def chercher_destination
+         destination = ville.voisins.maxPar(note)
+         
+      def essayer_migrer
+         Si veut_migrer
+            chercher_destination
+            état = WAITING
+         Fin Si
+         
+      def chercher_voyage
+         voyages = monde.voyages.filtrer(voyage.état = WAITING et voyage.ville = ville)
+         Retourner Si pas de voyages 
+         tickets = voyages.flatMap (voyage => voyage.tickets_disponibles)
+         ticket = match statut with
+            RICH   => tickets.maxPar(confort)
+            PAUVRE => tickets.minPar(Prix)
+            AISÉ   => hd(tickets)
+          ticket.acheter
+          ticket = ticket
+          état = ON_ROAD
+          ville.supprimer_habitant
+          
+      def voyager 
+         Si ticket.voyage = ARRIVAL et ticket.voyage.ville = destination
+            ticket.libérer
+            ville = destination
+            ville.ajouterHabitant
+            état = SETTLED
+            ticket = null
+            destination = null
+         Sinon   
+            /* Consommer quand ce sera là */ 
+         
+      def update
+         match état with 
+            WAITING => chercher_voyage
+            SETTLED => essayer_migrer
+            ON_ROAD => voyager     
+```
+
+# Les tickets (A REMPLACER PAR PLACE)
+
+Un ticket est associé à un voyage et à un wagon et a un prix. Un ticket représente 
+en fait plusieurs tickets et a un attribut places. On peut acheter un 
+ticket, savoir s’il est disponible, etc.
+
+```
+Class Ticket
+   Attributs 
+      voyage : le voyage du ticket
+      prix : le prix du ticket
+      wagon : le wagon auquel il est associé
+      places : le nombre de place disponible
+      
+   Méthodes
+      def est_disponible
+         places > 0
+         
+      def acheter
+         if non disponible
+            Lever exception
+         places = places - 1
+         Augmenter argent du possesseur du train du voyage
+        
+      def libérer
+         places = places + 1  
+
+      def niveau_de_confort
+         wagon.niveau_de_confort
+         
+``` 
+
+# Le monde 
+
+Le monde est composé de villes, de PNJs, de joueurs, et de voyages. 
+
+```
+Class Monde
+   Attributs
+      liste_villes : la liste des villes du monde      
+      liste_voyages : la liste des voyages en cours
+      liste_PNJs : la liste des PNJs
+      liste_joueurs : la liste des joueurs
+      population_totale : le nombre de PNJS
+      
+   Méthodes
+      def ajouter_ville(ville)
+          liste_villes = ville :: liste_villes
+
+      def ajouter_voyage(voyage)
+          liste_voyages = voyage :: liste_voyages
+   
+      def update(ville)
+         Pour chaque voyage de liste_voyages
+            voyage.update
+         Fin Pour
+         Pour chaque PNJ de liste_PNJs
+             PNJ.update
+         Fin Pour
+         Pour chaque joueur de liste_joueurs
+            joueur.update
+         Fin Pour
+         liste_voyages = liste_voyage.filtrer(voyage.est_terminé)               
+```  
+ 
+# Les villes
+
+Une ville a une position, un niveau d’accueil, et des routes. Elle a un 
+certain nombre d’habitants qui varie suivant les déplacements des PNJs. Peut-être
+ajouter une « capacité ». 
+
+Elle a également une note dépendant de sa population et de son niveau d’accueil.
+
+```
+Class Ville
+   Attributs
+      x : sa coordonnée x dans le monde 
+      y : sa coordonnée y dans le monde
+      liste_routes : la liste des routes
+      population : la population de cette ville
+      niveau_accueil : le niveau d’accueil de cette ville /* Entre 0 et 1 */
+      
+   Méthodes
+      def ajouterHabitant
+         population = population + 1
+         
+      def supprimer_habitant
+         population = population - 1
+         
+      def ajouter_route(route)
+          liste_routes = route :: liste_routes
+          
+      def voisins
+         liste_routes.map (route => route.destination)
+         
+      def note /* Entre 0 et 1 */
+         niveau_accueil * population / monde.population_totale
+```
+
+
+
 
 # L’IA
 
@@ -225,9 +407,9 @@ partir des trains des lieux où il y a beaucoup de personnes.
 
 # Jeu général
 
-Pour le jeu général, il se déroule de la manière suivante. Chaque tour, on récupère
+Le jeu général se déroule de la manière suivante. À chaque tour, on récupère
 les actions de l'utilisateur, puis celles des IA et on les exécute. Puis, on met à jour
-tout ce qui doit être mis à jour avant de réafficher. La boucle principale de jeu sera
+tout ce qui doit être mis à jour. La boucle principale de jeu sera
 alors la suivante.
 
 
@@ -235,22 +417,10 @@ alors la suivante.
 Tant qu'on joue
     Actions joueur
     Actions IA
-    Pour chaque ville
-        Mettre à jour la ville
-    Pour chaque Joueur
-        Mettre à jour le joueur
+    monde.update
     Mettre à jour l'affichage
 ```
 
-La mise à jour d'une ville consiste à mettre à jour chacun des joueurs qui la compose, 
-et la mise à jour d'un joueur dépend de son état. S'il est SETTLED, elle consiste à 
-regarder s'il veut migrer, s'il est WAITING, elle consiste à regarder s'il y a un train
-pour là où il veut aller, et s'il est ON_ROAD, elle consiste à regarder s'il veut 
-consommer (si fonctionnalité de consommation il y a).
-
-La mise à jour d'un joueur consiste à mettre à jour chacun de ces trains. La mise à jour 
-d'un train consiste à mettre à jour sa position et son carburant et à diminuer les points
-de vie de sa locomotive et de chacun des ses wagons.
-
-NOTE : Reste à voir à quelle unité de temps correspond un tour du jeu et à fixer comment
-les valeurs sont affectées.
+**Le carburant est géré au début du voyage (l’argent est pris sur le compte du 
+joueur correspondant), les points de vie diminuent à la fin de chaque étape du 
+voyage.
