@@ -1,3 +1,7 @@
+package world
+
+import graph._
+
 /** World representation
  */
 class World extends PositionWeightedGraph[Double] {

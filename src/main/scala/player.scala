@@ -1,3 +1,9 @@
+package player
+
+import world._
+import train._
+
+
 class Travel(t: Train, l : List[World.Route]) {
   /* time and percent, redundant
    */

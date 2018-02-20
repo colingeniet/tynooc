@@ -1,4 +1,5 @@
 /* Graph manipulation */
+package graph
 
 /** A graph.
  */
