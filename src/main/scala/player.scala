@@ -67,7 +67,7 @@ class Player() {
   }
 
   def launchTravel(train:Train, to:World.Town): Unit = {
-    //(new Travel(train, World.Findpath(train.where, to)))::travels
+    //(new Travel(train, World.findPath(train.where, to)))::travels
   }
 
   def editEngine(old: Engine, model: EngineModel): Unit = {
