@@ -1,4 +1,8 @@
+package player
+
 import world._
+import train._
+
 
 class Travel(t: Train, l : List[World.Route]) {
   /* time and percent, redundant
@@ -63,7 +67,7 @@ class Player() {
   }
 
   def launchTravel(train:Train, to:World.Town): Unit = {
-    //(new Travel(train, World.Findpath(train.where, to)))::travels
+    //(new Travel(train, World.findPath(train.where, to)))::travels
   }
 
   def editEngine(old: Engine, model: EngineModel): Unit = {

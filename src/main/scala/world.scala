@@ -1,8 +1,10 @@
 package world
 
+import graph._
+
 /** World representation
  */
-class World extends PositionWeightedGraph[Double] {
+class World extends Graph {
   private var _towns: List[World.Town] = List()
 
   /** The list of towns.
@@ -31,8 +33,7 @@ object World {
    *  @param yPos the town y coordonate.
    */
   class Town(name: String, xPos: Double, yPos: Double, w: Double)
-  extends PositionWeightedGraph.PositionWeightedVertice[Double] {
-
+  extends Graph.Vertice {
     /** The town x coordonate in the world. */
     val x: Double = xPos
     /** The town y coordonate in the world. */
@@ -83,8 +84,7 @@ object World {
    *  @param _destination the route destination town.
    *  @param _length the route length.
    */
-  class Route(from: Town, to: Town, _length: Double)
-  extends PositionWeightedGraph.WeightedEdge[Double] {
+  class Route(from: Town, to: Town, _length: Double) extends Graph.Edge {
     val start: Town = from
     val end: Town = to
     val weight: Double = _length

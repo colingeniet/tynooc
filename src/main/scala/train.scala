@@ -1,38 +1,23 @@
+package train
+
 import collection.mutable.HashMap
 
-import world._
 
-//Static HashMap
-object EngineModel {
-  private var models: HashMap[String, EngineModel] =
-    HashMap(
-      "Basic" -> new EngineModel(50, 50, 70, 25, 15, List("Advanced"), 20),
-      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, List(), 5)
-    )
+/** A class mapping names to objects.
+ *
+ *  @param T the type of objects in the map.
+ */
+abstract class NameMap[T] {
+  private var models: HashMap[String, T] = HashMap()
 
-  /** Get a model from its name.
+  /** Get an element from its name.
    *
-   *  @param name the model name.
+   *  @param name the element name.
    *  @throw java.util.NoSuchElementException if no such model exists.
    */
-  def apply(name: String): EngineModel = models.get(name).get
+  def apply(name: String): T = models.get(name).get
 }
 
-//Static HashMap
-object CarriageModel {
-  private var models: HashMap[String, CarriageModel] =
-    HashMap(
-      "Basic" -> new CarriageModel(50, 50, 10, List("Advanced"), 1),
-      "Advanced" -> new CarriageModel(50, 50, 15, List(), 5)
-    )
-
-  /** Get a model from its name.
-   *
-   *  @param name the model name.
-   *  @throw java.util.NoSuchElementException if no such model exists.
-   */
-  def apply(name: String): CarriageModel = models.get(name).get
-}
 
 /** An engine model. */
 class EngineModel(
@@ -52,6 +37,18 @@ class EngineModel(
     def upgrades: List[String] = _upgrades
 }
 
+/** EngineModel companion object.
+ *
+ *  Gets standard models from their names.
+ */
+object EngineModel extends NameMap[EngineModel] {
+  private var models: HashMap[String, EngineModel] =
+    HashMap(
+      "Basic" -> new EngineModel(50, 50, 70, 25, 15, List("Advanced"), 20),
+      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, List(), 5)
+    )
+}
+
 /** A carriage model. */
 class CarriageModel(
   _weight: Double,
@@ -64,6 +61,18 @@ class CarriageModel(
     def comfort: Double = _comfort
     def upgrades: List[String] = _upgrades
     def price: Double = _price
+}
+
+/** CarriageModel companion object.
+ *
+ *  Get standard models from their names.
+ */
+object CarriageModel extends NameMap[CarriageModel] {
+  private var models: HashMap[String, CarriageModel] =
+    HashMap(
+      "Basic" -> new CarriageModel(50, 50, 10, List("Advanced"), 1),
+      "Advanced" -> new CarriageModel(50, 50, 15, List(), 5)
+    )
 }
 
 /** An engine.
