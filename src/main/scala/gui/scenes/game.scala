@@ -16,12 +16,19 @@ class Game(sceneModifier: MainStage.States.Val=>Unit)
 extends MainStage.Scene(sceneModifier) {
   private var menuBtn: Button = new Button("Menu")
   private var _world: World = new World
+
+  private var menuPane = new panes.Menu(menuBtn)
+  private var trainPane = new panes.Train
+  private var townPane = new panes.Town
+  private var playerPane = new panes.Player
+  private var mapDisplay = new map.Map(world)
+
   private var pane: BorderPane = new BorderPane(
-    new map.Map(world),
-    new panes.Menu(menuBtn),
-    new panes.Train,
-    new panes.Town,
-    new panes.Player,
+    mapDisplay,
+    menuPane,
+    trainPane,
+    townPane,
+    playerPane
   )
 
   menuBtn.onAction = (event: ActionEvent) => {

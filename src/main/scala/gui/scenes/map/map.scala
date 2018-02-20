@@ -3,41 +3,48 @@ package gui.scenes.map
 import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
-import scalafx.scene.canvas._
+import scalafx.scene.shape._
+import scalafx.scene.layout._
 import scalafx.event._
-import scalafx.geometry._
 import scalafx.scene.paint.Color._
 
 import world.World
 
-class Map(world: World) extends Canvas(800, 600) {
+class Map(world: World) extends Pane {
   world.towns.foreach {
     town => {
-      drawTown(town.x, town.y)
-      town.routes.foreach {
-        route => drawRoute(
-                   route.start.x,
-                   route.start.y,
-                   route.end.x,
-                   route.end.y)
-      }
+      addTown(town)
+      town.routes.foreach{ route => addRoute(route) }
     }
   }
 
-  def drawTown(x: Double, y: Double): Unit = {
-    graphicsContext2D.fill = Black
-    graphicsContext2D.fillOval(x-15, y-15, 30, 30)
+  def addTown(town: World.Town): Unit = {
+    var point: Circle = new Circle()
+    point.centerX = town.x
+    point.centerY = town.y
+    point.radius = 15
+    point.fill = Black
+    children.add(point)
   }
 
-  def drawRoute(x1: Double, y1: Double, x2: Double, y2: Double): Unit = {
-    graphicsContext2D.stroke = Black
-    graphicsContext2D.strokeLine(x1, y1, x2, y2)
+  def addRoute(route: World.Route): Unit = {
+    var line: Line = new Line()
+    line.startX = route.start.x
+    line.startY = route.start.y
+    line.endX = route.end.x
+    line.endY = route.end.y
+    line.stroke = Black
+    children.add(line)
   }
 
   def drawTrain(x1: Double, y1: Double, x2: Double, y2: Double, p: Double): Unit = {
-    graphicsContext2D.fill = Red
     val x = x1 * (1-p) + x2 * p
     val y = y1 * (1-p) + y2 * p
-    graphicsContext2D.fillOval(x-8, y-8, 16, 16)
+    var point: Circle = new Circle()
+    point.centerX = x
+    point.centerY = y
+    point.radius = 6
+    point.fill = Red
+    children.add(point)
   }
 }
