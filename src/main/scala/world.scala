@@ -32,7 +32,7 @@ object World {
    *  @param xPos the town x coordonate.
    *  @param yPos the town y coordonate.
    */
-  class Town(name: String, xPos: Double, yPos: Double, w: Double)
+  class Town(_name: String, xPos: Double, yPos: Double, w: Double)
   extends Graph.Vertice {
     /** The town x coordonate in the world. */
     val x: Double = xPos
@@ -67,6 +67,8 @@ object World {
     }
 
     def incidentEdges: List[Route] = routes
+
+    def name: String = _name
 
     def neighbours: List[Town] = {
       routes.map(r => r.destination)

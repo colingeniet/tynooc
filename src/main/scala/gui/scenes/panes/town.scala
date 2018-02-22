@@ -12,10 +12,10 @@ class Town extends HBox {
   children = List(new Label("Town pane"))
 
   def displayTown(town: World.Town) {
-    children = List(new Label("displaying town"))
+    children = List(new Label(town.name))
   }
 
   def displayRoute(route: World.Route) {
-    children = List(new Label("displaying route"))
+    children = List(new Label(route.start.name), new Label(route.end.name))
   }
 }
