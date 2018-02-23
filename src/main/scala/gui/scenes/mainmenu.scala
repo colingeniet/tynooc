@@ -24,7 +24,7 @@ extends MainStage.Scene(sceneModifier) {
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
 
   root = new VBox(10.0) {
-    alignment = Pos.CENTER
+    alignment = Pos.Center
     padding = Insets(20.0)
     children = List(title, gameBtn, optionsBtn, quitBtn)
   }
