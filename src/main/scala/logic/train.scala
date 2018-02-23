@@ -1,7 +1,7 @@
 package logic.train
 
+import logic.world._
 import collection.mutable.HashMap
-
 
 /** A class mapping names to objects.
  *
@@ -122,5 +122,10 @@ class Train (e: Engine, c: List[Carriage]) {
   def weight: Double = {
     (if (engine == null) 0 else engine.model.weight)
     + carriages.foldLeft[Double](0) { (acc, v) => acc + v.model.weight }
+  }
+
+  def deteriorate(r:World.Route): Unit = {
+    engine.health -= Math.max(0, engine.health - 10)
+    carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
   }
 }
