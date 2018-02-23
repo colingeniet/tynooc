@@ -1,6 +1,7 @@
-package game
-import player._
-import world._
+package logic.game
+
+import logic.player._
+import logic.world._
 
 object Game {
   private var last: Double = System.currentTimeMillis()
