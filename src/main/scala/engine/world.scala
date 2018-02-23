@@ -1,6 +1,6 @@
-package world
+package engine.world
 
-import graph._
+import engine.graph._
 
 /** World representation
  */
