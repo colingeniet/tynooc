@@ -1,6 +1,6 @@
 /** Provides game engine and logic.
  */
-package object engine
+package object logic
 
 /** Provides gui.
  */
