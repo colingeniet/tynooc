@@ -17,20 +17,13 @@ extends MainStage.Scene(sceneModifier) {
   private var menuBtn: Button = new Button("Menu")
   private var _world: World = new World
 
-  private var menuPane = new panes.Menu(menuBtn)
-  private var trainPane = new panes.Train
-  private var townPane = new panes.Town
-  private var playerPane = new panes.Player
-  private var mapDisplay = new map.Map(world,
-                                       townPane.displayTown,
-                                       townPane.displayRoute)
-  private var pane: BorderPane = new BorderPane(
-    mapDisplay,
-    menuPane,
-    trainPane,
-    townPane,
-    playerPane
-  )
+  private var pane: BorderPane = new BorderPane()
+  root = pane
+  pane.top = new panes.Menu(menuBtn)
+  pane.bottom = new Pane()    // empty by default
+  pane.left = new panes.Player()
+  pane.right = new Pane()     // empty by default
+  pane.center = new map.Map(world, displayTown, displayRoute)
 
   menuBtn.onAction = (event: ActionEvent) => {
     sceneModifier(MainStage.States.MainMenu)
@@ -38,14 +31,19 @@ extends MainStage.Scene(sceneModifier) {
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
 
-  root = pane
+
+  def displayTown(town: World.Town): Unit = {
+    pane.bottom = new panes.Town(town, displayRoute)
+  }
+
+  def displayRoute(route: World.Route): Unit = {
+    pane.bottom = new panes.Route(route, displayTown)
+  }
 
   def world: World = _world
 
   def world_=(newWorld: World): Unit = {
     _world = newWorld
-    pane.center = new map.Map(world,
-                              townPane.displayTown,
-                              townPane.displayRoute)
+    pane.center = new map.Map(world, displayTown, displayRoute)
   }
 }
