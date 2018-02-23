@@ -202,7 +202,6 @@ Class Monde
       liste_villes : la liste des villes du monde      
       liste_voyages : la liste des voyages en cours
       liste_PNJs : la liste des PNJs
-      liste_joueurs : la liste des joueurs
       population_totale : le nombre de PNJS
       
    Méthodes
@@ -218,9 +217,6 @@ Class Monde
          Fin Pour
          Pour chaque PNJ de liste_PNJs
              PNJ.update
-         Fin Pour
-         Pour chaque joueur de liste_joueurs
-            joueur.update
          Fin Pour
          liste_voyages = liste_voyage.filtrer(voyage.est_terminé)               
 ```  
