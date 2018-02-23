@@ -28,7 +28,7 @@ extends Pane {
     var point: Circle = new Circle()
     point.centerX = town.x
     point.centerY = town.y
-    point.radius = 15
+    point.radius = 12
     point.fill = Black
     point.onMouseClicked = new EventHandler[MouseEvent] {
       override def handle(event: MouseEvent) {
@@ -45,7 +45,7 @@ extends Pane {
     line.endX = route.end.x
     line.endY = route.end.y
     line.stroke = Black
-    line.strokeWidth = 6
+    line.strokeWidth = 5
     line.onMouseClicked = new EventHandler[MouseEvent] {
       override def handle(event: MouseEvent) {
         displayRoute(route)
@@ -60,7 +60,7 @@ extends Pane {
     var point: Circle = new Circle()
     point.centerX = x
     point.centerY = y
-    point.radius = 6
+    point.radius = 8
     point.fill = Red
     children.add(point)
   }

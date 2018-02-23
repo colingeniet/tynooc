@@ -1,5 +1,3 @@
-package world
-
 /* Graph manipulation */
 package graph
 
