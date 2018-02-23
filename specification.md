@@ -42,9 +42,9 @@ Class Voyage
       état : ON_ROAD, ARRIVAL ou WAITING      
       
    Méthodes
-      def update
+      def update(dt)
          Si ON_ROAD
-            distance_parcourue += train.vitesse
+            distance_parcourue += train.vitesse * Game.world.real_time_to_game(dt)
             Si distance_parcourure >= route.distance
                distance_parcourure = 0
                état = ARRIVAL
@@ -447,18 +447,13 @@ Tant qu'on joue
     Mettre à jour l'affichage
 ```
 
+# Gestion du temps
 
-# Gestion des déplacements
+Une unité arbitraire est utilisée pour les longueurs et les temps. Une fonction
+du monde se charge de faire les conversions entre temps réels et temps du jeu.
 
-La longueur d’une route correspond au nombre de *frames* qu’il faudra à un train 
-de vitesse 1 pour faire le voyage. Ainsi, une longueur de 500 correspondra à une
-dizaine de secondes pour un train de vitesse 1. 
-
-Pour simplifier les choses, les données seront représentées avec cette unité
-même si autre chose pourra être affiché. Ainsi, des vitesses entre 1 et 3 et 
-des longueurs autour de 80 seront bien (=> voyages autour de la dizaine
-de seconde). 
-
+La distance représente le nombre de secondes qu’il faudra en temps réel pour
+faire le trajet à une vitesse 1.
 
 # Gestion des ressources
 
