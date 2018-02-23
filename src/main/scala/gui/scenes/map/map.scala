@@ -45,6 +45,7 @@ extends Pane {
     line.endX = route.end.x
     line.endY = route.end.y
     line.stroke = Black
+    line.strokeWidth = 6
     line.onMouseClicked = new EventHandler[MouseEvent] {
       override def handle(event: MouseEvent) {
         displayRoute(route)
