@@ -31,7 +31,8 @@ sur une ville et attend des passagers et une liste de billets.
 
 ```
 Class Voyage
-   Attributs 
+   Attributs
+      possesseur : le possesseur du voyage
       train : le train du voyage
       liste_routes : la liste des routes à emprunter
       ville : la ville actuelle
@@ -63,6 +64,11 @@ Class Voyage
           
       def est_terminé
          liste_routes = []
+        
+      def destination
+         Si est_terminé
+            Lever exception
+         hd(listes_routes).arrivée
 ```
 
 # Les PNJs
