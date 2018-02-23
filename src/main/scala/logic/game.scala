@@ -1,4 +1,4 @@
-object Game()
+/* object Game()
 {
 
 	private var last: Double
@@ -40,4 +40,4 @@ update(dt: Double)
 update(dt: Double)
 {
 	trains.foreach(t: Train => t.update(dt))
-}
+}*/

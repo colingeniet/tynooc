@@ -8,7 +8,7 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
-import world._
+import logic.world._
 
 /** Bottom panel display abstract class. */
 abstract class Bottom extends HBox(5) {

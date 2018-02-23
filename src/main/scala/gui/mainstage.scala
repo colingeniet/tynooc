@@ -1,5 +1,3 @@
-/* Main Window -- Primary Stage */
-
 package gui
 
 import scalafx.Includes._
@@ -8,7 +6,7 @@ import scalafx.scene.Scene
 import scalafx.application.Platform
 
 import gui.scenes._
-import world.World
+import logic.world.World
 
 /** Main window manager.
  *

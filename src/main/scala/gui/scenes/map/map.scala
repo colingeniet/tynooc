@@ -10,7 +10,7 @@ import javafx.scene.input.MouseEvent
 import javafx.event.EventHandler
 import scalafx.scene.paint.Color._
 
-import world.World
+import logic.world.World
 
 class Map(
   world: World,

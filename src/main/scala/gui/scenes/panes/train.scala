@@ -6,8 +6,9 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
+import logic.train._
 
-class Train(train: _root_.train.Train) extends VBox {
+class Train(train: logic.train.Train) extends VBox {
   // list of carriages
   var trainDisplay: ScrollPane = new ScrollPane {
     content = new VBox(3) {
@@ -24,11 +25,11 @@ class Train(train: _root_.train.Train) extends VBox {
 
   children = List(trainDetail, trainDisplay)
 
-  def displayEngine(engine: _root_.train.Engine): Unit = {
+  def displayEngine(engine: logic.train.Engine): Unit = {
     children = List(trainDetail, trainDisplay, new EngineDetail(engine))
   }
 
-  def displayCarriage(carriage: _root_.train.Carriage): Unit = {
+  def displayCarriage(carriage: logic.train.Carriage): Unit = {
     children = List(trainDetail, trainDisplay, new CarriageDetail(carriage))
   }
 }
@@ -39,33 +40,33 @@ abstract class Element extends VBox(3) {
   def update(): Unit
 }
 
-class Engine(engine: _root_.train.Engine, displayEngine: train.Engine => Unit)
+class Engine(engine: logic.train.Engine, displayEngine: logic.train.Engine => Unit)
 extends Element {
   def update(): Unit = {
     children = List(new Link("Engine")(displayEngine(engine)))
   }
 }
 
-class Carriage(carriage: _root_.train.Carriage, displayCarriage: train.Carriage => Unit)
+class Carriage(carriage: logic.train.Carriage, displayCarriage: logic.train.Carriage => Unit)
 extends Element {
   def update(): Unit = {
     children = List(new Link("Carriage")(displayCarriage(carriage)))
   }
 }
 
-class EngineDetail(engine: _root_.train.Engine) extends Element {
+class EngineDetail(engine: logic.train.Engine) extends Element {
   def update(): Unit = {
     children = List(new Label("Engine detail"))
   }
 }
 
-class CarriageDetail(carriage: _root_.train.Carriage) extends Element {
+class CarriageDetail(carriage: logic.train.Carriage) extends Element {
   def update(): Unit = {
     children = List(new Label("Carriage detail"))
   }
 }
 
-class TrainDetail(train: _root_.train.Train) extends Element {
+class TrainDetail(train: logic.train.Train) extends Element {
   def update(): Unit = {
     children = List(new Label("Train detail"))
   }

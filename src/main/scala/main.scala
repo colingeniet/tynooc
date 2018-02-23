@@ -2,7 +2,7 @@ import scalafx.Includes._
 import scalafx.application.JFXApp
 
 import gui.MainStage
-import world.World
+import logic.world.World
 
 object MainJFXApp extends JFXApp {
   var world: World = new World

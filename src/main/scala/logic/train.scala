@@ -1,4 +1,4 @@
-package engine.train
+package logic.train
 
 import collection.mutable.HashMap
 
@@ -75,7 +75,7 @@ object CarriageModel extends NameMap[CarriageModel] {
     )
 }
 
-/** An engine.
+/** An logic.
  *
  *  @param mod the engine model.
  */

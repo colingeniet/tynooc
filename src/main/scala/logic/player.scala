@@ -1,7 +1,7 @@
-package engine.player
+package logic.player
 
-import engine.world._
-import engine.train._
+import logic.world._
+import logic.train._
 
 
 class Travel(t: Train, l : List[World.Route]) {

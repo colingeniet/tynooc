@@ -10,7 +10,7 @@ import scalafx.geometry._
 import gui.MainStage
 import gui.scenes.map._
 import gui.scenes.panes._
-import world.World
+import logic.world.World
 
 class Game(sceneModifier: MainStage.States.Val=>Unit)
 extends MainStage.Scene(sceneModifier) {
