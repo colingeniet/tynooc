@@ -21,7 +21,6 @@ Class Route
    Méthodes 
 ```
 
-
 # Les voyages
 
 Un voyage est composé d’un train, d’une liste de route à emprunter, d’une ville,
@@ -65,7 +64,6 @@ Class Voyage
       def est_terminé
          liste_routes = []
 ```
-
 
 # Les PNJs
 
@@ -156,7 +154,6 @@ class PNJ
             ON_ROAD => voyager     
 ```
 
-
 # Les places
 
 Une place est associé à un voyage et à un wagon et a un prix. Une place représente 
@@ -188,7 +185,6 @@ Class Place
          wagon.niveau_de_confort
          
 ``` 
-
 
 # Le monde 
 
@@ -222,8 +218,7 @@ Class Monde
          Fin Pour
          liste_voyages = liste_voyage.filtrer(voyage.est_terminé)               
 ```  
-
-
+ 
 # Les villes
 
 Une ville a une position, un niveau d’accueil, et des routes. Elle a un 
@@ -259,34 +254,35 @@ Class Ville
 ```
 
 
-# Les moteurs
 
-Un moteur a un poids, une puissance qui lui permet de tirer un certain poids. Il 
+# Les locomotives
+
+Une locomotive a un poids, une puissance qui lui permet de tirer un certain poids. Il 
 a aussi une vitesse, une consommation, et un réservoir d’une certaine capacité.
 
 Finalement, il a des points de vie, un état (dans un train, ou libre) et une 
 éventuelle amélioration.
 
 ```
-class Moteur
+class Locomotive
    Attributs 
-      poids : le poids du moteur
-      puissance : la puissance du moteur
-      vitesse : la vitesse du moteur
+      poids : le poids de la locomotive
+      puissance : la puissance de la locomotive
+      vitesse : la vitesse de la locomotive
       capacité_essence : la capacité du réservoir
-      consommation : la consommation du moteur
+      consommation : la consommation de la locomotive
       état : TRAIN ou FREE
-      PV : les points de vie du moteur
-      modèle : le modèle du moteur 
+      PV : les points de vie de la locomotive
+      modèle : le modèle de la locomotive 
       PV_initial : les points de vie initiaux /* Peut être obtenu avec le modèle */
-      amélioration (optionnelle) : l’amélioration du moteur
+      amélioration (optionnelle) : l’amélioration de la locomotive
       
    Méthode
       def améliorer 
          Si amélioration et FREE
             améliorer
             /* Soit changer les caractéristiques, soit 
-               supprimer ce moteur et en renvoyer un nouveau
+               supprimer ce locomotive et en renvoyer un nouveau
             */
       
       def détériorer(arg)
@@ -297,14 +293,13 @@ class Moteur
          
 ```
 
-
-# Les wagons
+## Les wagons
 
 Un wagon a une capacité (nombre de personnes qu’il peut prendre), un poids et 
 une « note de confort ». En seconde instance, un wagon pourrait aussi avoir des
 choses à vendre (nourriture, etc.) qui produisent du bénéfice supplémentaire.
 
-Tout comme le moteur, il a des points de vie, un état et une éventuelle 
+Tout comme la locomotive, il a des points de vie, un état et une éventuelle 
 amélioration (son confort actuel dépend de ses PVs).
 
 ```
@@ -314,7 +309,7 @@ Class Wagon
       capacité : la capacité du wagon
       confort : le confort du wagon
       amélioration (optionnelle) : l’amélioration du wagon
-      PV : les points de vie du moteur
+      PV : les points de vie de la locomotive
       modèle : le modèle de wagon
       PV_initial : les points de vie initiaux /* Peut être obtenu avec le modèle */
       confort_initial : la note de confort du wagon /* Entre 0 et 1 */
@@ -325,7 +320,7 @@ Class Wagon
           Si amélioration et FREE
              améliorer
              /* Soit changer les caractéristiques, soit 
-                supprimer ce moteur et en renvoyer un nouveau
+                supprimer ce locomotive et en renvoyer un nouveau
              */
        
        def détériorer(arg)
@@ -340,7 +335,7 @@ Class Wagon
 
 # Les trains
 
-Un train est composé d’un moteur et de plusieurs wagons. Ceux-ci peuvent être 
+Un train est composé d’un locomotive et de plusieurs wagons. Ceux-ci peuvent être 
 dans plusieurs états (voir comment cela sera représenté dans le jeu, 2 états 
 peuvent suffire). 
 
@@ -391,7 +386,6 @@ limite)
 6. Désassembler un train.
 7. Ajouter ou retirer le dernier wagon d’un train ?
 
-
 # Les joueurs
 
 Un joueur dispose de ses locomotives, de ses wagons, de sa compagnie et d’argent.
@@ -423,6 +417,7 @@ Class Joueur
 ```
 
 
+
 # L’IA
 
 L’IA n’a accès qu’à l’interface de `Joueur` et au monde (comme le vrai joueur en fait),
@@ -434,13 +429,13 @@ trains et vend ses places un peu plus cher que ce que va lui coûter le voyage (
 consommation, personnel, etc.) histoire de faire du bénéfice. Elle décide de faire
 partir des trains des lieux où il y a beaucoup de personnes.
 
-
 # Jeu général
 
 Le jeu général se déroule de la manière suivante. À chaque tour, on récupère
 les actions de l'utilisateur, puis celles des IA et on les exécute. Puis, on met à jour
 tout ce qui doit être mis à jour. La boucle principale de jeu sera
 alors la suivante.
+
 
 ```
 Tant qu'on joue
