@@ -1,4 +1,4 @@
-package engine
+package logic
 
 /** Provides graph manipulation class.
  */
