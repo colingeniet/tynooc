@@ -1,6 +1,6 @@
-package engine.world
+package logic.world
 
-import engine.graph._
+import logic.graph._
 
 /** World representation
  */

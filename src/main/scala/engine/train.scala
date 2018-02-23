@@ -1,4 +1,4 @@
-package engine.train
+package logic.train
 
 import collection.mutable.HashMap
 

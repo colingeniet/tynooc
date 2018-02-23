@@ -1,5 +1,5 @@
 /* Graph manipulation */
-package engine.graph
+package logic.graph
 
 import collection.mutable.HashMap
 import collection.mutable.HashSet
