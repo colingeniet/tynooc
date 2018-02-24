@@ -1,4 +1,4 @@
-package gui.scenes.panes
+package gui.scenes.elements
 
 import scalafx.Includes._
 import scalafx.scene._
@@ -20,4 +20,5 @@ class Link(_text: String)(callback: => Unit) extends Label {
       callback
     }
   }
+  styleClass.add("link-label")
 }

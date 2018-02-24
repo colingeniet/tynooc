@@ -19,6 +19,7 @@ extends MainStage.Scene(sceneModifier) {
 
   private var title = new Label("Welcome to Tynooc") {
     padding = Insets(10.0)
+    styleClass.add("big-label")
   }
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm

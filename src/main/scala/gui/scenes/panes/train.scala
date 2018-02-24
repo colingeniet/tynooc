@@ -6,6 +6,7 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
+import gui.scenes.elements.Link
 import logic.train._
 
 class Train(train: logic.train.Train) extends VBox {

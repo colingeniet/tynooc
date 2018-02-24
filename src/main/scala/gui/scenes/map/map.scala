@@ -4,25 +4,29 @@ import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.shape._
+import scalafx.scene.text._
 import scalafx.scene.layout._
 import scalafx.event._
 import javafx.scene.input.MouseEvent
 import javafx.event.EventHandler
 import scalafx.scene.paint.Color._
 
+import gui.scenes.elements._
 import logic.world.World
 
 class Map(
   world: World,
   displayTown: World.Town => Unit,
   displayRoute: World.Route => Unit)
-extends Pane {
+extends ZoomPane {
   world.towns.foreach {
     town => {
       addTown(town)
       town.routes.foreach{ route => addRoute(route) }
     }
   }
+
+  styleClass.add("map")
 
   def addTown(town: World.Town): Unit = {
     var point: Circle = new Circle()
@@ -36,6 +40,12 @@ extends Pane {
       }
     }
     children.add(point)
+
+    var text: Text = new Text(town.x + 9, town.y - 9, town.name) {
+      mouseTransparent = true
+      styleClass.add("town-name")
+    }
+    children.add(text)
   }
 
   def addRoute(route: World.Route): Unit = {

@@ -10,6 +10,7 @@ import scalafx.geometry._
 import gui.MainStage
 import gui.scenes.map._
 import gui.scenes.panes._
+import gui.scenes.elements._
 import logic.world.World
 
 class Game(sceneModifier: MainStage.States.Val=>Unit)
@@ -20,10 +21,11 @@ extends MainStage.Scene(sceneModifier) {
   private var pane: BorderPane = new BorderPane()
   root = pane
   pane.top = new panes.Menu(menuBtn)
-  pane.bottom = new Pane()    // empty by default
-  pane.left = new panes.Player()
-  pane.right = new Pane()     // empty by default
-  pane.center = new map.Map(world, displayTown, displayRoute)
+  // empty by default
+  pane.bottom = new Pane()
+  pane.left = new Pane()
+  pane.right = new Pane()
+  pane.center = new Pane()
 
   menuBtn.onAction = (event: ActionEvent) => {
     sceneModifier(MainStage.States.MainMenu)
@@ -44,6 +46,13 @@ extends MainStage.Scene(sceneModifier) {
 
   def world_=(newWorld: World): Unit = {
     _world = newWorld
-    pane.center = new map.Map(world, displayTown, displayRoute)
+    pane.center = new ScrollPane {
+      content = new map.Map(world, displayTown, displayRoute)
+      // disable scroll
+      vmax = 0
+      hmax = 0
+      hbarPolicy = ScrollPane.ScrollBarPolicy.Never
+      vbarPolicy = ScrollPane.ScrollBarPolicy.Never
+    }
   }
 }
