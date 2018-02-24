@@ -7,12 +7,12 @@ import logic.player._
 
 /** World representation
  */
-class World extends Graph {  
+class World extends Graph {
   private var _towns: List[World.Town] = List()
   private var _travels: List[Travel] = List()
   private var _pnjs: List[PNJ] = List()
   private var _population: Int = 50
-  
+
   /** The list of towns.
    */
   def towns: List[World.Town] = _towns
@@ -69,12 +69,8 @@ object World {
    *  @param xPos the town x coordonate.
    *  @param yPos the town y coordonate.
    */
-  class Town(name: String, xPos: Double, yPos: Double, w: Double)
+  class Town(val name: String, val x: Double, val y: Double, w: Double)
   extends Graph.Vertice {
-    /** The town x coordonate in the world. */
-    val x: Double = xPos
-    /** The town y coordonate in the world. */
-    val y: Double = yPos
     /* The welcoming level of a town, between 0 and 1 */
     val welcomingLevel: Double = w
 
@@ -92,6 +88,15 @@ object World {
      */
     def addRoute(newRoute: Route): Unit = {
       _routes = newRoute :: _routes
+    }
+
+    /** Creates and adds a route.
+     *
+     *  @param destination the route destination town.
+     *  @param length the route length.
+     */
+    def addRoute(destination: Town, length: Double): Unit = {
+      addRoute(new Route(this, destination, length))
     }
 
     def incidentEdges: List[Route] = routes
