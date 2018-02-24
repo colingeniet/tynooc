@@ -16,7 +16,7 @@ class ZoomPane extends AnchorPane {
   val maxScale: Double = 10
 
   onScroll = new EventHandler[ScrollEvent] {
-    override def handle(event: ScrollEvent) {
+    override def handle(event: ScrollEvent): Unit = {
       var zoomFactor: Double = 1.15
       if (event.getDeltaY() <= 0) {
         // zoom out
@@ -24,6 +24,30 @@ class ZoomPane extends AnchorPane {
       }
       zoom(zoomFactor, event.getSceneX(), event.getSceneY())
       event.consume()
+    }
+  }
+
+  private var dragDelta: Point2D = new Point2D(0, 0)
+
+  onMousePressed = new EventHandler[MouseEvent] {
+    override def handle(event: MouseEvent): Unit = {
+      // record a delta distance for drag
+      dragDelta = new Point2D(
+        translateX() - event.getSceneX(),
+        translateY() - event.getSceneY()
+      )
+      cursor = Cursor.Move
+    }
+  }
+  onMouseReleased = new EventHandler[MouseEvent] {
+    override def handle(event: MouseEvent): Unit = {
+      cursor = Cursor.Default
+    }
+  }
+  onMouseDragged = new EventHandler[MouseEvent] {
+    override def handle(event: MouseEvent): Unit = {
+      translateX = event.getSceneX() + dragDelta.x
+      translateY = event.getSceneY() + dragDelta.y
     }
   }
 
