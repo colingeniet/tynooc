@@ -21,21 +21,13 @@ abstract class NameMap[T] {
 
 /** An engine model. */
 class EngineModel(
-  _weight: Double,
-  _power: Double,
-  _speed: Double,
-  _fuelCapacity: Double,
-  _price: Double,
-  _upgrades: List[String],
-  _consumption: Double) {
-    def weight: Double = _weight
-    def power: Double = _power
-    def speed: Double = _speed
-    def fuelCapacity: Double = _fuelCapacity
-    def price: Double = _price
-    def consumption: Double = _consumption
-    def upgrades: List[String] = _upgrades
-}
+  val weight: Double,
+  val power: Double,
+  val speed: Double,
+  val fuelCapacity: Double,
+  val price: Double,
+  val upgrades: List[String],
+  val consumption: Double)
 
 /** EngineModel companion object.
  *
@@ -51,17 +43,11 @@ object EngineModel extends NameMap[EngineModel] {
 
 /** A carriage model. */
 class CarriageModel(
-  _weight: Double,
-  _capacity: Int,
-  _price: Double,
-  _upgrades: List[String],
-  _comfort: Double) {
-    def weight: Double = _weight
-    def capacity: Int = _capacity
-    def comfort: Double = _comfort
-    def upgrades: List[String] = _upgrades
-    def price: Double = _price
-}
+  val weight: Double,
+  val capacity: Int,
+  val price: Double,
+  val upgrades: List[String],
+  val comfort: Double)
 
 /** CarriageModel companion object.
  *
@@ -77,10 +63,9 @@ object CarriageModel extends NameMap[CarriageModel] {
 
 /** An engine.
  *
- *  @param mod the engine model.
+ *  @param _model the engine model.
  */
-class Engine(mod: EngineModel) {
-  var _model: EngineModel = mod
+class Engine(var _model: EngineModel) {
   var health: Double = 100
   var fuel: Double = model.fuelCapacity
   var used: Boolean = false
@@ -97,10 +82,9 @@ class Engine(mod: EngineModel) {
 
 /** A carriages
  *
- *  @param mod the carriage model.
+ *  @param _model the carriage model.
  */
-class Carriage(mod: CarriageModel) {
-  var _model: CarriageModel = mod
+class Carriage(var _model: CarriageModel) {
   var health: Double = 100
   var used: Boolean = false
 
@@ -114,9 +98,7 @@ class Carriage(mod: CarriageModel) {
 }
 
 
-class Train (e: Engine, c: List[Carriage]) {
-  var engine: Engine = e
-  var carriages: List[Carriage] = c
+class Train (var engine: Engine, var carriages: List[Carriage]) {
   var onRoad: Boolean = false
 
   def weight: Double = {
