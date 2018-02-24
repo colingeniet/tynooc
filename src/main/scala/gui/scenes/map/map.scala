@@ -14,11 +14,18 @@ import scalafx.scene.paint.Color._
 import gui.scenes.elements._
 import logic.world.World
 
+/** Main map class.
+ *
+ *  @param world the world to display.
+ *  @param displayTown callback function used to display town details.
+ *  @param displayRoute callback function used to display route details.
+ */
 class Map(
   world: World,
   displayTown: World.Town => Unit,
   displayRoute: World.Route => Unit)
 extends ZoomPane {
+  // display all towns and routes
   world.towns.foreach {
     town => {
       addTown(town)
@@ -31,7 +38,9 @@ extends ZoomPane {
   minScale = 0.2
   maxScale = 4
 
+  /** Display a town. */
   def addTown(town: World.Town): Unit = {
+    // town is displayed as a point
     var point: Circle = new Circle()
     point.centerX = town.x
     point.centerY = town.y
@@ -44,6 +53,8 @@ extends ZoomPane {
     }
     children.add(point)
 
+    // text field for town name
+    // FIXME : display on top
     var text: Text = new Text(town.x + 9, town.y - 9, town.name) {
       mouseTransparent = true
       styleClass.add("town-name")
@@ -51,6 +62,7 @@ extends ZoomPane {
     children.add(text)
   }
 
+  /** Display a route. */
   def addRoute(route: World.Route): Unit = {
     var line: Line = new Line()
     line.startX = route.start.x
