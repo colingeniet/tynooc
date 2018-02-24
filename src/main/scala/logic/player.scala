@@ -123,7 +123,7 @@ class Player() {
   def addMoney(m: Int): Unit = {
     money += m
   }
-  
+
   def buyEngine(name: String): Unit = {
     var c = EngineModel(name)
     if (c.price >= money) {
@@ -168,3 +168,4 @@ class Player() {
     travels.foreach{ t:Travel => t.update(dt)}
   }
 }
+

@@ -1,3 +1,4 @@
+/* Graph manipulation */
 package logic.graph
 
 import collection.mutable.HashMap
