@@ -28,6 +28,9 @@ extends ZoomPane {
 
   styleClass.add("map")
 
+  minScale = 0.2
+  maxScale = 4
+
   def addTown(town: World.Town): Unit = {
     var point: Circle = new Circle()
     point.centerX = town.x

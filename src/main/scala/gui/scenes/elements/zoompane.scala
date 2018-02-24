@@ -10,11 +10,15 @@ import javafx.scene.input.MouseEvent
 import javafx.event.EventHandler
 import scalafx.geometry._
 
-// I have no idea why it works with an AnchorPane
-class ZoomPane extends AnchorPane {
-  val minScale: Double = 0.1
-  val maxScale: Double = 10
+/** Zoomable and dragable pane.
+ */
+class ZoomPane extends Pane {
+  /** Minimum scale factor. */
+  var minScale: Double = 0
+  /** Maximum scale factor. */
+  var maxScale: Double = Double.PositiveInfinity
 
+  // On scroll, zoom around cursor
   onScroll = new EventHandler[ScrollEvent] {
     override def handle(event: ScrollEvent): Unit = {
       var zoomFactor: Double = 1.15
@@ -27,23 +31,19 @@ class ZoomPane extends AnchorPane {
     }
   }
 
+  // records cursor position when starting drag
   private var dragDelta: Point2D = new Point2D(0, 0)
 
+  // start of drag : save mouse position
   onMousePressed = new EventHandler[MouseEvent] {
     override def handle(event: MouseEvent): Unit = {
-      // record a delta distance for drag
       dragDelta = new Point2D(
         translateX() - event.getSceneX(),
         translateY() - event.getSceneY()
       )
-      cursor = Cursor.Move
     }
   }
-  onMouseReleased = new EventHandler[MouseEvent] {
-    override def handle(event: MouseEvent): Unit = {
-      cursor = Cursor.Default
-    }
-  }
+  // dragging : update content position
   onMouseDragged = new EventHandler[MouseEvent] {
     override def handle(event: MouseEvent): Unit = {
       translateX = event.getSceneX() + dragDelta.x
