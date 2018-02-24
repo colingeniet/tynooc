@@ -1,0 +1,37 @@
+.button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #dddddd;
+}
+
+.link-label {
+    -fx-text-fill: #dd0000;
+}
+
+.big-label {
+    -fx-font-size: 20px;
+}
+
+.town-name {
+    -fx-font-size: 20px;
+    -fx-fill: #dddddd;
+}
+
+.map {
+    -fx-background-color: #664444;
+}
+
+VBox {
+    -fx-background-color: #606060;
+}
+
+HBox {
+    -fx-background-color: #606060;
+}

@@ -5,15 +5,14 @@ import logic.game._
 import logic.PNJ._
 import logic.player._
 
-
 /** World representation
  */
-class World extends Graph {
-  
+class World extends Graph {  
   private var _towns: List[World.Town] = List()
   private var _travels: List[Travel] = List()
   private var _pnjs: List[PNJ] = List()
   private var _population: Int = 50
+  
   /** The list of towns.
    */
   def towns: List[World.Town] = _towns
@@ -63,7 +62,6 @@ class World extends Graph {
 /** World object companion
  */
 object World {
-
   /** A town in the world.
    *
    *  @constructor creates a town in the `World`.
