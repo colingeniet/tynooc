@@ -2,27 +2,103 @@ package logic.player
 
 import logic.world._
 import logic.train._
+import logic.ticket._
 
+class Travel(t: Train, l : List[World.Route], own: Player, tl : List[Ticket]) {
 
-class Travel(t: Train, l : List[World.Route]) {
-  /* time and percent, redundant
-   */
+  /*
+  * Represent the State of the Travel
+  *
+  */
+  object State {
+    sealed trait Val
+    case object WAITING extends Val //Waiting for passengers
+    case object ON_ROAD extends Val 
+    case object ARRIVED extends Val //Passengers are leaving now  
+  }
+  
+  if(! own.trains.contains(t))
+    throw new IllegalArgumentException("The player doesn't own the train !")
+
+  val owner: Player = own//redudant with train but keep it nonetheless
   val train: Train = t
-  val stops: List[World.Route] = l
-  var time: Double = 0 //Time since beginning of journey
-  var percent: Double = 0 //What percent has been done on the road i
+  var stops: List[World.Route] = l
+  private var distance_done: Double = 0
   private var current: Int = 0 //The road you're taking
+  private var route: World.Route = null
+  private val tickets: List[Ticket] = tl
+  var state: State.Val = State.WAITING
+
+  def distanceRemaining: Double = {
+
+    var d = stops.foldLeft[Double](0) { (acc, r) => acc + r.length }
+    return d - distance_done
+  }
 
   def timeRemaining: Double = {
-    var d = stops.takeRight(stops.length - current + 1).foldLeft[Double](0) {
-      (acc, r) => acc + r.length
-    }
-    d += stops(current).length * percent
-    d / (t.engine.model.speed)
+    distanceRemaining/t.engine.model.speed
   }
 
   def next: World.Town = {
     stops(current).destination
+  }
+
+  def is_done: Boolean = {
+    stops.isEmpty
+  }
+
+  def is_waiting: Boolean = {
+    state == State.WAITING
+  }
+
+  def is_arrived: Boolean = {
+    state == State.ARRIVED
+  }
+
+  def town: World.Town = {
+    route.start
+  }
+
+  def destination: World.Town = {
+    route.destination
+  }
+
+  def update(dt: Double): Unit = {
+
+    if(is_done)
+      return
+
+    state match {
+
+      case State.ON_ROAD => {
+
+        distance_done += World.real_to_virtual_time(dt)*train.engine.model.speed
+        
+        if(distance_done > route.length)
+        {
+          state = State.ARRIVED
+          distance_done = 0
+        }
+      }
+
+      case State.ARRIVED => {
+        train.deteriorate(route)
+        state = State.WAITING
+        stops = stops.tail
+        current += 1
+        route = stops.head
+      }
+
+      case State.WAITING => {
+        state = State.ON_ROAD
+      }
+
+    }
+  }
+
+  def available_tickets: List[Ticket] =
+  {
+    tickets.filter { _.available }
   }
 }
 
@@ -44,6 +120,10 @@ class Player() {
 
   var money: Double = 0
 
+  def addMoney(m: Int): Unit = {
+    money += m
+  }
+  
   def buyEngine(name: String): Unit = {
     var c = EngineModel(name)
     if (c.price >= money) {
@@ -82,5 +162,9 @@ class Player() {
       old.model = model
       money -= PriceSimulation.upgradePrice(old, model)
     }
+  }
+
+  def update(dt: Double): Unit = {
+    travels.foreach{ t:Travel => t.update(dt)}
   }
 }

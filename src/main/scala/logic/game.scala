@@ -1,43 +1,31 @@
-/* object Game()
-{
+package logic.game
 
-	private var last: Double
-	private var players: List[Player] = [new Hero(), new IA("Dumb")]
-	private var world: World
+import logic.player._
+import logic.world._
 
-	def update():
-	{
-		val dt = time.getTime() - last
-		logic(dt)
-		draw(dt)
-	}
+object Game {
+  private var last: Double = System.currentTimeMillis()
+  var players: List[Player] = List() //[new Hero(), new IA("Dumb")]
+  var world: World = null
 
-	def logic(dt: Double):
-	{
-		//Trains
-		players.foreach(p: Player => p.update(dt))
+  def update(): Unit = {
+    val a = System.currentTimeMillis()
+    val dt = a - last
+    last = a
 
-		//Update Cities
-		world.update(dt)
+    logic(dt)
+    draw(dt)
+  }
 
-	}
+  def logic(dt: Double): Unit = {
+    //Trains
+    players.foreach {p: Player => p.update(dt)}
 
-	def draw(dt: Double):
-	{
-		world.draw()
-	}
+    //Update Cities
+    world.update(dt)
+  }
+
+  def draw(dt: Double): Unit = {
+    //world.draw(dt)
+  }
 }
-
-//World.update
-
-update(dt: Double)
-{
-	cities.foreach(c:City => c.update(dt))
-}
-
-//Player.update
-
-update(dt: Double)
-{
-	trains.foreach(t: Train => t.update(dt))
-}*/
