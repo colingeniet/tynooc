@@ -6,16 +6,15 @@ import logic.player._
 import logic.route._
 import logic.town._
 
-
 object Status {
   var _id = 0
   sealed class Val(val id: Int) {
     _id += 1
     def this() { this(_id) } 
   } 
-  object WAITING extends Status.Val
-  object ON_ROAD extends Status.Val
-  object SETTLED extends Status.Val 
+  object RICH extends Status.Val
+  object POOR extends Status.Val
+  object WELL extends Status.Val 
 }
 
 /** World representation
@@ -23,7 +22,7 @@ object Status {
 class World extends Graph {
   
   var statusNumber = 3
-  var status = List(Status.WAITING, Status.ON_ROAD, Status.SETTLED)
+  var status = List(Status.RICH, Status.POOR, Status.WELL)
   
   private var _towns: List[World.Town] = List()
   private var _travels: List[Travel] = List()
