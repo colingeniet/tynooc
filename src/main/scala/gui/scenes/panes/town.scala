@@ -21,7 +21,7 @@ import logic.world._
 class TownInfo(town: World.Town, displayRoute: World.Route => Unit)
 extends DrawableHBox {
   // needs to be updated at redraw
-  var popLbl = new Label("Population : " + town.population)
+  private var popLbl = new Label("Population : " + town.population)
 
   children = List(
     new Label(town.name),

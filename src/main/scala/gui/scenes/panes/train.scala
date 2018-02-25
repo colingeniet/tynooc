@@ -11,24 +11,28 @@ import gui.scenes.elements.Link
 import gui.scenes.panes._
 import logic.train._
 
+/** Train display panel.
+ *
+ *  @param train the train to display.
+ */
 class TrainDetail(train: Train) extends DrawableVBox {
   // list of carriages
-  var carriagesShort: List[DrawableVBox] =
+  private var carriagesShort: List[DrawableVBox] =
     new EngineShort(train.engine, displayEngine) ::
     train.carriages.map(new CarriageShort(_, displayCarriage))
 
   // scroll pane containinng the list of carriages
-  var carriagesPane: ScrollPane = new ScrollPane {
+  private var carriagesPane: ScrollPane = new ScrollPane {
     content = new VBox {
       children = carriagesShort
     }
   }
 
   // train statistics
-  var stats: TrainStats = new TrainStats(train)
+  private var stats: TrainStats = new TrainStats(train)
 
-  val sep1: Separator = new Separator()
-  val sep2: Separator = new Separator()
+  private val sep1: Separator = new Separator()
+  private val sep2: Separator = new Separator()
 
   children = List(
     stats,
@@ -37,7 +41,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
   )
   spacing = 3
 
-  def displayEngine(engine: Engine): Unit = {
+  private def displayEngine(engine: Engine): Unit = {
     children = List(
       stats,
       sep1,
@@ -47,7 +51,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
     )
   }
 
-  def displayCarriage(carriage: Carriage): Unit = {
+  private def displayCarriage(carriage: Carriage): Unit = {
     children = List(
       stats,
       sep1,

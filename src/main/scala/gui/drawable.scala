@@ -4,6 +4,7 @@ import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.layout._
 
+/** Trait with a `draw` method to update content. */
 trait Drawable {
   /** Update content.
    *

@@ -30,8 +30,8 @@ extends MainStage.Scene(sceneModifier) {
     children = List(title, gameBtn, optionsBtn, quitBtn)
   }
 
-
-  def sceneSwitchButton(text: String, newScene: MainStage.States.Val): Button = {
+  /** Creates a button to switch to another scene. */
+  private def sceneSwitchButton(text: String, newScene: MainStage.States.Val): Button = {
     var button: Button = new Button(text)
     button.onAction = (event: ActionEvent) => {
       sceneModifier(newScene)

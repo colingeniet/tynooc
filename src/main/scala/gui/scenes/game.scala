@@ -43,12 +43,12 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
 
-  def displayTown(town: World.Town): Unit = {
+  private def displayTown(town: World.Town): Unit = {
     bottom = new panes.TownInfo(town, displayRoute)
     pane.bottom = bottom
   }
 
-  def displayRoute(route: World.Route): Unit = {
+  private def displayRoute(route: World.Route): Unit = {
     bottom = new panes.RouteInfo(route, displayTown)
     pane.bottom = bottom
   }

@@ -34,13 +34,13 @@ extends ZoomPane with Drawable {
     }
   }
 
+  // options
   styleClass.add("map")
-
   minScale = 0.2
   maxScale = 4
 
   /** Display a town. */
-  def addTown(town: World.Town): Unit = {
+  private def addTown(town: World.Town): Unit = {
     // town is displayed as a point
     var point: Circle = new Circle()
     point.centerX = town.x
@@ -64,7 +64,7 @@ extends ZoomPane with Drawable {
   }
 
   /** Display a route. */
-  def addRoute(route: World.Route): Unit = {
+  private def addRoute(route: World.Route): Unit = {
     var line: Line = new Line()
     line.startX = route.start.x
     line.startY = route.start.y
@@ -80,7 +80,7 @@ extends ZoomPane with Drawable {
     children.add(line)
   }
 
-  def drawTrain(x1: Double, y1: Double, x2: Double, y2: Double, p: Double): Unit = {
+  private def drawTrain(x1: Double, y1: Double, x2: Double, y2: Double, p: Double): Unit = {
     val x = x1 * (1-p) + x2 * p
     val y = y1 * (1-p) + y2 * p
     var point: Circle = new Circle()
