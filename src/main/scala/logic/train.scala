@@ -7,15 +7,15 @@ import collection.mutable.HashMap
  *
  *  @param T the type of objects in the map.
  */
-abstract class NameMap[T] {
-  private var models: HashMap[String, T] = HashMap()
+trait NameMap[T] {
+  def models: HashMap[String, T]
 
   /** Get an element from its name.
    *
    *  @param name the element name.
    *  @throw java.util.NoSuchElementException if no such model exists.
    */
-  def apply(name: String): T = models.get(name).get
+  def apply(name: String): T = this.models.get(name).get
 }
 
 
@@ -34,11 +34,12 @@ class EngineModel(
  *  Gets standard models from their names.
  */
 object EngineModel extends NameMap[EngineModel] {
-  private var models: HashMap[String, EngineModel] =
+  private var _models: HashMap[String, EngineModel] =
     HashMap(
       "Basic" -> new EngineModel(50, 50, 70, 25, 15, List("Advanced"), 20),
       "Advanced" -> new EngineModel(25, 100, 140, 50, 5, List(), 5)
     )
+  override def models = _models
 }
 
 /** A carriage model. */
@@ -54,11 +55,12 @@ class CarriageModel(
  *  Get standard models from their names.
  */
 object CarriageModel extends NameMap[CarriageModel] {
-  private var models: HashMap[String, CarriageModel] =
+  private var _models: HashMap[String, CarriageModel] =
     HashMap(
       "Basic" -> new CarriageModel(50, 50, 10, List("Advanced"), 1),
       "Advanced" -> new CarriageModel(50, 50, 15, List(), 5)
     )
+  override def models = _models
 }
 
 /** An engine.
