@@ -62,14 +62,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   def world_=(newWorld: World): Unit = {
     _world = newWorld
-    pane.center = new ScrollPane {
-      content = new Map(world, displayTown, displayRoute)
-      // disable scroll
-      vmax = 0
-      hmax = 0
-      hbarPolicy = ScrollPane.ScrollBarPolicy.Never
-      vbarPolicy = ScrollPane.ScrollBarPolicy.Never
-    }
+    pane.center = new Map(world, displayTown, displayRoute)
   }
 
   override def draw(): Unit = {
