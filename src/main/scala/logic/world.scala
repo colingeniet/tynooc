@@ -2,9 +2,8 @@ package logic.world
 
 import logic.graph._
 import logic.game._
-import logic.player._
-import logic.route._
 import logic.town._
+import logic.travel._
 
 object Status {
   var _id = 0
@@ -17,61 +16,29 @@ object Status {
   object WELL extends Status.Val 
 }
 
-/** World representation
- */
 class World extends Graph {
   
-  var statusNumber = 3
   var status = List(Status.RICH, Status.POOR, Status.WELL)
+  var statusNumber = 3
+  var townNumber = 0
   
-  private var _towns: List[World.Town] = List()
+  private var _towns: List[Town] = List()
   private var _travels: List[Travel] = List()
-  private var _population: Int = 50
-  /** The list of towns.
-   */
-  def towns: List[World.Town] = _towns
-
-  def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
   
-  }
-  /** The list of current travels.
-   */
+  def towns: List[Town] = _towns
+  def vertices: List[Town] = towns
   def travels: List[Travel] = _travels
+  def population: Int = (towns.map { _.population }).sum
+  
+  def addTown(town: Town): Unit = { _towns = town :: _towns }
+  
+  def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {}
 
-
-  /** The population
-   */
-  def population: Int = _population
-
-  /** Adds a town.
-   *
-   *  @param newTown the town to add.
-   */
-  def addTown(newTown: World.Town): Unit = {
-    _towns = newTown :: _towns
-  }
-
-  def vertices: List[World.Town] = towns
-
-  /** Update the world
-  *
-  *   @param dt the delta time between two calls.
-  */
-  def update(dt: Double): Unit =
-  {
-   
-  }
+  def update(dt: Double): Unit = { }
 }
 
-/** World object companion
- */
 object World {
 
-  def real_to_virtual_time(t: Double) : Double = {
-    return 50*t
-  }
-
-  def virtual_to_real_time(t: Double) : Double = {
-    return t/50
-  }
+  def realToVirtualTime(t: Double) : Double = 50*t
+  def virtualToRealTime(t: Double) : Double = t/50
 }
