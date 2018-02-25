@@ -1,23 +1,26 @@
 package logic.train
 
 import logic.world._
+import logic.route._
+
 import collection.mutable.HashMap
 
 /** A class mapping names to objects.
  *
  *  @param T the type of objects in the map.
  */
-abstract class NameMap[T] {
-  private var models: HashMap[String, T] = HashMap()
+trait NameMap[T] {
+  def models: HashMap[String, T]
 
   /** Get an element from its name.
    *
    *  @param name the element name.
    *  @throw java.util.NoSuchElementException if no such model exists.
    */
-  def apply(name: String): T = models.get(name).get
+  def apply(name: String): T = this.models.get(name).get
 }
 
+class Model(val name: String, val price: Double, val upgrades: List[String])
 
 /** An engine model. */
 class EngineModel(
@@ -25,40 +28,40 @@ class EngineModel(
   val power: Double,
   val speed: Double,
   val fuelCapacity: Double,
-  val price: Double,
-  val upgrades: List[String],
-  val consumption: Double)
+  val consumption: Double,
+  name: String, price: Double, upgrades: List[String]) extends Model(name, price, upgrades)
 
 /** EngineModel companion object.
  *
  *  Gets standard models from their names.
  */
 object EngineModel extends NameMap[EngineModel] {
-  private var models: HashMap[String, EngineModel] =
+  private var _models: HashMap[String, EngineModel] =
     HashMap(
-      "Basic" -> new EngineModel(50, 50, 70, 25, 15, List("Advanced"), 20),
-      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, List(), 5)
+      "Basic" -> new EngineModel(50, 50, 70, 25, 15, "Basic", 5, List("Advanced")),
+      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, "Advanced", 10, List())
     )
+  override def models = _models
 }
 
 /** A carriage model. */
 class CarriageModel(
   val weight: Double,
   val capacity: Int,
-  val price: Double,
-  val upgrades: List[String],
-  val comfort: Double)
+  val comfort: Double,
+  name: String, price: Double, upgrades: List[String]) extends Model(name, price, upgrades)
 
 /** CarriageModel companion object.
  *
  *  Get standard models from their names.
  */
 object CarriageModel extends NameMap[CarriageModel] {
-  private var models: HashMap[String, CarriageModel] =
+  private var _models: HashMap[String, CarriageModel] =
     HashMap(
-      "Basic" -> new CarriageModel(50, 50, 10, List("Advanced"), 1),
-      "Advanced" -> new CarriageModel(50, 50, 15, List(), 5)
+      "Basic" -> new CarriageModel(50, 50, 10, "Basic", 5, List("Advanced")),
+      "Advanced" -> new CarriageModel(50, 50, 15, "Advanced", 10, List())
     )
+  override def models = _models
 }
 
 /** An engine.
@@ -78,6 +81,8 @@ class Engine(var _model: EngineModel) {
   }
 
   def this(name: String) = this(EngineModel(name))
+  
+  def speed:Double = model.speed
 }
 
 /** A carriages
@@ -94,7 +99,10 @@ class Carriage(var _model: CarriageModel) {
     health = 100
   }
 
+  def capacity: Int = model.capacity
   def this(name: String) = this(CarriageModel(name))
+  
+  def comfort:Double = model.comfort
 }
 
 
@@ -106,7 +114,7 @@ class Train (var engine: Engine, var carriages: List[Carriage]) {
     + carriages.foldLeft[Double](0) { (acc, v) => acc + v.model.weight }
   }
 
-  def deteriorate(r:World.Route): Unit = {
+  def deteriorate(r:Route): Unit = {
     engine.health -= Math.max(0, engine.health - 10)
     carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
   }
