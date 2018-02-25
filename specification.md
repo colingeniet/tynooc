@@ -24,7 +24,8 @@ Class Route
 # Les voyages
 
 Un voyage est composé d’un train, d’une liste de route à emprunter, d’une ville,
-de la route actuelle et de la distance déjà parcourue sur cette route. 
+de la route actuelle, de ses voyageurs et de la distance déjà parcourue sur 
+cette route. 
 
 Il a également un état `ON_ROAD` ou `WAITING`, `WAITING` signifiant qu’il est 
 sur une ville et attend des passagers et une liste de billets.
@@ -40,6 +41,7 @@ Class Voyage
       distance_parcourue : la distance parcourue sur la route actuelle
       liste_places : liste de places pour ce voyage
       état : ON_ROAD, ARRIVAL ou WAITING      
+      liste_voyageurs : les personnes actuellement dans le train 
       
    Méthodes
       def update(dt)
@@ -54,11 +56,21 @@ Class Voyage
             état = WAITING
             liste_routes = tl(liste_routes)
             route = hd(liste_routes)
+            débarquer_voyageur
          Sinon /* état = WAITING */  
             état = ON_ROAD
             ville = route.destination
          Fin Si
 
+      def débarquer_voyageurs
+         Pour chaque statut de personnage
+            ville.population += liste_voyageurs[ville.id][statut]
+            liste_voyageurs[ville.id][statut] = 0
+         Fin Pour
+
+      def add_voyageurs(voyageur)
+         liste_voyageurs[voyageur.destination.id][voyageur.statut] += 1       
+      
       def places_disponibles
           [place de liste_places où place.disponible]
           
@@ -74,18 +86,14 @@ Class Voyage
 # Les PNJs
 
 Un PNJ est juste une donnée et n’est jamais vu. Il a un statut `RICHE`, `PAUVRE`, 
-`AISÉ` et un état, `WAITING`, `ON_ROAD`, `SETTLED`, qui permet de savoir quelle
-action il peut entreprendre et une ville correspondant à celle où il est.
+`AISÉ` et une destination [Peut-être supprimer le statut pour quelque chose de 
+plus simple].
 
+À chaque mise à jour, une ville génère des PNJs qui veulent migrer. Ceux qui 
+trouvent un train le font (ce qui fait baisser la population de la ville).
+ 
 Un PNJ peut compter comme un groupe de plusieurs personnes (cela permettra avec 
 1000 PNJ par exemple d'en simuler 1 000 000).
-
-## Comment choisit-il sa destination
-
-Un PNJ a une probabilité de migrer qui dépend de la note de sa ville. Il migre 
-dans la ville voisine qui a la meilleure note. En seconde instance, il pourrait 
-également ne pas choisir d’aller dans une ville voisine, mais d’aller plus loin 
-encore chose facilitée par les plans de route (voir partie sur les joueurs).
 
 ## Comment choisit-il son train
 
@@ -94,7 +102,7 @@ destination, et choisit la place suivant son statut (`RICHE` => confortable,
 `PAUVRE` => le moins cher, `AISÉ` => le premier). En seconde instance, la 
 réputation du joueur pourrait être prise en compte.
 
-S'il n'y a aucun train allant là où il veut, il attend le tour suivant.
+S'il n'y a aucun train allant là où il veut, il disparaît.
 
 ## Comment consomme-t-il (s’il le fait) ?
 
@@ -110,27 +118,14 @@ fixe par wagon ou par train.
 class PNJ
    Attributs 
       statut : RICHE, PAUVRE ou AISÉ
-      état : WAITING, ON_ROAD ou SETTLED
       ville : la ville où il est
-      probabilité : la probabilité de bouger
       destination : la destination
       place : la place qu’il a acheté
       
    Méthodes
-      def veut_migrer
-         ville.note < probabilité
-         
-      def chercher_destination
-         destination = ville.voisins.maxPar(note)
-         
-      def essayer_migrer
-         Si veut_migrer
-            chercher_destination
-            état = WAITING
-         Fin Si
-         
       def chercher_voyage
-         voyages = monde.voyages.filtrer(voyage.état = WAITING et voyage.ville = ville)
+         voyages = monde.voyages.filtrer(voyage.état = WAITING et voyage.ville = ville
+                                         et voyage.destination = destination)
          Retourner Si pas de voyages 
          places = voyages.flatMap (voyage => voyage.places_disponibles)
          place = match statut with
@@ -139,6 +134,7 @@ class PNJ
             AISÉ   => hd(places)
           place.acheter
           place = place
+          place.voyage.ajouter_voyageur(self)
           état = ON_ROAD
           ville.supprimer_habitant
           
@@ -229,6 +225,15 @@ ajouter une « capacité ».
 
 Elle a également une note dépendant de sa population et de son niveau d’accueil.
 
+## Génération de PNJs 
+
+À chaque mise à jour, un ville génère pour chacun de ses voisins un nombre
+de personnes qui veulent y aller. Ce nombre dépend de la note de la ville 
+et de celle du voisin en question.
+
+En seconde instance, cela pourrait ne pas être que les villes voisines mais 
+toutes les villes.
+
 ```
 Class Ville
    Attributs
@@ -253,6 +258,15 @@ Class Ville
          
       def note /* Entre 0 et 1 */
          niveau_accueil * population / monde.population_totale
+         
+      def update 
+        Pour chaque voisins de la ville
+           voyageurs = générer_voyageurs
+           Pour chaque voyageur de voyageurs
+              if(voyageur.trouver_voyage)
+                 population -= 1
+              
+      
 ```
 
 
