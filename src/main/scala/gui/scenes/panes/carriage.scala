@@ -14,18 +14,38 @@ import logic.train._
  *
  *  @param carriage the carriage to display.
  */
-class CarriageDetail(carriage: logic.train.Carriage) extends DrawableVBox {
-  children = List(new Label("Carriage detail"))
+class CarriageDetail(carriage: Carriage) extends DrawableVBox {
+  private var name: Label = new Label() // new Label(carriage.model.name)
+  private var health: Label = new Label()
+  private var model: VBox = new CarriageModelStats(carriage.model)
+
+  children = List(name, health, model)
   spacing = 3
+  draw()
+
+  override def draw(): Unit = {
+    health.text = "health : " + carriage.health
+  }
 }
 
 /** Engine detailed info display.
  *
  *  @param engine the engine to display.
  */
-class EngineDetail(engine: logic.train.Engine) extends DrawableVBox {
-  children = List(new Label("Engine detail"))
+class EngineDetail(engine: Engine) extends DrawableVBox {
+  private var name: Label = new Label() // new Label(engine.model.name)
+  private var health: Label = new Label()
+  private var fuel: Label = new Label()
+  private var model: VBox = new EngineModelStats(engine.model)
+
+  children = List(name, health, fuel, model)
   spacing = 3
+  draw()
+
+  override def draw(): Unit = {
+    health.text = "health : " + engine.health
+    fuel.text = "fuel : " + engine.fuel
+  }
 }
 
 /** Carriage short info display.
@@ -33,10 +53,7 @@ class EngineDetail(engine: logic.train.Engine) extends DrawableVBox {
  *  @param carriage the carriage to display.
  *  @param displayCarriage callback used to display detailed info.
  */
-class CarriageShort(
-  carriage: logic.train.Carriage,
-  displayCarriage: logic.train.Carriage => Unit
-)
+class CarriageShort(carriage: Carriage, displayCarriage: Carriage => Unit)
 extends DrawableVBox {
   children = List(new Link("Carriage short")(displayCarriage(carriage)))
   spacing = 3
@@ -47,11 +64,35 @@ extends DrawableVBox {
  *  @param engine the engine to display.
  *  @param displayEngine callback used to display detailed info.
  */
-class EngineShort(
-  engine: logic.train.Engine,
-  displayEngine: logic.train.Engine => Unit
-)
+class EngineShort(engine: Engine, displayEngine: Engine => Unit)
 extends DrawableVBox {
   children = List(new Link("Engine short")(displayEngine(engine)))
   spacing = 3
+}
+
+
+/** Carriage model info display.
+ *
+ *  @param model the carriage model to display.
+ */
+class CarriageModelStats(model: CarriageModel) extends VBox(3) {
+  children = List (
+    new Label("cap. : " + model.capacity),
+    new Label("weight : " + model.weight),
+    new Label("comfort : " + model.comfort)
+  )
+}
+
+/** Engine model info display.
+ *
+ *  @param model the engine model to display.
+ */
+class EngineModelStats(model: EngineModel) extends VBox(3) {
+  children = List (
+    new Label("speed : " + model.speed),
+    new Label("power : " + model.power),
+    new Label("weight : " + model.weight),
+    new Label("fuel cap. : " + model.fuelCapacity),
+    new Label("consum. : " + model.consumption)
+  )
 }

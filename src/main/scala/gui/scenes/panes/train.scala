@@ -23,7 +23,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
 
   // scroll pane containinng the list of carriages
   private var carriagesPane: ScrollPane = new ScrollPane {
-    content = new VBox {
+    content = new VBox(3) {
       children = carriagesShort
     }
   }
@@ -31,17 +31,15 @@ class TrainDetail(train: Train) extends DrawableVBox {
   // train statistics
   private var stats: TrainStats = new TrainStats(train)
   private var trainLink: Link = new Link("Train")(displayTrain)
-  private val sep1: Separator = new Separator()
-  private val sep2: Separator = new Separator()
+  private var sep: Separator = new Separator()
   displayTrain()
   spacing = 3
 
   private def displayEngine(engine: Engine): Unit = {
     children = List(
       trainLink,
-      sep1,
       carriagesPane,
-      sep2,
+      sep,
       new EngineDetail(engine)
     )
   }
@@ -49,9 +47,8 @@ class TrainDetail(train: Train) extends DrawableVBox {
   private def displayCarriage(carriage: Carriage): Unit = {
     children = List(
       trainLink,
-      sep1,
       carriagesPane,
-      sep2,
+      sep,
       new CarriageDetail(carriage)
     )
   }
@@ -59,9 +56,8 @@ class TrainDetail(train: Train) extends DrawableVBox {
   private def displayTrain(): Unit = {
     children = List(
       trainLink,
-      sep1,
       carriagesPane,
-      sep2,
+      sep,
       stats,
     )
   }

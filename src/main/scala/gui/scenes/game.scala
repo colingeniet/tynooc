@@ -14,6 +14,9 @@ import gui.scenes.panes._
 import gui.scenes.elements._
 import logic.world.World
 
+//TEMPORARY
+import logic.train._
+
 class Game(sceneModifier: MainStage.States.Val=>Unit)
 extends MainStage.Scene(sceneModifier) with Drawable {
   private var menuBtn: Button = new Button("Menu")
@@ -23,7 +26,9 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   private var top: DrawableHBox = new panes.Menu(menuBtn)
   // empty by default
   private var left: DrawableVBox = new Player()
-  private var right: DrawableVBox = new DrawableVBox()
+  private var right: DrawableVBox = new TrainDetail(
+    new Train(new Engine("Basic"), List(new Carriage("Basic"), new Carriage("Advanced")))
+  )
   private var bottom: DrawableHBox = new DrawableHBox()
   private var center: Map = new Map(world, displayTown, displayRoute)
 
