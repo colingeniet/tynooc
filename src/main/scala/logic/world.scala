@@ -8,6 +8,7 @@ import logic.town._
 
 
 object Status {
+  var _id = 0
   sealed class Val(val id: Int) {
     _id += 1
     def this() { this(_id) } 
