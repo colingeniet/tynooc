@@ -41,6 +41,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
     content = new VBox(3) {
       children = carriagesList
     }
+    hbarPolicy = ScrollPane.ScrollBarPolicy.Never
   }
 
   // train statistics
@@ -89,5 +90,15 @@ class TrainDetail(train: Train) extends DrawableVBox {
 }
 
 class TrainStats(train: Train) extends DrawableVBox {
-  children = List(new Label("Train stats"))
+  private var weight: Label = new Label()
+  private var power: Label = new Label()
+
+  children = List(weight, power)
+  spacing = 3
+  draw()
+
+  override def draw(): Unit = {
+    weight.text = "weight : " + train.weight
+    power.text = "power : " + train.engine.model.power
+  }
 }
