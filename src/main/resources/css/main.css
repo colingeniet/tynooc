@@ -1,6 +1,5 @@
 .button {
     -fx-text-fill: white;
-    -fx-font-family: "Arial Narrow";
     -fx-font-weight: bold;
     -fx-background-color: linear-gradient(#61a2b1, #2A5058);
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
@@ -11,8 +10,14 @@
     -fx-text-fill: #dddddd;
 }
 
-.link-label {
+.link {
+    -fx-font-size: 14px;
+    -fx-text-fill: #dddddd;
     -fx-font-weight: bold;
+}
+
+.link:selected {
+    -fx-text-fill: #aaaaaa;
 }
 
 .big-label {

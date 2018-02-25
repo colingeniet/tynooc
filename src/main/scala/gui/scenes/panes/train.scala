@@ -4,6 +4,7 @@ import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
+import scalafx.event._
 import scalafx.geometry._
 
 import gui.draw._
@@ -16,22 +17,42 @@ import logic.train._
  *  @param train the train to display.
  */
 class TrainDetail(train: Train) extends DrawableVBox {
+  private var buttonGroup: ToggleGroup = new ToggleGroup
+
   // list of carriages
-  private var carriagesShort: List[DrawableVBox] =
-    new EngineShort(train.engine, displayEngine) ::
-    train.carriages.map(new CarriageShort(_, displayCarriage))
+  private var carriagesList: List[RadioButton] =
+    new RadioButton(train.engine.model.name + " engine") {
+      onAction = (event: ActionEvent) => displayEngine(train.engine)
+      styleClass.remove("radio-button")
+      styleClass.add("link")
+    } ::
+    train.carriages.map(carriage =>
+      new RadioButton(carriage.model.name + " carriage") {
+        onAction = (event: ActionEvent) => displayCarriage(carriage)
+        styleClass.remove("radio-button")
+        styleClass.add("link")
+      }
+    )
+
+  carriagesList.foreach(buttonGroup.toggles.add(_))
 
   // scroll pane containinng the list of carriages
   private var carriagesPane: ScrollPane = new ScrollPane {
     content = new VBox(3) {
-      children = carriagesShort
+      children = carriagesList
     }
   }
 
   // train statistics
   private var stats: TrainStats = new TrainStats(train)
-  private var trainLink: Link = new Link("Train")(displayTrain)
+  private var trainLink: RadioButton = new RadioButton("Train") {
+    onAction = (event: ActionEvent) => displayTrain()
+    styleClass.remove("radio-button")
+    styleClass.add("link")
+  }
+  buttonGroup.toggles.add(trainLink)
   private var sep: Separator = new Separator()
+
   displayTrain()
   spacing = 3
 
@@ -63,7 +84,6 @@ class TrainDetail(train: Train) extends DrawableVBox {
   }
 
   override def draw(): Unit = {
-    carriagesShort.foreach(_.draw())
     stats.draw()
   }
 }

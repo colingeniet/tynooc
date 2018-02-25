@@ -33,7 +33,7 @@ extends DrawableHBox {
 
   // add all clickable routes
   town.routes.foreach { route =>
-    var label: Label = new Link(route.end.name + "(" + route.length + "), ")(
+    var label: Link = new Link(route.end.name + "(" + route.length + "), ")(
       displayRoute(route)
     )
     children.add(label)
