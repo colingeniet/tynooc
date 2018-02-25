@@ -103,8 +103,7 @@ class Train (var engine: Engine, var carriages: List[Carriage]) {
   var onRoad: Boolean = false
 
   def weight: Double = {
-    (if (engine == null) 0 else engine.model.weight)
-    + carriages.foldLeft[Double](0) { (acc, v) => acc + v.model.weight }
+    carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
   }
 
   def deteriorate(r:World.Route): Unit = {
