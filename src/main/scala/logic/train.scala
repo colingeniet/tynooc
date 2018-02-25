@@ -18,6 +18,7 @@ trait NameMap[T] {
   def apply(name: String): T = this.models.get(name).get
 }
 
+class Model(val name: String, val price: Double, val upgrades: List[String])
 
 /** An engine model. */
 class EngineModel(
@@ -25,9 +26,8 @@ class EngineModel(
   val power: Double,
   val speed: Double,
   val fuelCapacity: Double,
-  val price: Double,
-  val upgrades: List[String],
-  val consumption: Double)
+  val consumption: Double,
+  name: String, price: Double, upgrades: List[String]) extends Model(name, price, upgrades)
 
 /** EngineModel companion object.
  *
@@ -36,8 +36,8 @@ class EngineModel(
 object EngineModel extends NameMap[EngineModel] {
   private var _models: HashMap[String, EngineModel] =
     HashMap(
-      "Basic" -> new EngineModel(50, 50, 70, 25, 15, List("Advanced"), 20),
-      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, List(), 5)
+      "Basic" -> new EngineModel(50, 50, 70, 25, 15, "Basic", 5, List("Advanced")),
+      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, "Advanced", 10, List())
     )
   override def models = _models
 }
@@ -46,9 +46,8 @@ object EngineModel extends NameMap[EngineModel] {
 class CarriageModel(
   val weight: Double,
   val capacity: Int,
-  val price: Double,
-  val upgrades: List[String],
-  val comfort: Double)
+  val comfort: Double,
+  name: String, price: Double, upgrades: List[String]) extends Model(name, price, upgrades)
 
 /** CarriageModel companion object.
  *
@@ -57,8 +56,8 @@ class CarriageModel(
 object CarriageModel extends NameMap[CarriageModel] {
   private var _models: HashMap[String, CarriageModel] =
     HashMap(
-      "Basic" -> new CarriageModel(50, 50, 10, List("Advanced"), 1),
-      "Advanced" -> new CarriageModel(50, 50, 15, List(), 5)
+      "Basic" -> new CarriageModel(50, 50, 10, "Basic", 5, List("Advanced")),
+      "Advanced" -> new CarriageModel(50, 50, 15, "Advanced", 10, List())
     )
   override def models = _models
 }
