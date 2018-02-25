@@ -6,69 +6,63 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
+import gui.draw._
 import gui.scenes.elements.Link
+import gui.scenes.panes._
 import logic.train._
 
-class Train(train: logic.train.Train) extends VBox {
+class TrainDetail(train: Train) extends DrawableVBox {
   // list of carriages
-  var trainDisplay: ScrollPane = new ScrollPane {
-    content = new VBox(3) {
-      children = List(
-        new Engine(train.engine, displayEngine),
-        new Separator(),
-      )
-      train.carriages.foreach { carriage =>
-        children.add(new Carriage(carriage, displayCarriage))
-      }
+  var carriagesShort: List[DrawableVBox] =
+    new EngineShort(train.engine, displayEngine) ::
+    train.carriages.map(new CarriageShort(_, displayCarriage))
+
+  // scroll pane containinng the list of carriages
+  var carriagesPane: ScrollPane = new ScrollPane {
+    content = new VBox {
+      children = carriagesShort
     }
   }
-  var trainDetail: TrainDetail = new TrainDetail(train)
 
-  children = List(trainDetail, trainDisplay)
+  // train statistics
+  var stats: TrainStats = new TrainStats(train)
 
-  def displayEngine(engine: logic.train.Engine): Unit = {
-    children = List(trainDetail, trainDisplay, new EngineDetail(engine))
+  val sep1: Separator = new Separator()
+  val sep2: Separator = new Separator()
+
+  children = List(
+    stats,
+    sep1,
+    carriagesPane
+  )
+  spacing = 3
+
+  def displayEngine(engine: Engine): Unit = {
+    children = List(
+      stats,
+      sep1,
+      carriagesPane,
+      sep2,
+      new EngineDetail(engine)
+    )
   }
 
-  def displayCarriage(carriage: logic.train.Carriage): Unit = {
-    children = List(trainDetail, trainDisplay, new CarriageDetail(carriage))
+  def displayCarriage(carriage: Carriage): Unit = {
+    children = List(
+      stats,
+      sep1,
+      carriagesPane,
+      sep2,
+      new CarriageDetail(carriage)
+    )
   }
-}
 
-
-abstract class Element extends VBox(3) {
-  update()
-  def update(): Unit
-}
-
-class Engine(engine: logic.train.Engine, displayEngine: logic.train.Engine => Unit)
-extends Element {
-  def update(): Unit = {
-    children = List(new Link("Engine")(displayEngine(engine)))
-  }
-}
-
-class Carriage(carriage: logic.train.Carriage, displayCarriage: logic.train.Carriage => Unit)
-extends Element {
-  def update(): Unit = {
-    children = List(new Link("Carriage")(displayCarriage(carriage)))
-  }
-}
-
-class EngineDetail(engine: logic.train.Engine) extends Element {
-  def update(): Unit = {
-    children = List(new Label("Engine detail"))
-  }
-}
-
-class CarriageDetail(carriage: logic.train.Carriage) extends Element {
-  def update(): Unit = {
-    children = List(new Label("Carriage detail"))
+  override def draw(): Unit = {
+    carriagesShort.foreach(_.draw())
+    stats.draw()
   }
 }
 
-class TrainDetail(train: logic.train.Train) extends Element {
-  def update(): Unit = {
-    children = List(new Label("Train detail"))
-  }
+class TrainStats(train: Train) extends DrawableVBox {
+  children = List(new Label("Train stats"))
 }

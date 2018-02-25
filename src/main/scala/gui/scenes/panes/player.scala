@@ -6,6 +6,8 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
 
-class Player extends VBox {
+import gui.draw._
+
+class Player extends DrawableVBox {
   children = List(new Label("Player pane"))
 }

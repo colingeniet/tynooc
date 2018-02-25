@@ -6,6 +6,8 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
 
-class Menu(quitBtn: Button) extends HBox {
+import gui.draw._
+
+class Menu(quitBtn: Button) extends DrawableHBox {
   children = List(quitBtn)
 }

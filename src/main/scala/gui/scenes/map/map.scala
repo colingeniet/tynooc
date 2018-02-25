@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent
 import javafx.event.EventHandler
 import scalafx.scene.paint.Color._
 
+import gui.draw._
 import gui.scenes.elements._
 import logic.world.World
 
@@ -24,7 +25,7 @@ class Map(
   world: World,
   displayTown: World.Town => Unit,
   displayRoute: World.Route => Unit)
-extends ZoomPane {
+extends ZoomPane with Drawable {
   // display all towns and routes
   world.towns.foreach {
     town => {
