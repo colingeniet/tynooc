@@ -10,7 +10,8 @@ import scalafx.geometry._
 
 import gui.draw._
 import gui.scenes.elements.Link
-import logic.world._
+import logic.town._
+import logic.route._
 
 
 /** Town display panel.
@@ -18,7 +19,7 @@ import logic.world._
  *  @param town the town to display.
  *  @param displayRoute callback used to display a route.
  */
-class TownInfo(town: World.Town, displayRoute: World.Route => Unit)
+class TownInfo(town: Town, displayRoute: Route => Unit)
 extends DrawableHBox {
   // needs to be updated at redraw
   private var popLbl = new Label("Population : " + town.population)
@@ -52,7 +53,7 @@ extends DrawableHBox {
  *  @param route the route to display.
  *  @param displayTown callback used to display a town.
  */
-class RouteInfo(route: World.Route, displayTown: World.Town => Unit)
+class RouteInfo(route: Route, displayTown: Town => Unit)
 extends DrawableHBox {
   children = List(
     new Link(route.start.name)(displayTown(route.start)),

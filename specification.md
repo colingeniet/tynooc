@@ -21,80 +21,121 @@ Class Route
    Méthodes 
 ```
 
-# Les voyages
+# Les villes
 
-Un voyage est composé d’un train, d’une liste de route à emprunter, d’une ville,
-de la route actuelle et de la distance déjà parcourue sur cette route. 
+Une ville a une position, un niveau d’accueil, et des routes. Elle a un 
+certain nombre d’habitants qui varie suivant les déplacements des PNJs. Peut-être
+ajouter une « capacité ». 
 
-Il a également un état `ON_ROAD` ou `WAITING`, `WAITING` signifiant qu’il est 
-sur une ville et attend des passagers et une liste de billets.
+Elle a également une note dépendant de sa population et de son niveau d’accueil.
+
+## Génération de PNJs 
+
+À chaque mise à jour, un ville génère pour chacun de ses voisins un nombre
+de personnes qui veulent y aller. Ce nombre dépend de la note de la ville 
+et de celle du voisin en question.
+
+En seconde instance, cela pourrait ne pas être que les villes voisines mais 
+toutes les villes.
+
 
 ```
-Class Voyage
+Class Ville
    Attributs
-      possesseur : le possesseur du voyage
-      train : le train du voyage
-      liste_routes : la liste des routes à emprunter
-      ville : la ville actuelle
-      route : la route actuelle
-      distance_parcourue : la distance parcourue sur la route actuelle
-      liste_places : liste de places pour ce voyage
-      état : ON_ROAD, ARRIVAL ou WAITING      
+      x : sa coordonnée x dans le monde 
+      y : sa coordonnée y dans le monde
+      liste_routes : la liste des routes
+      population : la population de cette ville
+      nbRiches : le nombres de riches /* 1/4 de population par défaut */
+      nbPauvres : le nombre de pauvres /* 1/4 de population par défaut */
+      nbAisés : le nombre d’aisé /* 1/2 de population par défaut */
+      niveau_accueil : le niveau d’accueil de cette ville /* Entre 0 et 1 */
+      id : l’identifiant de la ville
       
    Méthodes
-      def update(dt)
-         Si ON_ROAD
-            distance_parcourue += train.vitesse * Game.world.real_time_to_game(dt)
-            Si distance_parcourure >= route.distance
-               distance_parcourure = 0
-               état = ARRIVAL
-            Fin Si
-         Sinon si ARRIVAL
-            train.détériorer(route)
-            état = WAITING
-            liste_routes = tl(liste_routes)
-            route = hd(liste_routes)
-         Sinon /* état = WAITING */  
-            état = ON_ROAD
-            ville = route.destination
-         Fin Si
-
-      def places_disponibles
-          [place de liste_places où place.disponible]
-          
-      def est_terminé
-         liste_routes = []
-        
-      def destination
-         Si est_terminé
+      def ajouterRiches(nb)
+         nbRiches = nb + nbRiches
+         population = population + nb
+         
+      def ajouterPauvres(nb)
+         nbPauvres = nbPauvres + nb
+         population = population + nb
+         
+      def ajouterAisés(nb)
+         nbAisés = nbAisés + nb
+         population = population + nb
+      
+      def supprimerRiches(nb)
+         Si nb > nbRiches
             Lever exception
-         hd(listes_routes).arrivée
+         nbRiches = nb + nbRiches
+         population = population + nb
+         
+      def supprimerPauvres(nb)
+         Si nb > nbPauvres
+            Lever exception
+         nbPauvres = nbPauvres + nb
+         population = population + nb
+         
+      def supprimerAisés(nb)
+         Si nb > nbAisés
+            Lever exception
+         nbAisés = nbAisés + nb
+         population = population + nb
+         
+      def ajouter_route(route)
+          liste_routes = route :: liste_routes
+          
+      def voisins
+         liste_routes.map (route => route.destination)
+         
+      def note /* Entre 0 et 1 */
+         niveau_accueil * population / monde.population_totale
+      
+      def générerVoyageurs(destination)
+          return Math.max(0, population * (destination.note - note)) 
+      
+      def update 
+         destinations_possibles = voisins.trier(par_note)
+         Pour chaque destination dans destinations_possibles
+            nbVoyageurs = générerVoyageurs(destination)
+            nbVoyageursRiches = nbVoyageurs * (nbRiches / population)
+            nbVoyageursPauvres = nbVoyageurs * (nbPauvres / population)
+            nbVoyageursAisés = nbVoyageurs - nbVoyageursRiches - nbVoyageursPauvres
+            Voyageur.essayer_voyager(self, destination, nbVoyageursRiches, 
+                                     nbVoyageursPauvres, nbVoyageursAisés)
 ```
 
-# Les PNJs
+Note : en gérant le nombre de riches, de pauvres et d’aisés comme un tableau, 
+il est possible d’avoir une seule méthode `ajouterHabitants` qui prend en paramètre
+le nombre d’habitants à ajouter et leur statut. De plus, cela permet de rajouter
+d’autres catégories de personnes facilement.
 
-Un PNJ est juste une donnée et n’est jamais vu. Il a un statut `RICHE`, `PAUVRE`, 
-`AISÉ` et un état, `WAITING`, `ON_ROAD`, `SETTLED`, qui permet de savoir quelle
-action il peut entreprendre et une ville correspondant à celle où il est.
+# Les Voyageur (anciennement PNJ)
 
-Un PNJ peut compter comme un groupe de plusieurs personnes (cela permettra avec 
-1000 PNJ par exemple d'en simuler 1 000 000).
+Un voyageur est juste une destination et un statut (riche, etc.). Il n’existe 
+dans le jeu que par le nombre de personnes dans un voyage ; ils sont alors
+regroupés par wagon, par statut et par destination (voir la spécification de 
+Voyage).
+  
+À chaque mise à jour, une ville génère des voyageurs qui veulent migrer. Ceux 
+qui trouvent un train le font ce qui fait baisser la population de la ville et
+augmente le nombre de voyageurs du train en question. 
 
-## Comment choisit-il sa destination
+Un voyageur peut compter comme un groupe de plusieurs personnes (cela permettra 
+avec 1000 voyageur par exemple d'en simuler 1 000 000).
 
-Un PNJ a une probabilité de migrer qui dépend de la note de sa ville. Il migre 
-dans la ville voisine qui a la meilleure note. En seconde instance, il pourrait 
-également ne pas choisir d’aller dans une ville voisine, mais d’aller plus loin 
-encore chose facilitée par les plans de route (voir partie sur les joueurs).
-
+Tout ceci montre qu’il n’y a pas besoin de classe pour le Voyageur 
+L’objet Voyageur sert juste à faire des calculs pour savoir comment un voyageur 
+en question choisit son train et consomme (modulo implémentation de la 
+consommation).
+ 
 ## Comment choisit-il son train
 
-La destination du joueur étant fixée, il regarde tous les voyages vers cette
+La destination du voyageur étant fixée, il regarde tous les voyages vers cette
 destination, et choisit la place suivant son statut (`RICHE` => confortable, 
-`PAUVRE` => le moins cher, `AISÉ` => le premier). En seconde instance, la 
-réputation du joueur pourrait être prise en compte.
-
-S'il n'y a aucun train allant là où il veut, il attend le tour suivant.
+`PAUVRE` => le moins cher, `AISÉ` => le premier (ou le meilleur rapport qualité 
+prix). En seconde instance, la réputation du joueur pourrait être prise en compte.
 
 ## Comment consomme-t-il (s’il le fait) ?
 
@@ -104,61 +145,50 @@ exemple 100 trucs qui coûtent chacun 10 euros, à chaque tour, le PNJ a une
 probabilité d’en acheter un. Cela rend également le système d’achat/vente plus 
 simple (s’il est implémenté). Le joueur achète simplement des trucs (on pourrait 
 prévoir 3 trucs, un à 10, un à 30 et un à 100), et choisit le prix de vente qu’il
-fixe par wagon ou par train.  
+fixe par wagon ou par train.
 
 ```
-class PNJ
+object Voyageur
    Attributs 
-      statut : RICHE, PAUVRE ou AISÉ
-      état : WAITING, ON_ROAD ou SETTLED
-      ville : la ville où il est
-      probabilité : la probabilité de bouger
-      destination : la destination
-      place : la place qu’il a acheté
+      places = []
       
    Méthodes
-      def veut_migrer
-         ville.note < probabilité
+      def essayerVoyager(départ, destination, nbRiches, nbPauvres, nbAisés)
+         voyages = monde.voyages.filtrer(voyage.état = WAITING et
+                                         voyage.ville = ville et 
+                                         voyage.destination = destination)
+         places = voyages.flatMap ( _.places_disponibles)     
+         places.trierPar(confort)
+         prendre_place(places, nbRiches, RICHE, départ.supprimerRiches)
+         places.trierPar(prix)
+         prendre_place(places, nbPauvres, PAUVRE, départ.supprimerPauvres)        
+         places.trierPar(confort / prix)
+         prendre_place(places, nbAisés, AISÉ, départ.supprimerAisés)
          
-      def chercher_destination
-         destination = ville.voisins.maxPar(note)
-         
-      def essayer_migrer
-         Si veut_migrer
-            chercher_destination
-            état = WAITING
-         Fin Si
-         
-      def chercher_voyage
-         voyages = monde.voyages.filtrer(voyage.état = WAITING et voyage.ville = ville)
-         Retourner Si pas de voyages 
-         places = voyages.flatMap (voyage => voyage.places_disponibles)
-         place = match statut with
-            RICH   => places.maxPar(confort)
-            PAUVRE => places.minPar(Prix)
-            AISÉ   => hd(places)
-          place.acheter
-          place = place
-          état = ON_ROAD
-          ville.supprimer_habitant
-          
-      def voyager 
-         Si place.voyage = ARRIVAL et place.voyage.ville = destination
-            place.libérer
-            ville = destination
-            ville.ajouterHabitant
-            état = SETTLED
-            place = null
-            destination = null
-         Sinon   
-            /* Consommer quand ce sera là */ 
-         
-      def update
-         match état with 
-            WAITING => chercher_voyage
-            SETTLED => essayer_migrer
-            ON_ROAD => voyager     
+      def prendre_place(places, nb_voyageurs, statut, destination 
+                        fonctionSuppressionHabitants)
+         nbPlacesAchetées = 0
+         Tant que nbPlaceAchetées > 0 && !places.isEmpty
+            place = places.head
+            nbPlaceAchetées = Math.max(nb_voyageurs, place.nbPlaces)
+            match statut 
+               RICHE  => place.ajouterRiches(nbPlaceAchetées, destination)
+               PAUVRE => place.ajouterPauvres(nbPlaceAchetées, destination)
+               AISÉ   => place.ajouterAisés(nbPlaceAchetées, destination)
+            Si !place.estDisponible
+               places = places.tail
+         fonctionSuppressionHabitants(nb_place_achetées)
 ```
+
+Note : Voyageur pas nécessairement utile, placer méthodes dans Monde ?
+
+Note 2 : là encore, gérer le nombre de riches, de pauvres et d’aisés comme un 
+tableau pourrait simplifier les choses.
+
+Note 3 : On se rend compte qu’en fait, une place correspond plus à un wagon en 
+route (voir comment bien nommer cette classe, peut-être `Salle`). On pourrait
+tout simplement rajouter à la classe Wagon un attribut `prix_place`, mais l’idée
+n’est pas plaisante car cela n’a de sens que quand le wagon est dans un voyage.
 
 # Les places
 
@@ -172,25 +202,133 @@ Class Place
       voyage : le voyage de la place
       prix : le prix de la place
       wagon : le wagon auquel il est associé
-      places : le nombre de place disponible
+      nbPlaces : le nombre de place disponible
+      riches : un tableau du nombre de riches par destination
+      pauvres : un tableau du nombre de pauvres par destination
+      aisés : un tableau du nombre d’aisés par destination
       
    Méthodes
-      def est_disponible
+      def estDisponible
          places > 0
          
-      def acheter
-         if non disponible
+      def nbVoyageurs
+         riches.somme + pauvres.somme + aisés.somme
+      
+      def nbRichesTo(destination)
+         riches[destination]
+         
+      def nbPauvresTo(destination)
+         pauvres[destination]
+         
+      def nbAisésTo(destination)
+         aisés[destination]
+      
+      def ajouterRiches(nbPlaceAchetées, destination)
+         Si nbPlacesAchetées > nbPlaces
             Lever exception
-         places = places - 1
-         Augmenter argent du possesseur du train du voyage
-        
-      def libérer
-         places = places + 1  
+         nbPlaces = nbPlaces - nbPlaceAchetées
+         riches[destination] += nbPlacesAchetées
+         voyage.possesseur.ajouterArgent(nbPlaceAchetées * prix)
+         
+      def ajouterPauvres(nbPlaceAchetées, destination)
+         Si nbPlacesAchetées > nbPlaces
+            Lever exception
+         nbPlaces = nbPlaces - nbPlaceAchetées
+         pauvres[destination] += nbPlacesAchetées
+         voyage.possesseur.ajouterArgent(nbPlaceAchetées * prix)
+      
+      def ajouterAisés(nbPlaceAchetées, destination)
+         Si nbPlacesAchetées > nbPlaces
+            Lever exception
+         nbPlaces = nbPlaces - nbPlaceAchetées
+         aisés[destination] += nbPlacesAchetées
+         voyage.possesseur.ajouterArgent(nbPlaceAchetées * prix)
+
+      def retirerRiches(nbPlacesLibérés, destination)
+         /* Vérifier que c’est plus petit que la capacité du wagon */
+         nbPlaces = nbPlaces + nbPlacesLibérés
+         riches[destination] -= nbPlacesLibérés
+      
+      def retirerPauvres(nbPlacesLibérés, destination)
+         /* Vérifier que c’est plus petit que la capacité du wagon */
+         nbPlaces = nbPlaces + nbPlacesLibérés
+         pauvres[destination] -= nbPlacesLibérés
+         
+      def retirerAisés(nbPlacesLibérés, destination)
+         /* Vérifier que c’est plus petit que la capacité du wagon */
+         nbPlaces = nbPlaces + nbPlacesLibérés
+         aisés[destination] -= nbPlacesLibérés
 
       def niveau_de_confort
          wagon.niveau_de_confort
-         
 ``` 
+
+# Les voyages
+
+Un voyage est composé d’un train, d’une liste de route à emprunter, d’une ville,
+de la route actuelle, de ses voyageurs et de la distance déjà parcourue sur 
+cette route. 
+
+Il a également un état `ON_ROAD` ou `WAITING`, `WAITING` signifiant qu’il est 
+sur une ville et attend des passagers et une liste de billets.
+
+```
+Class Voyage
+   Attributs
+      possesseur : le possesseur du voyage
+      train : le train du voyage
+      listeRoutes : la liste des routes à emprunter
+      ville : la ville actuelle
+      route : la route actuelle
+      distanceParcourue : la distance parcourue sur la route actuelle
+      listePlaces : liste de places pour ce voyage
+      état : ON_ROAD, ARRIVAL ou WAITING      
+      
+   Méthodes
+      def débarquerVoyageurs
+         Pour chaque place de listePlaces
+            ville.ajouterRiches(place.nbRichesTo(ville))
+            place.retirerRiches(place.nbRichesTo(ville), ville)
+            ville.ajouterPauvres(place.nbPauvresTo(ville))
+            place.retirerPauvres(place.nbPauvresTo(ville), ville)
+            ville.ajouterAisés(place.nbAisésTo(ville))
+            place.retirerAises(place.nbAisésTo(ville), ville)
+         
+      def nbVoyageurs
+         somme(listesPlaces.nbVoyageurs)
+         
+      def update(dt)
+         Si ON_ROAD
+            distanceParcourue += train.vitesse * Game.world.real_time_to_game(dt)
+            Si distanceParcourue >= route.distance
+               distanceParcourue = 0
+               état = ARRIVAL
+            Fin Si
+         Sinon si ARRIVAL
+            train.détériorer(route)
+            état = WAITING
+            listeRoutes = tl(listeRoutes)
+            route = hd(listeRoutes)
+            débarquerVoyageurs
+         Sinon /* état = WAITING */  
+            état = ON_ROAD
+            ville = route.destination
+         Fin Si
+
+      def places_disponibles
+          [place de listePlaces où place.disponible]
+          
+      def est_terminé
+         liste_routes = []
+        
+      def destination
+         Si est_terminé
+            Lever exception
+         hd(listes_routes).arrivée
+         
+      def destination_finale
+         listesRoutes.last.arrivée
+```
 
 # Le monde 
 
@@ -199,14 +337,14 @@ Le monde est composé de villes, de PNJs, de joueurs, et de voyages.
 ```
 Class Monde
    Attributs
-      liste_villes : la liste des villes du monde      
-      liste_voyages : la liste des voyages en cours
-      liste_PNJs : la liste des PNJs
-      population_totale : le nombre de PNJS
+      listeVilles : la liste des villes du monde      
+      listeVoyages : la liste des voyages en cours
+      population : la population du monde
       
    Méthodes
-      def ajouter_ville(ville)
-          liste_villes = ville :: liste_villes
+      def ajouterVille(ville)
+          listeVilles = ville :: listeVilles
+          population = population + ville.population
 
       def ajouter_voyage(voyage)
           liste_voyages = voyage :: liste_voyages
@@ -214,48 +352,10 @@ Class Monde
       def update(ville)
          Pour chaque voyage de liste_voyages
             voyage.update
-         Fin Pour
-         Pour chaque PNJ de liste_PNJs
-             PNJ.update
-         Fin Pour
+         Pour chaque ville de listeVilles
+            ville.update
          liste_voyages = liste_voyage.filtrer(voyage.est_terminé)               
-```  
- 
-# Les villes
-
-Une ville a une position, un niveau d’accueil, et des routes. Elle a un 
-certain nombre d’habitants qui varie suivant les déplacements des PNJs. Peut-être
-ajouter une « capacité ». 
-
-Elle a également une note dépendant de sa population et de son niveau d’accueil.
-
 ```
-Class Ville
-   Attributs
-      x : sa coordonnée x dans le monde 
-      y : sa coordonnée y dans le monde
-      liste_routes : la liste des routes
-      population : la population de cette ville
-      niveau_accueil : le niveau d’accueil de cette ville /* Entre 0 et 1 */
-      
-   Méthodes
-      def ajouterHabitant
-         population = population + 1
-         
-      def supprimer_habitant
-         population = population - 1
-         
-      def ajouter_route(route)
-          liste_routes = route :: liste_routes
-          
-      def voisins
-         liste_routes.map (route => route.destination)
-         
-      def note /* Entre 0 et 1 */
-         niveau_accueil * population / monde.population_totale
-```
-
-
 
 # Les locomotives
 

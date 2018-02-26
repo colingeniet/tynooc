@@ -13,7 +13,9 @@ import scalafx.scene.paint.Color._
 
 import gui.draw._
 import gui.scenes.elements._
-import logic.world.World
+import logic.world._
+import logic.town._
+import logic.route._
 
 
 /** Main map class.
@@ -22,10 +24,7 @@ import logic.world.World
  *  @param displayTown callback function used to display town details.
  *  @param displayRoute callback function used to display route details.
  */
-class Map(
-  world: World,
-  displayTown: World.Town => Unit,
-  displayRoute: World.Route => Unit)
+class Map(world: World, displayTown: Town => Unit, displayRoute: Route => Unit)
 extends ScrollPane with Drawable {
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
@@ -44,7 +43,7 @@ extends ScrollPane with Drawable {
     maxScale = 4
 
     /** Display a town. */
-    private def addTown(town: World.Town): Unit = {
+    private def addTown(town: Town): Unit = {
       // town is displayed as a point
       var point: Circle = new Circle()
       point.centerX = town.x
@@ -68,7 +67,7 @@ extends ScrollPane with Drawable {
     }
 
     /** Display a route. */
-    private def addRoute(route: World.Route): Unit = {
+    private def addRoute(route: Route): Unit = {
       var line: Line = new Line()
       line.startX = route.start.x
       line.startY = route.start.y

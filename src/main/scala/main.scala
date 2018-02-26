@@ -2,22 +2,31 @@ import scalafx.Includes._
 import scalafx.application.JFXApp
 
 import gui.MainStage
-import logic.world.World
+import logic.world._
+import logic.game._
+import logic.town._
 
 object MainJFXApp extends JFXApp {
-  var world: World = new World
-  var town1: World.Town = new World.Town("Tyn", 100, 200, 0.4)
-  var town2: World.Town = new World.Town("Nooc", 1500, 300, 0.6)
-  var town3: World.Town = new World.Town("Test", 300, 1500, 0.5)
+  Game.world = new World()
+  var town1: Town = new Town("Cachan", 500, 300, 1)
+  var town2: Town = new Town("Rennes", 50, 250, 0.6)
+  var town3: Town = new Town("Ulm", 500, 200, 0.7)
+  var town4: Town = new Town("Lyon", 700, 700, 0.85)
+
   town1.addRoute(town2, 100)
   town2.addRoute(town1, 100)
   town3.addRoute(town2, 150)
   town2.addRoute(town3, 150)
-  world.addTown(town1)
-  world.addTown(town2)
-  world.addTown(town3)
+  town1.addRoute(town2, 100)
+  town2.addRoute(town1, 100)
+  town3.addRoute(town2, 150)
+  town2.addRoute(town3, 150)
+  Game.world.addTown(town1)
+  Game.world.addTown(town2)
+  Game.world.addTown(town3)
+  Game.world.addTown(town4)
 
   var mainstage = new MainStage
-  mainstage.world = world
+  mainstage.world = Game.world
   stage = mainstage
 }
