@@ -5,7 +5,7 @@ import logic.route._
 import logic.game._
 import logic.world._
 
-object TownId {
+private object TownId {
   private var id = 0
   def nextId: Int = { id += 1; id }
 }
