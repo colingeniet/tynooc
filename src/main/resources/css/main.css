@@ -1,3 +1,11 @@
+VBox, HBox {
+    -fx-background-color: #666666;
+}
+
+.scroll-pane {
+    -fx-background: #666666;
+}
+
 .button {
     -fx-text-fill: white;
     -fx-font-weight: bold;
@@ -31,12 +39,4 @@
 
 .map {
     -fx-background-color: #664444;
-}
-
-VBox {
-    -fx-background-color: #606060;
-}
-
-HBox {
-    -fx-background-color: #606060;
 }
