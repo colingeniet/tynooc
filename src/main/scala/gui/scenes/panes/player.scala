@@ -14,8 +14,8 @@ class PlayerInfo(
   player: Player,
   detailTrain: Train => Unit,
   detailEngine: Engine => Unit,
-  detailCarriage: Carriage => Unit
-) extends DrawableVBox {
+  detailCarriage: Carriage => Unit)
+extends DrawableVBox {
   // general info
   private var money: Label = new Label()
 
@@ -77,8 +77,7 @@ class PlayerInfo(
       enginesButton,
       carriagesButton,
       sep2,
-      list
-    )
+      list)
   }
 
   override def draw(): Unit = {
@@ -96,8 +95,7 @@ extends ScrollPane {
         onAction = (event: ActionEvent) => detail(train)
         styleClass.remove("radio-button")
         styleClass.add("link")
-      }
-    )
+      })
   list.foreach(group.toggles.add(_))
 
   content = new VBox(3) {
@@ -115,8 +113,7 @@ extends ScrollPane {
         onAction = (event: ActionEvent) => detail(carriage)
         styleClass.remove("radio-button")
         styleClass.add("link")
-      }
-    )
+      })
   list.foreach(group.toggles.add(_))
 
   content = new VBox(3) {
@@ -134,8 +131,7 @@ extends ScrollPane {
         onAction = (event: ActionEvent) => detail(engine)
         styleClass.remove("radio-button")
         styleClass.add("link")
-      }
-    )
+      })
   list.foreach(group.toggles.add(_))
 
   content = new VBox(3) {

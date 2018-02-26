@@ -39,8 +39,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
     player,
     displayTrain,
     displayEngine,
-    displayCarriage
-  )
+    displayCarriage)
 
   private var right: DrawableVBox = new DrawableVBox()
   private var bottom: DrawableHBox = new DrawableHBox()
@@ -51,8 +50,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
     top,
     right,
     bottom,
-    left
-  )
+    left)
 
   root = pane
 

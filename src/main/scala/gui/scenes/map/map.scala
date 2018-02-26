@@ -34,7 +34,7 @@ extends ScrollPane with Drawable {
     world.towns.foreach {
       town => {
         addTown(town)
-        town.routes.foreach{ route => addRoute(route) }
+        town.routes.foreach(addRoute(_))
       }
     }
 

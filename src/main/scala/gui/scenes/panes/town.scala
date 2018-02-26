@@ -28,14 +28,12 @@ extends DrawableHBox {
     new Separator{ orientation = Orientation.Vertical },
     popLbl,
     new Separator{ orientation = Orientation.Vertical },
-    new Label("Routes to : ")
-  )
+    new Label("Routes to : "))
 
   // add all clickable routes
   town.routes.foreach { route =>
     var label: Link = new Link(route.end.name + "(" + route.length + "), ")(
-      displayRoute(route)
-    )
+      displayRoute(route))
     children.add(label)
   }
 
@@ -59,8 +57,7 @@ extends DrawableHBox {
     new Label("-"),
     new Link(route.end.name)(displayTown(route.end)),
     new Separator{ orientation = Orientation.Vertical },
-    new Label("Distance : " + route.length)
-  )
+    new Label("Distance : " + route.length))
 
   spacing = 3
 }

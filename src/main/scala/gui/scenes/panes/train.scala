@@ -32,8 +32,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
         onAction = (event: ActionEvent) => displayCarriage(carriage)
         styleClass.remove("radio-button")
         styleClass.add("link")
-      }
-    )
+      })
 
   // add all newly created buttons to the group
   carriagesList.foreach(buttonGroup.toggles.add(_))
@@ -67,8 +66,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
       trainLink,
       carriagesPane,
       sep,
-      detail
-    )
+      detail)
   }
 
   /** Display engine detail in the lower panel */

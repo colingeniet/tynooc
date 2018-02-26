@@ -58,8 +58,7 @@ class CarriageModelStats(model: CarriageModel) extends VBox(3) {
   children = List (
     new Label("cap. : " + model.capacity),
     new Label("weight : " + model.weight),
-    new Label("comfort : " + model.comfort)
-  )
+    new Label("comfort : " + model.comfort))
 }
 
 /** Engine model info display.
@@ -72,6 +71,5 @@ class EngineModelStats(model: EngineModel) extends VBox(3) {
     new Label("power : " + model.power),
     new Label("weight : " + model.weight),
     new Label("fuel cap. : " + model.fuelCapacity),
-    new Label("consum. : " + model.consumption)
-  )
+    new Label("consum. : " + model.consumption))
 }
