@@ -26,7 +26,7 @@ extends VBox {
   private var list: Node = new Pane()
 
   setChildren()
-
+  
   private def displayTrains(): Unit = {
     list = new TrainList(player.trains, detailTrain)
     setChildren()

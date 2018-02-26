@@ -27,7 +27,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   private var top: DrawableHBox = new panes.Menu(menuBtn)
 
   private var player: Player = new Player()
-  player.addMoney(100000)
+  player.addMoney(100)
   player.buyEngine("Basic")
   player.buyEngine("Basic")
   player.buyEngine("Advanced")

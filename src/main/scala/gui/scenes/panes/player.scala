@@ -30,7 +30,7 @@ extends DrawableVBox {
   private var stock: PlayerStock =
     new PlayerStock(player, detailTrain, detailEngine, detailCarriage)
 
-  private var models: ModelsList = new ModelsList
+  private var models: ModelsList = new ModelsList(player, updateStock)
 
   spacing = 5
   draw()
@@ -54,6 +54,11 @@ extends DrawableVBox {
   private def displayModels(): Unit = {
     panel = models
     setChildren()
+  }
+
+  private def updateStock(): Unit = {
+    stock = new PlayerStock(player, detailTrain, detailEngine, detailCarriage)
+    money.text = player.money + "$"
   }
 
   override def draw(): Unit = {
