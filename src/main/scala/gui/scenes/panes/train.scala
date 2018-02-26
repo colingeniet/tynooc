@@ -17,6 +17,7 @@ import logic.train._
  *  @param train the train to display.
  */
 class TrainDetail(train: Train) extends DrawableVBox {
+  // button group - only select one carriage at a time
   private var buttonGroup: ToggleGroup = new ToggleGroup
 
   // list of carriages
@@ -34,6 +35,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
       }
     )
 
+  // add all newly created buttons to the group
   carriagesList.foreach(buttonGroup.toggles.add(_))
 
   // scroll pane containinng the list of carriages
@@ -53,39 +55,42 @@ class TrainDetail(train: Train) extends DrawableVBox {
   }
   buttonGroup.toggles.add(trainLink)
   private var sep: Separator = new Separator()
+  // bottom panel for detailed statistics
+  private var detail: DrawableVBox = new DrawableVBox()
 
   displayTrain()
   spacing = 3
 
+
+  private def setChildren(): Unit = {
+    children = List(
+      trainLink,
+      carriagesPane,
+      sep,
+      detail
+    )
+  }
+
+  /** Display engine detail in the lower panel */
   private def displayEngine(engine: Engine): Unit = {
-    children = List(
-      trainLink,
-      carriagesPane,
-      sep,
-      new EngineDetail(engine)
-    )
+    detail = new EngineDetail(engine)
+    setChildren()
   }
 
+  /** Display carriage detail in the lower panel */
   private def displayCarriage(carriage: Carriage): Unit = {
-    children = List(
-      trainLink,
-      carriagesPane,
-      sep,
-      new CarriageDetail(carriage)
-    )
+    detail = new CarriageDetail(carriage)
+    setChildren()
   }
 
+  /** Display train detail in the lower panel */
   private def displayTrain(): Unit = {
-    children = List(
-      trainLink,
-      carriagesPane,
-      sep,
-      stats,
-    )
+    detail = stats
+    setChildren()
   }
 
   override def draw(): Unit = {
-    stats.draw()
+    detail.draw()
   }
 }
 
