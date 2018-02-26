@@ -8,7 +8,7 @@ import scalafx.event._
 import scalafx.geometry._
 
 import gui.draw._
-import gui.scenes.elements.Link
+import gui.scenes.elements._
 import gui.scenes.panes._
 import logic.train._
 
@@ -17,55 +17,29 @@ import logic.train._
  *  @param train the train to display.
  */
 class TrainDetail(train: Train) extends DrawableVBox {
-  // button group - only select one carriage at a time
-  private var buttonGroup: ToggleGroup = new ToggleGroup
-
-  // list of carriages
-  private var carriagesList: List[RadioButton] =
-    new RadioButton(train.engine.model.name + " engine") {
-      onAction = (event: ActionEvent) => displayEngine(train.engine)
-      styleClass.remove("radio-button")
-      styleClass.add("link")
-    } ::
-    train.carriages.map(carriage =>
-      new RadioButton(carriage.model.name + " carriage") {
-        onAction = (event: ActionEvent) => displayCarriage(carriage)
-        styleClass.remove("radio-button")
-        styleClass.add("link")
-      })
-
-  // add all newly created buttons to the group
-  carriagesList.foreach(buttonGroup.toggles.add(_))
-
-  // scroll pane containinng the list of carriages
-  private var carriagesPane: ScrollPane = new ScrollPane {
-    content = new VBox(3) {
-      children = carriagesList
-    }
-    hbarPolicy = ScrollPane.ScrollBarPolicy.Never
-  }
+  private var list: SelectionMenu = new SelectionMenu()
+  list.addMenu(
+    train.engine.model.name + " engine",
+    displayEngine(train.engine))
+  train.carriages.foreach(carriage =>
+    list.addMenu(carriage.model.name + " carriage", displayCarriage(carriage)))
 
   // train statistics
   private var stats: TrainStats = new TrainStats(train)
-  private var trainLink: RadioButton = new RadioButton("Train") {
-    onAction = (event: ActionEvent) => displayTrain()
-    styleClass.remove("radio-button")
-    styleClass.add("link")
-  }
-  buttonGroup.toggles.add(trainLink)
-  private var sep: Separator = new Separator()
+  private var sep1: Separator = new Separator()
+  private var sep2: Separator = new Separator()
   // bottom panel for detailed statistics
   private var detail: DrawableVBox = new DrawableVBox()
 
-  displayTrain()
   spacing = 3
-
+  setChildren()
 
   private def setChildren(): Unit = {
     children = List(
-      trainLink,
-      carriagesPane,
-      sep,
+      stats,
+      sep1,
+      list,
+      sep2,
       detail)
   }
 
@@ -81,13 +55,8 @@ class TrainDetail(train: Train) extends DrawableVBox {
     setChildren()
   }
 
-  /** Display train detail in the lower panel */
-  private def displayTrain(): Unit = {
-    detail = stats
-    setChildren()
-  }
-
   override def draw(): Unit = {
+    stats.draw()
     detail.draw()
   }
 }
