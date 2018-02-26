@@ -25,7 +25,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   // panes contents
   private var top: DrawableHBox = new panes.Menu(menuBtn)
   // empty by default
-  private var left: DrawableVBox = new Player()
+  private var left: DrawableVBox = new PlayerInfo()
   private var right: DrawableVBox = new TrainDetail(
     new Train(new Engine("Basic"), List(new Carriage("Basic"), new Carriage("Advanced")))
   )
