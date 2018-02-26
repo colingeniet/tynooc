@@ -1,6 +1,5 @@
 package logic.train
 
-import logic.world._
 import logic.route._
 
 import collection.mutable.HashMap
