@@ -16,6 +16,7 @@ import logic.world.World
 
 //TEMPORARY
 import logic.train._
+import logic.player._
 
 class Game(sceneModifier: MainStage.States.Val=>Unit)
 extends MainStage.Scene(sceneModifier) with Drawable {
@@ -24,11 +25,24 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   // panes contents
   private var top: DrawableHBox = new panes.Menu(menuBtn)
-  // empty by default
-  private var left: DrawableVBox = new PlayerInfo()
-  private var right: DrawableVBox = new TrainDetail(
-    new Train(new Engine("Basic"), List(new Carriage("Basic"), new Carriage("Advanced")))
+
+  private var player: Player = new Player()
+  player.addMoney(100000)
+  player.buyEngine("Basic")
+  player.buyEngine("Basic")
+  player.buyEngine("Advanced")
+  player.buyCarriage("Basic")
+  player.buyCarriage("Basic")
+  player.buyCarriage("Advanced")
+  player.assembleTrain(player.engines.head, player.carriages.tail)
+  private var left: DrawableVBox = new PlayerInfo(
+    player,
+    displayTrain,
+    displayEngine,
+    displayCarriage
   )
+
+  private var right: DrawableVBox = new DrawableVBox()
   private var bottom: DrawableHBox = new DrawableHBox()
   private var center: Map = new Map(world, displayTown, displayRoute)
 
@@ -49,13 +63,28 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
 
   private def displayTown(town: World.Town): Unit = {
-    bottom = new panes.TownInfo(town, displayRoute)
+    bottom = new TownInfo(town, displayRoute)
     pane.bottom = bottom
   }
 
   private def displayRoute(route: World.Route): Unit = {
-    bottom = new panes.RouteInfo(route, displayTown)
+    bottom = new RouteInfo(route, displayTown)
     pane.bottom = bottom
+  }
+
+  private def displayTrain(train: Train): Unit = {
+    right = new TrainDetail(train)
+    pane.right = right
+  }
+
+  private def displayEngine(engine: Engine): Unit = {
+    right = new EngineDetail(engine)
+    pane.right = right
+  }
+
+  private def displayCarriage(carriage: Carriage): Unit = {
+    right = new CarriageDetail(carriage)
+    pane.right = right
   }
 
   def world: World = _world

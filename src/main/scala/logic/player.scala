@@ -13,10 +13,10 @@ class Travel(t: Train, l : List[World.Route], own: Player, tl : List[Ticket]) {
   object State {
     sealed trait Val
     case object WAITING extends Val //Waiting for passengers
-    case object ON_ROAD extends Val 
-    case object ARRIVED extends Val //Passengers are leaving now  
+    case object ON_ROAD extends Val
+    case object ARRIVED extends Val //Passengers are leaving now
   }
-  
+
   if(! own.trains.contains(t))
     throw new IllegalArgumentException("The player doesn't own the train !")
 
@@ -73,7 +73,7 @@ class Travel(t: Train, l : List[World.Route], own: Player, tl : List[Ticket]) {
       case State.ON_ROAD => {
 
         distance_done += World.real_to_virtual_time(dt)*train.engine.model.speed
-        
+
         if(distance_done > route.length)
         {
           state = State.ARRIVED
@@ -123,27 +123,27 @@ class Player() {
   def addMoney(m: Int): Unit = {
     money += m
   }
-  
+
   def buyEngine(name: String): Unit = {
     var c = EngineModel(name)
-    if (c.price >= money) {
+    if (c.price <= money) {
       this.money -= c.price
-      engines = (new Engine(c))::engines
+      engines = new Engine(c) :: engines
     }
   }
 
   def buyCarriage(name: String): Unit = {
     var c = CarriageModel(name)
-    if (c.price >= money) {
+    if (c.price <= money) {
       this.money -= c.price
-      carriages = (new Carriage(c))::carriages
+      carriages = new Carriage(c) :: carriages
     }
   }
 
   def assembleTrain(e: Engine, c: List[Carriage]): Unit = {
     engines = engines diff List(e)
     carriages = carriages diff List(c)
-    trains = (new Train(e, c))::trains
+    trains = new Train(e, c) :: trains
   }
 
   def launchTravel(train:Train, to:World.Town): Unit = {
