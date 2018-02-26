@@ -1,9 +1,8 @@
 package logic.player
 
-import logic.world._
 import logic.train._
 import logic.travel._
-import logic.room._
+import logic.town._
 
 object PriceSimulation {
   def upgradePrice(from: Engine, to: EngineModel): Double = {
@@ -15,6 +14,7 @@ object PriceSimulation {
   }
 }
 
+
 class Player() {
   var trains: List[Train] = List()
   var carriages: List[Carriage] = List()
@@ -23,9 +23,7 @@ class Player() {
 
   var money: Double = 0
 
-  def addMoney(m: Int): Unit = {
-    money += m
-  }
+  def addMoney(m: Double): Unit = money += m
 
   def buyEngine(name: String): Unit = {
     var c = EngineModel(name)
