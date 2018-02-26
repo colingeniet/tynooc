@@ -42,7 +42,8 @@ extends Graph.Vertice {
 
 
   def addRoute(route: Route): Unit = {
-    /* Check if route.start == this */
+    if(route.start != this)
+      throw new IllegalArgumentException("route should start from $name town")
     _routes = route :: _routes
   }
 
