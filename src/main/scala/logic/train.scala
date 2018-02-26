@@ -1,6 +1,7 @@
 package logic.train
 
-import logic.world._
+import logic.route._
+
 import collection.mutable.HashMap
 
 /** A class mapping names to objects.
@@ -79,6 +80,8 @@ class Engine(var _model: EngineModel) {
   }
 
   def this(name: String) = this(EngineModel(name))
+  
+  def speed:Double = model.speed
 }
 
 /** A carriages
@@ -95,7 +98,10 @@ class Carriage(var _model: CarriageModel) {
     health = 100
   }
 
+  def capacity: Int = model.capacity
   def this(name: String) = this(CarriageModel(name))
+  
+  def comfort:Double = model.comfort
 }
 
 
@@ -106,7 +112,7 @@ class Train (var engine: Engine, var carriages: List[Carriage]) {
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
   }
 
-  def deteriorate(r:World.Route): Unit = {
+  def deteriorate(r:Route): Unit = {
     engine.health -= Math.max(0, engine.health - 10)
     carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
   }
