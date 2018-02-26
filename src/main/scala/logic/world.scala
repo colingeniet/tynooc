@@ -18,7 +18,6 @@ object Status {
 }
 
 class World extends Graph {
-
   var status = List(Status.RICH, Status.POOR, Status.WELL)
   var statusNumber = 3
   var townNumber = 0
@@ -48,7 +47,6 @@ class World extends Graph {
 }
 
 object World {
-
   def realToVirtualTime(t: Double) : Double = 50*t
   def virtualToRealTime(t: Double) : Double = t/50
 }

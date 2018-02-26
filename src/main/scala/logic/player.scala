@@ -68,6 +68,6 @@ class Player() {
   def update(dt: Double): Unit = {
     travels.foreach{ t:Travel => t.update(dt)}
   }
-  
+
   def owns(train: Train):Boolean = trains.contains(train)
 }

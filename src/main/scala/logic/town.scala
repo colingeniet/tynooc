@@ -10,9 +10,12 @@ object TownId {
   def nextId: Int = { id += 1; id }
 }
 
-class Town(val name: String, val x: Double, val y: Double,
-           val welcomingLevel: Double) extends Graph.Vertice {
-
+class Town(
+  val name: String,
+  val x: Double,
+  val y: Double,
+  val welcomingLevel: Double)
+extends Graph.Vertice {
   val id = TownId.nextId
   private var residents: Array[Int] = new Array(Game.world.statusNumber)
   private var _routes: List[Route] = List()
@@ -20,18 +23,22 @@ class Town(val name: String, val x: Double, val y: Double,
   def routes: List[Route] = _routes
   def incidentEdges: List[Route] = routes
   def neighbours: List[Town] = routes.map { _.end }
-  def note: Double = welcomingLevel * (1 + population) / (1 + Game.world.population) /* + 1 to avoid division by zero */
   def population: Int = residents.sum
+  def note: Double =
+    /* + 1 to avoid division by zero */
+    welcomingLevel * (1 + population) / (1 + Game.world.population)
 
-  def addResidents(nb: Int, status: Status.Val): Unit = residents(status.id) += nb
+  def addResidents(nb: Int, status: Status.Val): Unit =
+    residents(status.id) += nb
 
   def deleteResidents(nb: Int, status: Status.Val): Unit = {
     if(nb > residents(status.id))
       throw new IllegalArgumentException("population should stay positive")
     residents(status.id) -= nb
   }
-  
-  def generateMigrant(to: Town):Int = Math.max(0, population * (to.note - note)).toInt
+
+  def generateMigrant(to: Town): Int =
+    Math.max(0, population * (to.note - note)).toInt
 
 
   def addRoute(route: Route): Unit = {

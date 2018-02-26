@@ -10,9 +10,9 @@ import logic.game._
 
 object State {
   sealed trait Val
-  case object WAITING extends Val //Waiting for passengers
-  case object ON_ROAD extends Val
-  case object ARRIVED extends Val //Passengers are leaving now
+  case object Waiting extends Val //Waiting for passengers
+  case object OnRoad extends Val
+  case object Arrived extends Val //Passengers are leaving now
 }
 
 class Travel(val train: Train, private val roads: List[Route],
@@ -26,7 +26,7 @@ class Travel(val train: Train, private val roads: List[Route],
   private var remainingRoads: List[Route] = roads
   private var actualRoad: Route = remainingRoads.head
   private var actualTown: Town = actualRoad.start
-  private var state: State.Val = State.WAITING
+  private var state: State.Val = State.Waiting
   /* private var actualRoadIndex = 0 */
 
   def next_step: Town = actualRoad.end
@@ -40,9 +40,9 @@ class Travel(val train: Train, private val roads: List[Route],
 
   def passengerNumber: Int = (rooms.map { _.passengerNumber}).sum
 
-  def isWaiting: Boolean = state == State.WAITING
-  def isOnRoad: Boolean = state == State.ON_ROAD
-  def isArrived: Boolean = state == State.ARRIVED
+  def isWaiting: Boolean = state == State.Waiting
+  def isOnRoad: Boolean = state == State.OnRoad
+  def isArrived: Boolean = state == State.Arrived
 
   def availableRooms: List[Room] = rooms.filter { _.isAvailable }
 
@@ -59,22 +59,22 @@ class Travel(val train: Train, private val roads: List[Route],
     if(isDone)
       return
     state match {
-      case State.ON_ROAD => {
+      case State.OnRoad => {
         distanceDone = distanceDone + World.realToVirtualTime(dt) * train.engine.speed
         if(distanceDone >= actualRoad.length) {
-          state = State.ARRIVED
+          state = State.Arrived
           distanceDone = 0
         }
       }
-      case State.ARRIVED => {
+      case State.Arrived => {
         train.deteriorate(actualRoad)
-        state = State.WAITING
+        state = State.Waiting
         remainingRoads = remainingRoads.tail
         /* actualRoadIndex += 1 */
         actualRoad = remainingRoads.head
       }
-      case State.WAITING => {
-        state = State.ON_ROAD
+      case State.Waiting => {
+        state = State.OnRoad
         actualTown = actualRoad.destination
       }
     }
