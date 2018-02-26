@@ -22,9 +22,9 @@ class Town(val name: String, val x: Double, val y: Double,
   def neighbours: List[Town] = routes.map { _.end }
   def note: Double = welcomingLevel * (1 + population) / (1 + Game.world.population) /* + 1 to avoid division by zero */
   def population: Int = residents.sum
-  
+
   def addResidents(nb: Int, status: Status.Val): Unit = residents(status.id) += nb
-    
+
   def deleteResidents(nb: Int, status: Status.Val): Unit = {
     if(nb > residents(status.id))
       throw new IllegalArgumentException("population should stay positive")
@@ -46,7 +46,7 @@ class Town(val name: String, val x: Double, val y: Double,
   def update(dt: Double): Unit = {
     val p = population
     val possibleDestinations = neighbours.sortBy { _.note }
-    possibleDestinations.foreach { destination => 
+    possibleDestinations.foreach { destination =>
       val migrantNumber = generateMigrant(destination)
       val byStatus = residents.map { r => (migrantNumber * r / p).toInt }
       Game.world.tryTravel(this, destination, byStatus)

@@ -26,12 +26,12 @@ trait Graph {
    * @param to   end vertice.
    * @return The list of vertices in the path, in order.
    */
-  def findPath(from: Graph.Vertice, to: Graph.Vertice) : List[Graph.Vertice] = {
+  def findPath(from: Graph.Vertice, to: Graph.Vertice) : Option[List[Graph.Edge]] = {
     // Dijkstra
     var closed: HashSet[Graph.Vertice] = new HashSet()
     var open: HashSet[Graph.Vertice] = new HashSet()
     var dist: HashMap[Graph.Vertice, Double] = new HashMap()
-    var path: HashMap[Graph.Vertice, List[Graph.Vertice]] = new HashMap()
+    var path: HashMap[Graph.Vertice, List[Graph.Edge]] = new HashMap()
     dist(from) = 0
     open.add(from)
     path(from) = List()
@@ -42,17 +42,17 @@ trait Graph {
         if(!open(e.end) && !closed(e.end)) {
           open.add(e.end)
           dist(e.end) = dist(v) + e.weight
-          path(e.end) = v :: path(v)
+          path(e.end) = e :: path(v)
         } else if(open(e.end) && dist(e.end) > dist(v) + e.weight) {
           dist(e.end) = dist(v) + e.weight
-          path(e.end) = v :: path(v)
+          path(e.end) = e :: path(v)
         }
       }
       open.remove(v)
       closed.add(v)
     }
 
-    path(to)
+    path.get(to)
   }
 }
 
