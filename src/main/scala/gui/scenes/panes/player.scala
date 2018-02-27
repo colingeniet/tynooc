@@ -26,6 +26,7 @@ extends DrawableVBox {
 
   menu.addMenu("stock", displayStock())
   menu.addMenu("models", displayModels())
+  menu.addMenu("assemble", assemblePane())
 
   private var stock: PlayerStock =
     new PlayerStock(player, detailTrain, detailEngine, detailCarriage)
@@ -53,6 +54,11 @@ extends DrawableVBox {
 
   private def displayModels(): Unit = {
     panel = models
+    setChildren()
+  }
+
+  private def assemblePane(): Unit = {
+    panel = new Label("assemble")
     setChildren()
   }
 
