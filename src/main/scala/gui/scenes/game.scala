@@ -12,7 +12,9 @@ import gui.draw._
 import gui.scenes.map._
 import gui.scenes.panes._
 import gui.scenes.elements._
-import logic.world.World
+import logic.world._
+import logic.town._
+import logic.route._
 
 //TEMPORARY
 import logic.train._
@@ -60,12 +62,12 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
 
-  private def displayTown(town: World.Town): Unit = {
+  private def displayTown(town: Town): Unit = {
     bottom = new TownInfo(town, displayRoute)
     pane.bottom = bottom
   }
 
-  private def displayRoute(route: World.Route): Unit = {
+  private def displayRoute(route: Route): Unit = {
     bottom = new RouteInfo(route, displayTown)
     pane.bottom = bottom
   }

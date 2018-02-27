@@ -1,6 +1,7 @@
 package logic.train
 
-import logic.world._
+import logic.route._
+
 import collection.mutable.HashMap
 
 /** A class mapping names to objects.
@@ -27,7 +28,8 @@ class EngineModel(
   val speed: Double,
   val fuelCapacity: Double,
   val consumption: Double,
-  name: String, price: Double, upgrades: List[String]) extends Model(name, price, upgrades)
+  name: String, price: Double, upgrades: List[String])
+extends Model(name, price, upgrades)
 
 /** EngineModel companion object.
  *
@@ -37,8 +39,8 @@ object EngineModel extends NameMap[EngineModel] {
   private var _models: HashMap[String, EngineModel] =
     HashMap(
       "Basic" -> new EngineModel(50, 50, 70, 25, 15, "Basic", 5, List("Advanced")),
-      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, "Advanced", 10, List())
-    )
+      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, "Advanced", 10, List()))
+
   override def models = _models
 }
 
@@ -47,7 +49,8 @@ class CarriageModel(
   val weight: Double,
   val capacity: Int,
   val comfort: Double,
-  name: String, price: Double, upgrades: List[String]) extends Model(name, price, upgrades)
+  name: String, price: Double, upgrades: List[String])
+extends Model(name, price, upgrades)
 
 /** CarriageModel companion object.
  *
@@ -57,8 +60,8 @@ object CarriageModel extends NameMap[CarriageModel] {
   private var _models: HashMap[String, CarriageModel] =
     HashMap(
       "Basic" -> new CarriageModel(50, 50, 10, "Basic", 5, List("Advanced")),
-      "Advanced" -> new CarriageModel(50, 50, 15, "Advanced", 10, List())
-    )
+      "Advanced" -> new CarriageModel(50, 50, 15, "Advanced", 10, List()))
+
   override def models = _models
 }
 
@@ -79,6 +82,8 @@ class Engine(var _model: EngineModel) {
   }
 
   def this(name: String) = this(EngineModel(name))
+
+  def speed:Double = model.speed
 }
 
 /** A carriages
@@ -95,7 +100,10 @@ class Carriage(var _model: CarriageModel) {
     health = 100
   }
 
+  def capacity: Int = model.capacity
   def this(name: String) = this(CarriageModel(name))
+
+  def comfort:Double = model.comfort
 }
 
 
@@ -106,7 +114,7 @@ class Train (var engine: Engine, var carriages: List[Carriage]) {
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
   }
 
-  def deteriorate(r:World.Route): Unit = {
+  def deteriorate(r:Route): Unit = {
     engine.health -= Math.max(0, engine.health - 10)
     carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
   }
