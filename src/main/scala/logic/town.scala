@@ -14,14 +14,12 @@ class Town(
   val name: String,
   val x: Double,
   val y: Double,
-  val welcomingLevel: Double)
-extends Graph.Vertice {
+  val welcomingLevel: Double) {
   val id = TownId.nextId
   private var residents: Array[Int] = new Array(Game.world.statusNumber)
   private var _routes: List[Route] = List()
 
   def routes: List[Route] = _routes
-  def incidentEdges: List[Route] = routes
   def neighbours: List[Town] = routes.map { _.end }
   def population: Int = residents.sum
   def note: Double =

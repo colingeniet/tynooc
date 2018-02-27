@@ -80,7 +80,8 @@ class Player() {
   }
 
   def launchTravel(train:Train, to:Town): Unit = {
-    var routes = Game.world.findRoutes(train.town, to)
+    // BAD
+    var routes = Game.world.findPath(train.town, to).get
     var travel = new Travel(train, routes, this, List())
     Game.world.addTravel(travel)
   }
@@ -100,6 +101,6 @@ class Player() {
   }
 
   def owns(train: Train):Boolean = trains.contains(train)
-  
-  def update(dt: Double): Unit = {} 
+
+  def update(dt: Double): Unit = {}
 }
