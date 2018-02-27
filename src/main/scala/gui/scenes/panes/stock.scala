@@ -89,8 +89,11 @@ extends VBox(3) {
     // create buttons for engine specific actions
     var createButton: Button = new Button("New train")
     createButton.onAction = (event: ActionEvent) => {
-      player.createTrainFromEngine(engine)
+      val train: Train = player.createTrainFromEngine(engine)
       displayEngines()
+      // display stats for the train instead,
+      // this is mostly to clear the stats screen
+      statsTrain(train)
     }
     children = List(menu, sep1, list, sep2, createButton)
   }
