@@ -114,9 +114,10 @@ class Train (
   var engine: Engine,
   var carriages: List[Carriage],
   var town: Town = Game.world.fabricTown) {
-  var onRoad: Boolean = false
   var travel: Option[Travel] = None
-  
+
+  def onRoad: Boolean = travel.isDefined
+
   def weight: Double = {
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
   }
