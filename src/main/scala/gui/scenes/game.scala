@@ -30,13 +30,6 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   private var player: Player = new Player()
   player.addMoney(100)
-  player.buyEngine("Basic")
-  player.buyEngine("Basic")
-  player.buyEngine("Advanced")
-  player.buyCarriage("Basic")
-  player.buyCarriage("Basic")
-  player.buyCarriage("Advanced")
-  player.assembleTrain(player.engines.head, player.carriages.tail)
   private var left: DrawableVBox = new PlayerInfo(
     player,
     displayTrain,
