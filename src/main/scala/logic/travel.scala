@@ -27,7 +27,7 @@ class Travel(val train: Train, private val roads: List[Route],
   private var state: State.Val = State.Waiting
   /* private var currentRouteIndex = 0 */
 
-  def next_step: Town = currentRoute.end
+  def nextTown: Town = currentRoute.end
   def destination: Town = roads.last.end
   def currentRoute: Route = remainingRoutes.head
   def currentTown: Town = currentRoute.start
@@ -60,23 +60,26 @@ class Travel(val train: Train, private val roads: List[Route],
   }
 
   def update(dt: Double): Unit = {
-    if(isDone)
-      return
-    state match {
-      case State.OnRoute => {
-        currentRouteDistanceDone += World.realToVirtualTime(dt) * train.engine.speed
-        if(currentRouteDistanceDone >= currentRoute.length) {
-          state = State.Arrived
-          currentRouteDistanceDone = 0
+    if(isDone) {
+      train.travel = None
+    } else {
+      state match {
+        case State.OnRoute => {
+          currentRouteDistanceDone += World.realToVirtualTime(dt) * train.engine.speed
+          if(currentRouteDistanceDone >= currentRoute.length) {
+            state = State.Arrived
+            train.town = nextTown
+            currentRouteDistanceDone = 0
+          }
         }
-      }
-      case State.Arrived => {
-        train.deteriorate(currentRoute)
-        state = State.Waiting
-        remainingRoutes = remainingRoutes.tail
-      }
-      case State.Waiting => {
-        state = State.OnRoute
+        case State.Arrived => {
+          train.deteriorate(currentRoute)
+          state = State.Waiting
+          remainingRoutes = remainingRoutes.tail
+        }
+        case State.Waiting => {
+          state = State.OnRoute
+        }
       }
     }
   }
