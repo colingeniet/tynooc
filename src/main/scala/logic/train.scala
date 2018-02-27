@@ -3,6 +3,7 @@ package logic.train
 import logic.route._
 import logic.game._
 import logic.town._
+import logic.travel._
 
 import collection.mutable.HashMap
 
@@ -109,13 +110,14 @@ class Carriage(var _model: CarriageModel) {
 }
 
 
-class Train (var engine: Engine, var carriages: List[Carriage], 
-             private val _town: Town = Game.world.fabricTown) {
-  
-  var onRoad: Boolean = false
-  
-  def town: Town = _town
-  
+class Train (
+  var engine: Engine,
+  var carriages: List[Carriage],
+  var town: Town = Game.world.fabricTown) {
+  var travel: Option[Travel] = None
+
+  def onRoad: Boolean = travel.isDefined
+
   def weight: Double = {
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
   }

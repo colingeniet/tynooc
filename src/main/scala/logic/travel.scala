@@ -27,13 +27,13 @@ class Travel(val train: Train, private val roads: List[Route],
   private var state: State.Val = State.Waiting
   /* private var currentRouteIndex = 0 */
 
-  def next_step: Town = currentRoute.end
+  def nextTown: Town = currentRoute.end
   def destination: Town = roads.last.end
   def currentRoute: Route = remainingRoutes.head
   def currentTown: Town = currentRoute.start
   def isDone: Boolean = remainingRoutes.isEmpty
   def stopsAt(t: Town): Boolean = (remainingRoutes.map { _.end}).contains(t)
-  
+
   def totalRemainingDistance: Double =
     (remainingRoutes.map { _.length }).sum - currentRouteDistanceDone
   def remainingDistance: Double = currentRoute.length - currentRouteDistanceDone
@@ -47,7 +47,7 @@ class Travel(val train: Train, private val roads: List[Route],
   def isOnRoute: Boolean = state == State.OnRoute
   def isArrived: Boolean = state == State.Arrived
   def isWaitingAt(town: Town): Boolean = isWaiting && currentTown == town
-  
+
   def availableRooms: List[Room] = rooms.filter { _.isAvailable }
 
   def landPassengers: Unit = {
@@ -60,23 +60,26 @@ class Travel(val train: Train, private val roads: List[Route],
   }
 
   def update(dt: Double): Unit = {
-    if(isDone)
-      return
-    state match {
-      case State.OnRoute => {
-        currentRouteDistanceDone += World.realToVirtualTime(dt) * train.engine.speed
-        if(currentRouteDistanceDone >= currentRoute.length) {
-          state = State.Arrived
-          currentRouteDistanceDone = 0
+    if(isDone) {
+      train.travel = None
+    } else {
+      state match {
+        case State.OnRoute => {
+          currentRouteDistanceDone += World.realToVirtualTime(dt) * train.engine.speed
+          if(currentRouteDistanceDone >= currentRoute.length) {
+            state = State.Arrived
+            train.town = nextTown
+            currentRouteDistanceDone = 0
+          }
         }
-      }
-      case State.Arrived => {
-        train.deteriorate(currentRoute)
-        state = State.Waiting
-        remainingRoutes = remainingRoutes.tail
-      }
-      case State.Waiting => {
-        state = State.OnRoute
+        case State.Arrived => {
+          train.deteriorate(currentRoute)
+          state = State.Waiting
+          remainingRoutes = remainingRoutes.tail
+        }
+        case State.Waiting => {
+          state = State.OnRoute
+        }
       }
     }
   }
