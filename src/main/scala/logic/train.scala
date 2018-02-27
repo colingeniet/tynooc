@@ -14,7 +14,7 @@ trait NameMap[T] {
   /** Get an element from its name.
    *
    *  @param name the element name.
-   *  @throw java.util.NoSuchElementException if no such model exists.
+   *  @throws java.util.NoSuchElementException if no such model exists.
    */
   def apply(name: String): T = this.models.get(name).get
 }
@@ -126,7 +126,7 @@ class Train (var engine: Engine, var carriages: List[Carriage]) {
 
   /** Remove the last carriage of the train and returns it.
    *
-   *  @throw NoSuchElementException if train has no carriage. */
+   *  @throws NoSuchElementException if train has no carriage. */
   def removeCarriage(): Carriage = {
     val last = carriages.last
     carriages = carriages.dropRight(1)
