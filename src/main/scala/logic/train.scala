@@ -126,7 +126,8 @@ class Train (var engine: Engine, var carriages: List[Carriage]) {
 
   /** Remove the last carriage of the train and returns it.
    *
-   *  @throws NoSuchElementException if train has no carriage. */
+   *  @throws NoSuchElementException if train has no carriage.
+   */
   def removeCarriage(): Carriage = {
     val last = carriages.last
     carriages = carriages.dropRight(1)
