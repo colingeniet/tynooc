@@ -4,6 +4,11 @@ import logic.graph._
 import logic.town._
 import logic.travel._
 import logic.room._
+import logic.player._
+import logic.route._
+
+import collection.mutable.HashMap
+import collection.mutable.HashSet
 
 object Status {
   var _id = 0
@@ -18,7 +23,7 @@ object Status {
   object WELL extends Status.Val
 }
 
-class World extends Graph {
+class World {
   var status = Array(Status.RICH, Status.POOR, Status.WELL)
   var statusCriteria = Array((r:Room) => r.comfort, (r:Room) => r.price,
                              (r:Room) => r.comfort / (r.price+1))
@@ -29,9 +34,10 @@ class World extends Graph {
   private var _travels: List[Travel] = List()
 
   def towns: List[Town] = _towns
-  def vertices: List[Town] = towns
   def travels: List[Travel] = _travels
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
+
+  def fabricTown: Town = towns(0)
 
   def addTown(town: Town): Unit = { _towns = town :: _towns; townNumber += 1}
 
@@ -40,7 +46,11 @@ class World extends Graph {
     townNumber += 1
   }
 
-    def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
+  def addTravel(travel:Travel) = _travels = travel :: _travels
+
+  def travelsOf(player: Player) = travels.filter { _.owner == player }
+
+  def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
     val availableTravels = travels.filter { t => t.isWaitingAt(start) &&
                                                  t.stopsAt(destination) }
     var rooms = availableTravels.flatMap { _.availableRooms }
@@ -59,8 +69,47 @@ class World extends Graph {
       start.deleteResidents(takenPlacesNumber, status)
     }
   }
-  
-  def update(dt: Double): Unit = { }
+
+  def update(dt: Double): Unit = {
+    travels.foreach { _.update(dt) }
+    _travels = travels.filter { !_.isDone}
+    towns.foreach { _.update(dt) }
+  }
+
+  /** Find the shortest path between two towns.
+   *
+   * @param from start town.
+   * @param to   end town.
+   * @return The list of vertices in the path, in order.
+   */
+  def findPath(from: Town, to: Town) : Option[List[Route]] = {
+    // Dijkstra
+    var closed: HashSet[Town] = new HashSet()
+    var open: HashSet[Town] = new HashSet()
+    var dist: HashMap[Town, Double] = new HashMap()
+    var path: HashMap[Town, List[Route]] = new HashMap()
+    dist(from) = 0
+    open.add(from)
+    path(from) = List()
+
+    while(!open.isEmpty && !closed(to)) {
+      var town: Town = open.minBy[Double](dist(_))
+      town.routes.foreach { route =>
+        if(!open(route.end) && !closed(route.end)) {
+          open.add(route.end)
+          dist(route.end) = dist(town) + route.length
+          path(route.end) = route :: path(town)
+        } else if(open(route.end) && dist(route.end) > dist(town) + route.length) {
+          dist(route.end) = dist(town) + route.length
+          path(route.end) = route :: path(town)
+        }
+      }
+      open.remove(town)
+      closed.add(town)
+    }
+
+    path.get(to)
+  }
 
   override def toString: String = {
     towns.foldLeft[String]("") { (d, t) => d + s"$t\n" }
