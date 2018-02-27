@@ -70,8 +70,6 @@ class World {
     }
   }
 
-  def findRoutes(from: Town, to: Town): List[Route] = List()
-
   def update(dt: Double): Unit = {
     travels.foreach { _.update(dt) }
     _travels = travels.filter { !_.isDone}
