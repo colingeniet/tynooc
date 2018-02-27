@@ -118,4 +118,18 @@ class Train (var engine: Engine, var carriages: List[Carriage]) {
     engine.health -= Math.max(0, engine.health - 10)
     carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
   }
+
+  /** Adds a carriage at the end of the train. */
+  def addCarriage(c: Carriage): Unit = {
+    carriages = carriages :+ c
+  }
+
+  /** Remove the last carriage of the train and returns it.
+   *
+   *  @throw NoSuchElementException if train has no carriage. */
+  def removeCarriage(): Carriage = {
+    val last = carriages.last
+    carriages = carriages.dropRight(1)
+    last
+  }
 }

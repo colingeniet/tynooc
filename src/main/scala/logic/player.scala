@@ -27,24 +27,53 @@ class Player() {
 
   def buyEngine(name: String): Unit = {
     var c = EngineModel(name)
-    if (c.price >= money) {
+    if (c.price <= money) {
       this.money -= c.price
-      engines = (new Engine(c))::engines
+      engines = new Engine(c) :: engines
     }
   }
 
   def buyCarriage(name: String): Unit = {
     var c = CarriageModel(name)
-    if (c.price >= money) {
+    if (c.price <= money) {
       this.money -= c.price
-      carriages = (new Carriage(c))::carriages
+      carriages = new Carriage(c) :: carriages
     }
   }
 
-  def assembleTrain(e: Engine, c: List[Carriage]): Unit = {
-    engines = engines diff List(e)
-    carriages = carriages diff c
-    trains = (new Train(e, c))::trains
+  def createTrainFromEngine(engine: Engine): Unit = {
+    if (!engines.contains(engine)) {
+      throw new IllegalArgumentException("Player doesn’t own the engine")
+    }
+    trains = new Train(engine, List()) :: trains
+    engines = engines diff List(engine)
+  }
+
+  def addCarriageToTrain(train: Train, c: Carriage): Unit = {
+    if (!trains.contains(train)) {
+      throw new IllegalArgumentException("Player doesn’t own the train")
+    }
+    if (!carriages.contains(c)) {
+      throw new IllegalArgumentException("Player doesn’t own the carriage")
+    }
+    train.addCarriage(c)
+    carriages = carriages diff List(c)
+  }
+
+  def removeCarriageFromTrain(train: Train): Unit = {
+    if (!trains.contains(train)) {
+      throw new IllegalArgumentException("Player doesn’t own the train")
+    }
+    carriages = train.removeCarriage() :: carriages
+  }
+
+  def disassembleTrain(train: Train): Unit = {
+    if (!trains.contains(train)) {
+      throw new IllegalArgumentException("Player doesn’t own the train")
+    }
+    engines = train.engine :: engines
+    carriages = train.carriages ::: carriages
+    trains = trains diff List(train)
   }
 
   def launchTravel(train:Train, to:Town): Unit = {
