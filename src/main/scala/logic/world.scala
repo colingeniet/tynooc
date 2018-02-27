@@ -4,6 +4,8 @@ import logic.graph._
 import logic.town._
 import logic.travel._
 import logic.room._
+import logic.player._
+import logic.route._
 
 object Status {
   var _id = 0
@@ -33,6 +35,8 @@ class World extends Graph {
   def travels: List[Travel] = _travels
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
+  def fabricTown: Town = towns(0)
+  
   def addTown(town: Town): Unit = { _towns = town :: _towns; townNumber += 1}
 
   def addTown(name: String, x: Double, y: Double, welcomingLevel: Double): Unit = {
@@ -40,7 +44,11 @@ class World extends Graph {
     townNumber += 1
   }
 
-    def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
+  def addTravel(travel:Travel) = _travels = travel :: _travels
+  
+  def travelsOf(player: Player) = travels.filter { _.owner == player }
+  
+  def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
     val availableTravels = travels.filter { t => t.isWaitingAt(start) &&
                                                  t.stopsAt(destination) }
     var rooms = availableTravels.flatMap { _.availableRooms }
@@ -60,7 +68,13 @@ class World extends Graph {
     }
   }
   
-  def update(dt: Double): Unit = { }
+  def findRoutes(from: Town, to: Town): List[Route] = List()
+  
+  def update(dt: Double): Unit = { 
+    travels.foreach { _.update(dt) }
+    _travels = travels.filter { !_.isDone}
+    towns.foreach { _.update(dt) }        
+  }
 
   override def toString: String = {
     towns.foldLeft[String]("") { (d, t) => d + s"$t\n" }
