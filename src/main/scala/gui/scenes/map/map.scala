@@ -39,8 +39,6 @@ extends ScrollPane with Drawable {
       }
     }
 
-    world.travels.foreach(drawTrain(_))
-
     // options
     styleClass.add("map")
     minScale = 0.2
@@ -104,6 +102,10 @@ extends ScrollPane with Drawable {
       point.radius = 8
       point.fill = Red
       children.add(point)
+    }
+
+    override def draw(): Unit = {
+      world.travels.foreach(drawTrain(_))
     }
   }
 
