@@ -41,12 +41,14 @@ class Player() {
     }
   }
 
-  def createTrainFromEngine(engine: Engine): Unit = {
+  def createTrainFromEngine(engine: Engine): Train = {
     if (!engines.contains(engine)) {
       throw new IllegalArgumentException("Player doesn’t own the engine")
     }
-    trains = new Train(engine, List()) :: trains
+    val train = new Train(engine, List())
+    trains = train :: trains
     engines = engines diff List(engine)
+    train
   }
 
   def addCarriageToTrain(train: Train, c: Carriage): Unit = {
