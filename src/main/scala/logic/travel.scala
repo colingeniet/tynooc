@@ -61,7 +61,7 @@ class Travel(val train: Train, private val roads: List[Route],
 
   def update(dt: Double): Unit = {
     if(isDone) {
-      train.travel = null
+      train.travel = None
     } else {
       state match {
         case State.OnRoute => {
