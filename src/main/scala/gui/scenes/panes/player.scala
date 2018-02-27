@@ -11,7 +11,15 @@ import gui.scenes.elements._
 import logic.player._
 import logic.train._
 
-
+/** Player information panel.
+ *
+ *  Allows to view player's rolling stock, buy new stock,
+ *  assemble trains ...
+ *  @param player the player.
+ *  @param detailTrain callback used to display info on a train in another panel.
+ *  @param detailEngine callback used to display info on an engine in another panel.
+ *  @param detailCarriage callback used to display info on a carriage in another panel.
+ */
 class PlayerInfo(
   player: Player,
   detailTrain: Train => Unit,
@@ -28,16 +36,18 @@ extends DrawableVBox {
   menu.addMenu("models", displayModels())
   menu.addMenu("assemble", assemblePane())
 
+  // stock subpanel
   private var stock: PlayerStock =
     new PlayerStock(player, detailTrain, detailEngine, detailCarriage)
 
+  // model catalog subpanel
   private var models: ModelsList = new ModelsList(player, updateStock)
 
   spacing = 5
   draw()
   setChildren()
 
-
+  /* Updates children list from attributes. */
   private def setChildren(): Unit = {
     children = List(
       money,
@@ -47,11 +57,13 @@ extends DrawableVBox {
       panel)
   }
 
+  /** Displays stock panel. */
   private def displayStock(): Unit = {
     panel = stock
     setChildren()
   }
 
+  /** Displays catalog panel. */
   private def displayModels(): Unit = {
     panel = models
     setChildren()
@@ -62,6 +74,7 @@ extends DrawableVBox {
     setChildren()
   }
 
+  /** Update the stock subpanel. */
   private def updateStock(): Unit = {
     stock = new PlayerStock(player, detailTrain, detailEngine, detailCarriage)
     money.text = player.money + "$"

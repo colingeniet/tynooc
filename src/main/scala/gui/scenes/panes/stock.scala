@@ -10,6 +10,13 @@ import gui.scenes.elements._
 import logic.player._
 import logic.train._
 
+/** Displays a player rolling stock.
+ *
+ *  @param player the player.
+ *  @param statsTrain a callback used to display information on a train.
+ *  @param statsEngine a callback used to display information on a engine.
+ *  @param statsCarriage a callback used to display information on a carriage.
+ */
 class PlayerStock(
   player: Player,
   statsTrain: Train => Unit,
@@ -28,44 +35,58 @@ extends VBox(3) {
 
   children = List(menu, sep1)
 
+  /** Displays the trains list. */
   private def displayTrains(): Unit = {
     list = new TrainList(player.trains, detailTrain)
     children = List(menu, sep1, list)
   }
 
+  /** Displays the engines list. */
   private def displayEngines(): Unit = {
     list = new EngineList(player.engines, detailEngine)
     children = List(menu, sep1, list)
   }
 
+  /** Displays the carriages list. */
   private def displayCarriages(): Unit = {
     list = new CarriageList(player.carriages, statsCarriage)
     children = List(menu, sep1, list)
   }
 
+  /** Displays a specific train. */
   private def detailTrain(train: Train): Unit = {
+    // display stats in a separate window via callback
     statsTrain(train)
+    // create buttons for assemble/disassemble actions
+    var addCarriage: Button = new Button("Add carriage")
+
     var disassembleAll: Button = new Button("Disassemble all")
     disassembleAll.onAction = (event: ActionEvent) => {
       player.disassembleTrain(train)
       displayTrains()
+      // display stats for the engine instead,
+      // this is mostly to clear the stats screen
+      statsEngine(train.engine)
     }
 
     // no Disassemble Last button if train has no carriage
     if(train.carriages.isEmpty) {
-      children = List(menu, sep1, list, sep2, disassembleAll)
+      children = List(menu, sep1, list, sep2, addCarriage, disassembleAll)
     } else {
       var disassembleOne: Button = new Button("Disassemble last")
       disassembleOne.onAction = (event: ActionEvent) => {
         player.removeCarriageFromTrain(train)
         detailTrain(train)
       }
-      children = List(menu, sep1, list, sep2, disassembleOne, disassembleAll)
+      children = List(menu, sep1, list, sep2, addCarriage, disassembleOne, disassembleAll)
     }
   }
 
+  /** Displays a specific engine. */
   private def detailEngine(engine: Engine): Unit = {
+    // display stats in a separate window via callback
     statsEngine(engine)
+    // create buttons for engine specific actions
     var createButton: Button = new Button("New train")
     createButton.onAction = (event: ActionEvent) => {
       player.createTrainFromEngine(engine)
@@ -75,6 +96,11 @@ extends VBox(3) {
   }
 }
 
+/** Displays a list of trains.
+ *
+ *  @param trains the list to display.
+ *  @param detail a callback called whenever a train is selected from the list.
+ */
 class TrainList(trains: List[Train], detail: Train => Unit)
 extends ScrollPane {
   private var list: SelectionMenu = new SelectionMenu()
@@ -83,6 +109,11 @@ extends ScrollPane {
   content = list
 }
 
+/** Displays a list of carriages.
+ *
+ *  @param carriages the list to display.
+ *  @param detail a callback called whenever a carriage is selected from the list.
+ */
 class CarriageList(carriages: List[Carriage], detail: Carriage => Unit)
 extends ScrollPane {
   private var list: SelectionMenu = new SelectionMenu()
@@ -92,6 +123,11 @@ extends ScrollPane {
   content = list
 }
 
+/** Displays a list of engines.
+ *
+ *  @param engines the list to display.
+ *  @param detail a callback called whenever an engine is selected from the list.
+ */
 class EngineList(
   engines: List[Engine],
   detail: Engine => Unit)
