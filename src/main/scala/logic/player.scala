@@ -3,6 +3,9 @@ package logic.player
 import logic.train._
 import logic.travel._
 import logic.town._
+import logic.game._
+import logic.world._
+import logic.graph._
 
 object PriceSimulation {
   def upgradePrice(from: Engine, to: EngineModel): Double = {
@@ -19,10 +22,10 @@ class Player() {
   var trains: List[Train] = List()
   var carriages: List[Carriage] = List()
   var engines: List[Engine] = List()
-  var travels: List[Travel] = List()
 
   var money: Double = 0
 
+  def travels: List[Travel] = Game.world.travelsOf(this)
   def addMoney(m: Double): Unit = money += m
 
   def buyEngine(name: String): Unit = {
@@ -77,7 +80,9 @@ class Player() {
   }
 
   def launchTravel(train:Train, to:Town): Unit = {
-    //(new Travel(train, World.findPath(train.where, to)))::travels
+    var routes = Game.world.findRoutes(train.town, to)
+    var travel = new Travel(train, routes, this, List())
+    Game.world.addTravel(travel)
   }
 
   def editEngine(old: Engine, model: EngineModel): Unit = {
@@ -94,9 +99,7 @@ class Player() {
     }
   }
 
-  def update(dt: Double): Unit = {
-    travels.foreach{ t:Travel => t.update(dt)}
-  }
-
   def owns(train: Train):Boolean = trains.contains(train)
+  
+  def update(dt: Double): Unit = {} 
 }
