@@ -13,9 +13,11 @@ import scalafx.scene.paint.Color._
 
 import gui.draw._
 import gui.scenes.elements._
+import logic.game._
 import logic.world._
 import logic.town._
 import logic.route._
+import logic.travel._
 
 
 /** Main map class.
@@ -36,6 +38,8 @@ extends ScrollPane with Drawable {
         town.routes.foreach(addRoute(_))
       }
     }
+
+    world.travels.foreach(drawTrain(_))
 
     // options
     styleClass.add("map")
@@ -83,7 +87,15 @@ extends ScrollPane with Drawable {
       children.add(line)
     }
 
-    private def drawTrain(x1: Double, y1: Double, x2: Double, y2: Double, p: Double): Unit = {
+    /** Display a train. */
+    private def drawTrain(travel: Travel): Unit = {
+      // Coordonates of start and end towns
+      val x1 = travel.currentRoute.start.x
+      val y1 = travel.currentRoute.start.y
+      val x2 = travel.currentRoute.end.x
+      val y2 = travel.currentRoute.end.y
+      val p = travel.currentRouteProportion
+      // train coordonates
       val x = x1 * (1-p) + x2 * p
       val y = y1 * (1-p) + y2 * p
       var point: Circle = new Circle()
