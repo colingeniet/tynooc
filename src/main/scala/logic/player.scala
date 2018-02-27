@@ -44,7 +44,7 @@ class Player() {
   def assembleTrain(e: Engine, c: List[Carriage]): Unit = {
     engines = engines diff List(e)
     carriages = carriages diff c
-    trains = new Train(e, c) :: trains
+    trains = (new Train(e, c))::trains
   }
 
   def launchTravel(train:Train, to:Town): Unit = {

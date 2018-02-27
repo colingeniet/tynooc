@@ -11,7 +11,7 @@ import logic.game._
 object State {
   sealed trait Val
   case object Waiting extends Val //Waiting for passengers
-  case object OnRoad extends Val
+  case object OnRoute extends Val
   case object Arrived extends Val //Passengers are leaving now
 }
 
@@ -22,26 +22,28 @@ class Travel(val train: Train, private val roads: List[Route],
     throw new IllegalArgumentException("Player doesn’t own the train")
 
   private val distance: Double = (roads.map { _.length }).sum
-  private var distanceDone: Double = 0
-  private var remainingRoads: List[Route] = roads
-  private var actualRoad: Route = remainingRoads.head
-  private var actualTown: Town = actualRoad.start
+  private var currentRouteDistanceDone: Double = 0
+  private var remainingRoutes: List[Route] = roads
   private var state: State.Val = State.Waiting
-  /* private var actualRoadIndex = 0 */
+  /* private var currentRouteIndex = 0 */
 
-  def next_step: Town = actualRoad.end
+  def next_step: Town = currentRoute.end
   def destination: Town = roads.last.end
-  def town: Town = actualTown
-  def isDone: Boolean = remainingRoads.isEmpty
+  def currentRoute: Route = remainingRoutes.head
+  def currentTown: Town = currentRoute.start
+  def isDone: Boolean = remainingRoutes.isEmpty
 
-  def totalRemainingDistance: Double = (remainingRoads.map { _.length }).sum - distanceDone
-  def remainingDistance: Double = actualRoad.length - distanceDone
+  def totalRemainingDistance: Double =
+    (remainingRoutes.map { _.length }).sum - currentRouteDistanceDone
+  def remainingDistance: Double = currentRoute.length - currentRouteDistanceDone
   def remainingTime: Double = remainingDistance / train.engine.speed
+
+  def currentRouteProportion: Double = currentRouteDistanceDone / currentRoute.length
 
   def passengerNumber: Int = (rooms.map { _.passengerNumber}).sum
 
   def isWaiting: Boolean = state == State.Waiting
-  def isOnRoad: Boolean = state == State.OnRoad
+  def isOnRoute: Boolean = state == State.OnRoute
   def isArrived: Boolean = state == State.Arrived
 
   def availableRooms: List[Room] = rooms.filter { _.isAvailable }
@@ -49,8 +51,8 @@ class Travel(val train: Train, private val roads: List[Route],
   def landPassengers: Unit = {
     rooms.foreach { room =>
       Game.world.status.foreach { status =>
-        actualTown.addResidents(room.passengers(status.id)(actualTown.id), status)
-        room.freePlaces(room.passengers(status.id)(actualTown.id), actualTown, status)
+        currentTown.addResidents(room.passengers(status.id)(currentTown.id), status)
+        room.freePlaces(room.passengers(status.id)(currentTown.id), currentTown, status)
       }
     }
   }
@@ -59,23 +61,20 @@ class Travel(val train: Train, private val roads: List[Route],
     if(isDone)
       return
     state match {
-      case State.OnRoad => {
-        distanceDone = distanceDone + World.realToVirtualTime(dt) * train.engine.speed
-        if(distanceDone >= actualRoad.length) {
+      case State.OnRoute => {
+        currentRouteDistanceDone += World.realToVirtualTime(dt) * train.engine.speed
+        if(currentRouteDistanceDone >= currentRoute.length) {
           state = State.Arrived
-          distanceDone = 0
+          currentRouteDistanceDone = 0
         }
       }
       case State.Arrived => {
-        train.deteriorate(actualRoad)
+        train.deteriorate(currentRoute)
         state = State.Waiting
-        remainingRoads = remainingRoads.tail
-        /* actualRoadIndex += 1 */
-        actualRoad = remainingRoads.head
+        remainingRoutes = remainingRoutes.tail
       }
       case State.Waiting => {
-        state = State.OnRoad
-        actualTown = actualRoad.destination
+        state = State.OnRoute
       }
     }
   }
