@@ -84,7 +84,8 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   def world_=(newWorld: World): Unit = {
     _world = newWorld
-    pane.center = new Map(world, displayTown, displayRoute)
+    center = new Map(world, displayTown, displayRoute)
+    pane.center = center
   }
 
   override def draw(): Unit = {

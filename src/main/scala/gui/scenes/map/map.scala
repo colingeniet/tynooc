@@ -26,11 +26,15 @@ import logic.travel._
  *  @param displayTown callback function used to display town details.
  *  @param displayRoute callback function used to display route details.
  */
-class Map(world: World, displayTown: Town => Unit, displayRoute: Route => Unit)
+class Map(val world: World, displayTown: Town => Unit, displayRoute: Route => Unit)
 extends ScrollPane with Drawable {
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
-  private object Map extends ZoomPane with Drawable {
+  private object MapContent extends ZoomPane with Drawable {
+    private var towns: List[Node] = List()
+    private var townNames: List[Node] = List()
+    private var routes: List[Node] = List()
+
     // display all towns and routes
     world.towns.foreach {
       town => {
@@ -47,17 +51,19 @@ extends ScrollPane with Drawable {
     /** Display a town. */
     private def addTown(town: Town): Unit = {
       // town is displayed as a point
-      var point: Circle = new Circle()
-      point.centerX = town.x
-      point.centerY = town.y
-      point.radius = 12
-      point.fill = Black
-      point.onMouseClicked = new EventHandler[MouseEvent] {
+      var point: Circle = new Circle() {
+      centerX = town.x
+      centerY = town.y
+      radius = 12
+      fill = Black
+      onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
           displayTown(town)
         }
       }
-      children.add(point)
+
+      }
+      towns = point :: towns
 
       // text field for town name
       // FIXME : display on top
@@ -65,28 +71,29 @@ extends ScrollPane with Drawable {
         mouseTransparent = true
         styleClass.add("town-name")
       }
-      children.add(text)
+      townNames = text :: townNames
     }
 
     /** Display a route. */
     private def addRoute(route: Route): Unit = {
-      var line: Line = new Line()
-      line.startX = route.start.x
-      line.startY = route.start.y
-      line.endX = route.end.x
-      line.endY = route.end.y
-      line.stroke = Black
-      line.strokeWidth = 5
-      line.onMouseClicked = new EventHandler[MouseEvent] {
-        override def handle(event: MouseEvent) {
-          displayRoute(route)
+      var line: Line = new Line() {
+        startX = route.start.x
+        startY = route.start.y
+        endX = route.end.x
+        endY = route.end.y
+        stroke = Black
+        strokeWidth = 5
+        onMouseClicked = new EventHandler[MouseEvent] {
+          override def handle(event: MouseEvent) {
+            displayRoute(route)
+          }
         }
       }
-      children.add(line)
+      routes = line :: routes
     }
 
     /** Display a train. */
-    private def drawTrain(travel: Travel): Unit = {
+    private def drawTrain(travel: Travel): Circle = {
       // Coordonates of start and end towns
       val x1 = travel.currentRoute.start.x
       val y1 = travel.currentRoute.start.y
@@ -96,25 +103,26 @@ extends ScrollPane with Drawable {
       // train coordonates
       val x = x1 * (1-p) + x2 * p
       val y = y1 * (1-p) + y2 * p
-      var point: Circle = new Circle()
-      point.centerX = x
-      point.centerY = y
-      point.radius = 8
-      point.fill = Red
-      children.add(point)
+      new Circle() {
+        centerX = x
+        centerY = y
+        radius = 8
+        fill = Red
+      }
     }
 
     override def draw(): Unit = {
-      world.travels.foreach(drawTrain(_))
+      children =
+        routes ++ towns ++ world.travels.map(drawTrain(_)) ++ townNames
     }
   }
 
-  content = Map
+  content = MapContent
   // disable scroll
   vmax = 0
   hmax = 0
   hbarPolicy = ScrollPane.ScrollBarPolicy.Never
   vbarPolicy = ScrollPane.ScrollBarPolicy.Never
 
-  override def draw(): Unit = Map.draw()
+  override def draw(): Unit = MapContent.draw()
 }

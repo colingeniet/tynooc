@@ -46,7 +46,7 @@ class World {
     townNumber += 1
   }
 
-  def addTravel(travel:Travel) = _travels = travel :: _travels
+  def addTravel(travel:Travel): Unit = _travels = travel :: _travels
 
   def travelsOf(player: Player) = travels.filter { _.owner == player }
 
@@ -73,7 +73,8 @@ class World {
   def update(dt: Double): Unit = {
     travels.foreach { _.update(dt) }
     _travels = travels.filter { !_.isDone}
-    towns.foreach { _.update(dt) }
+    // add later
+    //towns.foreach { _.update(dt) }
   }
 
   /** Find the shortest path between two towns.
@@ -117,6 +118,6 @@ class World {
 }
 
 object World {
-  def realToVirtualTime(t: Double) : Double = 50*t
-  def virtualToRealTime(t: Double) : Double = t/50
+  def realToVirtualTime(t: Double) : Double = t
+  def virtualToRealTime(t: Double) : Double = t
 }

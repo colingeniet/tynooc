@@ -5,6 +5,7 @@ import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
 
+import gui.draw.Drawable
 import gui.scenes._
 import logic.world.World
 
@@ -12,7 +13,7 @@ import logic.world.World
  *
  *  Handles, displays and switch between menus and game screens.
  */
-class MainStage extends JFXApp.PrimaryStage {
+class MainStage extends JFXApp.PrimaryStage with Drawable {
   /* Actual scenes displayed. */
   private var mainMenuScene: MainMenu = new MainMenu(changeScene)
   private var gameScene: Game = new Game(changeScene)
@@ -41,6 +42,10 @@ class MainStage extends JFXApp.PrimaryStage {
 
   def world_=(newWorld: World): Unit = {
     gameScene.world = newWorld
+  }
+
+  override def draw(): Unit = {
+    gameScene.draw()
   }
 }
 

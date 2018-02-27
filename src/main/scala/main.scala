@@ -1,5 +1,5 @@
 import scalafx.Includes._
-import scalafx.application.JFXApp
+import scalafx.application._
 
 import gui.MainStage
 import logic.world._
@@ -13,12 +13,12 @@ object MainJFXApp extends JFXApp {
   var town3: Town = new Town("Ulm", 500, 200, 0.7)
   var town4: Town = new Town("Lyon", 700, 700, 0.85)
 
-  town1.addRoute(town2, 150)
-  town2.addRoute(town1, 150)
-  town1.addRoute(town3, 30)
-  town3.addRoute(town1, 30)
-  town1.addRoute(town4, 250)
-  town4 .addRoute(town1, 250)
+  town1.addRoute(town2, 1500)
+  town2.addRoute(town1, 1500)
+  town1.addRoute(town3, 300)
+  town3.addRoute(town1, 300)
+  town1.addRoute(town4, 2500)
+  town4 .addRoute(town1, 2500)
   Game.world.addTown(town2)
   Game.world.addTown(town3)
   Game.world.addTown(town4)
@@ -27,4 +27,19 @@ object MainJFXApp extends JFXApp {
   var mainstage = new MainStage
   mainstage.world = Game.world
   stage = mainstage
+
+  var mainLoopThread = new Thread {
+    override def run {
+      while(true) {
+        Game.update()
+        Platform.runLater(mainstage.draw())
+        Thread.sleep(33)
+      }
+    }
+  }
+  mainLoopThread.start
+
+  override def stopApp(): Unit = {
+    mainLoopThread.stop()
+  }
 }

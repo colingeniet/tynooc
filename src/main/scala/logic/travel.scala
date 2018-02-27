@@ -60,24 +60,23 @@ class Travel(val train: Train, private val roads: List[Route],
   }
 
   def update(dt: Double): Unit = {
-    if(isDone) {
-      train.travel = None
-    } else {
+    if(!isDone) {
       state match {
         case State.OnRoute => {
           currentRouteDistanceDone += World.realToVirtualTime(dt) * train.engine.speed
           if(currentRouteDistanceDone >= currentRoute.length) {
             state = State.Arrived
-            train.town = nextTown
-            currentRouteDistanceDone = 0
           }
         }
         case State.Arrived => {
           train.deteriorate(currentRoute)
           state = State.Waiting
           remainingRoutes = remainingRoutes.tail
+          currentRouteDistanceDone = 0
+          if(isDone) train.travel = None
         }
         case State.Waiting => {
+          train.town = nextTown
           state = State.OnRoute
         }
       }
