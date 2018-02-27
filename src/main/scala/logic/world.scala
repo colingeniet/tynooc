@@ -1,136 +1,52 @@
 package logic.world
 
 import logic.graph._
-import logic.game._
-import logic.PNJ._
-import logic.player._
+import logic.town._
+import logic.travel._
 
+object Status {
+  var _id = 0
 
-/** World representation
- */
+  sealed class Val(val id: Int) {
+    _id += 1
+    def this() { this(_id) }
+  }
+
+  object RICH extends Status.Val
+  object POOR extends Status.Val
+  object WELL extends Status.Val
+}
+
 class World extends Graph {
-  
-  private var _towns: List[World.Town] = List()
+  var status = List(Status.RICH, Status.POOR, Status.WELL)
+  var statusNumber = 3
+  var townNumber = 0
+
+  private var _towns: List[Town] = List()
   private var _travels: List[Travel] = List()
-  private var _pnjs: List[PNJ] = List()
-  private var _population: Int = 50
-  /** The list of towns.
-   */
-  def towns: List[World.Town] = _towns
 
-  /** The list of current travels.
-   */
+  def towns: List[Town] = _towns
+  def vertices: List[Town] = towns
   def travels: List[Travel] = _travels
+  def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
-  /** The list of pnjs.
-   */
-  def pnjs: List[PNJ] = _pnjs
+  def addTown(town: Town): Unit = { _towns = town :: _towns; townNumber += 1}
 
-  /** The population
-   */
-  def population: Int = _population
-
-  /** Adds a town.
-   *
-   *  @param newTown the town to add.
-   */
-  def addTown(newTown: World.Town): Unit = {
-    _towns = newTown :: _towns
+  def addTown(name: String, x: Double, y: Double, welcomingLevel: Double): Unit = {
+    _towns = new Town(name, x, y, welcomingLevel) :: _towns
+    townNumber += 1
   }
 
-  /** Add Pnjs to a Town
-    *
-    * @param p the PNJ to add
-    */
-  def addPNJ(p: PNJ): Unit = {
-    p.town.population += 1
-    _population += p.number
-    _pnjs = p :: _pnjs
-  }
+  def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {}
 
-  def vertices: List[World.Town] = towns
+  def update(dt: Double): Unit = { }
 
-  /** Update the world
-  *
-  *   @param dt the delta time between two calls.
-  */
-  def update(dt: Double) =
-  {
-    pnjs.foreach {p:PNJ => p.update(dt)}
+  override def toString: String = {
+    towns.foldLeft[String]("") { (d, t) => d + s"$t\n" }
   }
 }
 
-/** World object companion
- */
 object World {
-
-  /** A town in the world.
-   *
-   *  @constructor creates a town in the `World`.
-   *  @param name the town name.
-   *  @param xPos the town x coordonate.
-   *  @param yPos the town y coordonate.
-   */
-  class Town(name: String, xPos: Double, yPos: Double, w: Double)
-  extends Graph.Vertice {
-    /** The town x coordonate in the world. */
-    val x: Double = xPos
-    /** The town y coordonate in the world. */
-    val y: Double = yPos
-    /* The welcoming level of a town, between 0 and 1 */
-    val welcomingLevel: Double = w
-
-    private var _routes: List[Route] = List()
-
-    var population: Int = 0
-
-    /** The list of routes.
-     */
-    def routes: List[Route] = _routes
-
-    /** Adds a route.
-     *
-     *  @param newRoute the route to add.
-     */
-    def addRoute(newRoute: Route): Unit = {
-      _routes = newRoute :: _routes
-    }
-
-    def incidentEdges: List[Route] = routes
-
-    def neighbours: List[Town] = {
-      routes.map { _.destination }
-    }
-
-    def note: Double = {
-      /* Formulas to find */
-      (welcomingLevel*population)/Game.world.population
-    }
-  }
-
-  /** A route starting from this town.
-   *
-   *  @constructor creates a route to another `Town`.
-   *  @param _destination the route destination town.
-   *  @param _length the route length.
-   */
-  class Route(from: Town, to: Town, _length: Double) extends Graph.Edge {
-    val start: Town = from
-    val end: Town = to
-    val weight: Double = _length
-
-    /** The route destination. */
-    def destination: Town = end
-
-    /** The route length. */
-    def length: Double = weight
-  }
-
-  def real_to_virtual_time(t: Double) : Double = {
-    return 50*t
-  }
-
-  def virtual_to_real_time(t: Double) : Double = {
-    return t/50
-  }
+  def realToVirtualTime(t: Double) : Double = 50*t
+  def virtualToRealTime(t: Double) : Double = t/50
 }
