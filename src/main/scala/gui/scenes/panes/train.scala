@@ -71,7 +71,8 @@ class TrainStats(train: Train) extends DrawableVBox {
   draw()
 
   override def draw(): Unit = {
-    status.text = if (train.onRoute) "on route" else "stored"
+    status.text =
+      (if (train.onRoute) "on route to " else "stored at ") + train.town.name
     weight.text = "weight : " + train.weight
     power.text = "power : " + train.engine.model.power
   }
