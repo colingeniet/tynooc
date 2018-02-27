@@ -58,8 +58,6 @@ extends VBox(3) {
     // display stats in a separate window via callback
     statsTrain(train)
     // create buttons for assemble/disassemble actions
-    var addCarriage: Button = new Button("Add carriage")
-
     var disassembleAll: Button = new Button("Disassemble all")
     disassembleAll.onAction = (event: ActionEvent) => {
       player.disassembleTrain(train)
@@ -69,17 +67,45 @@ extends VBox(3) {
       statsEngine(train.engine)
     }
 
-    // no Disassemble Last button if train has no carriage
-    if(train.carriages.isEmpty) {
-      children = List(menu, sep1, list, sep2, addCarriage, disassembleAll)
-    } else {
-      var disassembleOne: Button = new Button("Disassemble last")
-      disassembleOne.onAction = (event: ActionEvent) => {
-        player.removeCarriageFromTrain(train)
-        detailTrain(train)
-      }
-      children = List(menu, sep1, list, sep2, addCarriage, disassembleOne, disassembleAll)
+    var disassembleOne: Button = new Button("Disassemble last")
+    disassembleOne.onAction = (event: ActionEvent) => {
+      player.removeCarriageFromTrain(train)
+      detailTrain(train)
     }
+
+    var addCarriage: Button = new Button("Add carriage")
+    addCarriage.onAction = (event: ActionEvent) => {
+      // when pressing the button, display a new carriage list
+      var selectionList: CarriageList =
+        new CarriageList(
+          player.carriages,
+          carriage => {
+            // when selecting a carriage, add it to the train
+            player.addCarriageToTrain(train, carriage)
+            detailTrain(train)
+          })
+      // display new selection list
+      children = List(
+        menu,
+        sep1,
+        list,
+        sep2,
+        addCarriage,
+        disassembleOne,
+        disassembleAll,
+        new Separator(),
+        new Label("select carriage"),
+        selectionList)
+    }
+
+    children = List(
+      menu,
+      sep1,
+      list,
+      sep2,
+      addCarriage,
+      disassembleOne,
+      disassembleAll)
   }
 
   /** Displays a specific engine. */
