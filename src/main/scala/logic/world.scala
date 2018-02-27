@@ -3,6 +3,7 @@ package logic.world
 import logic.graph._
 import logic.town._
 import logic.travel._
+import logic.room._
 
 object Status {
   var _id = 0
@@ -18,8 +19,10 @@ object Status {
 }
 
 class World extends Graph {
-  var status = List(Status.RICH, Status.POOR, Status.WELL)
-  var statusNumber = 3
+  var status = Array(Status.RICH, Status.POOR, Status.WELL)
+  var statusCriteria = Array((r:Room) => r.comfort, (r:Room) => r.price,
+                             (r:Room) => r.comfort / (r.price+1))
+  var statusNumber = status.length
   var townNumber = 0
 
   private var _towns: List[Town] = List()
@@ -37,8 +40,26 @@ class World extends Graph {
     townNumber += 1
   }
 
-  def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {}
-
+    def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
+    val availableTravels = travels.filter { t => t.isWaitingAt(start) &&
+                                                 t.stopsAt(destination) }
+    var rooms = availableTravels.flatMap { _.availableRooms }
+    status.foreach { status =>
+      var takenPlacesNumber = 0
+      val p = migrantByStatus(status.id)
+      rooms = rooms.sortBy { statusCriteria(status.id) }
+      do {
+        val room = rooms.head
+        val nb = Math.max(p, room.availablePlaces)
+        room.takePlaces(nb, destination, status)
+        takenPlacesNumber += nb
+        if(!room.isAvailable)
+          rooms = rooms.tail
+      } while(takenPlacesNumber < p && !rooms.isEmpty)
+      start.deleteResidents(takenPlacesNumber, status)
+    }
+  }
+  
   def update(dt: Double): Unit = { }
 
   override def toString: String = {
