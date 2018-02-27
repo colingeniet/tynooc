@@ -85,6 +85,7 @@ class Player() {
     // BAD
     var routes = Game.world.findPath(train.town, to).get
     var travel = new Travel(train, routes, this, List())
+    train.travel = travel
     Game.world.addTravel(travel)
   }
 
