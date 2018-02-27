@@ -62,14 +62,16 @@ class TrainDetail(train: Train) extends DrawableVBox {
 }
 
 class TrainStats(train: Train) extends DrawableVBox {
+  private var status: Label = new Label()
   private var weight: Label = new Label()
   private var power: Label = new Label()
 
-  children = List(weight, power)
+  children = List(status, weight, power)
   spacing = 3
   draw()
 
   override def draw(): Unit = {
+    status.text = if (train.onRoute) "on route" else "stored"
     weight.text = "weight : " + train.weight
     power.text = "power : " + train.engine.model.power
   }
