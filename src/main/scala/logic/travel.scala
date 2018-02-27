@@ -24,20 +24,21 @@ class Travel(val train: Train, private val roads: List[Route],
   private val distance: Double = (roads.map { _.length }).sum
   private var currentRouteDistanceDone: Double = 0
   private var remainingRoutes: List[Route] = roads
-  private var currentRoute: Route = remainingRoutes.head
-  private var currentTown: Town = currentRoute.start
   private var state: State.Val = State.Waiting
   /* private var currentRouteIndex = 0 */
 
   def next_step: Town = currentRoute.end
   def destination: Town = roads.last.end
-  def town: Town = currentTown
+  def currentRoute: Route = remainingRoutes.head
+  def currentTown: Town = currentRoute.start
   def isDone: Boolean = remainingRoutes.isEmpty
 
   def totalRemainingDistance: Double =
     (remainingRoutes.map { _.length }).sum - currentRouteDistanceDone
   def remainingDistance: Double = currentRoute.length - currentRouteDistanceDone
   def remainingTime: Double = remainingDistance / train.engine.speed
+
+  def currentRouteProportion: Double = currentRouteDistanceDone / currentRoute.length
 
   def passengerNumber: Int = (rooms.map { _.passengerNumber}).sum
 
@@ -71,12 +72,9 @@ class Travel(val train: Train, private val roads: List[Route],
         train.deteriorate(currentRoute)
         state = State.Waiting
         remainingRoutes = remainingRoutes.tail
-        /* currentRouteIndex += 1 */
-        currentRoute = remainingRoutes.head
       }
       case State.Waiting => {
         state = State.OnRoute
-        currentTown = currentRoute.destination
       }
     }
   }
