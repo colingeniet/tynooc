@@ -10,6 +10,9 @@ import gui.scenes.elements._
 import logic.player._
 import logic.train._
 
+// REMOVE
+import logic.game._
+
 /** Displays a player rolling stock.
  *
  *  @param player the player.
@@ -59,6 +62,10 @@ extends VBox(3) {
     statsTrain(train)
     // create buttons for assemble/disassemble actions
     var disassembleAll: Button = new Button("Disassemble all")
+    var disassembleOne: Button = new Button("Disassemble last")
+    var addCarriage: Button = new Button("Add carriage")
+    var sendTravel: Button = new Button("Travel")
+
     disassembleAll.onAction = (event: ActionEvent) => {
       player.disassembleTrain(train)
       displayTrains()
@@ -67,13 +74,12 @@ extends VBox(3) {
       statsEngine(train.engine)
     }
 
-    var disassembleOne: Button = new Button("Disassemble last")
     disassembleOne.onAction = (event: ActionEvent) => {
       player.removeCarriageFromTrain(train)
       detailTrain(train)
     }
+    if(train.carriages.isEmpty) disassembleOne.disable = true
 
-    var addCarriage: Button = new Button("Add carriage")
     addCarriage.onAction = (event: ActionEvent) => {
       // when pressing the button, display a new carriage list
       var selectionList: CarriageList =
@@ -93,10 +99,17 @@ extends VBox(3) {
         addCarriage,
         disassembleOne,
         disassembleAll,
+        sendTravel,
         new Separator(),
         new Label("select carriage"),
         selectionList)
     }
+
+    sendTravel.onAction = (event: ActionEvent) => {
+      player.launchTravel(train, Game.world.towns(1)) // nothing to see here, move along
+      detailTrain(train)
+    }
+    if(train.onRoute) sendTravel.disable = true
 
     children = List(
       menu,
@@ -105,7 +118,8 @@ extends VBox(3) {
       sep2,
       addCarriage,
       disassembleOne,
-      disassembleAll)
+      disassembleAll,
+      sendTravel)
   }
 
   /** Displays a specific engine. */

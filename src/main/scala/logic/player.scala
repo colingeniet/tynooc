@@ -82,6 +82,9 @@ class Player() {
   }
 
   def launchTravel(train:Train, to:Town): Unit = {
+    if (!trains.contains(train)) {
+      throw new IllegalArgumentException("Player doesn’t own the train")
+    }
     // BAD
     var routes = Game.world.findPath(train.town, to).get
     var travel = new Travel(train, routes, this, List())
