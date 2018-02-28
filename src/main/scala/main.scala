@@ -12,6 +12,7 @@ object MainJFXApp extends JFXApp {
   var town2: Town = new Town("Rennes", 50, 250, 0.6)
   var town3: Town = new Town("Ulm", 500, 200, 0.7)
   var town4: Town = new Town("Lyon", 700, 700, 0.85)
+  var town5: Town = new Town("X", 450, 350, 0)
 
   town1.addRoute(town2, 1500)
   town2.addRoute(town1, 1500)
@@ -22,6 +23,7 @@ object MainJFXApp extends JFXApp {
   Game.world.addTown(town2)
   Game.world.addTown(town3)
   Game.world.addTown(town4)
+  Game.world.addTown(town5)
   Game.world.addTown(town1)
 
   var mainstage = new MainStage(Game.world)
