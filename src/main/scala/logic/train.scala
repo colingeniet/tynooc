@@ -128,7 +128,7 @@ class Train (
   }
 
   def deteriorate(r:Route): Unit = {
-    engine.health -= Math.max(0, engine.health - 10)
+    engine.health = Math.max(0, engine.health - 10)
     carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
   }
 
