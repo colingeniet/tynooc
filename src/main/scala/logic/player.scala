@@ -28,6 +28,16 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   def travels: List[Travel] = Game.world.travelsOf(this)
   def addMoney(m: Double): Unit = money += m
 
+  def carriagesAvailable: List[Carriage] = carriages.filter(!_.isUsed)
+
+  def carriagesStoredAt(town: Town): List[Carriage] =
+    carriages.filter(c => !c.isUsed && c.town == town)
+
+  def enginesAvailable: List[Engine] = engines.filter(!_.isUsed)
+
+  def enginesStoredAt(town: Town): List[Engine] =
+    engines.filter(c => !c.isUsed && c.town == town)
+
   def buyEngine(name: String): Unit = {
     var model = EngineModel(name)
     if (model.price <= money) {
@@ -54,7 +64,6 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     val train = new Train(engine, List(), engine.town)
     engine.train = Some(train)
     trains = train :: trains
-    engines = engines diff List(engine)
     train
   }
 
@@ -77,7 +86,6 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
 
     train.addCarriage(c)
     c.train = Some(train)
-    carriages = carriages diff List(c)
   }
 
   def removeCarriageFromTrain(train: Train): Unit = {
@@ -90,7 +98,6 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     var carriage: Carriage = train.removeCarriage()
     carriage.train = None
     carriage.town = train.town
-    carriages = carriage :: carriages
   }
 
   def disassembleTrain(train: Train): Unit = {
@@ -102,13 +109,11 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     }
     train.engine.town = train.town
     train.engine.train = None
-    engines = train.engine :: engines
 
     train.carriages.foreach{ c =>
       c.town = train.town
       c.train = None
     }
-    carriages = train.carriages ::: carriages
     trains = trains diff List(train)
   }
 
