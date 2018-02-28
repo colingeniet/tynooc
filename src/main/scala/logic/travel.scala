@@ -58,8 +58,8 @@ class Travel(val train: Train, private val roads: List[Route],
   def landPassengers: Unit = {
     rooms.foreach { room =>
       Game.world.status.foreach { status =>
-        currentTown.addResidents(room.passengers(status.id)(currentTown.id), status)
-        room.freePlaces(room.passengers(status.id)(currentTown.id), currentTown, status)
+        currentTown.addResidents(room.passengerNumber(status, currentTown), status)
+        room.freePlaces(currentTown, status)
       }
     }
   }
