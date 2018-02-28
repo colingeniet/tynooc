@@ -59,7 +59,7 @@ class World {
       rooms = rooms.sortBy { statusCriteria(status.id) }
       while(takenPlacesNumber < p && !rooms.isEmpty) {
         val room = rooms.head
-        val nb = Math.max(p, room.availablePlaces)
+        val nb = Math.min(p, room.availablePlaces)
         room.takePlaces(nb, destination, status)
         takenPlacesNumber += nb
         if(!room.isAvailable)
