@@ -109,7 +109,12 @@ extends VBox(3) {
       player.launchTravel(train, Game.world.towns(1)) // nothing to see here, move along
       detailTrain(train)
     }
-    if(train.onRoute) sendTravel.disable = true
+    if(train.onRoute) {
+      addCarriage.disable = true
+      disassembleOne.disable = true
+      disassembleAll.disable = true
+      sendTravel.disable = true
+    }
 
     children = List(
       menu,
