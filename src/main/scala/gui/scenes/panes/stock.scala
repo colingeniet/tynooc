@@ -10,6 +10,7 @@ import gui.scenes.elements._
 import logic.player._
 import logic.train._
 import logic.world._
+import logic.town._
 
 /** Displays a player rolling stock.
  *
@@ -105,9 +106,30 @@ extends VBox(3) {
     }
 
     sendTravel.onAction = (event: ActionEvent) => {
-      player.launchTravel(train, world.towns(1)) // nothing to see here, move along
-      detailTrain(train)
+      // when pressing the button, display the list of towns
+      var selectionList: SelectionList[Town] = new SelectionList[Town](
+        world.towns,
+        _.name,
+        town => {
+          // when selecting a town, travel to it
+          player.launchTravel(train, town)
+          detailTrain(train)
+        })
+      // display new selection list
+      children = List(
+        menu,
+        sep1,
+        list,
+        sep2,
+        addCarriage,
+        disassembleOne,
+        disassembleAll,
+        sendTravel,
+        new Separator(),
+        new Label("select destination"),
+        selectionList)
     }
+
     if(train.onRoute) {
       addCarriage.disable = true
       disassembleOne.disable = true
@@ -149,12 +171,7 @@ extends VBox(3) {
  *  @param detail a callback called whenever a train is selected from the list.
  */
 class TrainList(trains: List[Train], detail: Train => Unit)
-extends ScrollPane {
-  private var list: SelectionMenu = new SelectionMenu()
-  trains.foreach(train => list.addMenu("train", detail(train))) // needs name
-
-  content = list
-}
+extends SelectionList[Train](trains, _ => "train", detail)
 
 /** Displays a list of carriages.
  *
@@ -162,13 +179,7 @@ extends ScrollPane {
  *  @param detail a callback called whenever a carriage is selected from the list.
  */
 class CarriageList(carriages: List[Carriage], detail: Carriage => Unit)
-extends ScrollPane {
-  private var list: SelectionMenu = new SelectionMenu()
-  carriages.foreach(carriage =>
-    list.addMenu(carriage.model.name, detail(carriage)))
-
-  content = list
-}
+extends SelectionList[Carriage](carriages, _.model.name, detail)
 
 /** Displays a list of engines.
  *
@@ -178,9 +189,4 @@ extends ScrollPane {
 class EngineList(
   engines: List[Engine],
   detail: Engine => Unit)
-extends ScrollPane {
-  private var list: SelectionMenu = new SelectionMenu()
-  engines.foreach(engine => list.addMenu(engine.model.name, detail(engine)))
-
-  content = list
-}
+extends SelectionList[Engine](engines, _.model.name, detail)

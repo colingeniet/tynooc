@@ -19,3 +19,13 @@ class SelectionMenu extends VBox(3) {
     children.add(button)
   }
 }
+
+class SelectionList[A](
+  list: List[A],
+  text: A => String,
+  action: A => Unit)
+extends ScrollPane {
+  private var menu: SelectionMenu = new SelectionMenu()
+  list.foreach(a => menu.addMenu(text(a), action(a)))
+  content = menu
+}
