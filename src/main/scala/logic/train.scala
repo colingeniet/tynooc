@@ -98,7 +98,8 @@ class Engine(private var _model: EngineModel, var town: Town) {
 class Carriage(var _model: CarriageModel, var town: Town) {
   var health: Double = 100
   var train: Option[Train] = None
-
+  val placePrice = 0
+  
   def isUsed: Boolean = train.isDefined
 
   def model: CarriageModel = _model
