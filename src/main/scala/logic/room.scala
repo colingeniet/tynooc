@@ -28,7 +28,8 @@ class Room(val travel: Travel, val carriage: Carriage) {
   def isAvailable: Boolean = passengerNumber < capacity
   def availablePlaces: Int = capacity - passengerNumber
   def comfort: Double = carriage.comfort
-
+  def price: Double = carriage.placePrice
+  
   def statusToTownNumber(destination: Town, status: Status.Val): Int = {
     passengers(status.id)(destination.id)
   }
