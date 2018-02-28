@@ -79,5 +79,6 @@ extends DrawableVBox {
 
   override def draw(): Unit = {
     money.text = player.money + "$"
+    stock.draw()
   }
 }

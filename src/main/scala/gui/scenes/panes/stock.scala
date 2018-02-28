@@ -6,6 +6,7 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
 
+import gui.draw._
 import gui.scenes.elements._
 import logic.player._
 import logic.train._
@@ -25,7 +26,7 @@ class PlayerStock(
   statsTrain: Train => Unit,
   statsEngine: Engine => Unit,
   statsCarriage: Carriage => Unit)
-extends VBox(3) {
+extends DrawableVBox {
   private var menu: SelectionMenu = new SelectionMenu()
   menu.addMenu("trains", displayTrains())
   menu.addMenu("engines", displayEngines())
@@ -37,23 +38,33 @@ extends VBox(3) {
   private var list: Node = new Pane()
 
   children = List(menu, sep1)
+  spacing = 3
 
   /** Displays the trains list. */
   private def displayTrains(): Unit = {
     list = new TrainList(player.trains, detailTrain)
     children = List(menu, sep1, list)
+
+    // reset draw method
+    drawCallback = () => ()
   }
 
   /** Displays the engines list. */
   private def displayEngines(): Unit = {
     list = new EngineList(player.engines, detailEngine)
     children = List(menu, sep1, list)
+
+    // reset draw method
+    drawCallback = () => ()
   }
 
   /** Displays the carriages list. */
   private def displayCarriages(): Unit = {
-    list = new CarriageList(player.carriages, statsCarriage)
+    list = new CarriageList(player.carriages, detailCarriage)
     children = List(menu, sep1, list)
+
+    // reset draw method
+    drawCallback = () => ()
   }
 
   /** Displays a specific train. */
@@ -78,7 +89,6 @@ extends VBox(3) {
       player.removeCarriageFromTrain(train)
       detailTrain(train)
     }
-    if(train.carriages.isEmpty) disassembleOne.disable = true
 
     addCarriage.onAction = (event: ActionEvent) => {
       // when pressing the button, display a new carriage list
@@ -130,11 +140,12 @@ extends VBox(3) {
         selectionList)
     }
 
-    if(train.onRoute) {
-      addCarriage.disable = true
-      disassembleOne.disable = true
-      disassembleAll.disable = true
-      sendTravel.disable = true
+    // disable buttons as needed
+    drawCallback = () => {
+      addCarriage.disable = train.onRoute
+      disassembleOne.disable = train.onRoute || train.carriages.isEmpty
+      disassembleAll.disable = train.onRoute
+      sendTravel.disable = train.onRoute
     }
 
     children = List(
@@ -162,6 +173,25 @@ extends VBox(3) {
       statsTrain(train)
     }
     children = List(menu, sep1, list, sep2, createButton)
+
+    // reset draw function
+    drawCallback = () => ()
+  }
+
+  /** Displays a specific carriage. */
+  private def detailCarriage(carriage: Carriage): Unit = {
+    // display stats in a separate window via callback
+    statsCarriage(carriage)
+
+    // reset draw method
+    drawCallback = () => ()
+  }
+
+  // The actual draw function, changed as needed
+  private var drawCallback: () => Unit = () => ()
+
+  override def draw(): Unit = {
+    drawCallback()
   }
 }
 
