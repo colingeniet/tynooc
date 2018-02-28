@@ -18,7 +18,7 @@ object PriceSimulation {
 }
 
 
-class Player() {
+class Player(val fabricTown: Town = Game.world.towns(0)) {
   var trains: List[Train] = List()
   var carriages: List[Carriage] = List()
   var engines: List[Engine] = List()
@@ -48,7 +48,7 @@ class Player() {
     if (!engines.contains(engine)) {
       throw new IllegalArgumentException("Player doesn’t own the engine")
     }
-    val train = new Train(engine, List())
+    val train = new Train(engine, List(), fabricTown)
     trains = train :: trains
     engines = engines diff List(engine)
     train
@@ -82,6 +82,9 @@ class Player() {
   }
 
   def launchTravel(train:Train, to:Town): Unit = {
+    if (!trains.contains(train)) {
+      throw new IllegalArgumentException("Player doesn’t own the train")
+    }
     // BAD
     var routes = Game.world.findPath(train.town, to).get
     var travel = new Travel(train, routes, this, List())

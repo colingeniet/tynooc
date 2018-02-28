@@ -9,12 +9,11 @@ object Game {
   var world: World = null
 
   def update(): Unit = {
-    val a = System.currentTimeMillis()
-    val dt = a - last
+    val a: Double = System.currentTimeMillis()
+    val dt: Double = (a - last) / 1000
     last = a
 
     logic(dt)
-    draw(dt)
   }
 
   def logic(dt: Double): Unit = {
@@ -23,9 +22,5 @@ object Game {
 
     //Update Cities
     world.update(dt)
-  }
-
-  def draw(dt: Double): Unit = {
-    //world.draw(dt)
   }
 }

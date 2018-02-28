@@ -37,8 +37,6 @@ class World {
   def travels: List[Travel] = _travels
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
-  def fabricTown: Town = towns(0)
-
   def addTown(town: Town): Unit = { _towns = town :: _towns; townNumber += 1}
 
   def addTown(name: String, x: Double, y: Double, welcomingLevel: Double): Unit = {
@@ -46,7 +44,7 @@ class World {
     townNumber += 1
   }
 
-  def addTravel(travel:Travel) = _travels = travel :: _travels
+  def addTravel(travel:Travel): Unit = _travels = travel :: _travels
 
   def travelsOf(player: Player) = travels.filter { _.owner == player }
 
@@ -73,7 +71,8 @@ class World {
   def update(dt: Double): Unit = {
     travels.foreach { _.update(dt) }
     _travels = travels.filter { !_.isDone}
-    towns.foreach { _.update(dt) }
+    // add later
+    //towns.foreach { _.update(dt) }
   }
 
   /** Find the shortest path between two towns.
@@ -115,12 +114,30 @@ class World {
     }
   }
 
+  def townsAccessibleFrom(from: Town): List[Town] = {
+    var closed: Set[Town] = Set()
+    var open: Set[Town] = Set(from)
+    var accessibles: Set[Town] = Set()
+    while (!open.isEmpty) {
+      val town = open.head
+      closed += town
+      open -= town
+      town.neighbours.foreach { n =>
+        if(!closed.contains(n)) {
+          open = open + n 
+          accessibles += n; 
+        }
+      }
+    }
+    accessibles.toList
+  }
+  
   override def toString: String = {
     towns.foldLeft[String]("") { (d, t) => d + s"$t\n" }
   }
 }
 
 object World {
-  def realToVirtualTime(t: Double) : Double = 50*t
-  def virtualToRealTime(t: Double) : Double = t/50
+  def realToVirtualTime(t: Double) : Double = t
+  def virtualToRealTime(t: Double) : Double = t
 }

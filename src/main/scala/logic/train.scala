@@ -17,7 +17,7 @@ trait NameMap[T] {
   /** Get an element from its name.
    *
    *  @param name the element name.
-   *  @throw java.util.NoSuchElementException if no such model exists.
+   *  @throws java.util.NoSuchElementException if no such model exists.
    */
   def apply(name: String): T = this.models.get(name).get
 }
@@ -113,7 +113,7 @@ class Carriage(var _model: CarriageModel) {
 class Train (
   var engine: Engine,
   var carriages: List[Carriage],
-  var town: Town = Game.world.fabricTown) {
+  var town: Town) {
   var travel: Option[Travel] = None
 
   def onRoute: Boolean = travel.isDefined
@@ -134,7 +134,8 @@ class Train (
 
   /** Remove the last carriage of the train and returns it.
    *
-   *  @throw NoSuchElementException if train has no carriage. */
+   *  @throws NoSuchElementException if train has no carriage.
+   */
   def removeCarriage(): Carriage = {
     val last = carriages.last
     carriages = carriages.dropRight(1)

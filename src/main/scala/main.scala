@@ -1,25 +1,46 @@
+import scalafx.Includes._
+import scalafx.application._
+
+import gui.MainStage
 import logic.world._
 import logic.game._
 import logic.town._
 
-object Program {
-  def main(args:Array[String]):Unit = {
-    Game.world = new World()
-    var town1: Town = new Town("Cachan", 100, 100, 1)
-    var town2: Town = new Town("Rennes", 0, 120, 0.6)
-    var town3: Town = new Town("Ulm", 10, 105, 0.7)
-    var town4: Town = new Town("Lyon", 110, 0, 0.85)
+object MainJFXApp extends JFXApp {
+  Game.world = new World()
+  var town1: Town = new Town("Cachan", 500, 300, 1)
+  var town2: Town = new Town("Rennes", 50, 250, 0.6)
+  var town3: Town = new Town("Ulm", 500, 200, 0.7)
+  var town4: Town = new Town("Lyon", 700, 700, 0.85)
+  var town5: Town = new Town("X", 450, 350, 0)
 
-    town1.addRoute(town2, 150)
-    town2.addRoute(town1, 150)
-    town1.addRoute(town3, 30)
-    town3.addRoute(town1, 30)
-    town1.addRoute(town4, 250)
-    town4 .addRoute(town1, 250)
-    Game.world.addTown(town1)
-    Game.world.addTown(town2)
-    Game.world.addTown(town3)
-    Game.world.addTown(town4)
-    println(Game.world)
+  town1.addRoute(town2, 1500)
+  town2.addRoute(town1, 1500)
+  town1.addRoute(town3, 300)
+  town3.addRoute(town1, 300)
+  town1.addRoute(town4, 2500)
+  town4 .addRoute(town1, 2500)
+  Game.world.addTown(town2)
+  Game.world.addTown(town3)
+  Game.world.addTown(town4)
+  Game.world.addTown(town5)
+  Game.world.addTown(town1)
+
+  var mainstage = new MainStage(Game.world)
+  stage = mainstage
+
+  var mainLoopThread = new Thread {
+    override def run {
+      while(true) {
+        Game.update()
+        Platform.runLater(mainstage.draw())
+        Thread.sleep(33)
+      }
+    }
+  }
+  mainLoopThread.start
+
+  override def stopApp(): Unit = {
+    mainLoopThread.stop()
   }
 }
