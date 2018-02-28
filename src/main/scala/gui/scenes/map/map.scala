@@ -31,6 +31,23 @@ extends ScrollPane with Drawable {
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
   private object MapContent extends ZoomPane with Drawable {
+    class MapTravel(val travel: Travel) extends Circle {
+      /** Updates circle position. */
+      def draw(): Unit = {
+        // Coordonates of start and end towns
+        val x1 = travel.currentRoute.start.x
+        val y1 = travel.currentRoute.start.y
+        val x2 = travel.currentRoute.end.x
+        val y2 = travel.currentRoute.end.y
+        val p = travel.currentRouteProportion
+        // train coordonates
+        centerX = x1 * (1-p) + x2 * p
+        centerY = y1 * (1-p) + y2 * p
+      }
+    }
+
+    private var travels: List[MapTravel] = List()
+
     private var routesMap: Pane = new Pane {
       // don't catch clicks on background
       pickOnBounds = false
@@ -108,27 +125,10 @@ extends ScrollPane with Drawable {
       routesMap.children.add(line)
     }
 
-    /** Display a train. */
-    private def drawTrain(travel: Travel): Circle = {
-      // Coordonates of start and end towns
-      val x1 = travel.currentRoute.start.x
-      val y1 = travel.currentRoute.start.y
-      val x2 = travel.currentRoute.end.x
-      val y2 = travel.currentRoute.end.y
-      val p = travel.currentRouteProportion
-      // train coordonates
-      val x = x1 * (1-p) + x2 * p
-      val y = y1 * (1-p) + y2 * p
-      new Circle() {
-        centerX = x
-        centerY = y
-        radius = 8
-        fill = Red
-      }
-    }
-
     override def draw(): Unit = {
-      dynamicMap.children = world.travels.map(drawTrain(_))
+      travels.filter(!_.travel.isDone)
+      travels.foreach(_.draw())
+      dynamicMap.children = travels
     }
   }
 
