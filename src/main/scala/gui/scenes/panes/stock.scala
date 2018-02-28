@@ -118,7 +118,7 @@ extends DrawableVBox {
     sendTravel.onAction = (event: ActionEvent) => {
       // when pressing the button, display the list of towns
       var selectionList: SelectionList[Town] = new SelectionList[Town](
-        world.towns,
+        world.townsAccessibleFrom(train.town),
         _.name,
         town => {
           // when selecting a town, travel to it
