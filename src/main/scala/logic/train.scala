@@ -98,7 +98,8 @@ class Engine(private var _model: EngineModel, var town: Town) {
 class Carriage(var _model: CarriageModel, var town: Town) {
   var health: Double = 100
   var train: Option[Train] = None
-
+  val placePrice: Double = 0
+  
   def isUsed: Boolean = train.isDefined
 
   def model: CarriageModel = _model
@@ -127,7 +128,7 @@ class Train (
   }
 
   def deteriorate(r:Route): Unit = {
-    engine.health -= Math.max(0, engine.health - 10)
+    engine.health = Math.max(0, engine.health - 10)
     carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
   }
 

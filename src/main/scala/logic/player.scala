@@ -125,7 +125,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
       throw new IllegalArgumentException("Train is in use")
     }
     var routes = Game.world.findPath(train.town, to).get
-    var travel = new Travel(train, routes, this, List())
+    var travel = new Travel(train, routes, this)
     train.travel = Some(travel)
     Game.world.addTravel(travel)
   }
