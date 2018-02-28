@@ -114,6 +114,24 @@ class World {
     }
   }
 
+  def townsAccessibleFrom(from: Town): List[Town] = {
+    var closed: Set[Town] = Set()
+    var open: Set[Town] = Set(from)
+    var accessibles: Set[Town] = Set()
+    while (!open.isEmpty) {
+      val town = open.head
+      closed += town
+      open -= town
+      town.neighbours.foreach { n =>
+        if(!closed.contains(n)) {
+          open = open + n 
+          accessibles += n; 
+        }
+      }
+    }
+    accessibles.toList
+  }
+  
   override def toString: String = {
     towns.foldLeft[String]("") { (d, t) => d + s"$t\n" }
   }
