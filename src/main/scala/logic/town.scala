@@ -54,7 +54,12 @@ class Town(
     val possibleDestinations = neighbours.sortBy { _.note }
     possibleDestinations.foreach { destination =>
       val migrantNumber = generateMigrant(destination)
-      val byStatus = residents.map { r => (migrantNumber * r / p).toInt }
+      val byStatus = {
+        if(p == 0) 
+          residents 
+        else 
+          residents.map { r => (migrantNumber * r.toDouble / p).toInt }
+      }
       Game.world.tryTravel(this, destination, byStatus)
     }
   }

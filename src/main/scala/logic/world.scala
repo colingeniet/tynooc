@@ -56,14 +56,14 @@ class World {
       var takenPlacesNumber = 0
       val p = migrantByStatus(status.id)
       rooms = rooms.sortBy { statusCriteria(status.id) }
-      do {
+      while(takenPlacesNumber < p && !rooms.isEmpty) {
         val room = rooms.head
         val nb = Math.max(p, room.availablePlaces)
         room.takePlaces(nb, destination, status)
         takenPlacesNumber += nb
         if(!room.isAvailable)
           rooms = rooms.tail
-      } while(takenPlacesNumber < p && !rooms.isEmpty)
+      }
       start.deleteResidents(takenPlacesNumber, status)
     }
   }
