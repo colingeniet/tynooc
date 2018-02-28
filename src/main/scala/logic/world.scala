@@ -37,8 +37,6 @@ class World {
   def travels: List[Travel] = _travels
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
-  def fabricTown: Town = towns(0)
-
   def addTown(town: Town): Unit = { _towns = town :: _towns; townNumber += 1}
 
   def addTown(name: String, x: Double, y: Double, welcomingLevel: Double): Unit = {
