@@ -19,7 +19,7 @@ object State {
 class Travel(val train: Train, private val roads: List[Route],
              val owner: Player) {
 
-  if(!owner.owns(train))
+  if(!owner.ownsTrain(train))
     throw new IllegalArgumentException("Player doesn’t own the train")
 
   private val rooms: List[Room] = train.carriages.map { new Room(this, _) }
