@@ -42,7 +42,7 @@ extends DrawableVBox {
 
   /** Displays the trains list. */
   private def displayTrains(): Unit = {
-    list = new TrainList(player.trains, detailTrain)
+    list = new TrainList(player.trains.toList, detailTrain)
     children = List(menu, sep1, list)
 
     // reset draw method
@@ -51,7 +51,7 @@ extends DrawableVBox {
 
   /** Displays the engines list. */
   private def displayEngines(): Unit = {
-    list = new EngineList(player.engines, detailEngine)
+    list = new EngineList(player.engines.toList, detailEngine)
     children = List(menu, sep1, list)
 
     // reset draw method
@@ -60,7 +60,7 @@ extends DrawableVBox {
 
   /** Displays the carriages list. */
   private def displayCarriages(): Unit = {
-    list = new CarriageList(player.carriages, detailCarriage)
+    list = new CarriageList(player.carriages.toList, detailCarriage)
     children = List(menu, sep1, list)
 
     // reset draw method
@@ -94,7 +94,7 @@ extends DrawableVBox {
       // when pressing the button, display a new carriage list
       var selectionList: CarriageList =
         new CarriageList(
-          player.carriagesStoredAt(train.town),
+          player.carriagesStoredAt(train.town).toList,
           carriage => {
             // when selecting a carriage, add it to the train
             player.addCarriageToTrain(train, carriage)

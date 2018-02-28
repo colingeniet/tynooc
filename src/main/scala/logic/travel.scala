@@ -21,7 +21,7 @@ class Travel(val train: Train, private val roads: List[Route],
   if(!owner.owns(train))
     throw new IllegalArgumentException("Player doesn’t own the train")
 
-  private val rooms: List[Room] = train.carriages.map { new Room(this, _) }
+  private val rooms: List[Room] = train.carriages.toList.map { new Room(0, this, _) }
   private val distance: Double = (roads.map { _.length }).sum
   private var currentRouteDistanceDone: Double = 0
   private var remainingRoutes: List[Route] = roads

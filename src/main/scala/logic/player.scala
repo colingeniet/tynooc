@@ -1,5 +1,7 @@
 package logic.player
 
+import collection.mutable.HashSet
+
 import logic.train._
 import logic.travel._
 import logic.town._
@@ -19,30 +21,30 @@ object PriceSimulation {
 
 
 class Player(val fabricTown: Town = Game.world.towns(0)) {
-  var trains: List[Train] = List()
-  var carriages: List[Carriage] = List()
-  var engines: List[Engine] = List()
+  var trains: HashSet[Train] = HashSet()
+  var carriages: HashSet[Carriage] = HashSet()
+  var engines: HashSet[Engine] = HashSet()
 
   var money: Double = 0
 
-  def travels: List[Travel] = Game.world.travelsOf(this)
+  def travels: HashSet[Travel] = Game.world.travelsOf(this)
   def addMoney(m: Double): Unit = money += m
 
-  def carriagesAvailable: List[Carriage] = carriages.filter(!_.isUsed)
+  def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed)
 
-  def carriagesStoredAt(town: Town): List[Carriage] =
+  def carriagesStoredAt(town: Town): HashSet[Carriage] =
     carriages.filter(c => !c.isUsed && c.town == town)
 
-  def enginesAvailable: List[Engine] = engines.filter(!_.isUsed)
+  def enginesAvailable: HashSet[Engine] = engines.filter(!_.isUsed)
 
-  def enginesStoredAt(town: Town): List[Engine] =
+  def enginesStoredAt(town: Town): HashSet[Engine] =
     engines.filter(c => !c.isUsed && c.town == town)
 
   def buyEngine(name: String): Unit = {
     var model = EngineModel(name)
     if (model.price <= money) {
       this.money -= model.price
-      engines = new Engine(model, fabricTown) :: engines
+      engines.add(new Engine(model, fabricTown))
     }
   }
 
@@ -50,7 +52,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     var model = CarriageModel(name)
     if (model.price <= money) {
       this.money -= model.price
-      carriages = new Carriage(model, fabricTown) :: carriages
+      carriages.add(new Carriage(model, fabricTown))
     }
   }
 
@@ -63,7 +65,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     }
     val train = new Train(engine, List(), engine.town)
     engine.train = Some(train)
-    trains = train :: trains
+    trains.add(train)
     train
   }
 
@@ -114,7 +116,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
       c.town = train.town
       c.train = None
     }
-    trains = trains diff List(train)
+    trains.remove(train)
   }
 
   def launchTravel(train:Train, to:Town): Unit = {
