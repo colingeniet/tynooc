@@ -31,10 +31,10 @@ class World {
   var townNumber = 0
 
   private var _towns: List[Town] = List()
-  private var _travels: List[Travel] = List()
+  private var _travels: HashSet[Travel] = HashSet()
 
   def towns: List[Town] = _towns
-  def travels: List[Travel] = _travels
+  def travels: HashSet[Travel] = _travels
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
   def addTown(town: Town): Unit = { _towns = town :: _towns; townNumber += 1}
@@ -44,12 +44,13 @@ class World {
     townNumber += 1
   }
 
-  def addTravel(travel:Travel): Unit = _travels = travel :: _travels
+  def addTravel(travel:Travel): Unit = _travels.add(travel)
 
-  def travelsOf(player: Player) = travels.filter { _.owner == player }
+  def travelsOf(player: Player): HashSet[Travel] =
+    travels.filter { _.owner == player }
 
   def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
-    val availableTravels = travels.filter { t => t.isWaitingAt(start) &&
+    val availableTravels = travels.toList.filter { t => t.isWaitingAt(start) &&
                                                  t.stopsAt(destination) }
     var rooms = availableTravels.flatMap { _.availableRooms }
     status.foreach { status =>
@@ -124,14 +125,14 @@ class World {
       open -= town
       town.neighbours.foreach { n =>
         if(!closed.contains(n)) {
-          open = open + n 
-          accessibles += n; 
+          open = open + n
+          accessibles += n;
         }
       }
     }
     accessibles.toList
   }
-  
+
   override def toString: String = {
     towns.foldLeft[String]("") { (d, t) => d + s"$t\n" }
   }

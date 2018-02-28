@@ -21,7 +21,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
   list.addMenu(
     train.engine.model.name + " engine",
     displayEngine(train.engine))
-  train.carriages.foreach(carriage =>
+  train.carriages.reverse.foreach(carriage =>
     list.addMenu(carriage.model.name + " carriage", displayCarriage(carriage)))
 
   // train statistics

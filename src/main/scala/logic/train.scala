@@ -99,7 +99,7 @@ class Carriage(var _model: CarriageModel, var town: Town) {
   var health: Double = 100
   var train: Option[Train] = None
   val placePrice: Double = 0
-  
+
   def isUsed: Boolean = train.isDefined
 
   def model: CarriageModel = _model
@@ -134,7 +134,7 @@ class Train (
 
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
-    carriages = carriages :+ c
+    carriages = c :: carriages
   }
 
   /** Remove the last carriage of the train and returns it.
@@ -142,8 +142,8 @@ class Train (
    *  @throws NoSuchElementException if train has no carriage.
    */
   def removeCarriage(): Carriage = {
-    val last = carriages.last
-    carriages = carriages.dropRight(1)
+    val last = carriages.head
+    carriages = carriages.tail
     last
   }
 }

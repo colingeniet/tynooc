@@ -18,7 +18,7 @@ final case class CantFree(
 extends Exception(message, cause)
 
 
-class Room(val price: Double, val travel: Travel, val carriage: Carriage) {
+class Room(val travel: Travel, val carriage: Carriage) {
   private var _passengers: Array[Array[Int]] =
     Array.ofDim(Game.world.statusNumber, Game.world.townNumber)
 
@@ -28,7 +28,8 @@ class Room(val price: Double, val travel: Travel, val carriage: Carriage) {
   def isAvailable: Boolean = passengerNumber < capacity
   def availablePlaces: Int = capacity - passengerNumber
   def comfort: Double = carriage.comfort
-
+  def price: Double = carriage.placePrice
+  
   def statusToTownNumber(destination: Town, status: Status.Val): Int = {
     passengers(status.id)(destination.id)
   }
