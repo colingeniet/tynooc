@@ -31,9 +31,26 @@ extends ScrollPane with Drawable {
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
   private object MapContent extends ZoomPane with Drawable {
-    private var towns: List[Node] = List()
-    private var townNames: List[Node] = List()
-    private var routes: List[Node] = List()
+    private var routesMap: Pane = new Pane {
+      // don't catch clicks on background
+      pickOnBounds = false
+    }
+    private var townsMap: Pane = new Pane {
+      // don't catch clicks on background
+      pickOnBounds = false
+    }
+    private var dynamicMap: Pane = new Pane {
+      // don't catch clicks on background
+      pickOnBounds = false
+    }
+    private var textMap: Pane = new Pane {
+      // don't catch clicks
+      mouseTransparent = true
+    }
+
+    children = new StackPane {
+      children = List(routesMap, townsMap, dynamicMap, textMap)
+    }
 
     // display all towns and routes
     world.towns.foreach {
@@ -52,18 +69,17 @@ extends ScrollPane with Drawable {
     private def addTown(town: Town): Unit = {
       // town is displayed as a point
       var point: Circle = new Circle() {
-      centerX = town.x
-      centerY = town.y
-      radius = 12
-      fill = Black
-      onMouseClicked = new EventHandler[MouseEvent] {
-        override def handle(event: MouseEvent) {
-          displayTown(town)
+        centerX = town.x
+        centerY = town.y
+        radius = 12
+        fill = Black
+        onMouseClicked = new EventHandler[MouseEvent] {
+          override def handle(event: MouseEvent) {
+            displayTown(town)
+          }
         }
       }
-
-      }
-      towns = point :: towns
+      townsMap.children.add(point)
 
       // text field for town name
       // FIXME : display on top
@@ -71,7 +87,7 @@ extends ScrollPane with Drawable {
         mouseTransparent = true
         styleClass.add("town-name")
       }
-      townNames = text :: townNames
+      textMap.children.add(text)
     }
 
     /** Display a route. */
@@ -89,7 +105,7 @@ extends ScrollPane with Drawable {
           }
         }
       }
-      routes = line :: routes
+      routesMap.children.add(line)
     }
 
     /** Display a train. */
@@ -112,8 +128,7 @@ extends ScrollPane with Drawable {
     }
 
     override def draw(): Unit = {
-      children =
-        routes ++ towns ++ world.travels.map(drawTrain(_)) ++ townNames
+      dynamicMap.children = world.travels.map(drawTrain(_))
     }
   }
 
