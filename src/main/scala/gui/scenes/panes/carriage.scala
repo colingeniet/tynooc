@@ -17,14 +17,20 @@ import logic.train._
  */
 class CarriageDetail(carriage: Carriage) extends DrawableVBox {
   private var name: Label = new Label(carriage.model.name + " carriage")
+  private var status: Label = new Label()
   private var health: Label = new Label()
   private var model: VBox = new CarriageModelStats(carriage.model)
 
-  children = List(name, health, model)
+  children = List(name, status, health, model)
   spacing = 3
   draw()
 
   override def draw(): Unit = {
+    if(carriage.isUsed) {
+      status.text = "in train"
+    } else {
+      status.text = "stored at " + carriage.town.name
+    }
     health.text = "health : " + carriage.health
   }
 }
@@ -35,15 +41,21 @@ class CarriageDetail(carriage: Carriage) extends DrawableVBox {
  */
 class EngineDetail(engine: Engine) extends DrawableVBox {
   private var name: Label = new Label(engine.model.name + " engine")
+  private var status: Label = new Label()
   private var health: Label = new Label()
   private var fuel: Label = new Label()
   private var model: VBox = new EngineModelStats(engine.model)
 
-  children = List(name, health, fuel, model)
+  children = List(name, status, health, fuel, model)
   spacing = 3
   draw()
 
   override def draw(): Unit = {
+    if(engine.isUsed) {
+      status.text = "in train"
+    } else {
+      status.text = "stored at " + engine.town.name
+    }
     health.text = "health : " + engine.health
     fuel.text = "fuel : " + engine.fuel
   }

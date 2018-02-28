@@ -94,7 +94,7 @@ extends DrawableVBox {
       // when pressing the button, display a new carriage list
       var selectionList: CarriageList =
         new CarriageList(
-          player.carriages,
+          player.carriagesStoredAt(train.town),
           carriage => {
             // when selecting a carriage, add it to the train
             player.addCarriageToTrain(train, carriage)
@@ -167,15 +167,11 @@ extends DrawableVBox {
     var createButton: Button = new Button("New train")
     createButton.onAction = (event: ActionEvent) => {
       val train: Train = player.createTrainFromEngine(engine)
-      displayEngines()
-      // display stats for the train instead,
-      // this is mostly to clear the stats screen
-      statsTrain(train)
     }
     children = List(menu, sep1, list, sep2, createButton)
 
     // reset draw function
-    drawCallback = () => ()
+    drawCallback = () => createButton.disable = engine.isUsed
   }
 
   /** Displays a specific carriage. */
