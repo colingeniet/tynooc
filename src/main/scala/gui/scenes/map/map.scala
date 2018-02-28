@@ -32,6 +32,9 @@ extends ScrollPane with Drawable {
      The ScrollPane is only a container. */
   private object MapContent extends ZoomPane with Drawable {
     class MapTravel(val travel: Travel) extends Circle {
+      radius = 8
+      fill = Red
+
       /** Updates circle position. */
       def draw(): Unit = {
         // Coordonates of start and end towns
@@ -126,7 +129,9 @@ extends ScrollPane with Drawable {
     }
 
     override def draw(): Unit = {
-      travels.filter(!_.travel.isDone)
+      val newTravels: List[Travel] = world.travels.toList diff travels.map(_.travel)
+      travels = newTravels.map(new MapTravel(_)) ::: travels
+      travels = travels.filter(!_.travel.isDone)
       travels.foreach(_.draw())
       dynamicMap.children = travels
     }
