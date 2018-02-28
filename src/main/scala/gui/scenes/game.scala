@@ -15,10 +15,9 @@ import gui.scenes.elements._
 import logic.world._
 import logic.town._
 import logic.route._
-
-//TEMPORARY
 import logic.train._
 import logic.player._
+import logic.travel._
 
 class Game(val world: World, sceneModifier: MainStage.States.Val=>Unit)
 extends MainStage.Scene(sceneModifier) with Drawable {
@@ -38,7 +37,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   private var right: DrawableVBox = new DrawableVBox()
   private var bottom: DrawableHBox = new DrawableHBox()
-  private var center: Map = new Map(world, displayTown, displayRoute, displayTrain)
+  private var center: Map = new Map(world, displayTown, displayRoute, displayTravel)
 
   private var pane: BorderPane = new BorderPane(
     center,
@@ -67,6 +66,11 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   private def displayTrain(train: Train): Unit = {
     right = new TrainDetail(train)
+    pane.right = right
+  }
+
+  private def displayTravel(travel: Travel): Unit = {
+    right = new TravelInfo(travel)
     pane.right = right
   }
 

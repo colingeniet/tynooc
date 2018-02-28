@@ -39,6 +39,8 @@ class Travel(val train: Train, private val roads: List[Route],
   def totalRemainingDistance: Double =
     (remainingRoutes.map { _.length }).sum - currentRouteDistanceDone
   def remainingDistance: Double = currentRoute.length - currentRouteDistanceDone
+  
+  def totalRemainingTime: Double = totalRemainingDistance / train.engine.speed
   def remainingTime: Double = remainingDistance / train.engine.speed
 
   def currentRouteProportion: Double = currentRouteDistanceDone / currentRoute.length
@@ -50,7 +52,7 @@ class Travel(val train: Train, private val roads: List[Route],
   def isOnRoute: Boolean = state == State.OnRoute
   def isArrived: Boolean = state == State.Arrived
   def isWaitingAt(town: Town): Boolean = (isWaiting || isLaunched) && currentTown == town
-  
+
   def availableRooms: List[Room] = rooms.filter { _.isAvailable }
 
   def landPassengers: Unit = {

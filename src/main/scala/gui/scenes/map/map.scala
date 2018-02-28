@@ -18,7 +18,6 @@ import logic.world._
 import logic.town._
 import logic.route._
 import logic.travel._
-import logic.train._
 
 
 /** Main map class.
@@ -31,7 +30,7 @@ class Map(
   val world: World,
   displayTown: Town => Unit,
   displayRoute: Route => Unit,
-  displayTrain: Train => Unit)
+  displayTravel: Travel => Unit)
 extends ScrollPane with Drawable {
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
@@ -41,7 +40,7 @@ extends ScrollPane with Drawable {
       fill = Red
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
-          displayTrain(travel.train)
+          displayTravel(travel)
         }
       }
 
