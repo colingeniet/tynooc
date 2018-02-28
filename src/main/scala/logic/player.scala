@@ -57,7 +57,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   }
 
   def createTrainFromEngine(engine: Engine): Train = {
-    if (!engines.contains(engine)) {
+    if (!ownsEngine(engine)) {
       throw new IllegalArgumentException("Player doesn’t own the engine")
     }
     if (engine.isUsed) {
@@ -69,29 +69,29 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     train
   }
 
-  def addCarriageToTrain(train: Train, c: Carriage): Unit = {
-    if (!trains.contains(train)) {
+  def addCarriageToTrain(train: Train, carriage: Carriage): Unit = {
+    if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
     if (train.onRoute) {
       throw new IllegalArgumentException("Train is in use")
     }
-    if (!carriages.contains(c)) {
+    if (!ownsCarriage(carriage)) {
       throw new IllegalArgumentException("Player doesn’t own the carriage")
     }
-    if (c.isUsed) {
+    if (carriage.isUsed) {
       throw new IllegalArgumentException("Carriage is in use")
     }
-    if (train.town != c.town) {
+    if (train.town != carriage.town) {
       throw new IllegalArgumentException("Train and Carriage in different locations")
     }
 
-    train.addCarriage(c)
-    c.train = Some(train)
+    train.addCarriage(carriage)
+    carriage.train = Some(train)
   }
 
   def removeCarriageFromTrain(train: Train): Unit = {
-    if (!trains.contains(train)) {
+    if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
     if (train.onRoute) {
@@ -103,7 +103,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   }
 
   def disassembleTrain(train: Train): Unit = {
-    if (!trains.contains(train)) {
+    if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
     if (train.onRoute) {
@@ -120,7 +120,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   }
 
   def launchTravel(train:Train, to:Town): Unit = {
-    if (!trains.contains(train)) {
+    if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
     if (train.onRoute) {
@@ -146,7 +146,9 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     }
   }
 
-  def owns(train: Train):Boolean = trains.contains(train)
+  def ownsTrain(train: Train): Boolean = trains.contains(train)
+  def ownsCarriage(carriage: Carriage): Boolean = carriages.contains(carriage)
+  def ownsEngine(engine: Engine): Boolean = engines.contains(engine)
 
   def update(dt: Double): Unit = {}
 }
