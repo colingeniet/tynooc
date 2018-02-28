@@ -18,6 +18,7 @@ import logic.world._
 import logic.town._
 import logic.route._
 import logic.travel._
+import logic.train._
 
 
 /** Main map class.
@@ -26,7 +27,11 @@ import logic.travel._
  *  @param displayTown callback function used to display town details.
  *  @param displayRoute callback function used to display route details.
  */
-class Map(val world: World, displayTown: Town => Unit, displayRoute: Route => Unit)
+class Map(
+  val world: World,
+  displayTown: Town => Unit,
+  displayRoute: Route => Unit,
+  displayTrain: Train => Unit)
 extends ScrollPane with Drawable {
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
@@ -124,6 +129,11 @@ extends ScrollPane with Drawable {
         centerY = y
         radius = 8
         fill = Red
+        onMouseClicked = new EventHandler[MouseEvent] {
+          override def handle(event: MouseEvent) {
+            displayTrain(travel.train)
+          }
+        }
       }
     }
 

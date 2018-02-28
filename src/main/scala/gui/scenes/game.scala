@@ -38,7 +38,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   private var right: DrawableVBox = new DrawableVBox()
   private var bottom: DrawableHBox = new DrawableHBox()
-  private var center: Map = new Map(world, displayTown, displayRoute)
+  private var center: Map = new Map(world, displayTown, displayRoute, displayTrain)
 
   private var pane: BorderPane = new BorderPane(
     center,
