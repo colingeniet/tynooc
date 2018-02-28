@@ -25,7 +25,20 @@ object MainJFXApp extends JFXApp {
   Game.world.addTown(town4)
   Game.world.addTown(town5)
   Game.world.addTown(town1)
-
+  
+  town1.addResidents(1000, Status.WELL)
+  town1.addResidents(400, Status.POOR)
+  town1.addResidents(150, Status.RICH)
+  town2.addResidents(1000, Status.WELL)
+  town2.addResidents(300, Status.POOR)
+  town2.addResidents(200, Status.RICH)
+  town3.addResidents(1000, Status.WELL)
+  town3.addResidents(100, Status.POOR)
+  town3.addResidents(400, Status.RICH)
+  town4.addResidents(1000, Status.WELL)
+  town4.addResidents(250, Status.POOR)
+  town4.addResidents(300, Status.RICH)
+  
   var mainstage = new MainStage(Game.world)
   stage = mainstage
 

@@ -22,9 +22,12 @@ class Town(
   def routes: List[Route] = _routes
   def neighbours: List[Town] = routes.map { _.end }
   def population: Int = residents.sum
-  def note: Double =
-    /* + 1 to avoid division by zero */
-    welcomingLevel * (1 + population) / (1 + Game.world.population)
+  def note: Double = {
+    if(population == 0)
+      1 
+    else 
+      welcomingLevel * (1 - population.toDouble / Game.world.population)
+  }
 
   def addResidents(nb: Int, status: Status.Val): Unit =
     residents(status.id) += nb
@@ -54,11 +57,11 @@ class Town(
     val possibleDestinations = neighbours.sortBy { _.note }
     possibleDestinations.foreach { destination =>
       val migrantNumber = generateMigrant(destination)
-      val byStatus = {
+      var byStatus = {
         if(p == 0) 
           residents 
         else 
-          residents.map { r => (migrantNumber * r.toDouble / p).toInt }
+          residents.map { r => (migrantNumber * r.toDouble / p).floor.toInt }
       }
       Game.world.tryTravel(this, destination, byStatus)
     }

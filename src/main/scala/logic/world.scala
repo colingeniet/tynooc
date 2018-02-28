@@ -59,7 +59,7 @@ class World {
       rooms = rooms.sortBy { statusCriteria(status.id) }
       while(takenPlacesNumber < p && !rooms.isEmpty) {
         val room = rooms.head
-        val nb = Math.max(p, room.availablePlaces)
+        val nb = Math.min(p, room.availablePlaces)
         room.takePlaces(nb, destination, status)
         takenPlacesNumber += nb
         if(!room.isAvailable)
@@ -73,7 +73,7 @@ class World {
     travels.foreach { _.update(dt) }
     _travels = travels.filter { !_.isDone}
     // add later
-    //towns.foreach { _.update(dt) }
+    towns.foreach { _.update(dt) }
   }
 
   /** Find the shortest path between two towns.
