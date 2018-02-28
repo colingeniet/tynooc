@@ -73,7 +73,7 @@ class World {
     travels.foreach { _.update(dt) }
     _travels = travels.filter { !_.isDone}
     // add later
-    //towns.foreach { _.update(dt) }
+    towns.foreach { _.update(dt) }
   }
 
   /** Find the shortest path between two towns.
