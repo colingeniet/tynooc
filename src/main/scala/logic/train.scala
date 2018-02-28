@@ -113,7 +113,7 @@ class Carriage(var _model: CarriageModel) {
 class Train (
   var engine: Engine,
   var carriages: List[Carriage],
-  var town: Town = Game.world.fabricTown) {
+  var town: Town) {
   var travel: Option[Travel] = None
 
   def onRoute: Boolean = travel.isDefined
