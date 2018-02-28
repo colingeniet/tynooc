@@ -20,7 +20,7 @@ extends Exception(message, cause)
 
 class Room(val travel: Travel, val carriage: Carriage) {
   private var _passengers: Array[Array[Int]] =
-    Array.ofDim(Game.world.statusNumber, Game.world.townNumber)
+    Array.ofDim(Game.world.townNumber, Game.world.statusNumber)
 
   def passengers: Array[Array[Int]] = _passengers
   def passengerNumber: Int = passengers.foldLeft[Int](0) { _ + _.sum }
@@ -30,20 +30,31 @@ class Room(val travel: Travel, val carriage: Carriage) {
   def comfort: Double = carriage.comfort
   def price: Double = carriage.placePrice
   
-  def statusToTownNumber(destination: Town, status: Status.Val): Int = {
-    passengers(status.id)(destination.id)
+  def passengerNumber(status: Status.Val, destination: Town): Int = {
+    passengers(destination.id)(status.id)
   }
+  
+  def passengerNumber(destination: Town): Int = {
+    passengers(destination.id).sum
+  } 
 
   def freePlaces(nb: Int, destination: Town, status: Status.Val): Unit = {
-    if(nb > passengers(status.id)(destination.id))
+    if(nb > passengers(destination.id)(status.id))
       throw new CantFree
-    passengers(status.id)(destination.id) -= nb
+    passengers(destination.id)(status.id) -= nb
   }
 
+  def freePlaces(destination: Town, status: Status.Val): Unit = {
+    Game.world.status.foreach { status =>
+      freePlaces(passengerNumber(status, destination), destination, status)
+    }
+  }
+ 
   def takePlaces(nb: Int, destination: Town, status: Status.Val): Unit = {
     if(nb > availablePlaces)
       throw new CantBuy
-    passengers(status.id)(destination.id) += nb
+    passengers(destination.id)(status.id) += nb
     travel.owner.addMoney(price * nb)
   }
+
 }
