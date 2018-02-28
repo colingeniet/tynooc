@@ -108,7 +108,11 @@ class World {
       closed.add(town)
     }
 
-    path.get(to)
+    // path was build in reverse direction
+    path.get(to) match {
+      case None => None
+      case Some(l) => Some(l.reverse)
+    }
   }
 
   override def toString: String = {
