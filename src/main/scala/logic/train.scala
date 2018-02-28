@@ -72,10 +72,12 @@ object CarriageModel extends NameMap[CarriageModel] {
  *
  *  @param _model the engine model.
  */
-class Engine(var _model: EngineModel) {
+class Engine(private var _model: EngineModel, var town: Town) {
   var health: Double = 100
   var fuel: Double = model.fuelCapacity
-  var used: Boolean = false
+  var train: Option[Train] = None
+
+  def isUsed: Boolean = train.isDefined
 
   def model: EngineModel = _model
   def model_=(newModel: EngineModel): Unit = {
@@ -84,7 +86,7 @@ class Engine(var _model: EngineModel) {
     fuel = model.fuelCapacity
   }
 
-  def this(name: String) = this(EngineModel(name))
+  def this(name: String, town: Town) = this(EngineModel(name), town)
 
   def speed:Double = model.speed
 }
@@ -93,9 +95,11 @@ class Engine(var _model: EngineModel) {
  *
  *  @param _model the carriage model.
  */
-class Carriage(var _model: CarriageModel) {
+class Carriage(var _model: CarriageModel, var town: Town) {
   var health: Double = 100
-  var used: Boolean = false
+  var train: Option[Train] = None
+
+  def isUsed: Boolean = train.isDefined
 
   def model: CarriageModel = _model
   def model_=(newModel: CarriageModel): Unit = {
@@ -104,7 +108,7 @@ class Carriage(var _model: CarriageModel) {
   }
 
   def capacity: Int = model.capacity
-  def this(name: String) = this(CarriageModel(name))
+  def this(name: String, town: Town) = this(CarriageModel(name), town)
 
   def comfort:Double = model.comfort
 }

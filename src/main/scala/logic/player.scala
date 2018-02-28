@@ -29,18 +29,18 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   def addMoney(m: Double): Unit = money += m
 
   def buyEngine(name: String): Unit = {
-    var c = EngineModel(name)
-    if (c.price <= money) {
-      this.money -= c.price
-      engines = new Engine(c) :: engines
+    var model = EngineModel(name)
+    if (model.price <= money) {
+      this.money -= model.price
+      engines = new Engine(model, fabricTown) :: engines
     }
   }
 
   def buyCarriage(name: String): Unit = {
-    var c = CarriageModel(name)
-    if (c.price <= money) {
-      this.money -= c.price
-      carriages = new Carriage(c) :: carriages
+    var model = CarriageModel(name)
+    if (model.price <= money) {
+      this.money -= model.price
+      carriages = new Carriage(model, fabricTown) :: carriages
     }
   }
 
@@ -48,7 +48,11 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (!engines.contains(engine)) {
       throw new IllegalArgumentException("Player doesn’t own the engine")
     }
-    val train = new Train(engine, List(), fabricTown)
+    if (engine.isUsed) {
+      throw new IllegalArgumentException("Engine is in use")
+    }
+    val train = new Train(engine, List(), engine.town)
+    engine.train = Some(train)
     trains = train :: trains
     engines = engines diff List(engine)
     train
@@ -58,10 +62,21 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (!trains.contains(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
+    if (train.onRoute) {
+      throw new IllegalArgumentException("Train is in use")
+    }
     if (!carriages.contains(c)) {
       throw new IllegalArgumentException("Player doesn’t own the carriage")
     }
+    if (c.isUsed) {
+      throw new IllegalArgumentException("Carriage is in use")
+    }
+    if (train.town != c.town) {
+      throw new IllegalArgumentException("Train and Carriage in different locations")
+    }
+
     train.addCarriage(c)
+    c.train = Some(train)
     carriages = carriages diff List(c)
   }
 
@@ -69,14 +84,30 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (!trains.contains(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
-    carriages = train.removeCarriage() :: carriages
+    if (train.onRoute) {
+      throw new IllegalArgumentException("Train is in use")
+    }
+    var carriage: Carriage = train.removeCarriage()
+    carriage.train = None
+    carriage.town = train.town
+    carriages = carriage :: carriages
   }
 
   def disassembleTrain(train: Train): Unit = {
     if (!trains.contains(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
+    if (train.onRoute) {
+      throw new IllegalArgumentException("Train is in use")
+    }
+    train.engine.town = train.town
+    train.engine.train = None
     engines = train.engine :: engines
+
+    train.carriages.foreach{ c =>
+      c.town = train.town
+      c.train = None
+    }
     carriages = train.carriages ::: carriages
     trains = trains diff List(train)
   }
@@ -85,7 +116,9 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (!trains.contains(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
-    // BAD
+    if (train.onRoute) {
+      throw new IllegalArgumentException("Train is in use")
+    }
     var routes = Game.world.findPath(train.town, to).get
     var travel = new Travel(train, routes, this, List())
     train.travel = Some(travel)
