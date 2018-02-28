@@ -24,8 +24,7 @@ object MainJFXApp extends JFXApp {
   Game.world.addTown(town4)
   Game.world.addTown(town1)
 
-  var mainstage = new MainStage
-  mainstage.world = Game.world
+  var mainstage = new MainStage(Game.world)
   stage = mainstage
 
   var mainLoopThread = new Thread {

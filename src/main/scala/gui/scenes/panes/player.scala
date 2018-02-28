@@ -10,6 +10,7 @@ import gui.draw._
 import gui.scenes.elements._
 import logic.player._
 import logic.train._
+import logic.world._
 
 /** Player information panel.
  *
@@ -22,6 +23,7 @@ import logic.train._
  */
 class PlayerInfo(
   player: Player,
+  world: World,
   detailTrain: Train => Unit,
   detailEngine: Engine => Unit,
   detailCarriage: Carriage => Unit)
@@ -37,7 +39,7 @@ extends DrawableVBox {
 
   // stock subpanel
   private var stock: PlayerStock =
-    new PlayerStock(player, detailTrain, detailEngine, detailCarriage)
+    new PlayerStock(player, world, detailTrain, detailEngine, detailCarriage)
 
   // model catalog subpanel
   private var models: ModelsList = new ModelsList(player, updateStock)
@@ -70,7 +72,8 @@ extends DrawableVBox {
 
   /** Update the stock subpanel. */
   private def updateStock(): Unit = {
-    stock = new PlayerStock(player, detailTrain, detailEngine, detailCarriage)
+    stock =
+      new PlayerStock(player, world, detailTrain, detailEngine, detailCarriage)
     money.text = player.money + "$"
   }
 

@@ -20,10 +20,9 @@ import logic.route._
 import logic.train._
 import logic.player._
 
-class Game(sceneModifier: MainStage.States.Val=>Unit)
+class Game(val world: World, sceneModifier: MainStage.States.Val=>Unit)
 extends MainStage.Scene(sceneModifier) with Drawable {
   private var menuBtn: Button = new Button("Menu")
-  private var _world: World = new World
 
   // panes contents
   private var top: DrawableHBox = new panes.Menu(menuBtn)
@@ -32,6 +31,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   player.addMoney(100)
   private var left: DrawableVBox = new PlayerInfo(
     player,
+    world,
     displayTrain,
     displayEngine,
     displayCarriage)
@@ -78,14 +78,6 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   private def displayCarriage(carriage: Carriage): Unit = {
     right = new CarriageDetail(carriage)
     pane.right = right
-  }
-
-  def world: World = _world
-
-  def world_=(newWorld: World): Unit = {
-    _world = newWorld
-    center = new Map(world, displayTown, displayRoute)
-    pane.center = center
   }
 
   override def draw(): Unit = {

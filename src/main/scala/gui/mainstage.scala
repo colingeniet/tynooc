@@ -13,10 +13,10 @@ import logic.world.World
  *
  *  Handles, displays and switch between menus and game screens.
  */
-class MainStage extends JFXApp.PrimaryStage with Drawable {
+class MainStage(world: World) extends JFXApp.PrimaryStage with Drawable {
   /* Actual scenes displayed. */
   private var mainMenuScene: MainMenu = new MainMenu(changeScene)
-  private var gameScene: Game = new Game(changeScene)
+  private var gameScene: Game = new Game(world, changeScene)
   private var optionsScene: Options = new Options(changeScene)
   /* Stage configuration. */
   title.value = "Tynooc"
@@ -36,12 +36,6 @@ class MainStage extends JFXApp.PrimaryStage with Drawable {
       case MainStage.States.Options => scene = optionsScene
       case MainStage.States.Quit => Platform.exit ()
     }
-  }
-
-  def world: World = gameScene.world
-
-  def world_=(newWorld: World): Unit = {
-    gameScene.world = newWorld
   }
 
   override def draw(): Unit = {

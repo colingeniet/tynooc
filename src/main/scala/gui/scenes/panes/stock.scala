@@ -9,9 +9,7 @@ import scalafx.event._
 import gui.scenes.elements._
 import logic.player._
 import logic.train._
-
-// REMOVE
-import logic.game._
+import logic.world._
 
 /** Displays a player rolling stock.
  *
@@ -22,6 +20,7 @@ import logic.game._
  */
 class PlayerStock(
   player: Player,
+  world: World,
   statsTrain: Train => Unit,
   statsEngine: Engine => Unit,
   statsCarriage: Carriage => Unit)
@@ -106,7 +105,7 @@ extends VBox(3) {
     }
 
     sendTravel.onAction = (event: ActionEvent) => {
-      player.launchTravel(train, Game.world.towns(1)) // nothing to see here, move along
+      player.launchTravel(train, world.towns(1)) // nothing to see here, move along
       detailTrain(train)
     }
     if(train.onRoute) {
