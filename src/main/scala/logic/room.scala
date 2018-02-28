@@ -18,7 +18,7 @@ final case class CantFree(
 extends Exception(message, cause)
 
 
-class Room(val price: Double, val travel: Travel, val carriage: Carriage) {
+class Room(val travel: Travel, val carriage: Carriage) {
   private var _passengers: Array[Array[Int]] =
     Array.ofDim(Game.world.statusNumber, Game.world.townNumber)
 
