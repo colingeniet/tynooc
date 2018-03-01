@@ -127,7 +127,7 @@ class Train (
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
   }
 
-  def consumption(distance: Double): Double = engine.consumption * distance
+  def consumption(distance: Double): Double = engine.model.consumption * distance
   
   def tooHeavy: Boolean = weight > engine.model.power
 
