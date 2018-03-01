@@ -19,6 +19,11 @@ object PriceSimulation {
   }
 }
 
+final case class PathNotFound(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
+
 
 class Player(val fabricTown: Town = Game.world.towns(0)) {
   var trains: HashSet[Train] = HashSet()
@@ -129,7 +134,10 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (train.tooHeavy) {
       throw new IllegalArgumentException("Train is too heavy")
     }
-    var routes = Game.world.findPath(train.town, to).get
+    var routes = Game.world.findPath(train.town, to) match {
+      case None => throw new PathNotFound
+      case Some(routes) => routes
+    }
     var travel = new Travel(train, routes, this)
     train.travel = Some(travel)
     Game.world.addTravel(travel)
