@@ -148,13 +148,15 @@ extends ScrollPane with Drawable {
       routesMap.children.add(line)
     }
 
+    /** Add a new travel. */
+    private def addTravel(travel: Travel): Unit = {
+      travels = new MapTravel(travel) :: travels
+    }
+
+    world.onAddTravel = addTravel
+
     /** Update dynamic map. */
     override def draw(): Unit = {
-      // Filter travels that are not already on the map
-      // this could be done better
-      val newTravels: List[Travel] = world.travels.toList diff travels.map(_.travel)
-      // add new travels
-      travels = newTravels.map(new MapTravel(_)) ::: travels
       // remove finished travels
       travels = travels.filter(!_.travel.isDone)
       // update all positions

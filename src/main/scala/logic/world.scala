@@ -33,6 +33,11 @@ class World {
   private var _towns: List[Town] = List()
   private var _travels: HashSet[Travel] = HashSet()
 
+  /** Callback called any time a new travel is added.
+   *
+   *  This is used to signal it to the gui. */
+  var onAddTravel: Travel => Unit = {_ => ()}
+
   def towns: List[Town] = _towns
   def travels: HashSet[Travel] = _travels
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
@@ -44,7 +49,11 @@ class World {
     townNumber += 1
   }
 
-  def addTravel(travel:Travel): Unit = _travels.add(travel)
+  def addTravel(travel:Travel): Unit = {
+    _travels.add(travel)
+    // callback
+    onAddTravel(travel)
+  }
 
   def travelsOf(player: Player): HashSet[Travel] =
     travels.filter { _.owner == player }
