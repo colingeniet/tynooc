@@ -126,6 +126,9 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (train.onRoute) {
       throw new IllegalArgumentException("Train is in use")
     }
+    if (train.tooHeavy) {
+      throw new IllegalArgumentException("Train is too heavy")
+    }
     var routes = Game.world.findPath(train.town, to).get
     var travel = new Travel(train, routes, this)
     train.travel = Some(travel)
