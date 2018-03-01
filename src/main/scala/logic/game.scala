@@ -7,6 +7,7 @@ object Game {
   private var last: Double = System.currentTimeMillis()
   var players: List[Player] = List() //[new Hero(), new IA("Dumb")]
   var world: World = null
+  var time: Double = 0
 
   var paused: Boolean = false
   var timeAcceleration: Double = 1
@@ -16,6 +17,7 @@ object Game {
     if (!paused) {
       val dt: Double = timeAcceleration * realToVirtualTime((a - last) / 1000)
       logic(dt)
+      time += dt
     }
     last = a
   }

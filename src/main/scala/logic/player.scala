@@ -35,7 +35,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
   def addMoney(m: Double): Unit = money += m
   def debit(m: Double): Unit = money -= m
-  
+
   def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed)
 
   def carriagesStoredAt(town: Town): HashSet[Carriage] =

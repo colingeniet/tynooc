@@ -25,6 +25,13 @@ extends BorderPane with Drawable {
     children = List()
   }
 
+  val timeLabel = new Label()
+
+  val pauseButton = new ToggleButton {
+    graphic = new ImageView {image = new Image(this, "/icons/pause.png")}
+    onAction = (event: ActionEvent) => Game.paused = selected()
+  }
+
   val timeGroup: ToggleGroup = new ToggleGroup()
   val buttonX1 = new ToggleButton {
     graphic = new ImageView {image = new Image(this, "/icons/time1.png")}
@@ -43,12 +50,15 @@ extends BorderPane with Drawable {
 
   right = new HBox {
     children = List(
-      new ToggleButton {
-        graphic = new ImageView {image = new Image(this, "/icons/pause.png")}
-        onAction = (event: ActionEvent) => Game.paused = selected()
-      },
+      timeLabel,
+      pauseButton,
       buttonX1,
       buttonX2,
       buttonX4)
+  }
+
+  override def draw(): Unit = {
+    timeLabel.text =
+      f"day ${Game.time.toInt / 24 + 1}%d : ${Game.time.toInt % 24}%02dh " 
   }
 }
