@@ -29,7 +29,8 @@ class World {
                              (r:Room) => r.comfort / (r.price+1))
   var statusNumber = status.length
   var townNumber = 0
-
+  var fuelPrice = 1
+  
   private var _towns: List[Town] = List()
   private var _travels: HashSet[Travel] = HashSet()
 
