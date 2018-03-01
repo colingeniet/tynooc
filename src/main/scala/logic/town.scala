@@ -24,8 +24,8 @@ class Town(
   def population: Int = residents.sum
   def note: Double = {
     if(population == 0)
-      1 
-    else 
+      1
+    else
       welcomingLevel * (1 - population.toDouble / Game.world.population)
   }
 
@@ -48,8 +48,8 @@ class Town(
     _routes = route :: _routes
   }
 
-  def addRoute(end: Town, length: Double): Unit = {
-    _routes = (new Route(this, end, length)) :: _routes
+  def addRoute(end: Town, length: Double, state: Double): Unit = {
+    _routes = (new Route(this, end, length, state)) :: _routes
   }
 
   def update(dt: Double): Unit = {
@@ -58,9 +58,9 @@ class Town(
     possibleDestinations.foreach { destination =>
       val migrantNumber = generateMigrant(destination)
       var byStatus = {
-        if(p == 0) 
-          residents 
-        else 
+        if(p == 0)
+          residents
+        else
           residents.map { r => (migrantNumber * r.toDouble / p).floor.toInt }
       }
       Game.world.tryTravel(this, destination, byStatus)
