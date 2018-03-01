@@ -34,7 +34,8 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
 
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
   def addMoney(m: Double): Unit = money += m
-
+  def debit(m: Double): Unit = money -= m
+  
   def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed)
 
   def carriagesStoredAt(town: Town): HashSet[Carriage] =
@@ -134,11 +135,13 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (train.tooHeavy) {
       throw new IllegalArgumentException("Train is too heavy")
     }
-    var routes = Game.world.findPath(train.town, to) match {
+    val routes = Game.world.findPath(train.town, to) match {
       case None => throw new PathNotFound
       case Some(routes) => routes
     }
-    var travel = new Travel(train, routes, this)
+    val travel = new Travel(train, routes, this)
+    val distance = routes.foldLeft[Double](0) { _ + _.length }
+    debit(train.consumption(distance))
     train.travel = Some(travel)
     Game.world.addTravel(travel)
   }
