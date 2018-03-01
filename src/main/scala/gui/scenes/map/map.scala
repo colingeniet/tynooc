@@ -35,6 +35,11 @@ extends ScrollPane with Drawable {
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
   private object MapContent extends ZoomPane with Drawable {
+    /** The dots representing a train on route on the map.
+     *
+     *  The `Circle` object is associated with the corresponding `Travel`
+     *  to allow automatic updating of its position.
+     */
     class MapTravel(val travel: Travel) extends Circle {
       radius = 8
       fill = Red
@@ -58,8 +63,11 @@ extends ScrollPane with Drawable {
       }
     }
 
+    // the list of current travels
     private var travels: List[MapTravel] = List()
 
+    /* The map is organized as several superposed layers. */
+    // map layers, from bottom to top :
     private var routesMap: Pane = new Pane {
       // don't catch clicks on background
       pickOnBounds = false
@@ -68,6 +76,9 @@ extends ScrollPane with Drawable {
       // don't catch clicks on background
       pickOnBounds = false
     }
+    /* This is the only dynamic layer, that is the only one that
+     * requires updating. It contains the trains.
+     */
     private var dynamicMap: Pane = new Pane {
       // don't catch clicks on background
       pickOnBounds = false
@@ -77,6 +88,7 @@ extends ScrollPane with Drawable {
       mouseTransparent = true
     }
 
+    // layers are added to a StackPane to allow superposition
     children = new StackPane {
       children = List(routesMap, townsMap, dynamicMap, textMap)
     }
@@ -89,7 +101,7 @@ extends ScrollPane with Drawable {
       }
     }
 
-    // options
+    // style options
     styleClass.add("map")
     minScale = 0.2
     maxScale = 4
@@ -111,7 +123,6 @@ extends ScrollPane with Drawable {
       townsMap.children.add(point)
 
       // text field for town name
-      // FIXME : display on top
       var text: Text = new Text(town.x + 9, town.y - 9, town.name) {
         mouseTransparent = true
         styleClass.add("town-name")
@@ -137,11 +148,18 @@ extends ScrollPane with Drawable {
       routesMap.children.add(line)
     }
 
+    /** Update dynamic map. */
     override def draw(): Unit = {
+      // Filter travels that are not already on the map
+      // this could be done better
       val newTravels: List[Travel] = world.travels.toList diff travels.map(_.travel)
+      // add new travels
       travels = newTravels.map(new MapTravel(_)) ::: travels
+      // remove finished travels
       travels = travels.filter(!_.travel.isDone)
+      // update all positions
       travels.foreach(_.draw())
+      // update content
       dynamicMap.children = travels
     }
   }

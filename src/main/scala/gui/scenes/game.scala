@@ -26,6 +26,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   // panes contents
   private var top: DrawableHBox = new panes.Menu(menuBtn)
 
+  // TEMP
   private var player: Player = new Player()
   player.addMoney(100)
   private var left: DrawableVBox = new PlayerInfo(
@@ -39,13 +40,13 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   private var bottom: DrawableHBox = new DrawableHBox()
   private var center: Map = new Map(world, displayTown, displayRoute, displayTravel)
 
+  // content
   private var pane: BorderPane = new BorderPane(
     center,
     top,
     right,
     bottom,
     left)
-
   root = pane
 
   menuBtn.onAction = (event: ActionEvent) => {
@@ -53,6 +54,8 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   }
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
+
+  /* Content display methods */
 
   private def displayTown(town: Town): Unit = {
     bottom = new TownInfo(town, displayRoute)
@@ -84,6 +87,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
     pane.right = right
   }
 
+  // update content
   override def draw(): Unit = {
     center.draw()
     top.draw()

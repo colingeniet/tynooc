@@ -61,6 +61,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
   }
 }
 
+/** General train statistics. */
 class TrainStats(train: Train) extends DrawableVBox {
   private var status: Label = new Label()
   private var weight: Label = new Label()

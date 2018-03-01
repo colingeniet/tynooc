@@ -54,8 +54,8 @@ class ZoomPane extends Pane {
   /** Zoom centered on a point.
    *
    *  @param factor the zoom factor.
-   *  @param x the point x coordonate.
-   *  @param y the point y coordonate.
+   *  @param x the point x coordonate relative to the scene.
+   *  @param y the point y coordonate relative to the scene.
    */
   def zoom(factor: Double, x: Double, y: Double): Unit = {
     var scale: Double = scaleX() * factor

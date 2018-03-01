@@ -71,6 +71,7 @@ extends DrawableVBox {
   private def detailTrain(train: Train): Unit = {
     // display stats in a separate window via callback
     statsTrain(train)
+    
     // create buttons for assemble/disassemble actions
     var disassembleAll: Button = new Button("Disassemble all")
     var disassembleOne: Button = new Button("Disassemble last")

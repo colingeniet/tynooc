@@ -64,7 +64,7 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
     children = List(typeList, sep1, carriagesList, sep2)
   }
 
-  /** Displayes a specific carriage model. */
+  /** Displays a specific carriage model. */
   private def displayCarriage(carriage: CarriageModel): Unit = {
     buy.text = "buy(" + carriage.price + ")"
     buy.onAction = (event: ActionEvent) => {

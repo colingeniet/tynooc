@@ -11,7 +11,8 @@ import gui.scenes.panes._
 import logic.train._
 import logic.travel._
 
-
+/** Information on a travel.
+ */
 class TravelInfo(travel: Travel) extends DrawableVBox {
   private var trainInfo: TrainDetail = new TrainDetail(travel.train)
   private var dest: Label = new Label("destination :")
