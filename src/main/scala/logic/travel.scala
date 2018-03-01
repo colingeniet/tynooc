@@ -39,7 +39,7 @@ class Travel(val train: Train, private val roads: List[Route],
   def totalRemainingDistance: Double =
     (remainingRoutes.map { _.length }).sum - currentRouteDistanceDone
   def remainingDistance: Double = currentRoute.length - currentRouteDistanceDone
-  
+
   def totalRemainingTime: Double = totalRemainingDistance / train.engine.speed
   def remainingTime: Double = remainingDistance / train.engine.speed
 
@@ -69,7 +69,7 @@ class Travel(val train: Train, private val roads: List[Route],
       state match {
         case State.Launched => state = State.Waiting
         case State.OnRoute => {
-          currentRouteDistanceDone += World.realToVirtualTime(dt) * train.engine.speed
+          currentRouteDistanceDone += dt * train.engine.speed
           if(currentRouteDistanceDone >= currentRoute.length) {
             state = State.Arrived
           }

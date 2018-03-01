@@ -8,19 +8,26 @@ object Game {
   var players: List[Player] = List() //[new Hero(), new IA("Dumb")]
   var world: World = null
 
+  var paused: Boolean = false
+  var timeAcceleration: Double = 1
+
   def update(): Unit = {
     val a: Double = System.currentTimeMillis()
-    val dt: Double = (a - last) / 1000
+    if (!paused) {
+      val dt: Double = timeAcceleration * realToVirtualTime((a - last) / 1000)
+      logic(dt)
+    }
     last = a
-
-    logic(dt)
   }
 
   def logic(dt: Double): Unit = {
     //Trains
-    players.foreach {p: Player => p.update(dt)}
+    players.foreach(_.update(dt))
 
     //Update Cities
     world.update(dt)
   }
+
+  def realToVirtualTime(t: Double) : Double = t
+  def virtualToRealTime(t: Double) : Double = t
 }

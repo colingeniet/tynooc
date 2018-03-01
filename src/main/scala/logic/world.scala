@@ -79,10 +79,10 @@ class World {
   }
 
   def update(dt: Double): Unit = {
-    travels.foreach { _.update(dt) }
-    _travels = travels.filter { !_.isDone}
+    travels.foreach(_.update(dt))
+    _travels = travels.filter(!_.isDone)
     // add later
-    towns.foreach { _.update(dt) }
+    towns.foreach(_.update(dt))
   }
 
   /** Find the shortest path between two towns.
@@ -145,9 +145,4 @@ class World {
   override def toString: String = {
     towns.foldLeft[String]("") { (d, t) => d + s"$t\n" }
   }
-}
-
-object World {
-  def realToVirtualTime(t: Double) : Double = t
-  def virtualToRealTime(t: Double) : Double = t
 }
