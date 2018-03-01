@@ -25,24 +25,37 @@ final case class PathNotFound(
 extends Exception(message, cause)
 
 
+/** A player.
+ *
+ *  @param fabricTown the town in which the player rolling stock is produced.
+ */
 class Player(val fabricTown: Town = Game.world.towns(0)) {
-  var trains: HashSet[Train] = HashSet()
-  var carriages: HashSet[Carriage] = HashSet()
-  var engines: HashSet[Engine] = HashSet()
+  /** The player trains. */
+  val trains: HashSet[Train] = HashSet()
+  /** The player carriages. */
+  val carriages: HashSet[Carriage] = HashSet()
+  /** The player engines. */
+  val engines: HashSet[Engine] = HashSet()
 
   var money: Double = 0
 
+  /** Current travels for this player. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
+
   def addMoney(m: Double): Unit = money += m
   def debit(m: Double): Unit = money -= m
 
+  /** The carriages of the player currently available (not in a train). */
   def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed)
 
+  /** The carriages of the player currently available in a town. */
   def carriagesStoredAt(town: Town): HashSet[Carriage] =
     carriages.filter(c => !c.isUsed && c.town == town)
 
+  /** The engines of the player currently available (not in a train). */
   def enginesAvailable: HashSet[Engine] = engines.filter(!_.isUsed)
 
+  /** The engines of the player currently available in a town. */
   def enginesStoredAt(town: Town): HashSet[Engine] =
     engines.filter(c => !c.isUsed && c.town == town)
 
@@ -62,6 +75,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     }
   }
 
+  /** Creates a new train, with only an engine. */
   def createTrainFromEngine(engine: Engine): Train = {
     if (!ownsEngine(engine)) {
       throw new IllegalArgumentException("Player doesn’t own the engine")
@@ -75,6 +89,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     train
   }
 
+  /** Adds a carriage at the tail of an existing train. */
   def addCarriageToTrain(train: Train, carriage: Carriage): Unit = {
     if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
@@ -96,6 +111,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     carriage.train = Some(train)
   }
 
+  /** Removes the tail carriage of an existing train. */
   def removeCarriageFromTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
@@ -108,6 +124,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     carriage.town = train.town
   }
 
+  /** Completely disassemble an existing train. */
   def disassembleTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
@@ -125,6 +142,10 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     trains.remove(train)
   }
 
+  /** Start a new travel.
+   *
+   *  Starting town will be the train's current town.
+   */
   def launchTravel(train:Train, to:Town): Unit = {
     if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")

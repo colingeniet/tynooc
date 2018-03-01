@@ -10,6 +10,7 @@ private object TownId {
   def nextId: Int = { id += 1; id }
 }
 
+/** A town in the world. */
 class Town(
   val name: String,
   val x: Double,
@@ -19,8 +20,11 @@ class Town(
   private var residents: Array[Int] = new Array(Game.world.statusNumber)
   private var _routes: List[Route] = List()
 
+  /** The routes starting from this town. */
   def routes: List[Route] = _routes
+  /** The neighbours towns. */
   def neighbours: List[Town] = routes.map { _.end }
+  /** The town population. */
   def population: Int = residents.sum
   def note: Double = {
     if(population == 0)
@@ -41,17 +45,22 @@ class Town(
   def generateMigrant(to: Town): Int =
     Math.max(0, population * (to.note - note)).toInt
 
-
+  /** Adds a new route. */
   def addRoute(route: Route): Unit = {
     if(route.start != this)
       throw new IllegalArgumentException("route should start from $name town")
     _routes = route :: _routes
   }
 
+  /** Creates and adds a new route to a town. */
   def addRoute(end: Town, length: Double, state: Double): Unit = {
     _routes = (new Route(this, end, length, state)) :: _routes
   }
 
+  /** Update the population state.
+   *
+   *  @param dt the time passed since the last update step.
+   */
   def update(dt: Double): Unit = {
     val p = population
     val possibleDestinations = neighbours.sortBy { _.note }

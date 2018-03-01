@@ -30,7 +30,9 @@ class EngineModel(
   val power: Double,
   val speed: Double,
   val consumption: Double,
-  name: String, price: Double, upgrades: List[String])
+  name: String,
+  price: Double,
+  upgrades: List[String])
 extends Model(name, price, upgrades)
 
 /** EngineModel companion object.
@@ -51,7 +53,9 @@ class CarriageModel(
   val weight: Double,
   val capacity: Int,
   val comfort: Double,
-  name: String, price: Double, upgrades: List[String])
+  name: String,
+  price: Double,
+  upgrades: List[String])
 extends Model(name, price, upgrades)
 
 /** CarriageModel companion object.

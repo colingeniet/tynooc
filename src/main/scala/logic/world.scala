@@ -38,7 +38,7 @@ class World {
 
   private var _towns: List[Town] = List()
 
-  private var _travels: Set[Travel] = Set()
+  private var _travels: HashSet[Travel] = HashSet()
 
   /** Callback called any time a new travel is added.
    *
@@ -49,7 +49,7 @@ class World {
   def towns: List[Town] = _towns
 
   /** The current travels in the world. */
-  def travels: Set[Travel] = _travels
+  def travels: HashSet[Travel] = _travels
 
   /** Total world population. */
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
@@ -71,7 +71,7 @@ class World {
   }
 
   /** Gets all travels of a specific player in the world. */
-  def travelsOf(player: Player): Set[Travel] =
+  def travelsOf(player: Player): HashSet[Travel] =
     travels.filter { _.owner == player }
 
 
@@ -114,10 +114,10 @@ class World {
    */
   def findPath(from: Town, to: Town) : Option[List[Route]] = {
     // Dijkstra
-    var closed: Set[Town] = new Set()
-    var open: Set[Town] = new Set()
-    var dist: Map[Town, Double] = new Map()
-    var path: Map[Town, List[Route]] = new Map()
+    var closed: HashSet[Town] = new HashSet()
+    var open: HashSet[Town] = new HashSet()
+    var dist: HashMap[Town, Double] = new HashMap()
+    var path: HashMap[Town, List[Route]] = new HashMap()
     dist(from) = 0
     open.add(from)
     path(from) = List()
