@@ -28,10 +28,10 @@ class PlayerInfo(
   detailEngine: Engine => Unit,
   detailCarriage: Carriage => Unit)
 extends DrawableVBox {
-  private var money: Label = new Label()
-  private var sep1: Separator = new Separator()
-  private var menu: SelectionMenu = new SelectionMenu()
-  private var sep2: Separator = new Separator()
+  private val money: Label = new Label()
+  private val sep1: Separator = new Separator()
+  private val menu: SelectionMenu = new SelectionMenu()
+  private val sep2: Separator = new Separator()
   private var panel: Node = new Pane()
 
   menu.addMenu("stock", displayStock())
@@ -42,7 +42,7 @@ extends DrawableVBox {
     new PlayerStock(player, world, detailTrain, detailEngine, detailCarriage)
 
   // model catalog subpanel
-  private var models: ModelsList = new ModelsList(player, updateStock)
+  private val models: ModelsList = new ModelsList(player, updateStock)
 
   spacing = 5
   draw()

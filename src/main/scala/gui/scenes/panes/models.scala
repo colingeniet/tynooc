@@ -19,26 +19,26 @@ import logic.player._
  */
 class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
   // 2 submenus : engines and carriages
-  private var typeList: SelectionMenu = new SelectionMenu()
+  private val typeList: SelectionMenu = new SelectionMenu()
   typeList.addMenu("engines", listEngines)
   typeList.addMenu("carriages", listCarriages)
 
-  private var sep1: Separator = new Separator()
+  private val sep1: Separator = new Separator()
 
   // each submenu has a list of models
-  private var  enginesList: SelectionMenu = new SelectionMenu()
+  private val  enginesList: SelectionMenu = new SelectionMenu()
   for ((name, model) <- EngineModel.models) {
     enginesList.addMenu(name, displayEngine(model))
   }
-  private var  carriagesList: SelectionMenu = new SelectionMenu()
+  private val  carriagesList: SelectionMenu = new SelectionMenu()
   for ((name, model) <- CarriageModel.models) {
     carriagesList.addMenu(name, displayCarriage(model))
   }
 
-  private var sep2: Separator = new Separator()
+  private val sep2: Separator = new Separator()
 
   // buy button
-  private var buy: Button = new Button()
+  private val buy: Button = new Button()
 
   children = List(typeList, sep1)
 

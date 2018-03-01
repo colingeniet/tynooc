@@ -27,13 +27,13 @@ class PlayerStock(
   statsEngine: Engine => Unit,
   statsCarriage: Carriage => Unit)
 extends DrawableVBox {
-  private var menu: SelectionMenu = new SelectionMenu()
+  private val menu: SelectionMenu = new SelectionMenu()
   menu.addMenu("trains", displayTrains())
   menu.addMenu("engines", displayEngines())
   menu.addMenu("carriages", displayCarriages())
 
-  private var sep1: Separator = new Separator()
-  private var sep2: Separator = new Separator()
+  private val sep1: Separator = new Separator()
+  private val sep2: Separator = new Separator()
 
   private var list: Node = new Pane()
 
@@ -73,10 +73,10 @@ extends DrawableVBox {
     statsTrain(train)
 
     // create buttons for assemble/disassemble actions
-    var disassembleAll: Button = new Button("Disassemble all")
-    var disassembleOne: Button = new Button("Disassemble last")
-    var addCarriage: Button = new Button("Add carriage")
-    var sendTravel: Button = new Button("Travel")
+    val disassembleAll: Button = new Button("Disassemble all")
+    val disassembleOne: Button = new Button("Disassemble last")
+    val addCarriage: Button = new Button("Add carriage")
+    val sendTravel: Button = new Button("Travel")
 
     disassembleAll.onAction = (event: ActionEvent) => {
       player.disassembleTrain(train)
@@ -93,7 +93,7 @@ extends DrawableVBox {
 
     addCarriage.onAction = (event: ActionEvent) => {
       // when pressing the button, display a new carriage list
-      var selectionList: CarriageList =
+      val selectionList: CarriageList =
         new CarriageList(
           player.carriagesStoredAt(train.town).toList,
           carriage => {
@@ -118,7 +118,7 @@ extends DrawableVBox {
 
     sendTravel.onAction = (event: ActionEvent) => {
       // when pressing the button, display the list of towns
-      var selectionList: SelectionList[Town] = new SelectionList[Town](
+      val selectionList: SelectionList[Town] = new SelectionList[Town](
         world.townsAccessibleFrom(train.town),
         _.name,
         town => {
@@ -165,7 +165,7 @@ extends DrawableVBox {
     // display stats in a separate window via callback
     statsEngine(engine)
     // create buttons for engine specific actions
-    var createButton: Button = new Button("New train")
+    val createButton: Button = new Button("New train")
     createButton.onAction = (event: ActionEvent) => {
       val train: Train = player.createTrainFromEngine(engine)
     }

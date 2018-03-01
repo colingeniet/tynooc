@@ -40,7 +40,7 @@ extends ScrollPane with Drawable {
      *  The `Circle` object is associated with the corresponding `Travel`
      *  to allow automatic updating of its position.
      */
-    class MapTravel(val travel: Travel) extends Circle {
+    private class MapTravel(val travel: Travel) extends Circle {
       radius = 8
       fill = Red
       onMouseClicked = new EventHandler[MouseEvent] {
@@ -68,22 +68,22 @@ extends ScrollPane with Drawable {
 
     /* The map is organized as several superposed layers. */
     // map layers, from bottom to top :
-    private var routesMap: Pane = new Pane {
+    private val routesMap: Pane = new Pane {
       // don't catch clicks on background
       pickOnBounds = false
     }
-    private var townsMap: Pane = new Pane {
+    private val townsMap: Pane = new Pane {
       // don't catch clicks on background
       pickOnBounds = false
     }
     /* This is the only dynamic layer, that is the only one that
      * requires updating. It contains the trains.
      */
-    private var dynamicMap: Pane = new Pane {
+    private val dynamicMap: Pane = new Pane {
       // don't catch clicks on background
       pickOnBounds = false
     }
-    private var textMap: Pane = new Pane {
+    private val textMap: Pane = new Pane {
       // don't catch clicks
       mouseTransparent = true
     }
@@ -109,7 +109,7 @@ extends ScrollPane with Drawable {
     /** Display a town. */
     private def addTown(town: Town): Unit = {
       // town is displayed as a point
-      var point: Circle = new Circle() {
+      val point: Circle = new Circle() {
         centerX = town.x
         centerY = town.y
         radius = 12
@@ -123,7 +123,7 @@ extends ScrollPane with Drawable {
       townsMap.children.add(point)
 
       // text field for town name
-      var text: Text = new Text(town.x + 9, town.y - 9, town.name) {
+      val text: Text = new Text(town.x + 9, town.y - 9, town.name) {
         mouseTransparent = true
         styleClass.add("town-name")
       }
@@ -132,7 +132,7 @@ extends ScrollPane with Drawable {
 
     /** Display a route. */
     private def addRoute(route: Route): Unit = {
-      var line: Line = new Line() {
+      val line: Line = new Line() {
         startX = route.start.x
         startY = route.start.y
         endX = route.end.x

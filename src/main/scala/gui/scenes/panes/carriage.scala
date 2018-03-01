@@ -16,10 +16,10 @@ import logic.train._
  *  @param carriage the carriage to display.
  */
 class CarriageDetail(carriage: Carriage) extends DrawableVBox {
-  private var name: Label = new Label(carriage.model.name + " carriage")
-  private var status: Label = new Label()
-  private var health: Label = new Label()
-  private var model: VBox = new CarriageModelStats(carriage.model)
+  private val name: Label = new Label(carriage.model.name + " carriage")
+  private val status: Label = new Label()
+  private val health: Label = new Label()
+  private val model: VBox = new CarriageModelStats(carriage.model)
 
   children = List(name, status, health, model)
   spacing = 3
@@ -40,11 +40,11 @@ class CarriageDetail(carriage: Carriage) extends DrawableVBox {
  *  @param engine the engine to display.
  */
 class EngineDetail(engine: Engine) extends DrawableVBox {
-  private var name: Label = new Label(engine.model.name + " engine")
-  private var status: Label = new Label()
-  private var health: Label = new Label()
-  private var fuel: Label = new Label()
-  private var model: VBox = new EngineModelStats(engine.model)
+  private val name: Label = new Label(engine.model.name + " engine")
+  private val status: Label = new Label()
+  private val health: Label = new Label()
+  private val fuel: Label = new Label()
+  private val model: VBox = new EngineModelStats(engine.model)
 
   children = List(name, status, health, fuel, model)
   spacing = 3

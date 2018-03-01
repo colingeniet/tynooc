@@ -18,7 +18,7 @@ class SelectionMenu extends VBox(3) {
    *  @param action a callback called when the submenu is selected.
    */
   def addMenu(text: String, action: => Unit): Unit = {
-    var button = new RadioButton(text) {
+    val button = new RadioButton(text) {
       onAction = (event: ActionEvent) => action
       styleClass.remove("radio-button")
       styleClass.add("link")

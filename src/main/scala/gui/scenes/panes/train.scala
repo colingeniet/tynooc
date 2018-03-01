@@ -18,7 +18,7 @@ import logic.train._
  *  @param train the train to display.
  */
 class TrainDetail(train: Train) extends DrawableVBox {
-  private var list: SelectionMenu = new SelectionMenu()
+  private val list: SelectionMenu = new SelectionMenu()
   list.addMenu(
     train.engine.model.name + " engine",
     displayEngine(train.engine))
@@ -26,9 +26,9 @@ class TrainDetail(train: Train) extends DrawableVBox {
     list.addMenu(carriage.model.name + " carriage", displayCarriage(carriage)))
 
   // train statistics
-  private var stats: TrainStats = new TrainStats(train)
-  private var sep1: Separator = new Separator()
-  private var sep2: Separator = new Separator()
+  private val stats: TrainStats = new TrainStats(train)
+  private val sep1: Separator = new Separator()
+  private val sep2: Separator = new Separator()
   // bottom panel for detailed statistics
   private var detail: DrawableVBox = new DrawableVBox()
 
@@ -64,12 +64,12 @@ class TrainDetail(train: Train) extends DrawableVBox {
 
 /** General train statistics. */
 class TrainStats(train: Train) extends DrawableVBox {
-  private var status: Label = new Label()
-  private var tooHeavy: Label = new Label("Too heavy !") {
+  private val status: Label = new Label()
+  private val tooHeavy: Label = new Label("Too heavy !") {
     styleClass.add("alert")
   }
-  private var weight: Label = new Label()
-  private var power: Label = new Label()
+  private val weight: Label = new Label()
+  private val power: Label = new Label()
 
   children = List(status, weight, power)
   spacing = 3

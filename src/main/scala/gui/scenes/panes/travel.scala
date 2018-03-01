@@ -14,20 +14,20 @@ import logic.travel._
 /** Information on a travel.
  */
 class TravelInfo(travel: Travel) extends DrawableVBox {
-  private var trainInfo: TrainDetail = new TrainDetail(travel.train)
-  private var dest: Label = new Label("destination :")
-  private var destName: Label = new Label()
-  private var destDist: Label = new Label()
-  private var destETA: Label = new Label()
-  private var next: Label = new Label("next stop :")
-  private var nextName: Label = new Label()
-  private var nextDist: Label = new Label()
-  private var nextETA: Label = new Label()
+  private val trainInfo: TrainDetail = new TrainDetail(travel.train)
+  private val dest: Label = new Label("destination :")
+  private val destName: Label = new Label()
+  private val destDist: Label = new Label()
+  private val destETA: Label = new Label()
+  private val next: Label = new Label("next stop :")
+  private val nextName: Label = new Label()
+  private val nextDist: Label = new Label()
+  private val nextETA: Label = new Label()
 
   private var isArrived: Boolean = false
-  private var arrivedLbl: Label = new Label()
+  private val arrivedLbl: Label = new Label()
 
-  private var sep: Separator = new Separator()
+  private val sep: Separator = new Separator()
 
   children = List(
     dest,

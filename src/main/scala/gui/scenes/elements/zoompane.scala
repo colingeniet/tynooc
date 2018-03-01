@@ -62,12 +62,12 @@ class ZoomPane extends Pane {
     if (scale < minScale) scale = minScale
     if (scale > maxScale) scale = maxScale
     // correct to take clamping in account
-    var correctFactor: Double = scale / scaleX()
+    val correctFactor: Double = scale / scaleX()
 
-    var bounds: Bounds = localToScene(boundsInLocal())
+    val bounds: Bounds = localToScene(boundsInLocal())
     // point position relative to node center
-    var dx: Double = (x - (bounds.getWidth() / 2 + bounds.getMinX()))
-    var dy: Double = (y - (bounds.getHeight() / 2 + bounds.getMinY()))
+    val dx: Double = (x - (bounds.getWidth() / 2 + bounds.getMinX()))
+    val dy: Double = (y - (bounds.getHeight() / 2 + bounds.getMinY()))
 
     // rescale and translate
     translateX = translateX() - (correctFactor - 1) * dx

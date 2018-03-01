@@ -22,7 +22,7 @@ import logic.route._
 class TownInfo(town: Town, displayRoute: Route => Unit)
 extends DrawableHBox {
   // needs to be updated at redraw
-  private var popLbl = new Label("Population : " + town.population)
+  private val popLbl = new Label("Population : " + town.population)
 
   children = List(
     new Label(town.name),
@@ -33,7 +33,7 @@ extends DrawableHBox {
 
   // add all clickable routes
   town.routes.foreach { route =>
-    var label: Link = new Link(route.end.name + "(" + route.length + "), ")(
+    val label: Link = new Link(route.end.name + "(" + route.length + "), ")(
       displayRoute(route))
     children.add(label)
   }
