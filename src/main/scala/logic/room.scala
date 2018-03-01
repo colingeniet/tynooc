@@ -19,10 +19,9 @@ extends Exception(message, cause)
 
 
 class Room(val travel: Travel, val carriage: Carriage) {
-  private var _passengers: Array[Array[Int]] =
+  private var passengers: Array[Array[Int]] =
     Array.ofDim(Game.world.townNumber, Game.world.statusNumber)
 
-  def passengers: Array[Array[Int]] = _passengers
   def passengerNumber: Int = passengers.foldLeft[Int](0) { _ + _.sum }
   def capacity: Int = carriage.capacity
   def isAvailable: Boolean = passengerNumber < capacity
