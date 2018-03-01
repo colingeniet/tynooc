@@ -57,7 +57,7 @@ class Town(
     val possibleDestinations = neighbours.sortBy { _.note }
     possibleDestinations.foreach { destination =>
       val migrantNumber = generateMigrant(destination)
-      var byStatus = {
+      val byStatus = {
         if(p == 0)
           residents
         else
