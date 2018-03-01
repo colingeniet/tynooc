@@ -6,6 +6,7 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
 import scalafx.geometry._
+import scalafx.scene.paint.Color
 
 import gui.draw._
 import gui.scenes.elements._
@@ -64,6 +65,9 @@ class TrainDetail(train: Train) extends DrawableVBox {
 /** General train statistics. */
 class TrainStats(train: Train) extends DrawableVBox {
   private var status: Label = new Label()
+  private var tooHeavy: Label = new Label("Too heavy !") {
+    styleClass.add("alert")
+  }
   private var weight: Label = new Label()
   private var power: Label = new Label()
 
@@ -76,5 +80,8 @@ class TrainStats(train: Train) extends DrawableVBox {
       (if (train.onRoute) "en route to " else "stored at ") + train.town.name
     weight.text = "weight : " + train.weight
     power.text = "power : " + train.engine.model.power
+
+    children = (if (train.tooHeavy) List(status, tooHeavy, weight, power)
+                else List(status, weight, power))
   }
 }

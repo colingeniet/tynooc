@@ -18,6 +18,11 @@ VBox, HBox {
     -fx-text-fill: #dddddd;
 }
 
+.alert {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ff0000;
+}
+
 .link {
     -fx-font-size: 14px;
     -fx-text-fill: #dddddd;
