@@ -1,0 +1,34 @@
+.button, .toggle-button {
+    -fx-text-fill: white;
+    -fx-background-color: #444444;
+    -fx-padding: 3px;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #222222;
+}
+
+.alert {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ff0000;
+}
+
+.link {
+    -fx-font-size: 14px;
+    -fx-text-fill: #dddddd;
+    -fx-font-weight: bold;
+}
+
+.link:selected {
+    -fx-text-fill: #aaaaaa;
+}
+
+
+.town-name {
+    -fx-font-size: 20px;
+    -fx-fill: #dddddd;
+}
+
+.map {
+    -fx-background-color: #664444;
+}

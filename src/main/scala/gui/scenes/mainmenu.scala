@@ -23,6 +23,7 @@ extends MainStage.Scene(sceneModifier) {
   }
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
+  stylesheets += this.getClass.getResource("/css/menu.css").toExternalForm
 
   root = new VBox(10.0) {
     alignment = Pos.Center

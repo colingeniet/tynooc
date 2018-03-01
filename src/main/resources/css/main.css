@@ -6,42 +6,7 @@ VBox, HBox {
     -fx-background: #666666;
 }
 
-.button {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-}
-
 .label {
     -fx-font-size: 14px;
     -fx-text-fill: #dddddd;
-}
-
-.alert {
-    -fx-font-size: 14px;
-    -fx-text-fill: #ff0000;
-}
-
-.link {
-    -fx-font-size: 14px;
-    -fx-text-fill: #dddddd;
-    -fx-font-weight: bold;
-}
-
-.link:selected {
-    -fx-text-fill: #aaaaaa;
-}
-
-.big-label {
-    -fx-font-size: 20px;
-}
-
-.town-name {
-    -fx-font-size: 20px;
-    -fx-fill: #dddddd;
-}
-
-.map {
-    -fx-background-color: #664444;
 }

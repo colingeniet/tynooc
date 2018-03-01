@@ -19,12 +19,10 @@ import logic.train._
 import logic.player._
 import logic.travel._
 
-class Game(val world: World, sceneModifier: MainStage.States.Val=>Unit)
+class Game(val world: World, sceneModifier: MainStage.States.Val => Unit)
 extends MainStage.Scene(sceneModifier) with Drawable {
-  private var menuBtn: Button = new Button("Menu")
-
   // panes contents
-  private var top: DrawableHBox = new panes.Menu(menuBtn)
+  private var top: TopMenu = new TopMenu(sceneModifier)
 
   // TEMP
   private var player: Player = new Player()
@@ -49,11 +47,8 @@ extends MainStage.Scene(sceneModifier) with Drawable {
     left)
   root = pane
 
-  menuBtn.onAction = (event: ActionEvent) => {
-    sceneModifier(MainStage.States.MainMenu)
-  }
-
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
+  stylesheets += this.getClass.getResource("/css/game.css").toExternalForm
 
   /* Content display methods */
 
