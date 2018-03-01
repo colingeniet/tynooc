@@ -47,7 +47,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     engines.filter(c => !c.isUsed && c.town == town)
 
   def buyEngine(name: String): Unit = {
-    var model = EngineModel(name)
+    val model = EngineModel(name)
     if (model.price <= money) {
       this.money -= model.price
       engines.add(new Engine(model, fabricTown))
@@ -55,7 +55,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   }
 
   def buyCarriage(name: String): Unit = {
-    var model = CarriageModel(name)
+    val model = CarriageModel(name)
     if (model.price <= money) {
       this.money -= model.price
       carriages.add(new Carriage(model, fabricTown))
@@ -103,7 +103,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (train.onRoute) {
       throw new IllegalArgumentException("Train is in use")
     }
-    var carriage: Carriage = train.removeCarriage()
+    val carriage: Carriage = train.removeCarriage()
     carriage.train = None
     carriage.town = train.town
   }
