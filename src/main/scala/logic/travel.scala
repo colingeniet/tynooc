@@ -16,6 +16,7 @@ object State {
   case object Arrived extends Val //Passengers are leaving now
 }
 
+/** A travel. */
 class Travel(val train: Train, private val roads: List[Route],
              val owner: Player) {
 
@@ -23,28 +24,48 @@ class Travel(val train: Train, private val roads: List[Route],
     throw new IllegalArgumentException("Player doesn’t own the train")
 
   private val rooms: List[Room] = train.carriages.map { new Room(this, _) }
-  private val distance: Double = (roads.map { _.length }).sum
-  private var currentRouteDistanceDone: Double = 0
-  private var remainingRoutes: List[Route] = roads
-  private var state: State.Val = State.Launched
-  /* private var currentRouteIndex = 0 */
 
+  /** Total travel distance. */
+  private val distance: Double = (roads.map { _.length }).sum
+
+  /** Position on the current route, as a distance. */
+  private var currentRouteDistanceDone: Double = 0
+
+  /** Remaining routes, including the current one. */
+  private var remainingRoutes: List[Route] = roads
+
+  private var state: State.Val = State.Launched
+
+  /** The next town to reach. */
   def nextTown: Town = currentRoute.end
+  /** Travel destination. */
   def destination: Town = roads.last.end
+  /** Current travel route. */
   def currentRoute: Route = remainingRoutes.head
+  /** Last town reached. */
   def currentTown: Town = train.town
+  /** Destination reached. */
   def isDone: Boolean = remainingRoutes.isEmpty
+  /** Tests if the travel will stop at a specific town.
+   *
+   *  Does not take past stops into account. */
   def stopsAt(t: Town): Boolean = (remainingRoutes.map { _.end}).contains(t)
 
+  /** Distance remaining until destination. */
   def totalRemainingDistance: Double =
     (remainingRoutes.map { _.length }).sum - currentRouteDistanceDone
+  /** Distance remaining until next stop. */
   def remainingDistance: Double = currentRoute.length - currentRouteDistanceDone
 
+  /** Time remaining until destination, without stop time. */
   def totalRemainingTime: Double = totalRemainingDistance / train.engine.speed
+  /** Time remaining until next stop. */
   def remainingTime: Double = remainingDistance / train.engine.speed
 
+  /** Position on the current route, as a proportion. */
   def currentRouteProportion: Double = currentRouteDistanceDone / currentRoute.length
 
+  /** Number of passengers in the train. */
   def passengerNumber: Int = (rooms.map { _.passengerNumber}).sum
 
   def isWaiting: Boolean = state == State.Waiting
@@ -64,6 +85,10 @@ class Travel(val train: Train, private val roads: List[Route],
     }
   }
 
+  /** Updates travel state.
+   *
+   *  @param dt the time passed since last update step.
+   */
   def update(dt: Double): Unit = {
     if(!isDone) {
       state match {

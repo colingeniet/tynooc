@@ -23,6 +23,11 @@ object Status {
   object WELL extends Status.Val
 }
 
+/** The game world representation.
+ *
+ *  The world is a graph, with vertices being towns, and edges being routes.
+ *  This class handles all travels, as well as town population.
+ */
 class World {
   var status = Array(Status.RICH, Status.POOR, Status.WELL)
   var statusCriteria = Array((r:Room) => r.comfort, (r:Room) => r.price,
@@ -30,34 +35,45 @@ class World {
   var statusNumber = status.length
   var townNumber = 0
   var fuelPrice = 1
-  
+
   private var _towns: List[Town] = List()
-  private var _travels: HashSet[Travel] = HashSet()
+
+  private var _travels: Set[Travel] = Set()
 
   /** Callback called any time a new travel is added.
    *
-   *  This is used to signal it to the gui. */
+   *  This is used to signal the new travel to the gui. */
   var onAddTravel: Travel => Unit = {_ => ()}
 
+  /** The towns in the world. */
   def towns: List[Town] = _towns
-  def travels: HashSet[Travel] = _travels
+
+  /** The current travels in the world. */
+  def travels: Set[Travel] = _travels
+
+  /** Total world population. */
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
+  /** Adds a new town. */
   def addTown(town: Town): Unit = { _towns = town :: _towns; townNumber += 1}
 
+  /** Creates and add a new town. */
   def addTown(name: String, x: Double, y: Double, welcomingLevel: Double): Unit = {
     _towns = new Town(name, x, y, welcomingLevel) :: _towns
     townNumber += 1
   }
 
+  /** Adds a new travel in the world. */
   def addTravel(travel:Travel): Unit = {
     _travels.add(travel)
     // callback
     onAddTravel(travel)
   }
 
-  def travelsOf(player: Player): HashSet[Travel] =
+  /** Gets all travels of a specific player in the world. */
+  def travelsOf(player: Player): Set[Travel] =
     travels.filter { _.owner == player }
+
 
   def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
     val availableTravels = travels.toList.filter { t => t.isWaitingAt(start) &&
@@ -79,6 +95,10 @@ class World {
     }
   }
 
+  /** Update the state of all travels and towns.
+   *
+   *  @param dt the time passed since last update step.
+   */
   def update(dt: Double): Unit = {
     travels.foreach(_.update(dt))
     _travels = travels.filter(!_.isDone)
@@ -94,10 +114,10 @@ class World {
    */
   def findPath(from: Town, to: Town) : Option[List[Route]] = {
     // Dijkstra
-    var closed: HashSet[Town] = new HashSet()
-    var open: HashSet[Town] = new HashSet()
-    var dist: HashMap[Town, Double] = new HashMap()
-    var path: HashMap[Town, List[Route]] = new HashMap()
+    var closed: Set[Town] = new Set()
+    var open: Set[Town] = new Set()
+    var dist: Map[Town, Double] = new Map()
+    var path: Map[Town, List[Route]] = new Map()
     dist(from) = 0
     open.add(from)
     path(from) = List()
@@ -125,6 +145,7 @@ class World {
     }
   }
 
+  /** Returns the list of towns accessibles from a starting town. */
   def townsAccessibleFrom(from: Town): List[Town] = {
     var closed: Set[Town] = Set()
     var open: Set[Town] = Set(from)
