@@ -6,7 +6,7 @@ import logic.world._
 object Game {
   private var last: Double = System.currentTimeMillis()
   var players: List[Player] = List() //[new Hero(), new IA("Dumb")]
-  var world: World = null
+  var world: World = new World()
   var time: Double = 0
 
   var paused: Boolean = false
@@ -28,6 +28,11 @@ object Game {
 
     //Update Cities
     world.update(dt)
+  }
+
+  def reset(): Unit = {
+    world = new World()
+    time = 0
   }
 
   // 4 sec (real time) = 1 hours (game time)

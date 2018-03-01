@@ -7,16 +7,18 @@ import scalafx.application.Platform
 
 import gui.draw.Drawable
 import gui.scenes._
-import logic.world.World
+import logic.world._
+import logic.game._
+import logic.player._
 
 /** Main window manager.
  *
  *  Handles, displays and switch between menus and game screens.
  */
-class MainStage(world: World) extends JFXApp.PrimaryStage with Drawable {
+class MainStage(player: Player) extends JFXApp.PrimaryStage with Drawable {
   /* Actual scenes displayed. */
   private var mainMenuScene: MainMenu = new MainMenu(changeScene)
-  private var gameScene: Game = new Game(world, changeScene)
+  private var gameScene: Game = new Game(Game.world, player, changeScene)
   private var optionsScene: Options = new Options(changeScene)
   /* Stage configuration. */
   title.value = "Tynooc"

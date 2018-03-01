@@ -5,14 +5,14 @@ import gui.MainStage
 import logic.world._
 import logic.game._
 import logic.town._
+import logic.player._
 
 object MainJFXApp extends JFXApp {
-  Game.world = new World()
-  var town1: Town = new Town("Cachan", 500, 300, 1)
-  var town2: Town = new Town("Rennes", 50, 250, 0.6)
-  var town3: Town = new Town("Ulm", 500, 200, 0.7)
-  var town4: Town = new Town("Lyon", 700, 700, 0.85)
-  var town5: Town = new Town("X", 450, 350, 0)
+  val town1: Town = new Town("Cachan", 500, 300, 1)
+  val town2: Town = new Town("Rennes", 50, 250, 0.6)
+  val town3: Town = new Town("Ulm", 500, 200, 0.7)
+  val town4: Town = new Town("Lyon", 700, 700, 0.85)
+  val town5: Town = new Town("X", 450, 350, 0)
 
   town1.addRoute(town2, 300, 1)
   town2.addRoute(town1, 300, 1)
@@ -39,7 +39,10 @@ object MainJFXApp extends JFXApp {
   town4.addResidents(250, Status.POOR)
   town4.addResidents(300, Status.RICH)
 
-  var mainstage = new MainStage(Game.world)
+  val player: Player = new Player()
+  player.addMoney(1000)
+
+  var mainstage = new MainStage(player)
   stage = mainstage
 
   var mainLoopThread = new Thread {

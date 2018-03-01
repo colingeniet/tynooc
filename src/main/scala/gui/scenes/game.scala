@@ -19,14 +19,14 @@ import logic.train._
 import logic.player._
 import logic.travel._
 
-class Game(val world: World, sceneModifier: MainStage.States.Val => Unit)
+class Game(
+  val world: World,
+  val player: Player,
+  sceneModifier: MainStage.States.Val => Unit)
 extends MainStage.Scene(sceneModifier) with Drawable {
   // panes contents
   private var top: TopMenu = new TopMenu(sceneModifier)
 
-  // TEMP
-  private var player: Player = new Player()
-  player.addMoney(100)
   private var left: DrawableVBox = new PlayerInfo(
     player,
     world,
