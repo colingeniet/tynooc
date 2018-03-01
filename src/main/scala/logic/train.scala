@@ -127,7 +127,7 @@ class Train (
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
   }
 
-  def tooHeavy: Boolean = weight > engine.power
+  def tooHeavy: Boolean = weight > engine.model.power
 
   def deteriorate(r:Route): Unit = {
     engine.health = Math.max(0, engine.health - 10)
