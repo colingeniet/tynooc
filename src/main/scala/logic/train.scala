@@ -29,7 +29,6 @@ class EngineModel(
   val weight: Double,
   val power: Double,
   val speed: Double,
-  val fuelCapacity: Double,
   val consumption: Double,
   name: String, price: Double, upgrades: List[String])
 extends Model(name, price, upgrades)
@@ -74,7 +73,6 @@ object CarriageModel extends NameMap[CarriageModel] {
  */
 class Engine(private var _model: EngineModel, var town: Town) {
   var health: Double = 100
-  var fuel: Double = model.fuelCapacity
   var train: Option[Train] = None
 
   def isUsed: Boolean = train.isDefined
@@ -83,7 +81,6 @@ class Engine(private var _model: EngineModel, var town: Town) {
   def model_=(newModel: EngineModel): Unit = {
     _model = newModel
     health = 100
-    fuel = model.fuelCapacity
   }
 
   def this(name: String, town: Town) = this(EngineModel(name), town)
