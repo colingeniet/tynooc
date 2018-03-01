@@ -15,7 +15,7 @@ object Game {
   def update(): Unit = {
     val a: Double = System.currentTimeMillis()
     if (!paused) {
-      val dt: Double = timeAcceleration * realToVirtualTime((a - last) / 1000)
+      val dt: Double = timeAcceleration * realToVirtualTime(a - last)
       logic(dt)
       time += dt
     }
@@ -30,6 +30,6 @@ object Game {
     world.update(dt)
   }
 
-  def realToVirtualTime(t: Double) : Double = t
-  def virtualToRealTime(t: Double) : Double = t
+  // 4 sec (real time) = 1 hours (game time)
+  def realToVirtualTime(t: Double) : Double = t / 4000
 }

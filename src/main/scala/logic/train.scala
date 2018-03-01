@@ -41,8 +41,8 @@ extends Model(name, price, upgrades)
 object EngineModel extends NameMap[EngineModel] {
   private var _models: HashMap[String, EngineModel] =
     HashMap(
-      "Basic" -> new EngineModel(50, 50, 70, 25, 15, "Basic", 5, List("Advanced")),
-      "Advanced" -> new EngineModel(25, 100, 140, 50, 5, "Advanced", 10, List()))
+      "Basic" -> new EngineModel(100, 500, 80, 25, 16, "Basic", 5, List("Advanced")),
+      "Advanced" -> new EngineModel(120, 900, 120, 50, 20, "Advanced", 10, List()))
 
   override def models = _models
 }
@@ -62,8 +62,8 @@ extends Model(name, price, upgrades)
 object CarriageModel extends NameMap[CarriageModel] {
   private var _models: HashMap[String, CarriageModel] =
     HashMap(
-      "Basic" -> new CarriageModel(50, 50, 10, "Basic", 5, List("Advanced")),
-      "Advanced" -> new CarriageModel(50, 50, 15, "Advanced", 10, List()))
+      "Basic" -> new CarriageModel(80, 50, 10, "Basic", 5, List("Advanced")),
+      "Advanced" -> new CarriageModel(80, 50, 15, "Advanced", 10, List()))
 
   override def models = _models
 }
@@ -128,7 +128,7 @@ class Train (
   }
 
   def consumption(distance: Double): Double = engine.model.consumption * distance
-  
+
   def tooHeavy: Boolean = weight > engine.model.power
 
   def deteriorate(r:Route): Unit = {
