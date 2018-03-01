@@ -43,10 +43,9 @@ class EngineDetail(engine: Engine) extends DrawableVBox {
   private val name: Label = new Label(engine.model.name + " engine")
   private val status: Label = new Label()
   private val health: Label = new Label()
-  private val fuel: Label = new Label()
   private val model: VBox = new EngineModelStats(engine.model)
 
-  children = List(name, status, health, fuel, model)
+  children = List(name, status, health, model)
   spacing = 3
   draw()
 
@@ -57,7 +56,6 @@ class EngineDetail(engine: Engine) extends DrawableVBox {
       status.text = "stored at " + engine.town.name
     }
     health.text = "health : " + engine.health
-    fuel.text = "fuel : " + engine.fuel
   }
 }
 
@@ -82,6 +80,5 @@ class EngineModelStats(model: EngineModel) extends VBox(3) {
     new Label("speed : " + model.speed),
     new Label("power : " + model.power),
     new Label("weight : " + model.weight),
-    new Label("fuel cap. : " + model.fuelCapacity),
     new Label("consum. : " + model.consumption))
 }
