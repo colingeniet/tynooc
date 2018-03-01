@@ -30,6 +30,7 @@ class EngineModel(
   val power: Double,
   val speed: Double,
   val consumption: Double,
+  val health: Double,
   name: String,
   price: Double,
   upgrades: List[String])
@@ -42,8 +43,8 @@ extends Model(name, price, upgrades)
 object EngineModel extends NameMap[EngineModel] {
   private var _models: HashMap[String, EngineModel] =
     HashMap(
-      "Basic" -> new EngineModel(100, 500, 80, 16, "Basic", 5, List("Advanced")),
-      "Advanced" -> new EngineModel(120, 900, 120, 20, "Advanced", 10, List()))
+      "Basic" -> new EngineModel(100, 500, 80, 16, 100, "Basic", 5, List("Advanced")),
+      "Advanced" -> new EngineModel(120, 900, 120, 20, 100, "Advanced", 10, List()))
 
   override def models = _models
 }
@@ -53,6 +54,7 @@ class CarriageModel(
   val weight: Double,
   val capacity: Int,
   val comfort: Double,
+  val health: Double,
   name: String,
   price: Double,
   upgrades: List[String])
@@ -65,8 +67,8 @@ extends Model(name, price, upgrades)
 object CarriageModel extends NameMap[CarriageModel] {
   private var _models: HashMap[String, CarriageModel] =
     HashMap(
-      "Basic" -> new CarriageModel(80, 50, 10, "Basic", 5, List("Advanced")),
-      "Advanced" -> new CarriageModel(80, 50, 15, "Advanced", 10, List()))
+      "Basic" -> new CarriageModel(80, 50, 10, 100, "Basic", 5, List("Advanced")),
+      "Advanced" -> new CarriageModel(80, 50, 15, 100, "Advanced", 10, List()))
 
   override def models = _models
 }
@@ -76,7 +78,7 @@ object CarriageModel extends NameMap[CarriageModel] {
  *  @param _model the engine model.
  */
 class Engine(private var _model: EngineModel, var town: Town) {
-  var health: Double = 100
+  var health: Double = model.health
   var train: Option[Train] = None
 
   def isUsed: Boolean = train.isDefined
@@ -88,7 +90,8 @@ class Engine(private var _model: EngineModel, var town: Town) {
   }
 
   def this(name: String, town: Town) = this(EngineModel(name), town)
-
+  
+  def repair: Unit = health = model.health
   def speed:Double = model.speed
 }
 
@@ -97,7 +100,7 @@ class Engine(private var _model: EngineModel, var town: Town) {
  *  @param _model the carriage model.
  */
 class Carriage(var _model: CarriageModel, var town: Town) {
-  var health: Double = 100
+  var health: Double = model.health
   var train: Option[Train] = None
   val placePrice: Double = 1
 
@@ -112,6 +115,7 @@ class Carriage(var _model: CarriageModel, var town: Town) {
   def capacity: Int = model.capacity
   def this(name: String, town: Town) = this(CarriageModel(name), town)
 
+  def restore: Unit = health = model.health 
   def comfort:Double = model.comfort
 }
 
