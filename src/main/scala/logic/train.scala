@@ -22,19 +22,25 @@ trait NameMap[T] {
   def apply(name: String): T = this.models.get(name).get
 }
 
-class Model(val name: String, val price: Double, val upgrades: List[String])
+/** Template for a vehicle model class. */
+class VehicleModel(
+  val name: String,
+  val weight: Double,
+  val health: Double,
+  val price: Double,
+  val upgrades: List[String])
 
 /** An engine model. */
 class EngineModel(
-  val weight: Double,
+  name: String,
+  weight: Double,
   val power: Double,
   val speed: Double,
   val consumption: Double,
-  val health: Double,
-  name: String,
+  health: Double,
   price: Double,
   upgrades: List[String])
-extends Model(name, price, upgrades)
+extends VehicleModel(name, weight, health, price, upgrades)
 
 /** EngineModel companion object.
  *
@@ -43,22 +49,22 @@ extends Model(name, price, upgrades)
 object EngineModel extends NameMap[EngineModel] {
   private var _models: HashMap[String, EngineModel] =
     HashMap(
-      "Basic" -> new EngineModel(100, 500, 80, 16, 100, "Basic", 5, List("Advanced")),
-      "Advanced" -> new EngineModel(120, 900, 120, 20, 100, "Advanced", 10, List()))
+      "Basic" -> new EngineModel("Basic", 100, 500, 80, 16, 100, 5, List("Advanced")),
+      "Advanced" -> new EngineModel("Advanced", 120, 900, 120, 20, 100, 10, List()))
 
   override def models = _models
 }
 
 /** A carriage model. */
 class CarriageModel(
-  val weight: Double,
+  name: String,
+  weight: Double,
   val capacity: Int,
   val comfort: Double,
-  val health: Double,
-  name: String,
+  health: Double,
   price: Double,
   upgrades: List[String])
-extends Model(name, price, upgrades)
+extends VehicleModel(name, weight, health, price, upgrades)
 
 /** CarriageModel companion object.
  *
@@ -67,31 +73,36 @@ extends Model(name, price, upgrades)
 object CarriageModel extends NameMap[CarriageModel] {
   private var _models: HashMap[String, CarriageModel] =
     HashMap(
-      "Basic" -> new CarriageModel(80, 50, 10, 100, "Basic", 5, List("Advanced")),
-      "Advanced" -> new CarriageModel(80, 50, 15, 100, "Advanced", 10, List()))
+      "Basic" -> new CarriageModel("Basic", 80, 50, 10, 100, 5, List("Advanced")),
+      "Advanced" -> new CarriageModel("Advanced", 80, 50, 15, 100, 10, List()))
 
   override def models = _models
+}
+
+
+class Vehicle[Model <: VehicleModel](private var _model: Model, var town: Town) {
+  var train: Option[Train] = None
+  var health: Double = model.health
+
+  def isUsed: Boolean = train.isDefined
+
+  def model: Model = _model
+  def model_=(newModel: Model): Unit = {
+    _model = newModel
+    repair()
+  }
+
+  def repair(): Unit = health = model.health
 }
 
 /** An engine.
  *
  *  @param _model the engine model.
  */
-class Engine(private var _model: EngineModel, var town: Town) {
-  var health: Double = model.health
-  var train: Option[Train] = None
-
-  def isUsed: Boolean = train.isDefined
-
-  def model: EngineModel = _model
-  def model_=(newModel: EngineModel): Unit = {
-    _model = newModel
-    repair()
-  }
-
+class Engine(model: EngineModel, town: Town)
+extends Vehicle[EngineModel](model, town) {
   def this(name: String, town: Town) = this(EngineModel(name), town)
 
-  def repair(): Unit = health = model.health
   def speed:Double = model.speed
 }
 
@@ -99,24 +110,14 @@ class Engine(private var _model: EngineModel, var town: Town) {
  *
  *  @param _model the carriage model.
  */
-class Carriage(var _model: CarriageModel, var town: Town) {
-  var health: Double = model.health
-  var train: Option[Train] = None
+class Carriage(model: CarriageModel, town: Town)
+extends Vehicle[CarriageModel](model, town) {
   val placePrice: Double = 1
 
-  def isUsed: Boolean = train.isDefined
-
-  def model: CarriageModel = _model
-  def model_=(newModel: CarriageModel): Unit = {
-    _model = newModel
-    repair()
-  }
-
   def capacity: Int = model.capacity
-  def this(name: String, town: Town) = this(CarriageModel(name), town)
-
-  def repair(): Unit = health = model.health
   def comfort:Double = model.comfort
+
+  def this(name: String, town: Town) = this(CarriageModel(name), town)
 }
 
 
