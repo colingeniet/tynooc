@@ -47,7 +47,7 @@ object MainJFXApp extends JFXApp {
   /** Creates a new player. */
   def player(): Player = {
     val player = new Player(Game.world.towns.find(_.name == "Cachan").get)
-    player.addMoney(10000)
+    player.credit(10000)
     player
   }
 
