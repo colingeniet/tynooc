@@ -59,12 +59,16 @@ extends JFXApp.PrimaryStage with Drawable {
         onNextChangeCallback = () => mainLoopThread.stop()
       }
       case MainStage.States.Options => scene = optionsScene
-      case MainStage.States.Quit => Platform.exit ()
+      case MainStage.States.Quit => Platform.exit()
     }
   }
 
   override def draw(): Unit = {
     gameScene.draw()
+  }
+
+  def onExit(): Unit = {
+    onNextChangeCallback()
   }
 }
 

@@ -8,6 +8,7 @@ import logic.town._
 import logic.player._
 
 object MainJFXApp extends JFXApp {
+  /** Initializes the game. */
   def gameInit(): Unit = {
     Game.reset()
 
@@ -43,12 +44,18 @@ object MainJFXApp extends JFXApp {
     town4.addResidents(300, Status.RICH)
   }
 
+  /** Creates a new player. */
   def player(): Player = {
     val player = new Player()
     player.addMoney(10000)
     player
   }
 
-  var mainstage = new MainStage(() => gameInit(), () => player())
-  stage = mainstage
+  var mainStage = new MainStage(() => gameInit(), () => player())
+  stage = mainStage
+
+  /** Allows [[MainStage]] to perform cleanup. */
+  override def stopApp(): Unit = {
+    mainStage.onExit()
+  }
 }
