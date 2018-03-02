@@ -80,11 +80,21 @@ object CarriageModel extends NameMap[CarriageModel] {
 }
 
 
-class Vehicle[Model <: VehicleModel](private var _model: Model, var town: Town) {
-  var train: Option[Train] = None
-  var health: Double = model.health
+trait Vehicle {
+  var train: Option[Train]
+  var health: Double
 
   def isUsed: Boolean = train.isDefined
+
+  def repair(): Unit
+}
+
+class VehicleFromModel[Model <: VehicleModel](
+  private var _model: Model,
+  var town: Town)
+extends Vehicle {
+  var train: Option[Train] = None
+  var health: Double = model.health
 
   def model: Model = _model
   def model_=(newModel: Model): Unit = {
@@ -92,7 +102,7 @@ class Vehicle[Model <: VehicleModel](private var _model: Model, var town: Town) 
     repair()
   }
 
-  def repair(): Unit = health = model.health
+  override def repair(): Unit = health = model.health
 }
 
 /** An engine.
@@ -100,7 +110,7 @@ class Vehicle[Model <: VehicleModel](private var _model: Model, var town: Town) 
  *  @param _model the engine model.
  */
 class Engine(model: EngineModel, town: Town)
-extends Vehicle[EngineModel](model, town) {
+extends VehicleFromModel[EngineModel](model, town) {
   def this(name: String, town: Town) = this(EngineModel(name), town)
 
   def speed:Double = model.speed
@@ -111,7 +121,7 @@ extends Vehicle[EngineModel](model, town) {
  *  @param _model the carriage model.
  */
 class Carriage(model: CarriageModel, town: Town)
-extends Vehicle[CarriageModel](model, town) {
+extends VehicleFromModel[CarriageModel](model, town) {
   val placePrice: Double = 1
 
   def capacity: Int = model.capacity
