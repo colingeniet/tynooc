@@ -30,7 +30,7 @@ object Status {
  */
 class World {
   var status = Array(Status.RICH, Status.POOR, Status.WELL)
-  var statusCriteria = Array((d:Town) => (r:Room) => r.comfort, 
+  var statusCriteria = Array((d:Town) => (r:Room) => r.comfort,
                              (d:Town) => (r:Room) => r.price(d),
                              (d:Town) => (r:Room) => r.comfort / (r.price(d)+1))
   var statusNumber = status.length

@@ -49,8 +49,8 @@ extends VehicleModel(name, weight, health, price, upgrades)
 object EngineModel extends NameMap[EngineModel] {
   private var _models: HashMap[String, EngineModel] =
     HashMap(
-      "Basic" -> new EngineModel("Basic", 100, 500, 80, 16, 100, 5, List("Advanced")),
-      "Advanced" -> new EngineModel("Advanced", 120, 900, 120, 20, 100, 10, List()))
+      "Basic" -> new EngineModel("Basic", 100, 500, 80, 0.1, 100, 5, List("Advanced")),
+      "Advanced" -> new EngineModel("Advanced", 120, 900, 120, 0.12, 100, 10, List()))
 
   override def models = _models
 }
