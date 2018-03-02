@@ -6,6 +6,9 @@ import logic.game._
 import logic.world._
 import logic.town._
 
+import collection.mutable.HashMap
+import collection.mutable.HashSet
+
 /** An exception which could be throwed if a places in a room
     can’t be bought.
   */
@@ -29,11 +32,11 @@ extends Exception(message, cause)
   * @param carriage The carriage associated to the room.
  */
 class Room(val travel: Travel, val carriage: Carriage) {
-  private var passengers: Array[Array[Int]] =
-    Array.ofDim(Game.world.townNumber, Game.world.statusNumber)
+  private var passengers: HashMap[Town, Array[Int]] = new HashMap()
+  Game.world.towns.foreach(passengers(_) = Array.ofDim[Int](Game.world.statusNumber))
 
   /** Number of passengers in the room. */
-  def passengerNumber: Int = passengers.foldLeft[Int](0) { _ + _.sum }
+  def passengerNumber: Int = passengers.values.map(_.sum).sum
   /** Maximum number of passengers in the room. */
   def capacity: Int = carriage.capacity
   /** Returns <code>true</code> if some places are available in the room. */
@@ -58,14 +61,14 @@ class Room(val travel: Travel, val carriage: Carriage) {
     * @param destination The destination of the counted passengers.
     */
   def passengerNumber(status: Status.Val, destination: Town): Int = {
-    passengers(destination.id)(status.id)
+    passengers(destination)(status.id)
   }
 
   /** Number of passengers in the room going to <code>destination</code>.
     *
     * @param destination The destination of the counted passengers.
     */
-  def passengerNumber(destination: Town): Int = passengers(destination.id).sum
+  def passengerNumber(destination: Town): Int = passengers(destination).sum
 
   /** Free the places of <code>number</code> passengers of status </status>
     * going to <code>destination</code>
@@ -77,9 +80,9 @@ class Room(val travel: Travel, val carriage: Carriage) {
     *         taken places.
     */
   def freePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
-    if(number > passengers(destination.id)(status.id))
+    if(number > passengers(destination)(status.id))
       throw new CantFree
-    passengers(destination.id)(status.id) -= number
+    passengers(destination)(status.id) -= number
   }
 
   /** Free the places of all passengers of status `status` going to
@@ -105,7 +108,7 @@ class Room(val travel: Travel, val carriage: Carriage) {
   def takePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
     if(number > availablePlaces)
       throw new CantBuy
-    passengers(destination.id)(status.id) += number
+    passengers(destination)(status.id) += number
     travel.owner.addMoney(price(destination) * number)
   }
 }

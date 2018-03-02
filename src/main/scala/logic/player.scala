@@ -29,7 +29,7 @@ extends Exception(message, cause)
  *
  *  @param fabricTown the town in which the player rolling stock is produced.
  */
-class Player(val fabricTown: Town = Game.world.towns(0)) {
+class Player(val fabricTown: Town) {
   /** The player trains. */
   val trains: HashSet[Train] = HashSet()
   /** The player carriages. */

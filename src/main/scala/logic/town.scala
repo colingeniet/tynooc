@@ -5,10 +5,6 @@ import logic.route._
 import logic.game._
 import logic.world._
 
-private object TownId {
-  private var id = 0
-  def nextId: Int = { id += 1; id }
-}
 
 /** A town in the world. */
 class Town(
@@ -16,7 +12,6 @@ class Town(
   val x: Double,
   val y: Double,
   val welcomingLevel: Double) {
-  val id = TownId.nextId
   private var residents: Array[Int] = new Array(Game.world.statusNumber)
   private var _routes: List[Route] = List()
 
