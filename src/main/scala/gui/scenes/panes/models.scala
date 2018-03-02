@@ -26,14 +26,17 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
   private val sep1: Separator = new Separator()
 
   // each submenu has a list of models
-  private val  enginesList: SelectionMenu = new SelectionMenu()
-  for ((name, model) <- EngineModel.models) {
-    enginesList.addMenu(name, displayEngine(model))
-  }
-  private val  carriagesList: SelectionMenu = new SelectionMenu()
-  for ((name, model) <- CarriageModel.models) {
-    carriagesList.addMenu(name, displayCarriage(model))
-  }
+  private val enginesList: SelectionList[EngineModel] =
+    new SelectionList[EngineModel](
+      EngineModel.models.values.toList,
+      _.name,
+      displayEngine(_))
+
+  private val  carriagesList: SelectionList[CarriageModel] =
+    new SelectionList[CarriageModel](
+      CarriageModel.models.values.toList,
+      _.name,
+      displayCarriage(_))
 
   private val sep2: Separator = new Separator()
 
