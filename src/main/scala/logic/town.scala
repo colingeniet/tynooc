@@ -42,8 +42,12 @@ class Town(
     residents(status.id) -= nb
   }
 
-  def generateMigrant(to: Town): Int =
-    Math.max(0, population * (to.note - note)).toInt
+  def generateMigrant(to: Town): Int = {
+    if(to.note > note)
+      (population * (to.note - note) * (1 - Math.random / 3)).toInt
+    else 
+      (population * (note - to.note) * Math.random * 1/3).toInt   
+  }
 
   /** Adds a new route. */
   def addRoute(route: Route): Unit = {
