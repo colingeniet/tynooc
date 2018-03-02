@@ -79,13 +79,13 @@ object CarriageModel extends NameMap[CarriageModel] {
   override def models = _models
 }
 
-
 trait Vehicle {
   var train: Option[Train]
   var health: Double
 
   def isUsed: Boolean = train.isDefined
 
+  def repairPrice: Double
   def repair(): Unit
 }
 
@@ -97,7 +97,6 @@ extends Vehicle {
   var train: Option[Train] = None
   var health: Double = model.health
 
-  def repairPrice: Double = 0.25 * model.price * (health/model.health)
   
   def model: Model = _model
   def model_=(newModel: Model): Unit = {
@@ -105,6 +104,7 @@ extends Vehicle {
     repair()
   }
 
+  override def repairPrice: Double = 0.25 * model.price * (health/model.health)
   override def repair(): Unit = health = model.health
 }
 
