@@ -15,11 +15,26 @@ import logic.player._
  *
  *  Handles, displays and switch between menus and game screens.
  */
-class MainStage(player: Player) extends JFXApp.PrimaryStage with Drawable {
+class MainStage(gameInit: () => Unit, player: () => Player)
+extends JFXApp.PrimaryStage with Drawable {
+  gameInit()
   /* Actual scenes displayed. */
   private var mainMenuScene: MainMenu = new MainMenu(changeScene)
-  private var gameScene: Game = new Game(Game.world, player, changeScene)
+  private var gameScene: Game = new Game(Game.world, player(), changeScene)
   private var optionsScene: Options = new Options(changeScene)
+
+  private var mainLoopThread: Thread = new Thread {
+    override def run {
+      while(true) {
+        Game.update()
+        Platform.runLater(draw())
+        Thread.sleep(33)
+      }
+    }
+  }
+
+  private var onNextChangeCallback: () => Unit = () => ()
+
   /* Stage configuration. */
   title.value = "Tynooc"
   scene = mainMenuScene
@@ -31,10 +46,18 @@ class MainStage(player: Player) extends JFXApp.PrimaryStage with Drawable {
    *  @param newScene the scene to switch to.
    */
   def changeScene(newScene: MainStage.States.Val): Unit = {
+    onNextChangeCallback()
+    onNextChangeCallback = () => ()
+
     newScene match {
       case MainStage.States.MainMenu => scene = mainMenuScene
-      case MainStage.States.GameMenu => ()
-      case MainStage.States.Game => scene = gameScene
+      case MainStage.States.Game => {
+        gameInit()
+        gameScene = new Game(Game.world, player(), changeScene)
+        scene = gameScene
+        mainLoopThread.start()
+        onNextChangeCallback = () => mainLoopThread.stop()
+      }
       case MainStage.States.Options => scene = optionsScene
       case MainStage.States.Quit => Platform.exit ()
     }
@@ -53,7 +76,6 @@ object MainStage {
   object States {
     sealed trait Val
     case object MainMenu extends Val
-    case object GameMenu extends Val
     case object Game     extends Val
     case object Options  extends Val
     case object Quit     extends Val
