@@ -150,9 +150,9 @@ class Train (
 
   def tooHeavy: Boolean = weight > engine.model.power
 
-  def deteriorate(r:Route): Unit = {
-    engine.health = Math.max(0, engine.health - 10)
-    carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
+  def deteriorate(route:Route): Unit = {
+    engine.health = Math.max(0, engine.health - route.damageToVehicle)
+    carriages.foreach { c => c.health = Math.max(0, c.health - route.damageToVehicle) }
   }
 
   /** Adds a carriage at the end of the train. */
