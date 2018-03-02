@@ -190,6 +190,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (vehicle.isUsed) {
       throw new IllegalArgumentException("Vehicle is in use")
     }
+    debit(vehicle.repairPrice)
     vehicle.repair()
   }
 
