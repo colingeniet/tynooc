@@ -34,8 +34,8 @@ extends DrawableVBox {
   private val sep2: Separator = new Separator()
   private var panel: Node = new Pane()
 
-  menu.addMenu("stock", displayStock())
-  menu.addMenu("models", displayModels())
+  menu.addMenu("rolling stock", displayStock())
+  menu.addMenu("catalog", displayModels())
 
   // stock subpanel
   private var stock: PlayerStock =
