@@ -34,10 +34,9 @@ class World {
                              (d:Town) => (r:Room) => r.price(d),
                              (d:Town) => (r:Room) => r.comfort / (r.price(d)+1))
   var statusNumber = status.length
-  var townNumber = 0
   var fuelPrice = 1
 
-  private var _towns: List[Town] = List()
+  private var _towns: HashSet[Town] = HashSet()
 
   private var _travels: HashSet[Travel] = HashSet()
 
@@ -47,7 +46,7 @@ class World {
   var onAddTravel: Travel => Unit = {_ => ()}
 
   /** The towns in the world. */
-  def towns: List[Town] = _towns
+  def towns: HashSet[Town] = _towns
 
   /** The current travels in the world. */
   def travels: HashSet[Travel] = _travels
@@ -56,12 +55,11 @@ class World {
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
   /** Adds a new town. */
-  def addTown(town: Town): Unit = { _towns = town :: _towns; townNumber += 1}
+  def addTown(town: Town): Unit = _towns.add(town)
 
   /** Creates and add a new town. */
   def addTown(name: String, x: Double, y: Double, welcomingLevel: Double): Unit = {
-    _towns = new Town(name, x, y, welcomingLevel) :: _towns
-    townNumber += 1
+    addTown(new Town(name, x, y, welcomingLevel))
   }
 
   /** Adds a new travel in the world. */
