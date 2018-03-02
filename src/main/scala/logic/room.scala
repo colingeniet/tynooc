@@ -42,9 +42,7 @@ class Room(val travel: Travel, val carriage: Carriage) {
   def availablePlaces: Int = capacity - passengerNumber
   /** The comfort note of the room (betwween 0 and 1). */
   def comfort: Double = carriage.comfort
-  /** The price (by distance unit) of a place in the room. */  
-  def price: Double = carriage.placePrice
-  
+
   /** The price of a place for <code>destination</code>. 
     * 
     * @param destination The town where you want to go.
