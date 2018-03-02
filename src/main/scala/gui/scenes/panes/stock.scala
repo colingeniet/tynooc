@@ -167,12 +167,21 @@ extends DrawableVBox {
     // create buttons for engine specific actions
     val createButton: Button = new Button("New train")
     createButton.onAction = (event: ActionEvent) => {
-      val train: Train = player.createTrainFromEngine(engine)
+      player.createTrainFromEngine(engine)
     }
-    children = List(menu, sep1, list, sep2, createButton)
+
+    val repairButton: Button = new Button("Repair")
+    repairButton.onAction = (event: ActionEvent) => {
+      player.repairEngine(engine)
+    }
+
+    children = List(menu, sep1, list, sep2, createButton, repairButton)
 
     // reset draw function
-    drawCallback = () => createButton.disable = engine.isUsed
+    drawCallback = () => {
+      createButton.disable = engine.isUsed
+      repairButton.disable = engine.isUsed
+    }
   }
 
   /** Displays a specific carriage. */
@@ -180,8 +189,16 @@ extends DrawableVBox {
     // display stats in a separate window via callback
     statsCarriage(carriage)
 
+    val repairButton: Button = new Button("Repair")
+    repairButton.onAction = (event: ActionEvent) => {
+      player.repairCarriage(carriage)
+    }
+
+    children = List(menu, sep1, list, sep2, repairButton)
     // reset draw method
-    drawCallback = () => ()
+    drawCallback = () => {
+      repairButton.disable = carriage.isUsed      
+    }
   }
 
   // The actual draw function, changed as needed

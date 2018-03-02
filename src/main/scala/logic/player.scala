@@ -146,7 +146,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
    *
    *  Starting town will be the train's current town.
    */
-  def launchTravel(train:Train, to:Town): Unit = {
+  def launchTravel(train: Train, to: Town): Unit = {
     if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Player doesn’t own the train")
     }
@@ -165,6 +165,27 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     debit(train.consumption(distance) * Game.world.fuelPrice)
     train.travel = Some(travel)
     Game.world.addTravel(travel)
+  }
+
+
+  def repairEngine(engine: Engine): Unit = {
+    if (!ownsEngine(engine)) {
+      throw new IllegalArgumentException("Player doesn’t own the engine")
+    }
+    if (engine.isUsed) {
+      throw new IllegalArgumentException("Engine is in use")
+    }
+    engine.repair()
+  }
+
+  def repairCarriage(carriage: Carriage): Unit = {
+    if (!ownsCarriage(carriage)) {
+      throw new IllegalArgumentException("Player doesn’t own the carriage")
+    }
+    if (carriage.isUsed) {
+      throw new IllegalArgumentException("Carriage is in use")
+    }
+    carriage.repair()
   }
 
   def editEngine(old: Engine, model: EngineModel): Unit = {
