@@ -40,7 +40,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   /** Current travels for this player. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
-  def addMoney(amount: Double): Unit = money += amount
+  def credit(amount: Double): Unit = money += amount
   
   def debit(amount: Double): Unit = {
     money -= (amount + (0.02*Math.max(0, amount-money)))
