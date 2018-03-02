@@ -79,13 +79,13 @@ object CarriageModel extends NameMap[CarriageModel] {
   override def models = _models
 }
 
-
 trait Vehicle {
   var train: Option[Train]
   var health: Double
 
   def isUsed: Boolean = train.isDefined
 
+  def repairPrice: Double
   def repair(): Unit
 }
 
@@ -97,8 +97,6 @@ extends Vehicle {
   var train: Option[Train] = None
   var health: Double = model.health
 
-  def repairPrice: Double = 0.25 * model.price * (health/model.health)
-
   def damaged: Boolean = health == 0
 
   def model: Model = _model
@@ -107,6 +105,7 @@ extends Vehicle {
     repair()
   }
 
+  override def repairPrice: Double = 0.25 * model.price * (health/model.health)
   override def repair(): Unit = health = model.health
 }
 
@@ -154,9 +153,9 @@ class Train (
 
   def tooHeavy: Boolean = weight > engine.model.power
 
-  def deteriorate(r:Route): Unit = {
-    engine.health = Math.max(0, engine.health - 10)
-    carriages.foreach { c => c.health = Math.max(0, c.health - 10) }
+  def deteriorate(route:Route): Unit = {
+    engine.health = Math.max(0, engine.health - route.damageToVehicle)
+    carriages.foreach { c => c.health = Math.max(0, c.health - route.damageToVehicle) }
   }
 
   /** Adds a carriage at the end of the train. */
