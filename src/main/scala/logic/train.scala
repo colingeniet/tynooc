@@ -97,6 +97,7 @@ extends Vehicle {
   var train: Option[Train] = None
   var health: Double = model.health
 
+  def repairPrice: Double = 0.25 * model.price * (health/model.health)
   def model: Model = _model
   def model_=(newModel: Model): Unit = {
     _model = newModel
