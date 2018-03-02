@@ -68,6 +68,9 @@ class TrainStats(train: Train) extends DrawableVBox {
   private val tooHeavy: Label = new Label("Too heavy !") {
     styleClass.add("alert")
   }
+  private val damaged: Label = new Label("damaged !") {
+    styleClass.add("alert")
+  }
   private val weight: Label = new Label()
   private val power: Label = new Label()
 
@@ -81,7 +84,11 @@ class TrainStats(train: Train) extends DrawableVBox {
     weight.text = "weight : " + train.weight
     power.text = "power : " + train.engine.model.power
 
-    children = (if (train.tooHeavy) List(status, tooHeavy, weight, power)
-                else List(status, weight, power))
+    children = List(
+      Some(status),
+      (if (train.tooHeavy) Some(tooHeavy) else None),
+      Some(weight),
+      (if (train.damaged) Some(damaged) else None),
+      Some(power)).flatMap(x => x)
   }
 }

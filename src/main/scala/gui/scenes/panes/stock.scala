@@ -146,7 +146,7 @@ extends DrawableVBox {
       addCarriage.disable = train.onRoute
       disassembleOne.disable = train.onRoute || train.carriages.isEmpty
       disassembleAll.disable = train.onRoute
-      sendTravel.disable = train.onRoute || train.tooHeavy
+      sendTravel.disable = train.onRoute || train.tooHeavy || train.damaged
     }
 
     children = List(

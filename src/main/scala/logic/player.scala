@@ -171,6 +171,9 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
     if (train.tooHeavy) {
       throw new IllegalArgumentException("Train is too heavy")
     }
+    if (train.damaged) {
+      throw new IllegalArgumentException("Train is damaged")
+    }
     val routes = Game.world.findPath(train.town, to) match {
       case None => throw new PathNotFound
       case Some(routes) => routes

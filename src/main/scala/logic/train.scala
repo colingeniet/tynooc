@@ -98,7 +98,9 @@ extends Vehicle {
   var health: Double = model.health
 
   def repairPrice: Double = 0.25 * model.price * (health/model.health)
-  
+
+  def damaged: Boolean = health == 0
+
   def model: Model = _model
   def model_=(newModel: Model): Unit = {
     _model = newModel
@@ -141,6 +143,8 @@ class Train (
   var travel: Option[Travel] = None
 
   def onRoute: Boolean = travel.isDefined
+
+  def damaged: Boolean = engine.damaged || carriages.exists(_.damaged)
 
   def weight: Double = {
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
