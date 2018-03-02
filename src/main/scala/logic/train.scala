@@ -89,6 +89,7 @@ trait Vehicle {
   def repair(): Unit
 }
 
+/** Implements [[Vehicle]] based on a [[VehicleModel]]. */
 class VehicleFromModel[Model <: VehicleModel](
   private var _model: Model,
   var town: Town)
@@ -116,7 +117,7 @@ extends VehicleFromModel[EngineModel](model, town) {
   def speed:Double = model.speed
 }
 
-/** A carriages
+/** A carriage.
  *
  *  @param _model the carriage model.
  */

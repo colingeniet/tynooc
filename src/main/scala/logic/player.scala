@@ -37,35 +37,42 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
 
   var money: Double = 0
 
-  def carriages: HashSet[Carriage] = vehicles.flatMap {
-    case c: Carriage => Some(c)
-    case _ => None
-  }
-
-  def engines: HashSet[Engine] = vehicles.flatMap {
-    case c: Engine => Some(c)
-    case _ => None
-  }
-
   /** Current travels for this player. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
   def addMoney(m: Double): Unit = money += m
   def debit(m: Double): Unit = money -= m
 
-  /** The carriages of the player currently available (not in a train). */
+  /** Returns the carriages of this player. */
+  def carriages: HashSet[Carriage] = vehicles.flatMap {
+    case c: Carriage => Some(c)
+    case _ => None
+  }
+
+  /** Returns the available carriages of this player.
+   *
+   *  A carriage is available if not in a train. */
   def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed)
 
-  /** The carriages of the player currently available in a town. */
+  /** Returns the carriages of this player available in a town. */
   def carriagesStoredAt(town: Town): HashSet[Carriage] =
     carriages.filter(c => !c.isUsed && c.town == town)
 
-  /** The engines of the player currently available (not in a train). */
+  /** Returns the engines of this player. */
+  def engines: HashSet[Engine] = vehicles.flatMap {
+    case c: Engine => Some(c)
+    case _ => None
+  }
+
+  /** Returns the available engines of this player.
+   *
+   *  An engine is available if not in a train. */
   def enginesAvailable: HashSet[Engine] = engines.filter(!_.isUsed)
 
-  /** The engines of the player currently available in a town. */
+  /** Returns the engines of this player available in a town. */
   def enginesStoredAt(town: Town): HashSet[Engine] =
     engines.filter(c => !c.isUsed && c.town == town)
+
 
   def buyEngine(name: String): Unit = {
     val model = EngineModel(name)
