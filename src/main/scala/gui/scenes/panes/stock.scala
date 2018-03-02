@@ -172,7 +172,7 @@ extends DrawableVBox {
 
     val repairButton: Button = new Button("Repair")
     repairButton.onAction = (event: ActionEvent) => {
-      player.repairEngine(engine)
+      player.repair(engine)
     }
 
     children = List(menu, sep1, list, sep2, createButton, repairButton)
@@ -191,13 +191,13 @@ extends DrawableVBox {
 
     val repairButton: Button = new Button("Repair")
     repairButton.onAction = (event: ActionEvent) => {
-      player.repairCarriage(carriage)
+      player.repair(carriage)
     }
 
     children = List(menu, sep1, list, sep2, repairButton)
     // reset draw method
     drawCallback = () => {
-      repairButton.disable = carriage.isUsed      
+      repairButton.disable = carriage.isUsed
     }
   }
 
