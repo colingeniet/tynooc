@@ -40,7 +40,7 @@ object MainJFXApp extends JFXApp {
   town4.addResidents(300, Status.RICH)
 
   val player: Player = new Player()
-  player.addMoney(1000)
+  player.addMoney(10000)
 
   var mainstage = new MainStage(player)
   stage = mainstage
