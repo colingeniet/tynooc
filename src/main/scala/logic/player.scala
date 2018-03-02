@@ -77,7 +77,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   def buyEngine(name: String): Unit = {
     val model = EngineModel(name)
     if (model.price <= money) {
-      this.money -= model.price
+      debit(model.price)
       vehicles.add(new Engine(model, fabricTown))
     }
   }
@@ -85,7 +85,7 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   def buyCarriage(name: String): Unit = {
     val model = CarriageModel(name)
     if (model.price <= money) {
-      this.money -= model.price
+      debit(model.price)
       vehicles.add(new Carriage(model, fabricTown))
     }
   }
@@ -200,14 +200,14 @@ class Player(val fabricTown: Town = Game.world.towns(0)) {
   def editEngine(old: Engine, model: EngineModel): Unit = {
     if (money >= PriceSimulation.upgradePrice(old, model)) {
       old.model = model
-      money -= PriceSimulation.upgradePrice(old, model)
+      debit(PriceSimulation.upgradePrice(old, model))
     }
   }
 
   def editCarriage(old: Carriage, model: CarriageModel): Unit = {
     if (money >= PriceSimulation.upgradePrice(old, model)) {
       old.model = model
-      money -= PriceSimulation.upgradePrice(old, model)
+      debit(PriceSimulation.upgradePrice(old, model))
     }
   }
 
