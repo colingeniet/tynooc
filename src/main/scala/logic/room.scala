@@ -42,8 +42,14 @@ class Room(val travel: Travel, val carriage: Carriage) {
   def availablePlaces: Int = capacity - passengerNumber
   /** The comfort note of the room (betwween 0 and 1). */
   def comfort: Double = carriage.comfort
-  /** The price of a place in the room. */
-  def price: Double = carriage.placePrice
+
+  /** The price of a place for <code>destination</code>. 
+    * 
+    * @param destination The town where you want to go.
+    */ 
+  def price(destination: Town): Double = {
+    carriage.placePrice * travel.remainingDistanceTo(destination)
+  }
   
   /** Number of passengers which status <code>status</code> going to 
     * <code>destination</code>.
@@ -100,7 +106,7 @@ class Room(val travel: Travel, val carriage: Carriage) {
     if(number > availablePlaces)
       throw new CantBuy
     passengers(destination.id)(status.id) += number
-    travel.owner.addMoney(price * number)
+    travel.owner.addMoney(price(destination) * number)
   }
 
 }
