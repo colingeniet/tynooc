@@ -40,8 +40,11 @@ class Player(val fabricTown: Town) {
   /** Current travels for this player. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
-  def addMoney(m: Double): Unit = money += m
-  def debit(m: Double): Unit = money -= m
+  def credit(amount: Double): Unit = money += amount
+  
+  def debit(amount: Double): Unit = {
+    money -= (amount + (0.02*Math.max(0, amount-money)))
+  }
 
   /** Returns the carriages of this player. */
   def carriages: HashSet[Carriage] = vehicles.flatMap {
