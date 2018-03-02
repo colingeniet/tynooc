@@ -31,7 +31,7 @@ class CarriageDetail(carriage: Carriage) extends DrawableVBox {
     } else {
       status.text = "stored at " + carriage.town.name
     }
-    health.text = "health : " + carriage.health
+    health.text = f"health : ${carriage.health}%.0f / ${carriage.model.health}%.0f"
   }
 }
 
@@ -55,7 +55,7 @@ class EngineDetail(engine: Engine) extends DrawableVBox {
     } else {
       status.text = "stored at " + engine.town.name
     }
-    health.text = "health : " + engine.health
+    health.text = f"health : ${engine.health}%.0f / ${engine.model.health}%.0f"
   }
 }
 

@@ -86,12 +86,12 @@ class Engine(private var _model: EngineModel, var town: Town) {
   def model: EngineModel = _model
   def model_=(newModel: EngineModel): Unit = {
     _model = newModel
-    health = 100
+    repair()
   }
 
   def this(name: String, town: Town) = this(EngineModel(name), town)
-  
-  def repair: Unit = health = model.health
+
+  def repair(): Unit = health = model.health
   def speed:Double = model.speed
 }
 
@@ -109,13 +109,13 @@ class Carriage(var _model: CarriageModel, var town: Town) {
   def model: CarriageModel = _model
   def model_=(newModel: CarriageModel): Unit = {
     _model = newModel
-    health = 100
+    repair()
   }
 
   def capacity: Int = model.capacity
   def this(name: String, town: Town) = this(CarriageModel(name), town)
 
-  def restore: Unit = health = model.health 
+  def repair(): Unit = health = model.health
   def comfort:Double = model.comfort
 }
 
