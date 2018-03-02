@@ -114,7 +114,7 @@ class Engine(model: EngineModel, town: Town)
 extends VehicleFromModel[EngineModel](model, town) {
   def this(name: String, town: Town) = this(EngineModel(name), town)
 
-  def speed:Double = model.speed
+  def speed:Double = model.speed * Math.max(0.75, health / model.health)
 }
 
 /** A carriage.
@@ -123,10 +123,10 @@ extends VehicleFromModel[EngineModel](model, town) {
  */
 class Carriage(model: CarriageModel, town: Town)
 extends VehicleFromModel[CarriageModel](model, town) {
-  val placePrice: Double = 1
+  val placePrice: Double = 0.25
 
   def capacity: Int = model.capacity
-  def comfort:Double = model.comfort
+  def comfort:Double = model.comfort * Math.max(0.75, health / model.health)
 
   def this(name: String, town: Town) = this(CarriageModel(name), town)
 }
