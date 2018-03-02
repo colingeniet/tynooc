@@ -33,6 +33,8 @@ object Game {
   def reset(): Unit = {
     world = new World()
     time = 0
+    paused = false
+    timeAcceleration = 1
   }
 
   // 4 sec (real time) = 1 hours (game time)
