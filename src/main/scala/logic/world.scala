@@ -30,8 +30,9 @@ object Status {
  */
 class World {
   var status = Array(Status.RICH, Status.POOR, Status.WELL)
-  var statusCriteria = Array((r:Room) => r.comfort, (r:Room) => r.price,
-                             (r:Room) => r.comfort / (r.price+1))
+  var statusCriteria = Array((d:Town) => (r:Room) => r.comfort, 
+                             (d:Town) => (r:Room) => r.price(d),
+                             (d:Town) => (r:Room) => r.comfort / (r.price(d)+1))
   var statusNumber = status.length
   var townNumber = 0
   var fuelPrice = 1
@@ -82,7 +83,7 @@ class World {
     status.foreach { status =>
       var takenPlacesNumber = 0
       val p = migrantByStatus(status.id)
-      rooms = rooms.sortBy { statusCriteria(status.id) }
+      rooms = rooms.sortBy { statusCriteria(status.id)(destination) }
       while(takenPlacesNumber < p && !rooms.isEmpty) {
         val room = rooms.head
         val nb = Math.min(p, room.availablePlaces)
