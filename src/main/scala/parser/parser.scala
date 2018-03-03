@@ -63,8 +63,8 @@ object Parser {
   def readWorldInformations(filename: String): World = {
     val world = new World()
     var towns: List[Town] = List()
-    var lines = Source.fromFile(filename).getLines.toList
-    while(!lines.isEmpty && lines.head != "#") {
+    var lines = Source.fromFile(filename).getLines.toList.filter { _(0) != '#'}
+    while(!lines.isEmpty && lines.head != "<Routes>") {
       var town = parseTown(lines.head, world)
       towns = town :: towns
       world.addTown(town)
