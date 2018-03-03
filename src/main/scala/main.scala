@@ -11,39 +11,8 @@ import logic.parser._
 object MainJFXApp extends JFXApp {
   /** Initializes the game. */
   def gameInit(): Unit = {
+    Game.reset()
     Game.world = Parser.readWorldInformations("SchoolMap")
-    /*Game.reset()
-
-    val town1: Town = new Town("Cachan", 500, 300, 1)
-    val town2: Town = new Town("Rennes", 50, 250, 0.6)
-    val town3: Town = new Town("Ulm", 500, 200, 0.7)
-    val town4: Town = new Town("Lyon", 700, 700, 0.85)
-    val town5: Town = new Town("X", 450, 350, 0)
-
-    town1.addRoute(town2, 300, 1)
-    town2.addRoute(town1, 300, 1)
-    town1.addRoute(town3, 50, 1)
-    town3.addRoute(town1, 50, 1)
-    town1.addRoute(town4, 400, 1)
-    town4 .addRoute(town1, 400, 1)
-    Game.world.addTown(town2)
-    Game.world.addTown(town3)
-    Game.world.addTown(town4)
-    Game.world.addTown(town5)
-    Game.world.addTown(town1)
-
-    town1.addResidents(10000, Status.WELL)
-    town1.addResidents(4000, Status.POOR)
-    town1.addResidents(1500, Status.RICH)
-    town2.addResidents(10000, Status.WELL)
-    town2.addResidents(3000, Status.POOR)
-    town2.addResidents(2000, Status.RICH)
-    town3.addResidents(10000, Status.WELL)
-    town3.addResidents(1000, Status.POOR)
-    town3.addResidents(4000, Status.RICH)
-    town4.addResidents(10000, Status.WELL)
-    town4.addResidents(2500, Status.POOR)
-    town4.addResidents(3000, Status.RICH) */
   }
 
   /** Creates a new player. */
