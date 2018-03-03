@@ -35,6 +35,7 @@ object Game {
     time = 0
     paused = false
     timeAcceleration = 1
+    last = System.currentTimeMillis()
   }
 
   // 4 sec (real time) = 1 hours (game time)
