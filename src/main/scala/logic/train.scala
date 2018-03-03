@@ -126,7 +126,7 @@ extends VehicleFromModel[EngineModel](model, town) {
  */
 class Carriage(model: CarriageModel, town: Town)
 extends VehicleFromModel[CarriageModel](model, town) {
-  val placePrice: Double = 0.25
+  var placePrice: Double = 0.25
 
   def capacity: Int = model.capacity
   def comfort:Double = model.comfort * (0.75 + 0.25 * health/model.health)
