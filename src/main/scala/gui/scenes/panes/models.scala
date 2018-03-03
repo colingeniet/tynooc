@@ -32,7 +32,7 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
       _.name,
       displayEngine(_))
 
-  private val  carriagesList: SelectionList[CarriageModel] =
+  private val carriagesList: SelectionList[CarriageModel] =
     new SelectionList[CarriageModel](
       CarriageModel.models.values.toList,
       _.name,

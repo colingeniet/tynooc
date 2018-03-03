@@ -24,6 +24,7 @@ class TravelInfo(travel: Travel) extends DrawableVBox {
   private val nextName: Label = new Label()
   private val nextDist: Label = new Label()
   private val nextETA: Label = new Label()
+  private val passengers: Label = new Label()
 
   private var isArrived: Boolean = false
   private val arrivedLbl: Label = new Label()
@@ -39,12 +40,14 @@ class TravelInfo(travel: Travel) extends DrawableVBox {
     nextName,
     nextDist,
     nextETA,
+    passengers,
     sep,
     trainInfo)
   spacing = 3
 
   override def draw(): Unit = {
     if(travel.isDone) {
+      // only needs to update on arrival
       if(!isArrived) {
         arrivedLbl.text = "arrived at " + travel.destination.name
         children = List(arrivedLbl, sep, trainInfo)
@@ -57,6 +60,7 @@ class TravelInfo(travel: Travel) extends DrawableVBox {
       nextName.text = " " + travel.nextTown.name
       nextDist.text = f" dist : ${travel.remainingDistance}%.0f"
       nextETA.text = " ETA : " + Game.timeToHourString(travel.remainingTime)
+      passengers.text = "pass. : " + travel.passengerNumber
     }
     trainInfo.draw()
   }
