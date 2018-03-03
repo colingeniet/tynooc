@@ -113,7 +113,7 @@ extends DrawableVBox {
             player.addCarriageToTrain(train, carriage)
             detailTrain(train)
           })
-      // display new selection list
+      // display new selection list upon button pressed
       children = List(
         menu,
         sep1,
@@ -139,7 +139,7 @@ extends DrawableVBox {
           player.launchTravel(train, town)
           detailTrain(train)
         })
-      // display new selection list
+      // display new selection list upon button pressed
       children = List(
         menu,
         sep1,
@@ -190,12 +190,49 @@ extends DrawableVBox {
       player.repair(engine)
     }
 
-    children = List(menu, sep1, list, sep2, createButton, repairButton)
+    val upgradeButton: Button = new Button("Upgrade")
+    upgradeButton.onAction = (event: ActionEvent) => {
+      // when pressing the button, display the list of upgrades
+      val selectionList: SelectionList[EngineModel] =
+        new SelectionList[EngineModel](
+        engine.model.upgrades.map(EngineModel(_)),
+        model => s"${model.name}(${PriceSimulation.upgradePrice(engine, model)})",
+        model => {
+          // upgrade engine upon selection
+          player.upgrade(engine, model)
+          // redraw stock menu
+          displayEngines()
+          detailEngine(engine)
+        })
 
-    // reset draw function
+      // display new selection list upon button pressed
+      children = List(
+        menu,
+        sep1,
+        list,
+        sep2,
+        createButton,
+        repairButton,
+        upgradeButton,
+        new Separator(),
+        new Label("select upgrade"),
+        selectionList)
+    }
+
+    children = List(
+      menu,
+      sep1,
+      list,
+      sep2,
+      createButton,
+      repairButton,
+      upgradeButton)
+
+    // disable buttons as needed
     drawCallback = () => {
       createButton.disable = engine.isUsed
       repairButton.disable = engine.isUsed
+      upgradeButton.disable = engine.isUsed
     }
   }
 
@@ -205,13 +242,12 @@ extends DrawableVBox {
     statsCarriage(carriage)
 
     val repairButton: Button = new Button("Repair")
-    repairButton.onAction = (event: ActionEvent) => {
-      player.repair(carriage)
-    }
+    val upgradeButton: Button = new Button("Upgrade")
+
     val priceField: TextField = new TextField() {
-      text = s"${carriage.placePrice.toString}" + 
+      text = s"${carriage.placePrice.toString}" +
               "$ (place price by distance)."
-      onMouseClicked = (event: MouseEvent) => { 
+      onMouseClicked = (event: MouseEvent) => {
         text = s"${carriage.placePrice.toString}"
       }
       onAction = (event: ActionEvent) => {
@@ -224,10 +260,44 @@ extends DrawableVBox {
       }
     }
 
-    children = List(menu, sep1, list, sep2, repairButton, priceField)
-    // reset draw method
+    repairButton.onAction = (event: ActionEvent) => {
+      player.repair(carriage)
+    }
+
+    upgradeButton.onAction = (event: ActionEvent) => {
+      // when pressing the button, display the list of upgrades
+      val selectionList: SelectionList[CarriageModel] =
+        new SelectionList[CarriageModel](
+          carriage.model.upgrades.map(CarriageModel(_)),
+          model => s"${model.name}(${PriceSimulation.upgradePrice(carriage, model)})",
+          model => {
+          // upgrade engine upon selection
+          player.upgrade(carriage, model)
+          // redraw stock menu
+          displayCarriages()
+          detailCarriage(carriage)
+        })
+
+      // display new selection list upon button pressed
+      children = List(
+        menu,
+        sep1,
+        list,
+        sep2,
+        repairButton,
+        upgradeButton,
+        priceField,
+        new Separator(),
+        new Label("select upgrade"),
+        selectionList)
+    }
+
+
+    children = List(menu, sep1, list, sep2, repairButton, upgradeButton, priceField)
+    // disable buttons as needed
     drawCallback = () => {
       repairButton.disable = carriage.isUsed
+      upgradeButton.disable = carriage.isUsed
     }
   }
 

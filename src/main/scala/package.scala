@@ -6,4 +6,6 @@ package object logic
  */
 package object gui
 
+/** World map file parser.
+ */
 package object parser

@@ -10,12 +10,10 @@ import logic.world._
 import logic.graph._
 
 object PriceSimulation {
-  def upgradePrice(from: Engine, to: EngineModel): Double = {
-    to.price-from.model.price
-  }
-
-  def upgradePrice(from: Carriage, to: CarriageModel): Double = {
-    to.price-from.model.price
+  def upgradePrice[Model <: VehicleModel](
+    from: VehicleFromModel[Model],
+    to: Model): Double = {
+    (to.price - from.model.price) * 1.2
   }
 }
 
@@ -200,17 +198,16 @@ class Player(val fabricTown: Town) {
     vehicle.repair()
   }
 
-  def editEngine(old: Engine, model: EngineModel): Unit = {
-    if (money >= PriceSimulation.upgradePrice(old, model)) {
-      old.model = model
-      debit(PriceSimulation.upgradePrice(old, model))
+  def upgrade[Model <: VehicleModel](old: VehicleFromModel[Model], model: Model): Unit = {
+    if (!ownsVehicle(old)) {
+      throw new IllegalArgumentException("Player doesn’t own the vehicle")
     }
-  }
-
-  def editCarriage(old: Carriage, model: CarriageModel): Unit = {
+    if (old.isUsed) {
+      throw new IllegalArgumentException("Vehicle is in use")
+    }
     if (money >= PriceSimulation.upgradePrice(old, model)) {
-      old.model = model
       debit(PriceSimulation.upgradePrice(old, model))
+      old.model = model
     }
   }
 

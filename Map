@@ -10,7 +10,7 @@ Colin, 450, 600, 0.5, 800, 1500, 4000
 LSV, 50, 100, 0.7, 2000, 3000, 9000
 Med, 250, 550, 1, 2000, 3000, 8000
 <Routes>
-# Route C411 -> C421 de distance 40 et causant 40 de dégâts quand on la parcourt
+# Route C411 -> C421 de distance 40 et causant 0.2 de dégâts quand on la parcourt
 0, 1, 40, 0.2
 1, 0, 40, 0.2
 1, 2, 70, 0.3
