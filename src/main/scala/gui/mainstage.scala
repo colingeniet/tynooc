@@ -23,16 +23,6 @@ extends JFXApp.PrimaryStage with Drawable {
   private var gameScene: Game = new Game(Game.world, player(), changeScene)
   private var optionsScene: Options = new Options(changeScene)
 
-  private var mainLoopThread: Thread = new Thread {
-    override def run {
-      while(true) {
-        Game.update()
-        Platform.runLater(draw())
-        Thread.sleep(33)
-      }
-    }
-  }
-
   private var onNextChangeCallback: () => Unit = () => ()
 
   /* Stage configuration. */
@@ -55,6 +45,16 @@ extends JFXApp.PrimaryStage with Drawable {
         gameInit()
         gameScene = new Game(Game.world, player(), changeScene)
         scene = gameScene
+
+        val mainLoopThread: Thread = new Thread {
+          override def run {
+            while(true) {
+              Game.update()
+              Platform.runLater(draw())
+              Thread.sleep(33)
+            }
+          }
+        }
         mainLoopThread.start()
         onNextChangeCallback = () => mainLoopThread.stop()
       }
