@@ -8,15 +8,15 @@ import logic.route._
 object Parser {
   def parseTown(line: String, world: World): Town = {
     val infos = line.split(", ")
-    if(infos.length < 7) // BAD
+    if(infos.length < 4 + world.statusNumber) // BAD
       println("Error bad file.")
-    val (name, x, y, w, p1, p2, p3) = (infos(0), infos(1).toDouble, infos(2).toDouble, 
-                                       infos(3).toDouble, infos(4).toInt, 
-                                       infos(5).toInt, infos(6).toInt)    
+    val (name, x, y, w) = (infos(0), infos(1).toDouble, infos(2).toDouble, 
+                           infos(3).toDouble)
+    val p = infos.slice(4, world.statusNumber + 5)                           
     val town = new Town(name, x, y, w)
-    town.addResidents(p1, world.status(0))
-    town.addResidents(p2, world.status(1))
-    town.addResidents(p3, world.status(2))
+    for(i <- 0 to world.statusNumber - 1) { 
+      town.addResidents(p(i).toInt, world.status(0))
+    }
     town
   }
   
@@ -26,7 +26,6 @@ object Parser {
       println("Error bad file.")
     val (id0, id1, length, damage) = (infos(0).toInt, infos(1).toInt, 
                                       infos(2).toDouble, infos(3).toDouble)
-    println(s"$id0, $id1 ${towns(id0).name}")
     val (start, end) = (towns(id0), towns(id1))
     new Route(start, end, length, damage)
   }
