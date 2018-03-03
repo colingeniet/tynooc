@@ -58,7 +58,6 @@ extends BorderPane with Drawable {
   }
 
   override def draw(): Unit = {
-    timeLabel.text =
-      f"day ${Game.time.toInt / 24 + 1}%d : ${Game.time.toInt % 24}%02dh " 
+    timeLabel.text = Game.timeToDateString(Game.time)
   }
 }

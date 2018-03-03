@@ -37,7 +37,8 @@ object Game {
   // 4 sec (real time) = 1 hours (game time)
   def realToVirtualTime(t: Double): Double = t / 4000
 
-  def timeToDateString(t: Double): String = ""
   def timeToHourString(t: Double): String =
-    f"$t%.0fh${t*60%60}%.0f"
+    f"${t.floor}%02.0fh${t * 60 % 60}%02.0f"
+  def timeToDateString(t: Double): String =
+    f"day ${(t.toInt / 24 + 1)}%d : " + timeToHourString(t % 24)
 }
