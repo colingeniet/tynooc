@@ -38,10 +38,7 @@ class Town(
   }
 
   def generateMigrant(to: Town): Int = {
-    if(to.note > note)
-      (population * (to.note - note) * (1 - Math.random / 3)).toInt
-    else 
-      (population * (note - to.note) * Math.random * 1/3).toInt   
+    (population * 0.01 * (1 + to.note - note) * (1 + Math.random)) toInt
   }
 
   /** Adds a new route. */
