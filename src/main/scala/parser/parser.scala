@@ -21,7 +21,7 @@ object Parser {
   }
 
   private def parseRoute(line: String, towns: List[Town]): Route = {
-    val infos = line.split(" ")
+    val infos = line.split(", ")
     if(infos.length < 4) //BAD
       println("Error bad file.")
     val (id0, id1, length, damage) = (infos(0).toInt, infos(1).toInt,
