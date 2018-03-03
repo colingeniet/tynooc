@@ -5,6 +5,8 @@ import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
+import scala.util.Try
+import scalafx.scene.input.MouseEvent
 
 import gui.draw._
 import gui.scenes.elements._
@@ -206,8 +208,23 @@ extends DrawableVBox {
     repairButton.onAction = (event: ActionEvent) => {
       player.repair(carriage)
     }
+    val priceField: TextField = new TextField() {
+      text = s"${carriage.placePrice.toString}" + 
+              "$ (place price by distance)."
+      onMouseClicked = (event: MouseEvent) => { 
+        text = s"${carriage.placePrice.toString}"
+      }
+      onAction = (event: ActionEvent) => {
+        Try(text().toDouble).toOption match {
+          case Some(x) => carriage.placePrice = x
+          case None    =>
+        }
+        displayCarriages()
+        detailCarriage(carriage)
+      }
+    }
 
-    children = List(menu, sep1, list, sep2, repairButton)
+    children = List(menu, sep1, list, sep2, repairButton, priceField)
     // reset draw method
     drawCallback = () => {
       repairButton.disable = carriage.isUsed

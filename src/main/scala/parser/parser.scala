@@ -5,6 +5,12 @@ import logic.town._
 import logic.world._
 import logic.route._
 
+/** An exception which could be laucnhed if the file can’t be parsed correctly. */
+final case class BadFileFormat(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
+
 /** World file parser. */
 /* Format :
  *  File ::=
@@ -27,8 +33,8 @@ object Parser {
   /** Parse a town line. */
   private def parseTown(line: String, world: World): Town = {
     val infos = line.split(", ")
-    if(infos.length < 4 + world.statusNumber) // BAD
-      println("Error bad file.")
+    if(infos.length < 4 + world.statusNumber)
+      throw new BadFileFormat
     val (name, x, y, w) = (infos(0), infos(1).toDouble, infos(2).toDouble,
                            infos(3).toDouble)
     val p = infos.slice(4, world.statusNumber + 5)
@@ -42,8 +48,8 @@ object Parser {
   /** Parse a route line. */
   private def parseRoute(line: String, towns: List[Town]): Route = {
     val infos = line.split(", ")
-    if(infos.length < 4) //BAD
-      println("Error bad file.")
+    if(infos.length < 4)
+      throw new BadFileFormat
     val (id0, id1, length, damage) = (infos(0).toInt, infos(1).toInt,
                                       infos(2).toDouble, infos(3).toDouble)
     val (start, end) = (towns(id0), towns(id1))
