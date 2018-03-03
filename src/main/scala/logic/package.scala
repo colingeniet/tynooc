@@ -23,5 +23,3 @@ package object route
 package object town
 
 package object game
-
-package object parser

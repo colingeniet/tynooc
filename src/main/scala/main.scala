@@ -6,7 +6,7 @@ import logic.world._
 import logic.game._
 import logic.town._
 import logic.player._
-import logic.parser._
+import parser._
 
 object MainJFXApp extends JFXApp {
   /** Initializes the game. */

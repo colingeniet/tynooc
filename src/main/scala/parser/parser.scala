@@ -1,4 +1,4 @@
-package logic.parser
+package parser
 
 import scala.io.Source
 import logic.town._
@@ -10,26 +10,26 @@ object Parser {
     val infos = line.split(", ")
     if(infos.length < 4 + world.statusNumber) // BAD
       println("Error bad file.")
-    val (name, x, y, w) = (infos(0), infos(1).toDouble, infos(2).toDouble, 
+    val (name, x, y, w) = (infos(0), infos(1).toDouble, infos(2).toDouble,
                            infos(3).toDouble)
-    val p = infos.slice(4, world.statusNumber + 5)                           
+    val p = infos.slice(4, world.statusNumber + 5)
     val town = new Town(name, x, y, w)
-    for(i <- 0 to world.statusNumber - 1) { 
+    for(i <- 0 to world.statusNumber - 1) {
       town.addResidents(p(i).toInt, world.status(0))
     }
     town
   }
-  
+
   private def parseRoute(line: String, towns: List[Town]): Route = {
     val infos = line.split(" ")
     if(infos.length < 4) //BAD
       println("Error bad file.")
-    val (id0, id1, length, damage) = (infos(0).toInt, infos(1).toInt, 
+    val (id0, id1, length, damage) = (infos(0).toInt, infos(1).toInt,
                                       infos(2).toDouble, infos(3).toDouble)
     val (start, end) = (towns(id0), towns(id1))
     new Route(start, end, length, damage)
   }
-  
+
   def readWorldInformations(filename: String): World = {
     val world = new World()
     var towns: List[Town] = List()
@@ -40,7 +40,7 @@ object Parser {
       world.addTown(town)
       lines = lines.tail
     }
-    towns = towns.reverse 
+    towns = towns.reverse
     if(!lines.isEmpty)
       lines = lines.tail
     while(!lines.isEmpty) {
