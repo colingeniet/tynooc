@@ -77,6 +77,10 @@ extends DrawableVBox {
     val disassembleOne: Button = new Button("Disassemble last")
     val addCarriage: Button = new Button("Add carriage")
     val sendTravel: Button = new Button("Travel")
+    val nameField: TextField = new TextField() {
+      text = train.name
+      onAction = (event: ActionEvent) => train.name = text()
+    }
 
     disassembleAll.onAction = (event: ActionEvent) => {
       player.disassembleTrain(train)
@@ -111,6 +115,7 @@ extends DrawableVBox {
         disassembleOne,
         disassembleAll,
         sendTravel,
+        nameField,
         new Separator(),
         new Label("select carriage"),
         selectionList)
@@ -136,6 +141,7 @@ extends DrawableVBox {
         disassembleOne,
         disassembleAll,
         sendTravel,
+        nameField,
         new Separator(),
         new Label("select destination"),
         selectionList)
@@ -157,7 +163,8 @@ extends DrawableVBox {
       addCarriage,
       disassembleOne,
       disassembleAll,
-      sendTravel)
+      sendTravel,
+      nameField)
   }
 
   /** Displays a specific engine. */
