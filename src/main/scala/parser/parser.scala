@@ -1,6 +1,7 @@
 package parser
 
 import scala.io.Source
+import scala.util.matching.Regex
 import logic.town._
 import logic.world._
 import logic.route._
@@ -26,34 +27,36 @@ extends Exception(message, cause)
  *
  *  startId and endId are integers referencing the town ordering in the file.
  */
-/* This is a temporary parser to avoid hard coding the world map
- * for this first version of the project. It WILL be replaced by
- * a proper parser in later versions. */
 object Parser {
+  private val rD = "(\\d+\\.?\\d*)"
+  private val rI = "(\\d+)"
+  private val rN = "([a-zA-Z0-9 ]+)"
+  private val rIf = s"${rI}, "
+  private val rTown = s"${rN}, ${rD}, ${rD}, ${rD}, "
+
   /** Parse a town line. */
   private def parseTown(line: String, world: World): Town = {
-    val infos = line.split(", ")
-    if(infos.length < 4 + world.statusNumber)
-      throw new BadFileFormat
-    val (name, x, y, w) = (infos(0), infos(1).toDouble, infos(2).toDouble,
-                           infos(3).toDouble)
-    val p = infos.slice(4, world.statusNumber + 5)
-    val town = new Town(name, x, y, w)
-    for(i <- 0 to world.statusNumber - 1) {
-      town.addResidents(p(i).toInt, world.status(0))
+    val rCompleteString = s"^${rTown}${rIf * (world.statusNumber - 1)}" + rI + "$"
+    val reg = rCompleteString.r
+    val town = line match {
+      case reg (name, x, y, w, _*) => new Town(name, x.toDouble,
+                                               y.toDouble, w.toDouble)
+      case _                       => throw new BadFileFormat
     }
+    val pop = (rTown.r.replaceAllIn(line, "")).split(", ")
+    pop.indices.foreach { i => town.addResidents(pop(i).toInt, world.status(i)) }
     town
   }
 
   /** Parse a route line. */
   private def parseRoute(line: String, towns: List[Town]): Route = {
-    val infos = line.split(", ")
-    if(infos.length < 4)
-      throw new BadFileFormat
-    val (id0, id1, length, damage) = (infos(0).toInt, infos(1).toInt,
-                                      infos(2).toDouble, infos(3).toDouble)
-    val (start, end) = (towns(id0), towns(id1))
-    new Route(start, end, length, damage)
+  var reg = (s"^${rI}, ${rI}, ${rD}, ${rD}" + "$").r
+    line match {
+      case reg(id0, id1, length, damage) => {
+        new Route(towns(id0.toInt), towns(id1.toInt), length.toDouble, damage.toDouble)
+      }
+      case _                             => throw new BadFileFormat
+    }
   }
 
   /** Parse a world file. */
