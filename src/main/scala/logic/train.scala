@@ -139,6 +139,8 @@ class Train (
   var engine: Engine,
   var carriages: List[Carriage],
   var town: Town) {
+  var name: String = "train"
+
   var travel: Option[Travel] = None
 
   def onRoute: Boolean = travel.isDefined
