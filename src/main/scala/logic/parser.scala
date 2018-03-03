@@ -6,7 +6,7 @@ import logic.world._
 import logic.route._
 
 object Parser {
-  def parseTown(line: String, world: World): Town = {
+  private def parseTown(line: String, world: World): Town = {
     val infos = line.split(", ")
     if(infos.length < 4 + world.statusNumber) // BAD
       println("Error bad file.")
@@ -20,7 +20,7 @@ object Parser {
     town
   }
   
-  def parseRoute(line: String, towns: List[Town]): Route = {
+  private def parseRoute(line: String, towns: List[Town]): Route = {
     val infos = line.split(" ")
     if(infos.length < 4) //BAD
       println("Error bad file.")
