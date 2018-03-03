@@ -79,7 +79,13 @@ extends DrawableVBox {
     val sendTravel: Button = new Button("Travel")
     val nameField: TextField = new TextField() {
       text = train.name
-      onAction = (event: ActionEvent) => train.name = text()
+      onAction = (event: ActionEvent) => {
+        train.name = text()
+        // redraw train list
+        displayTrains()
+        // display train
+        detailTrain(train)
+      }
     }
 
     disassembleAll.onAction = (event: ActionEvent) => {
