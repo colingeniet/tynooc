@@ -5,7 +5,26 @@ import logic.town._
 import logic.world._
 import logic.route._
 
+/** World file parser. */
+/* Format :
+ *  File ::=
+ *  [Towns ...]
+ *  #
+ *  [Routes ...]
+ *
+ *  Towns ::=
+ *  name, x, y, welcomeLevel, <population, ...>
+ *
+ *  Route ::=
+ *  startId, endId, weight, damage
+ *
+ *  startId and endId are integers referencing the town ordering in the file.
+ */
+/* This is a temporary parser to avoid hard coding the world map
+ * for this first version of the project. It WILL be replaced by
+ * a proper parser in later versions. */
 object Parser {
+  /** Parse a town line. */
   private def parseTown(line: String, world: World): Town = {
     val infos = line.split(", ")
     if(infos.length < 4 + world.statusNumber) // BAD
@@ -20,6 +39,7 @@ object Parser {
     town
   }
 
+  /** Parse a route line. */
   private def parseRoute(line: String, towns: List[Town]): Route = {
     val infos = line.split(", ")
     if(infos.length < 4) //BAD
@@ -30,6 +50,7 @@ object Parser {
     new Route(start, end, length, damage)
   }
 
+  /** Parse a world file. */
   def readWorldInformations(filename: String): World = {
     val world = new World()
     var towns: List[Town] = List()

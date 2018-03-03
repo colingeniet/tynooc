@@ -6,3 +6,5 @@ target*
 project/target*
 *.aux
 *.toc
+*.pdf
+*.gz
