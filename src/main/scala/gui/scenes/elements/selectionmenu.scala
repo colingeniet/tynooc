@@ -26,6 +26,11 @@ class SelectionMenu extends VBox(3) {
     group.toggles.add(button)
     children.add(button)
   }
+
+  /** Deselect all entries. */
+  def deselect(): Unit = {
+    group.toggles.foreach(_.selected = false)
+  }
 }
 
 /** Creates a SelectionMenu automatically from a list of objects.
