@@ -83,7 +83,7 @@ extends DrawableVBox {
         train.name = text()
         // redraw train list
         displayTrains()
-        // display train
+        // display trains
         detailTrain(train)
       }
     }

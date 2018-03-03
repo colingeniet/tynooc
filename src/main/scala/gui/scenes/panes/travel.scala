@@ -10,6 +10,7 @@ import gui.scenes.elements._
 import gui.scenes.panes._
 import logic.train._
 import logic.travel._
+import logic.game._
 
 /** Information on a travel.
  */
@@ -52,10 +53,11 @@ class TravelInfo(travel: Travel) extends DrawableVBox {
     } else {
       destName.text = " " + travel.destination.name
       destDist.text = f" dist : ${travel.totalRemainingDistance}%.0f"
-      destETA.text = f" ETA : ${travel.totalRemainingTime}%.0f"
+      destETA.text = " ETA : " + Game.timeToHourString(travel.totalRemainingTime)
       nextName.text = " " + travel.nextTown.name
       nextDist.text = f" dist : ${travel.remainingDistance}%.0f"
-      nextETA.text = f" ETA : ${travel.remainingTime}%.0f"
+      nextETA.text = " ETA : " + Game.timeToHourString(travel.remainingTime)
     }
+    trainInfo.draw()
   }
 }
