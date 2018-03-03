@@ -47,4 +47,6 @@ extends ScrollPane {
   private var menu: SelectionMenu = new SelectionMenu()
   list.foreach(a => menu.addMenu(text(a), action(a)))
   content = menu
+
+  def deselect(): Unit = menu.deselect()
 }

@@ -47,6 +47,7 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
 
   /** Displays the list of engines. */
   private def listEngines(): Unit = {
+    enginesList.deselect()
     children = List(typeList, sep1, enginesList, sep2)
   }
 
@@ -64,6 +65,7 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
 
   /** Displays the list of carriages. */
   private def listCarriages(): Unit = {
+    carriagesList.deselect()
     children = List(typeList, sep1, carriagesList, sep2)
   }
 
