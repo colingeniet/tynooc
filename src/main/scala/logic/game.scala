@@ -2,7 +2,7 @@ package logic.game
 
 import logic.player._
 import logic.world._
-import logic.ia._
+import ia._
 
 /** Game logic main object. */
 object Game {
