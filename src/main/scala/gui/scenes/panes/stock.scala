@@ -215,7 +215,7 @@ extends DrawableVBox {
  *  @param detail a callback called whenever a train is selected from the list.
  */
 class TrainList(trains: List[Train], detail: Train => Unit)
-extends SelectionList[Train](trains, _ => "train", detail)
+extends SelectionList[Train](trains, _.name, detail)
 
 /** Displays a list of carriages.
  *

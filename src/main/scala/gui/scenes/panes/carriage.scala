@@ -29,7 +29,7 @@ class CarriageDetail(carriage: Carriage) extends DrawableVBox {
 
   override def draw(): Unit = {
     if(carriage.isUsed) {
-      status.text = "in train"
+      status.text = "in " + carriage.train.get.name
     } else {
       status.text = "stored at " + carriage.town.name
     }
@@ -62,7 +62,7 @@ class EngineDetail(engine: Engine) extends DrawableVBox {
 
   override def draw(): Unit = {
     if(engine.isUsed) {
-      status.text = "in train"
+      status.text = "in " + engine.train.get.name
     } else {
       status.text = "stored at " + engine.town.name
     }

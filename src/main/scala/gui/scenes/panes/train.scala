@@ -64,6 +64,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
 
 /** General train statistics. */
 class TrainStats(train: Train) extends DrawableVBox {
+  private val name: Label = new Label()
   private val status: Label = new Label()
   private val tooHeavy: Label = new Label("Too heavy !") {
     styleClass.add("alert")
@@ -74,17 +75,19 @@ class TrainStats(train: Train) extends DrawableVBox {
   private val weight: Label = new Label()
   private val power: Label = new Label()
 
-  children = List(status, weight, power)
+  children = List(name, status, weight, power)
   spacing = 3
   draw()
 
   override def draw(): Unit = {
+    name.text = train.name
     status.text =
       (if (train.onRoute) "en route to " else "stored at ") + train.town.name
     weight.text = "weight : " + train.weight
     power.text = "power : " + train.engine.model.power
 
     children = List(
+      Some(name),
       Some(status),
       (if (train.tooHeavy) Some(tooHeavy) else None),
       Some(weight),
