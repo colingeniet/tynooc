@@ -2,6 +2,7 @@ package logic.game
 
 import logic.player._
 import logic.world._
+import logic.ia._
 
 /** Game logic main object. */
 object Game {
@@ -10,7 +11,8 @@ object Game {
 
   var world: World = new World()
   var time: Double = 0
-
+  var ia: IA = null  
+    
   /* Simulation rate control. */
   var paused: Boolean = false
   var timeAcceleration: Double = 1
@@ -23,6 +25,7 @@ object Game {
       // in game time passed
       val dt: Double = timeAcceleration * realToVirtualTime(a - last)
       logic(dt)
+      ia.play(dt)
       time += dt
     }
     last = a
