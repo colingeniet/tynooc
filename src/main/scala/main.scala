@@ -14,7 +14,7 @@ object MainJFXApp extends JFXApp {
   def gameInit(): Unit = {
     Game.reset()
     Game.world = Parser.readWorldInformations("Map")
-    Game.ia = newBasicIA(player())
+    Game.ia = new BasicIA(player())
   }
 
   /** Creates a new player. */
