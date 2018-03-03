@@ -12,12 +12,12 @@ object MainJFXApp extends JFXApp {
   /** Initializes the game. */
   def gameInit(): Unit = {
     Game.reset()
-    Game.world = Parser.readWorldInformations("SchoolMap")
+    Game.world = Parser.readWorldInformations("Map")
   }
 
   /** Creates a new player. */
   def player(): Player = {
-    val player = new Player(Game.world.towns.find(_.name == "Cachan").get)
+    val player = new Player(Game.world.towns.find(_.name == "C411").get)
     player.credit(10000)
     player
   }

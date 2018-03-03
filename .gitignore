@@ -7,4 +7,5 @@ project/target*
 *.aux
 *.toc
 *.pdf
+*.bak
 *.gz
