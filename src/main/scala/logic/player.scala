@@ -41,7 +41,7 @@ class Player(val fabricTown: Town) {
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
   def credit(amount: Double): Unit = money += amount
-  
+
   def debit(amount: Double): Unit = {
     money -= (amount + (0.02*Math.max(0, amount-money)))
   }
@@ -216,6 +216,4 @@ class Player(val fabricTown: Town) {
 
   def ownsTrain(train: Train): Boolean = trains.contains(train)
   def ownsVehicle(vehicle: Vehicle): Boolean = vehicles.contains(vehicle)
-
-  def update(dt: Double): Unit = {}
 }
