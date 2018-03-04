@@ -14,6 +14,7 @@ import logic.player._
 import logic.train._
 import logic.world._
 import logic.town._
+import formatter._
 
 /** Displays a player rolling stock.
  *
@@ -196,7 +197,7 @@ extends DrawableVBox {
       val selectionList: SelectionList[EngineModel] =
         new SelectionList[EngineModel](
         engine.model.upgrades.map(EngineModel(_)),
-        model => s"${model.name}(${PriceSimulation.upgradePrice(engine, model)})",
+        model => s"${model.name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(engine, model))})",
         model => {
           // upgrade engine upon selection
           player.upgrade(engine, model)
@@ -245,10 +246,9 @@ extends DrawableVBox {
     val upgradeButton: Button = new Button("Upgrade")
 
     val priceField: TextField = new TextField() {
-      text = s"${carriage.placePrice.toString}" +
-              "$ (place price by distance)."
+      text = s"${MoneyFormatter.format(carriage.placePrice)} (place price by distance)."
       onMouseClicked = (event: MouseEvent) => {
-        text = s"${carriage.placePrice.toString}"
+        text = carriage.placePrice.toString
       }
       onAction = (event: ActionEvent) => {
         Try(text().toDouble).toOption match {
@@ -269,7 +269,7 @@ extends DrawableVBox {
       val selectionList: SelectionList[CarriageModel] =
         new SelectionList[CarriageModel](
           carriage.model.upgrades.map(CarriageModel(_)),
-          model => s"${model.name}(${PriceSimulation.upgradePrice(carriage, model)})",
+          model => s"${model.name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(carriage, model))})",
           model => {
           // upgrade engine upon selection
           player.upgrade(carriage, model)
