@@ -7,12 +7,14 @@ import logic.game._
 import logic.town._
 import logic.player._
 import parser._
+import ia._
 
 object MainJFXApp extends JFXApp {
   /** Initializes the game. */
   def gameInit(): Unit = {
     Game.reset()
     Game.world = Parser.readWorldInformations("Map")
+    Game.ia = new BasicIA(player())
   }
 
   /** Creates a new player. */
