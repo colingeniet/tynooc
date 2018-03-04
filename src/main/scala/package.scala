@@ -11,4 +11,4 @@ package object gui
 package object parser
 
 /** Format some object for displaying. */
-package object format
+package object formatter
