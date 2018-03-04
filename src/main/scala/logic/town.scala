@@ -52,15 +52,17 @@ class Town(
     deleteResidents(nb, status)
   }
 
-  def generateMigrant(to: Town, dt: Double): Int = {
+  /** Generate passengers to a town. */
+  def generatePassengers(to: Town, dt: Double): Int = {
     val pop = population
     val pass = passengersNumber
-    // avoid accumulating too many passengers
-    // slow down passengers production when proportion increases,
-    // and hard cap it at 1/4 of total population
+    /* avoid accumulating too many passengers :
+     * slow down passengers production when proportion increases,
+     * and hard cap it at 1/4 of total population */
     val coef = 0.02 * (1 - 4 * pass / pop)
+    // mean for gaussian approximation
     val mean = (pop - pass) * (1 + to.note - note) * coef * dt
-    // it's not like deviance is really different
+    // With this coef value, deviance is barely different from the mean
     (((random.nextGaussian() * mean + mean) max 0) min pop).toInt
   }
 
@@ -88,7 +90,7 @@ class Town(
     val p = population
     val possibleDestinations = neighbours.sortBy { _.note }
     possibleDestinations.foreach { destination =>
-      val migrantNumber = generateMigrant(destination, dt)
+      val migrantNumber = generatePassengers(destination, dt)
       val byStatus = {
         if(p == 0)
           residents
