@@ -6,13 +6,14 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
 
-import java.util.{Currency, Locale}
+
 
 import gui.draw._
 import gui.scenes.elements._
 import logic.player._
 import logic.train._
 import logic.world._
+import formatter._
 
 /** Player information panel.
  *
@@ -35,9 +36,7 @@ extends DrawableVBox {
   private val menu: SelectionMenu = new SelectionMenu()
   private val sep2: Separator = new Separator()
   private var panel: Node = new Pane()
-  private val formatter = java.text.NumberFormat.getCurrencyInstance
-  private val fr = Currency.getInstance(new Locale("fr", "FR"))
-  formatter.setCurrency(fr)
+
   
   menu.addMenu("rolling stock", displayStock())
   menu.addMenu("catalog", displayModels())
@@ -79,11 +78,11 @@ extends DrawableVBox {
   private def updateStock(): Unit = {
     stock =
       new PlayerStock(player, world, detailTrain, detailEngine, detailCarriage)
-    money.text = formatter.format(player.money)
+    money.text = MoneyFormatter.format(player.money)
   }
 
   override def draw(): Unit = {
-    money.text = formatter.format(player.money)
+    money.text = MoneyFormatter.format(player.money)
     stock.draw()
   }
 }
