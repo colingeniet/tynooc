@@ -9,6 +9,7 @@ import scalafx.event._
 import gui.scenes.elements._
 import logic.train._
 import logic.player._
+import formatter._
 
 /** Display a catalog of engines and carriages.
  *
@@ -53,7 +54,7 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
 
   /** Displays a specific engine model. */
   private def displayEngine(engine: EngineModel): Unit = {
-    buy.text = "buy(" + engine.price + ")"
+    buy.text = "buy(" + MoneyFormatter.format(engine.price) + ")"
     buy.onAction = (event: ActionEvent) => {
       player.buyEngine(engine.name)
       updateStock
@@ -71,7 +72,7 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
 
   /** Displays a specific carriage model. */
   private def displayCarriage(carriage: CarriageModel): Unit = {
-    buy.text = "buy(" + carriage.price + ")"
+    buy.text = "buy(" + MoneyFormatter.format(carriage.price) + ")"
     buy.onAction = (event: ActionEvent) => {
       player.buyCarriage(carriage.name)
       updateStock
