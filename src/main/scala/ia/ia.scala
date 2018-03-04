@@ -15,8 +15,8 @@ trait IA {
 
 class BasicIA(val player: Player)
 extends IA {
-  val action_delay = 0.8
-  var last_action = 0.6
+  val action_delay = 2
+  var last_action = 1.5
   
   def play(dt: Double): Unit = {
     last_action += dt
@@ -33,7 +33,7 @@ extends IA {
             player.launchTravel(train, Random.shuffle(train.town.neighbours).head)
         }
       }
-      val trains = player.trains.filter { t => !t.onRoute && !t.carriages.isEmpty }
+      val trains = player.trainsAvailable.filter { !_.carriages.isEmpty }
       if(!trains.isEmpty)
         player.launchTravel(trains.head, 
                Random.shuffle(Random.shuffle(trains).head.town.neighbours).head)
