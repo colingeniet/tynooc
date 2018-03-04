@@ -74,6 +74,7 @@ class Player(val fabricTown: Town) {
   def enginesStoredAt(town: Town): HashSet[Engine] =
     engines.filter(c => !c.isUsed && c.town == town)
 
+  def trainsAvailable: HashSet[Train] = trains.filter { _.isAvailable }
 
   def buyEngine(name: String): Unit = {
     val model = EngineModel(name)
