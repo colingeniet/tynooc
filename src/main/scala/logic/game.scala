@@ -1,6 +1,6 @@
 package logic.game
 
-import logic.player._
+import logic.company._
 import logic.world._
 
 /** Game logic main object. */

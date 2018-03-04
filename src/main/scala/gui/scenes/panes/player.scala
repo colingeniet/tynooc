@@ -10,22 +10,22 @@ import scalafx.event._
 
 import gui.draw._
 import gui.scenes.elements._
-import logic.player._
+import logic.company._
 import logic.train._
 import logic.world._
 import formatter._
 
-/** Player information panel.
+/** Company information panel.
  *
- *  Allows to view player's rolling stock, buy new stock,
+ *  Allows to view company's rolling stock, buy new stock,
  *  assemble trains ...
- *  @param player the player.
+ *  @param company the company.
  *  @param detailTrain callback used to display info on a train in another panel.
  *  @param detailEngine callback used to display info on an engine in another panel.
  *  @param detailCarriage callback used to display info on a carriage in another panel.
  */
-class PlayerInfo(
-  player: Player,
+class CompanyInfo(
+  company: Company,
   world: World,
   detailTrain: Train => Unit,
   detailEngine: Engine => Unit,
@@ -42,11 +42,11 @@ extends DrawableVBox {
   menu.addMenu("catalog", displayModels())
 
   // stock subpanel
-  private var stock: PlayerStock =
-    new PlayerStock(player, world, detailTrain, detailEngine, detailCarriage)
+  private var stock: CompanyStock =
+    new CompanyStock(company, world, detailTrain, detailEngine, detailCarriage)
 
   // model catalog subpanel
-  private val models: ModelsList = new ModelsList(player, updateStock)
+  private val models: ModelsList = new ModelsList(company, updateStock)
 
   spacing = 5
   draw()
@@ -77,12 +77,12 @@ extends DrawableVBox {
   /** Update the stock subpanel. */
   private def updateStock(): Unit = {
     stock =
-      new PlayerStock(player, world, detailTrain, detailEngine, detailCarriage)
-    money.text = MoneyFormatter.format(player.money)
+      new CompanyStock(company, world, detailTrain, detailEngine, detailCarriage)
+    money.text = MoneyFormatter.format(company.money)
   }
 
   override def draw(): Unit = {
-    money.text = MoneyFormatter.format(player.money)
+    money.text = MoneyFormatter.format(company.money)
     stock.draw()
   }
 }

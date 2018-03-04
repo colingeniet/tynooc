@@ -5,7 +5,7 @@ import gui.MainStage
 import logic.world._
 import logic.game._
 import logic.town._
-import logic.player._
+import logic.company._
 import parser._
 
 object MainJFXApp extends JFXApp {
@@ -15,14 +15,14 @@ object MainJFXApp extends JFXApp {
     Game.world = Parser.readWorldInformations("Map")
   }
 
-  /** Creates a new player. */
-  def player(): Player = {
-    val player = new Player(Game.world.towns.find(_.name == "C411").get)
-    player.credit(10000)
-    player
+  /** Creates a new company. */
+  def company(): Company = {
+    val company = new Company(Game.world.towns.find(_.name == "C411").get)
+    company.credit(10000)
+    company
   }
 
-  var mainStage = new MainStage(() => gameInit(), () => player())
+  var mainStage = new MainStage(() => gameInit(), () => company())
   stage = mainStage
 
   /** Allows [[MainStage]] to perform cleanup. */
