@@ -19,12 +19,14 @@ object Game {
 
   /** Advance simulation.
    */
-  def update(): Unit = {
+  def update(iap: Option[IA]): Unit = {
     val a: Double = System.currentTimeMillis()
     if (!paused) {
       // in game time passed
       val dt: Double = timeAcceleration * realToVirtualTime(a - last)
       logic(dt)
+      if(iap.isDefined)
+        iap.get.play(dt)
       ia.play(dt)
       time += dt
     }
