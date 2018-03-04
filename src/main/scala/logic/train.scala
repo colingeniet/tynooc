@@ -160,6 +160,8 @@ class Train (
     carriages.foreach { c => c.health = Math.max(0, c.health - route.damageToVehicle) }
   }
 
+  def isAvailable: Boolean = !damaged && !onRoute && !tooHeavy
+  
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
     carriages = c :: carriages
