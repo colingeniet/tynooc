@@ -24,7 +24,8 @@ object MainJFXApp extends JFXApp {
     player
   }
 
-  var mainStage = new MainStage(() => gameInit(), () => player())
+  var mainStage = new MainStage(() => gameInit(), () => player(), // None)
+                      Some((p: Player) => new BasicIA(p)))
   stage = mainStage
 
   /** Allows [[MainStage]] to perform cleanup. */
