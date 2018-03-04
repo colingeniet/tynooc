@@ -22,12 +22,14 @@ import logic.route._
 class TownInfo(town: Town, displayRoute: Route => Unit)
 extends DrawableHBox {
   // needs to be updated at redraw
-  private val popLbl = new Label("Population : " + town.population)
+  private val popLbl = new Label()
+  private val pasLbl = new Label()
 
   children = List(
     new Label(town.name),
     new Separator{ orientation = Orientation.Vertical },
     popLbl,
+    pasLbl,
     new Separator{ orientation = Orientation.Vertical },
     new Label("Routes to : "))
 
@@ -43,6 +45,7 @@ extends DrawableHBox {
   // Only update population
   override def draw(): Unit = {
     popLbl.text = "Population : " + town.population
+    pasLbl.text = ", Passengers : " + town.passengersNumber
   }
 }
 
