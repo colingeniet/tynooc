@@ -57,11 +57,11 @@ class Travel(val train: Train, private val roads: List[Route],
   /** Distance remaining until next stop. */
   def remainingDistance: Double = currentRoute.length - currentRouteDistanceDone
 
-  /** Distance remaining until <code>destination</code>. 
+  /** Distance remaining until <code>destination</code>.
     *
-    * @param destination 
+    * @param destination
     * @throws
-    */ 
+    */
   def remainingDistanceTo(destination: Town): Double = {
     // BAD throw exception is destination not in the path. */
     if(destination == currentTown) return 0
@@ -69,11 +69,11 @@ class Travel(val train: Train, private val roads: List[Route],
     var tmp = remainingRoutes
     while(tmp.head.end != destination) {
       tmp = tmp.tail
-      remaining += tmp.head.length      
+      remaining += tmp.head.length
     }
     remaining
   }
-  
+
   /** Time remaining until destination, without stop time. */
   def totalRemainingTime: Double = totalRemainingDistance / train.engine.speed
   /** Time remaining until next stop. */
@@ -117,6 +117,7 @@ class Travel(val train: Train, private val roads: List[Route],
           }
         }
         case State.Arrived => {
+          owner.debit(train.consumption(currentRoute.length) * Game.world.fuelPrice)
           train.deteriorate(currentRoute)
           state = State.Waiting
           landPassengers

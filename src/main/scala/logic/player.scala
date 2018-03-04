@@ -180,8 +180,6 @@ class Player(val fabricTown: Town) {
       case Some(routes) => routes
     }
     val travel = new Travel(train, routes, this)
-    val distance = routes.foldLeft[Double](0) { _ + _.length }
-    debit(train.consumption(distance) * Game.world.fuelPrice)
     train.travel = Some(travel)
     Game.world.addTravel(travel)
   }
