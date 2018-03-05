@@ -25,9 +25,10 @@ extends Exception(message, cause)
 
 /** A company.
  *
- *  @param fabricTown the town in which the company rolling stock is produced.
+ *  @param name The name of the company.
+ *  @param fabricTown The town in which the company rolling stock is produced.
  */
-class Company(val fabricTown: Town) {
+class Company(var name: String, val fabricTown: Town) {
   /** The company trains. */
   val trains: HashSet[Train] = HashSet()
   /** The company carriages. */
