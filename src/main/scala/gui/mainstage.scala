@@ -9,18 +9,18 @@ import gui.draw.Drawable
 import gui.scenes._
 import logic.world._
 import logic.game._
-import logic.player._
+import logic.company._
 
 /** Main window manager.
  *
  *  Handles, displays and switch between menus and game screens.
  */
-class MainStage(gameInit: () => Unit, player: () => Player)
-extends JFXApp.PrimaryStage with Drawable {
+class MainStage(gameInit: () => Unit, company: () => Company)
+extends JFXApp.PrimaryStage {
   gameInit()
   /* Actual scenes displayed. */
   private var mainMenuScene: MainMenu = new MainMenu(changeScene)
-  private var gameScene: Game = new Game(Game.world, player(), changeScene)
+  private var gameScene: Game = new Game(Game.world, company(), changeScene)
   private var optionsScene: Options = new Options(changeScene)
 
   private var onNextChangeCallback: () => Unit = () => ()
@@ -43,14 +43,16 @@ extends JFXApp.PrimaryStage with Drawable {
       case MainStage.States.MainMenu => scene = mainMenuScene
       case MainStage.States.Game => {
         gameInit()
-        gameScene = new Game(Game.world, player(), changeScene)
+        gameScene = new Game(Game.world, company(), changeScene)
         scene = gameScene
 
         val mainLoopThread: Thread = new Thread {
           override def run {
             while(true) {
-              Game.update()
-              Platform.runLater(draw())
+              Platform.runLater( () => {
+                Game.update()
+                gameScene.draw()
+              })
               Thread.sleep(10)
             }
           }
@@ -61,10 +63,6 @@ extends JFXApp.PrimaryStage with Drawable {
       case MainStage.States.Options => scene = optionsScene
       case MainStage.States.Quit => Platform.exit()
     }
-  }
-
-  override def draw(): Unit = {
-    gameScene.draw()
   }
 
   def onExit(): Unit = {

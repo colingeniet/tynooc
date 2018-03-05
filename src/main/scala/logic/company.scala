@@ -1,4 +1,4 @@
-package logic.player
+package logic.company
 
 import collection.mutable.HashSet
 
@@ -23,19 +23,19 @@ final case class PathNotFound(
 extends Exception(message, cause)
 
 
-/** A player.
+/** A company.
  *
- *  @param fabricTown the town in which the player rolling stock is produced.
+ *  @param fabricTown the town in which the company rolling stock is produced.
  */
-class Player(val fabricTown: Town) {
-  /** The player trains. */
+class Company(val fabricTown: Town) {
+  /** The company trains. */
   val trains: HashSet[Train] = HashSet()
-  /** The player carriages. */
+  /** The company carriages. */
   val vehicles: HashSet[Vehicle] = HashSet()
 
   var money: Double = 0
 
-  /** Current travels for this player. */
+  /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
   def credit(amount: Double): Unit = money += amount
@@ -44,33 +44,33 @@ class Player(val fabricTown: Town) {
     money -= (amount + (0.02*Math.max(0, amount-money)))
   }
 
-  /** Returns the carriages of this player. */
+  /** Returns the carriages of this company. */
   def carriages: HashSet[Carriage] = vehicles.flatMap {
     case c: Carriage => Some(c)
     case _ => None
   }
 
-  /** Returns the available carriages of this player.
+  /** Returns the available carriages of this company.
    *
    *  A carriage is available if not in a train. */
   def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed)
 
-  /** Returns the carriages of this player available in a town. */
+  /** Returns the carriages of this company available in a town. */
   def carriagesStoredAt(town: Town): HashSet[Carriage] =
     carriages.filter(c => !c.isUsed && c.town == town)
 
-  /** Returns the engines of this player. */
+  /** Returns the engines of this company. */
   def engines: HashSet[Engine] = vehicles.flatMap {
     case c: Engine => Some(c)
     case _ => None
   }
 
-  /** Returns the available engines of this player.
+  /** Returns the available engines of this company.
    *
    *  An engine is available if not in a train. */
   def enginesAvailable: HashSet[Engine] = engines.filter(!_.isUsed)
 
-  /** Returns the engines of this player available in a town. */
+  /** Returns the engines of this company available in a town. */
   def enginesStoredAt(town: Town): HashSet[Engine] =
     engines.filter(c => !c.isUsed && c.town == town)
 
@@ -94,7 +94,7 @@ class Player(val fabricTown: Town) {
   /** Creates a new train, with only an engine. */
   def createTrainFromEngine(engine: Engine): Train = {
     if (!ownsVehicle(engine)) {
-      throw new IllegalArgumentException("Player doesn’t own the engine")
+      throw new IllegalArgumentException("Company doesn’t own the engine")
     }
     if (engine.isUsed) {
       throw new IllegalArgumentException("Engine is in use")
@@ -108,13 +108,13 @@ class Player(val fabricTown: Town) {
   /** Adds a carriage at the tail of an existing train. */
   def addCarriageToTrain(train: Train, carriage: Carriage): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Player doesn’t own the train")
+      throw new IllegalArgumentException("Company doesn’t own the train")
     }
     if (train.onRoute) {
       throw new IllegalArgumentException("Train is in use")
     }
     if (!ownsVehicle(carriage)) {
-      throw new IllegalArgumentException("Player doesn’t own the carriage")
+      throw new IllegalArgumentException("Company doesn’t own the carriage")
     }
     if (carriage.isUsed) {
       throw new IllegalArgumentException("Carriage is in use")
@@ -130,7 +130,7 @@ class Player(val fabricTown: Town) {
   /** Removes the tail carriage of an existing train. */
   def removeCarriageFromTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Player doesn’t own the train")
+      throw new IllegalArgumentException("Company doesn’t own the train")
     }
     if (train.onRoute) {
       throw new IllegalArgumentException("Train is in use")
@@ -143,7 +143,7 @@ class Player(val fabricTown: Town) {
   /** Completely disassemble an existing train. */
   def disassembleTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Player doesn’t own the train")
+      throw new IllegalArgumentException("Company doesn’t own the train")
     }
     if (train.onRoute) {
       throw new IllegalArgumentException("Train is in use")
@@ -164,7 +164,7 @@ class Player(val fabricTown: Town) {
    */
   def launchTravel(train: Train, to: Town): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Player doesn’t own the train")
+      throw new IllegalArgumentException("Company doesn’t own the train")
     }
     if (train.onRoute) {
       throw new IllegalArgumentException("Train is in use")
@@ -180,8 +180,6 @@ class Player(val fabricTown: Town) {
       case Some(routes) => routes
     }
     val travel = new Travel(train, routes, this)
-    val distance = routes.foldLeft[Double](0) { _ + _.length }
-    debit(train.consumption(distance) * Game.world.fuelPrice)
     train.travel = Some(travel)
     Game.world.addTravel(travel)
   }
@@ -189,7 +187,7 @@ class Player(val fabricTown: Town) {
 
   def repair(vehicle: Vehicle): Unit = {
     if (!ownsVehicle(vehicle)) {
-      throw new IllegalArgumentException("Player doesn’t own the vehicle")
+      throw new IllegalArgumentException("Company doesn’t own the vehicle")
     }
     if (vehicle.isUsed) {
       throw new IllegalArgumentException("Vehicle is in use")
@@ -200,7 +198,7 @@ class Player(val fabricTown: Town) {
 
   def upgrade[Model <: VehicleModel](old: VehicleFromModel[Model], model: Model): Unit = {
     if (!ownsVehicle(old)) {
-      throw new IllegalArgumentException("Player doesn’t own the vehicle")
+      throw new IllegalArgumentException("Company doesn’t own the vehicle")
     }
     if (old.isUsed) {
       throw new IllegalArgumentException("Vehicle is in use")

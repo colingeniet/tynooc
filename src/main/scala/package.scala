@@ -10,5 +10,8 @@ package object gui
  */
 package object parser
 
-/** Provides some IA. */
-package object ia
+/** Provides some AI. */
+package object ai
+
+/** Format some object for displaying. */
+package object formatter

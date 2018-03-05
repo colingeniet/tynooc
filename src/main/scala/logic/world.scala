@@ -4,7 +4,7 @@ import logic.graph._
 import logic.town._
 import logic.travel._
 import logic.room._
-import logic.player._
+import logic.company._
 import logic.route._
 
 import collection.mutable.HashMap
@@ -69,28 +69,33 @@ class World {
     onAddTravel(travel)
   }
 
-  /** Gets all travels of a specific player in the world. */
-  def travelsOf(player: Player): HashSet[Travel] =
-    travels.filter { _.owner == player }
+  /** Gets all travels of a specific company in the world. */
+  def travelsOf(company: Company): HashSet[Travel] =
+    travels.filter { _.owner == company }
 
 
-  def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
-    val availableTravels = travels.toList.filter { t => t.isWaitingAt(start) &&
-                                                 t.stopsAt(destination) }
+  def tryTravel(
+    start: Town,
+    destination: Town,
+    migrantByStatus: Array[Int]): Unit = {
+    val availableTravels = travels.toList.filter {
+      t => t.isWaitingAt(start) && t.stopsAt(destination)
+    }
     var rooms = availableTravels.flatMap { _.availableRooms }
     status.foreach { status =>
       var takenPlacesNumber = 0
-      val p = migrantByStatus(status.id)
+      var p = migrantByStatus(status.id)
       rooms = rooms.sortBy { statusCriteria(status.id)(destination) }
       while(takenPlacesNumber < p && !rooms.isEmpty) {
         val room = rooms.head
         val nb = Math.min(p, room.availablePlaces)
         room.takePlaces(nb, destination, status)
         takenPlacesNumber += nb
+        p -= nb
         if(!room.isAvailable)
           rooms = rooms.tail
       }
-      start.deleteResidents(takenPlacesNumber, status)
+      start.deletePassengers(takenPlacesNumber, status, destination)
     }
   }
 

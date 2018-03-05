@@ -12,9 +12,9 @@ package object world
  */
 package object train
 
-/** Provides player definition.
+/** Provides company definition.
  */
-package object player
+package object company
 
 package object room
 

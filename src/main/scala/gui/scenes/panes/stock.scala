@@ -10,20 +10,21 @@ import scalafx.scene.input.MouseEvent
 
 import gui.draw._
 import gui.scenes.elements._
-import logic.player._
+import logic.company._
 import logic.train._
 import logic.world._
 import logic.town._
+import formatter._
 
-/** Displays a player rolling stock.
+/** Displays a company rolling stock.
  *
- *  @param player the player.
+ *  @param company the company.
  *  @param statsTrain a callback used to display information on a train.
  *  @param statsEngine a callback used to display information on a engine.
  *  @param statsCarriage a callback used to display information on a carriage.
  */
-class PlayerStock(
-  player: Player,
+class CompanyStock(
+  company: Company,
   world: World,
   statsTrain: Train => Unit,
   statsEngine: Engine => Unit,
@@ -44,7 +45,7 @@ extends DrawableVBox {
 
   /** Displays the trains list. */
   private def displayTrains(): Unit = {
-    list = new TrainList(player.trains.toList, detailTrain)
+    list = new TrainList(company.trains.toList, detailTrain)
     children = List(menu, sep1, list)
 
     // reset draw method
@@ -53,7 +54,7 @@ extends DrawableVBox {
 
   /** Displays the engines list. */
   private def displayEngines(): Unit = {
-    list = new EngineList(player.engines.toList, detailEngine)
+    list = new EngineList(company.engines.toList, detailEngine)
     children = List(menu, sep1, list)
 
     // reset draw method
@@ -62,7 +63,7 @@ extends DrawableVBox {
 
   /** Displays the carriages list. */
   private def displayCarriages(): Unit = {
-    list = new CarriageList(player.carriages.toList, detailCarriage)
+    list = new CarriageList(company.carriages.toList, detailCarriage)
     children = List(menu, sep1, list)
 
     // reset draw method
@@ -91,7 +92,7 @@ extends DrawableVBox {
     }
 
     disassembleAll.onAction = (event: ActionEvent) => {
-      player.disassembleTrain(train)
+      company.disassembleTrain(train)
       displayTrains()
       // display stats for the engine instead,
       // this is mostly to clear the stats screen
@@ -99,7 +100,7 @@ extends DrawableVBox {
     }
 
     disassembleOne.onAction = (event: ActionEvent) => {
-      player.removeCarriageFromTrain(train)
+      company.removeCarriageFromTrain(train)
       detailTrain(train)
     }
 
@@ -107,10 +108,10 @@ extends DrawableVBox {
       // when pressing the button, display a new carriage list
       val selectionList: CarriageList =
         new CarriageList(
-          player.carriagesStoredAt(train.town).toList,
+          company.carriagesStoredAt(train.town).toList,
           carriage => {
             // when selecting a carriage, add it to the train
-            player.addCarriageToTrain(train, carriage)
+            company.addCarriageToTrain(train, carriage)
             detailTrain(train)
           })
       // display new selection list upon button pressed
@@ -136,7 +137,7 @@ extends DrawableVBox {
         _.name,
         town => {
           // when selecting a town, travel to it
-          player.launchTravel(train, town)
+          company.launchTravel(train, town)
           detailTrain(train)
         })
       // display new selection list upon button pressed
@@ -182,12 +183,12 @@ extends DrawableVBox {
     // create buttons for engine specific actions
     val createButton: Button = new Button("New train")
     createButton.onAction = (event: ActionEvent) => {
-      player.createTrainFromEngine(engine)
+      company.createTrainFromEngine(engine)
     }
 
     val repairButton: Button = new Button("Repair")
     repairButton.onAction = (event: ActionEvent) => {
-      player.repair(engine)
+      company.repair(engine)
     }
 
     val upgradeButton: Button = new Button("Upgrade")
@@ -196,10 +197,10 @@ extends DrawableVBox {
       val selectionList: SelectionList[EngineModel] =
         new SelectionList[EngineModel](
         engine.model.upgrades.map(EngineModel(_)),
-        model => s"${model.name}(${PriceSimulation.upgradePrice(engine, model)})",
+        model => s"${model.name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(engine, model))})",
         model => {
           // upgrade engine upon selection
-          player.upgrade(engine, model)
+          company.upgrade(engine, model)
           // redraw stock menu
           displayEngines()
           detailEngine(engine)
@@ -245,10 +246,9 @@ extends DrawableVBox {
     val upgradeButton: Button = new Button("Upgrade")
 
     val priceField: TextField = new TextField() {
-      text = s"${carriage.placePrice.toString}" +
-              "$ (place price by distance)."
+      text = s"${MoneyFormatter.format(carriage.placePrice)} (place price by distance)."
       onMouseClicked = (event: MouseEvent) => {
-        text = s"${carriage.placePrice.toString}"
+        text = carriage.placePrice.toString
       }
       onAction = (event: ActionEvent) => {
         Try(text().toDouble).toOption match {
@@ -261,7 +261,7 @@ extends DrawableVBox {
     }
 
     repairButton.onAction = (event: ActionEvent) => {
-      player.repair(carriage)
+      company.repair(carriage)
     }
 
     upgradeButton.onAction = (event: ActionEvent) => {
@@ -269,10 +269,10 @@ extends DrawableVBox {
       val selectionList: SelectionList[CarriageModel] =
         new SelectionList[CarriageModel](
           carriage.model.upgrades.map(CarriageModel(_)),
-          model => s"${model.name}(${PriceSimulation.upgradePrice(carriage, model)})",
+          model => s"${model.name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(carriage, model))})",
           model => {
           // upgrade engine upon selection
-          player.upgrade(carriage, model)
+          company.upgrade(carriage, model)
           // redraw stock menu
           displayCarriages()
           detailCarriage(carriage)
