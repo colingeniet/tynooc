@@ -1,30 +1,33 @@
-package ia
+package ai
 
 import logic.company._
 import logic.train._
 import logic.world._
 import scala.util.Random
+import player._
 
-trait IA {
+trait AI {
   val company: Company
-  var last_action: Double
-  val action_delay: Double
-
-  def play(dt: Double)
+  var lastAction: Double
+  val actionDelay: Double
+  
+  def play(world: World, dt: Double)
 }
 
-class BasicIA(val company: Company)
-extends IA {
-  val action_delay = 0.8
-  var last_action = 0.6
-
-  def play(dt: Double): Unit = {
-    last_action += dt
-    if(last_action > action_delay) {
-      last_action = 0
-      if(company.money > 3000)
+class BasicAI(
+  override val company: Company, 
+  val actionDelay: Double, 
+  var lastAction: Double)
+extends Player(company) with AI {
+  
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+      
+      if(company.money > 3000 && company.engines.size < 10)
         company.buyEngine("Basic")
-      if(company.money > 2000)
+      if(company.money > 2000 && company.carriages.size < 50)
         company.buyCarriage("Basic")
       if(!company.enginesAvailable.isEmpty) {
         val train = company.createTrainFromEngine(company.enginesAvailable.head)
@@ -33,9 +36,9 @@ extends IA {
             company.launchTravel(train, Random.shuffle(train.town.neighbours).head)
         }
       }
-      val trains = company.trains.filter { t => !t.onRoute && !t.carriages.isEmpty }
+      val trains = company.trainsAvailable.filter { !_.carriages.isEmpty }
       if(!trains.isEmpty)
-        company.launchTravel(trains.head,
+        company.launchTravel(trains.head, 
                Random.shuffle(Random.shuffle(trains).head.town.neighbours).head)
     }
   }

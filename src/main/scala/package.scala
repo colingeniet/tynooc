@@ -15,3 +15,5 @@ package object ai
 
 /** Format some object for displaying. */
 package object formatter
+
+package object player

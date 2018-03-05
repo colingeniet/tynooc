@@ -126,7 +126,7 @@ extends VehicleFromModel[EngineModel](model, town) {
  */
 class Carriage(model: CarriageModel, town: Town)
 extends VehicleFromModel[CarriageModel](model, town) {
-  var placePrice: Double = 0.25
+  var placePrice: Double = 0.20
 
   def capacity: Int = model.capacity
   def comfort:Double = model.comfort * (0.75 + 0.25 * health/model.health)
@@ -160,6 +160,8 @@ class Train (
     carriages.foreach { c => c.health = Math.max(0, c.health - route.damageToVehicle) }
   }
 
+  def isAvailable: Boolean = !damaged && !onRoute && !tooHeavy
+  
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
     carriages = c :: carriages

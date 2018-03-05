@@ -2,7 +2,13 @@ package logic.game
 
 import logic.company._
 import logic.world._
-import ia._
+import ai._
+import player._
+
+final case class NoMainPlayer(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
 
 /** Game logic main object. */
 object Game {
@@ -11,21 +17,25 @@ object Game {
 
   var world: World = new World()
   var time: Double = 0
-  var ia: IA = null  
-    
+  var players: List[Player] = List()
+  var mainPlayer: Option[Player] = None
   /* Simulation rate control. */
   var paused: Boolean = false
   var timeAcceleration: Double = 1
 
   /** Advance simulation.
    */
+
   def update(): Unit = {
     val a: Double = System.currentTimeMillis()
     if (!paused) {
       // in game time passed
       val dt: Double = timeAcceleration * realToVirtualTime(a - last)
       logic(dt)
-      ia.play(dt)
+      players.foreach {
+        case ai: AI => ai.play(world, dt)
+        case _      =>
+      }
       time += dt
     }
     last = a
