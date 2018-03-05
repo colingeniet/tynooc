@@ -43,6 +43,7 @@ object Parser {
                                                y.toDouble, w.toDouble)
       case _                       => throw new BadFileFormat
     }
+    if(town.welcomingLevel > 1 || town.welcomingLevel < 0) throw new BadFileFormat
     val pop = (rTown.r.replaceAllIn(line, "")).split(", ")
     pop.indices.foreach { i => town.addResidents(pop(i).toInt, world.status(i)) }
     town
@@ -74,7 +75,7 @@ object Parser {
     lines.foreach { line =>
         var route = parseRoute(line, towns)
         route.start.addRoute(route)
-    }      
+    }
     world
   }
 }
