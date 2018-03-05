@@ -50,25 +50,41 @@ class Town(
       to the town.
     *      
     * @param number The number of residents to add.
-    * @param status The sattus of these residents.    
+    * @param status The status of these residents.    
     */
   def addResidents(number: Int, status: Status.Val): Unit =
     residents(status.id) += number
 
+  /** Deletes <code>number</code residents of status <code>status</code> 
+      to the town.
+    *
+    * @param number The number of residents to delete.
+    * @param status The status of these residents. 
+    */
   def deleteResidents(number: Int, status: Status.Val): Unit = {
     if(number > residents(status.id))
       throw new IllegalArgumentException("population should stay positive")
     residents(status.id) -= number
   }
 
-  def deletePassengers(nb: Int, status: Status.Val, destination: Town): Unit = {
-    if(nb > passengers(destination)(status.id))
+  /** Deletes <code>number</code passengers of status <code>status</code> 
+      to the town.
+    *
+    * @param number The number of passengers to delete.
+    * @param status The status of these passengers. 
+    */
+  def deletePassengers(number: Int, status: Status.Val, destination: Town): Unit = {
+    if(number > passengers(destination)(status.id))
       throw new IllegalArgumentException("population should stay positive")
-    passengers(destination)(status.id) -= nb
-    deleteResidents(nb, status)
+    passengers(destination)(status.id) -= number
+    deleteResidents(number, status)
   }
 
-  /** Generate passengers to a town. */
+  /** Generate passengers to a town. 
+    *
+    * @param to The destination town.
+    * @param dt The time passed since the last generation.
+    */
   def generatePassengers(to: Town, dt: Double): Int = {
     val pop = population
     val pass = passengersNumber
@@ -82,7 +98,10 @@ class Town(
     (((random.nextGaussian() * mean + mean) max 0) min pop).toInt
   }
 
-  /** Adds a new route. */
+  /** Adds a new route. 
+    * 
+    * @param route The route to add to the town.
+    */
   def addRoute(route: Route): Unit = {
     if(route.start != this)
       throw new IllegalArgumentException("route should start from $name town")
@@ -93,14 +112,19 @@ class Town(
     }
   }
 
-  /** Creates and adds a new route to a town. */
-  def addRoute(end: Town, length: Double, state: Double): Unit = {
-    _routes = (new Route(this, end, length, state)) :: _routes
+  /** Creates and adds a new route to a town. 
+    *
+    * @param end The destination of the route.
+    * @param length The length of the town.
+    * @param state 
+    */
+  def addRoute(end: Town, length: Double, damageToVehicle: Double): Unit = {
+    _routes = (new Route(this, end, length, damageToVehicle)) :: _routes
   }
 
   /** Update the population state.
    *
-   *  @param dt the time passed since the last update step.
+   *  @param dt The time passed since the last update step.
    */
   def update(dt: Double): Unit = {
     val p = population
@@ -117,9 +141,5 @@ class Town(
 
       Game.world.tryTravel(this, destination, passengers(destination))
     }
-  }
-
-  override def toString: String = {
-    s"$name: $population residents, $welcomingLevel welcoming level, $note note at ($x, $y)."
   }
 }
