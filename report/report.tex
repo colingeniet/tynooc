@@ -32,7 +32,23 @@ The controller setup, in the form of of scalaFX event handlers, is integrated in
 
 \section{Game logic engine}
 The game engine (package \verb|logic|) defines all game objects (towns, routes, trains, ...), and simulates world evolution.
-World simulation uses a step by step logic : at each step, 
+World simulation uses a step by step logic : at each step, trains advance based on the time passed since last step,
+and towns generate passengers.
+
+\subsection{Passengers}
+This last part raised several questions regarding the way town population and passengers are represented,
+as well as generation mechanics.
+
+Our initial idea, aimed at relatively small population, was to simulate each person individually.
+Each person would then have a position, and decide to go on trips based on various parameters.
+Obviously, this approach poses efficiency problems as the world population grows bigger,
+and had to be excluded to allow for larger simulation.
+
+An alternative that we considered is to simulate groups of persons instead, in a similar way.
+What was the simulation of one person would then become the simulation of a group of a few hundred of persons,
+considered to have similar behavior.
+
+However we preferred to redo this system, by 
 
 
 \section{GUI}
@@ -60,6 +76,25 @@ An alternative system we also considered is to make use of scalaFX properties.
 The idea is that any update to a property value is an event, which can result in interface updates.
 Using properties in the game engine would then allow any change in the world to result in the corresponding
 gui parts being updated.
+
+
+\section{Additional features}
+We started developing the following features. Although they are still very much in a development state,
+we deemed them interesting enough to add them in this first part of the project.
+
+\subsection{Map files}
+We created a simple text file format to represent world data (i.e.\ towns and routes), 
+in order to avoid having to hard code the world map.
+Currently, the game simply loads the file \verb|map/Map|.
+This will obviously be improved in future versions, to allow loading other map files.
+We might also add a map editor.
+
+Additionally, the current regex-based parser will also be rewritten,
+mostly to allow better error handling.
+
+\subsection{AI}
+In order to demonstrate the possibility to have several `players' in the same game,
+we developed a very simple game AI. For now, it simply creates trains and randomly send them on trips.
 
 
 \end{document}
