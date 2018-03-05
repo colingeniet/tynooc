@@ -59,7 +59,8 @@ class Town(
       to the town.
     *
     * @param number The number of residents to delete.
-    * @param status The status of these residents. 
+    * @param status The status of these residents.
+    * 
     */
   def deleteResidents(number: Int, status: Status.Val): Unit = {
     if(number > residents(status.id))
