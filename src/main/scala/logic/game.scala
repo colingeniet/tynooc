@@ -5,11 +5,6 @@ import logic.world._
 import ai._
 import player._
 
-final case class NoMainPlayer(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
-
 /** Game logic main object. */
 object Game {
   /* Time of last update. Used to control simulation rate. */

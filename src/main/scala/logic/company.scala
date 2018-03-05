@@ -17,7 +17,7 @@ object PriceSimulation {
   }
 }
 
-final case class PathNotFound(
+final case class PathNotFoundException(
   private val message: String = "",
   private val cause: Throwable = None.orNull)
 extends Exception(message, cause)
@@ -177,7 +177,7 @@ class Company(var name: String, val fabricTown: Town) {
     if (train.damaged) {
       throw new IllegalArgumentException("Train is damaged")
     }
-    val routes = Game.world.findPath(train.town, to).getOrElse(throw new PathNotFound)
+    val routes = Game.world.findPath(train.town, to).getOrElse(throw new PathNotFoundException)
     val travel = new Travel(train, routes, this)
     train.travel = Some(travel)
     Game.world.addTravel(travel)

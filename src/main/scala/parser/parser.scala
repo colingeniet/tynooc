@@ -7,7 +7,7 @@ import logic.world._
 import logic.route._
 
 /** An exception which could be laucnhed if the file can’t be parsed correctly. */
-final case class BadFileFormat(
+final case class BadFileFormatException(
   private val message: String = "",
   private val cause: Throwable = None.orNull)
 extends Exception(message, cause)
@@ -41,9 +41,9 @@ object Parser {
     val town = line match {
       case reg (name, x, y, w, _*) => new Town(name, x.toDouble,
                                                y.toDouble, w.toDouble)
-      case _                       => throw new BadFileFormat
+      case _                       => throw new BadFileFormatException
     }
-    if(town.welcomingLevel > 1 || town.welcomingLevel < 0) throw new BadFileFormat
+    if(town.welcomingLevel > 1 || town.welcomingLevel < 0) throw new BadFileFormatException
     val pop = (rTown.r.replaceAllIn(line, "")).split(", ")
     pop.indices.foreach { i => town.addResidents(pop(i).toInt, world.status(i)) }
     town
@@ -56,7 +56,7 @@ object Parser {
       case reg(id0, id1, length, damage) => {
         new Route(towns(id0.toInt), towns(id1.toInt), length.toDouble, damage.toDouble)
       }
-      case _                             => throw new BadFileFormat
+      case _                             => throw new BadFileFormatException
     }
   }
 
