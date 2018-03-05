@@ -16,19 +16,20 @@ import logic.world._
 import logic.town._
 import logic.route._
 import logic.train._
-import logic.company._
 import logic.travel._
+
+import player._
 
 class Game(
   val world: World,
-  val company: Company,
+  val player: Player,
   sceneModifier: MainStage.States.Val => Unit)
 extends MainStage.Scene(sceneModifier) with Drawable {
   // panes contents
   private var top: TopMenu = new TopMenu(sceneModifier)
-
+  
   private var left: DrawableVBox = new CompanyInfo(
-    company,
+    player.company,
     world,
     displayTrain,
     displayEngine,
@@ -36,7 +37,8 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   private var right: DrawableVBox = new DrawableVBox()
   private var bottom: DrawableHBox = new DrawableHBox()
-  private var center: Map = new Map(world, displayTown, displayRoute, displayTravel)
+  private var center: Map = new Map(world, player.company,displayTown, displayRoute,
+                                    displayTravel)
 
   // content
   private var pane: BorderPane = new BorderPane(

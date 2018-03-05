@@ -18,6 +18,7 @@ import logic.world._
 import logic.town._
 import logic.route._
 import logic.travel._
+import logic.company._
 
 
 /** Main map class.
@@ -28,6 +29,7 @@ import logic.travel._
  */
 class Map(
   val world: World,
+  val company: Company,
   displayTown: Town => Unit,
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
@@ -42,7 +44,7 @@ extends ScrollPane with Drawable {
      */
     private class MapTravel(val travel: Travel) extends Circle {
       radius = 8
-      fill = Red
+      fill = if(travel.owner == company) Red else Green
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
           displayTravel(travel)
