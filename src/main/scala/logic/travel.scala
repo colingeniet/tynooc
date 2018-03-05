@@ -60,7 +60,6 @@ class Travel(val train: Train, private val roads: List[Route],
   /** Distance remaining until <code>destination</code>.
     *
     * @param destination
-    * @throws
     */
   def remainingDistanceTo(destination: Town): Double = {
     // BAD throw exception is destination not in the path. */

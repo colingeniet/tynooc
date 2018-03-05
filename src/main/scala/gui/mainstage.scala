@@ -31,14 +31,16 @@ extends JFXApp.PrimaryStage with Drawable {
   width = 1024
   height = 720
 
-  /** Callback method that can be used to switch scene.
+  /** Changes the scene displayed.
    *
    *  @param newScene the scene to switch to.
    */
   def changeScene(newScene: MainStage.States.Val): Unit = {
+    // call then reset callback
     onNextChangeCallback()
     onNextChangeCallback = () => ()
 
+    // switch scene
     newScene match {
       case MainStage.States.MainMenu => scene = mainMenuScene
       case MainStage.States.Game => {
@@ -46,6 +48,7 @@ extends JFXApp.PrimaryStage with Drawable {
         gameScene = new Game(Game.world, mainPlayer, changeScene)
         scene = gameScene
 
+        // launch background game loop when the game scene is selected
         val mainLoopThread: Thread = new Thread {
           override def run {
             while(true) {
@@ -58,6 +61,8 @@ extends JFXApp.PrimaryStage with Drawable {
           }
         }
         mainLoopThread.start()
+
+        // kill background thread when leaving
         onNextChangeCallback = () => mainLoopThread.stop()
       }
       case MainStage.States.Options => scene = optionsScene
@@ -65,6 +70,7 @@ extends JFXApp.PrimaryStage with Drawable {
     }
   }
 
+  // run callback, event if exiting without `changeScene`
   def onExit(): Unit = {
     onNextChangeCallback()
   }
