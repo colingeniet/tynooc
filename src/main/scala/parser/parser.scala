@@ -20,10 +20,10 @@ extends Exception(message, cause)
  *  [Routes ...]
  *
  *  Towns ::=
- *  name, x, y, welcomeLevel, <population, ...>
+ *  Town : name, x, y, welcomeLevel, <population, ...>
  *
  *  Route ::=
- *  startId, endId, weight, damage
+ *  Route : startId, endId, weight, damage
  *
  *  startId and endId are integers referencing the town ordering in the file.
  */
@@ -32,7 +32,7 @@ object Parser {
   private val rI = "(\\d+)"
   private val rN = "([a-zA-Z0-9 ]+)"
   private val rIf = s"${rI}, "
-  private val rTown = s"${rN}, ${rD}, ${rD}, ${rD}, "
+  private val rTown = s"Town : ${rN}, ${rD}, ${rD}, ${rD}, "
 
   /** Parse a town line. */
   private def parseTown(line: String, world: World): Town = {
@@ -50,7 +50,7 @@ object Parser {
 
   /** Parse a route line. */
   private def parseRoute(line: String, towns: List[Town]): Route = {
-  var reg = (s"^${rI}, ${rI}, ${rD}, ${rD}" + "$").r
+  var reg = (s"^Route : ${rI}, ${rI}, ${rD}, ${rD}" + "$").r
     line match {
       case reg(id0, id1, length, damage) => {
         new Route(towns(id0.toInt), towns(id1.toInt), length.toDouble, damage.toDouble)
@@ -64,20 +64,17 @@ object Parser {
     val world = new World()
     var towns: List[Town] = List()
     var lines = Source.fromFile(filename).getLines.toList.filter { _(0) != '#'}
-    while(!lines.isEmpty && lines.head != "<Routes>") {
+    while(lines.head(0) != 'R') {
       var town = parseTown(lines.head, world)
       towns = town :: towns
       world.addTown(town)
       lines = lines.tail
     }
     towns = towns.reverse
-    if(!lines.isEmpty)
-      lines = lines.tail
-    while(!lines.isEmpty) {
-      var route = parseRoute(lines.head, towns)
-      route.start.addRoute(route)
-      lines = lines.tail
-    }
+    lines.foreach { line =>
+        var route = parseRoute(line, towns)
+        route.start.addRoute(route)
+    }      
     world
   }
 }
