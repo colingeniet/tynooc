@@ -14,7 +14,7 @@ object MainJFXApp extends JFXApp {
   /** Initializes the game. */
   def gameInit(): Player = {
     Game.reset()
-    Game.world = Parser.readWorldInformations("Map")
+    Game.world = Parser.readWorldInformations("map/Map")
     Game.players = List(new Player(company()),
                         new BasicAI(company(), 1.7, 0.5))
     Game.mainPlayer = Some(Game.players(0))
