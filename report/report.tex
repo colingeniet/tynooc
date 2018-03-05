@@ -37,10 +37,29 @@ World simulation uses a step by step logic : at each step,
 
 \section{GUI}
 The main problem we faced in implementing the game gui with scalaFX was to display constantly changing objects ---
-typically trains on the world map. A typical way to handle would be a through a main loop which continuously updates
-the interface.
+typically trains on the world map. A typical way to handle is to use a main loop which continuously updates the interface.
+However, the scalaFX library is oriented towards the an event handling logic
+in which changes in the interface come as a result of an event (user action, ...).
 
-This, however, conflicts with the scalaFX event handling logic in which changes in the interface come as a result of an event
-(user action, ...).
+We decided to solve this problem by combining the two methods, 
+and using the most appropriate one, depending on the situation :
+\begin{itemize}
+\item Interface elements that only change as a result of user actions (typically menus) 
+are perfectly implemented through event handling.
+
+\item Elements that constantly change (trains, towns population) are continuously refreshed by a loop.
+However, to integrate this method in scalaFX event handling, this loop is ran in a background thread,
+and merely request scalaFX to update the interface.
+
+Of course, to avoid overloading scalaFX with update requests, care was taken to keep updates as light as possible.
+In particular, object creation are kept as minimal as possible, with most updates being limited to text fields
+or screen coordinates changes.
+\end{itemize}
+
+An alternative system we also considered is to make use of scalaFX properties.
+The idea is that any update to a property value is an event, which can result in interface updates.
+Using properties in the game engine would then allow any change in the world to result in the corresponding
+gui parts being updated.
+
 
 \end{document}
