@@ -16,7 +16,7 @@ import logic.company._
  *  Handles, displays and switch between menus and game screens.
  */
 class MainStage(gameInit: () => Unit, company: () => Company)
-extends JFXApp.PrimaryStage with Drawable {
+extends JFXApp.PrimaryStage {
   gameInit()
   /* Actual scenes displayed. */
   private var mainMenuScene: MainMenu = new MainMenu(changeScene)
@@ -50,7 +50,7 @@ extends JFXApp.PrimaryStage with Drawable {
           override def run {
             while(true) {
               Game.update()
-              Platform.runLater(draw())
+              Platform.runLater(gameScene.draw())
               Thread.sleep(10)
             }
           }
@@ -61,10 +61,6 @@ extends JFXApp.PrimaryStage with Drawable {
       case MainStage.States.Options => scene = optionsScene
       case MainStage.States.Quit => Platform.exit()
     }
-  }
-
-  override def draw(): Unit = {
-    gameScene.draw()
   }
 
   def onExit(): Unit = {
