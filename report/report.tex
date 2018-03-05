@@ -62,4 +62,19 @@ Using properties in the game engine would then allow any change in the world to 
 gui parts being updated.
 
 
+\section{Additional features}
+We started developing the following features. Although they are still very much in a development state,
+we deemed them interesting enough to add them in this first part of the project.
+
+\subsection{Map files}
+We created a simple text file format to represent world data (i.e.\ towns and routes), 
+in order to avoid having to hard code the world map.
+Currently, the game simply loads the file \verb|map/Map|.
+This will obviously be improved in future versions, to allow loading other map files.
+We might also add a map editor.
+
+Additionally, the current regex-based parser will also be rewritten,
+mostly to allow better error handling.
+
+
 \end{document}
