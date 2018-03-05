@@ -5,9 +5,6 @@ import logic.route._
 import logic.game._
 import logic.world._
 
-import collection.mutable.HashMap
-import java.util.Random
-
 
 /** A town in the world. */
 class Town(
@@ -17,10 +14,6 @@ class Town(
   val welcomingLevel: Double) {
   private var residents: Array[Int] = new Array(Game.world.statusNumber)
   private var _routes: List[Route] = List()
-  private var passengers: HashMap[Town, Array[Int]] = new HashMap()
-
-  // PRNG
-  private var random: Random = new Random()
 
   /** The routes starting from this town. */
   def routes: List[Route] = _routes
@@ -28,7 +21,6 @@ class Town(
   def neighbours: List[Town] = routes.map { _.end }
   /** The town population. */
   def population: Int = residents.sum
-  def passengersNumber: Int = passengers.values.map(_.sum).sum
   def note: Double = {
     if(population == 0)
       1
@@ -45,25 +37,8 @@ class Town(
     residents(status.id) -= nb
   }
 
-  def deletePassengers(nb: Int, status: Status.Val, destination: Town): Unit = {
-    if(nb > passengers(destination)(status.id))
-      throw new IllegalArgumentException("population should stay positive")
-    passengers(destination)(status.id) -= nb
-    deleteResidents(nb, status)
-  }
-
-  /** Generate passengers to a town. */
-  def generatePassengers(to: Town, dt: Double): Int = {
-    val pop = population
-    val pass = passengersNumber
-    /* avoid accumulating too many passengers :
-     * slow down passengers production when proportion increases,
-     * and hard cap it at 1/4 of total population */
-    val coef = 0.02 * (1 - 4 * pass / pop)
-    // mean for gaussian approximation
-    val mean = (pop - pass) * (1 + to.note - note) * coef * dt
-    // With this coef value, deviance is barely different from the mean
-    (((random.nextGaussian() * mean + mean) max 0) min pop).toInt
+  def generateMigrant(to: Town): Int = {
+    (population * 0.01 * (1 + to.note - note) * (1 + Math.random)) toInt
   }
 
   /** Adds a new route. */
@@ -71,10 +46,6 @@ class Town(
     if(route.start != this)
       throw new IllegalArgumentException("route should start from $name town")
     _routes = route :: _routes
-    // Add new entry to passengers map
-    if(!passengers.contains(route.end)) {
-      passengers(route.end) = Array.ofDim(Game.world.statusNumber)
-    }
   }
 
   /** Creates and adds a new route to a town. */
@@ -90,16 +61,14 @@ class Town(
     val p = population
     val possibleDestinations = neighbours.sortBy { _.note }
     possibleDestinations.foreach { destination =>
-      val migrantNumber = generatePassengers(destination, dt)
+      val migrantNumber = generateMigrant(destination)
       val byStatus = {
         if(p == 0)
           residents
         else
           residents.map { r => (migrantNumber * r.toDouble / p).floor.toInt }
       }
-      passengers(destination) = (passengers(destination), byStatus).zipped.map(_ + _)
-
-      Game.world.tryTravel(this, destination, passengers(destination))
+      Game.world.tryTravel(this, destination, byStatus)
     }
   }
 

@@ -7,5 +7,7 @@ object MoneyFormatter {
   private val fr = Currency.getInstance(new Locale("fr", "FR"))
   formatter.setCurrency(fr)
   
-  def format(money: Double): String = formatter.format(money)
+  def format(money: Double): String = {
+    formatter.format(money)
+  }  
 }

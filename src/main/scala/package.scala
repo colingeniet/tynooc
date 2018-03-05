@@ -10,5 +10,9 @@ package object gui
  */
 package object parser
 
-/** Format some object for displaying. */
+/** Provides some IA. */
+package object ai
+
 package object formatter
+
+package object player

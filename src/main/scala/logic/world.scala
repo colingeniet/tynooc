@@ -74,28 +74,23 @@ class World {
     travels.filter { _.owner == company }
 
 
-  def tryTravel(
-    start: Town,
-    destination: Town,
-    migrantByStatus: Array[Int]): Unit = {
-    val availableTravels = travels.toList.filter {
-      t => t.isWaitingAt(start) && t.stopsAt(destination)
-    }
+  def tryTravel(start:Town, destination:Town, migrantByStatus:Array[Int]):Unit = {
+    val availableTravels = travels.toList.filter { t => t.isWaitingAt(start) &&
+                                                 t.stopsAt(destination) }
     var rooms = availableTravels.flatMap { _.availableRooms }
     status.foreach { status =>
       var takenPlacesNumber = 0
-      var p = migrantByStatus(status.id)
+      val p = migrantByStatus(status.id)
       rooms = rooms.sortBy { statusCriteria(status.id)(destination) }
       while(takenPlacesNumber < p && !rooms.isEmpty) {
         val room = rooms.head
         val nb = Math.min(p, room.availablePlaces)
         room.takePlaces(nb, destination, status)
         takenPlacesNumber += nb
-        p -= nb
         if(!room.isAvailable)
           rooms = rooms.tail
       }
-      start.deletePassengers(takenPlacesNumber, status, destination)
+      start.deleteResidents(takenPlacesNumber, status)
     }
   }
 
