@@ -9,7 +9,14 @@ import collection.mutable.HashMap
 import java.util.Random
 
 
-/** A town in the world. */
+/** A town in the world. 
+  *
+  * @constructor Creates a town with its name, its position and its welcomingLevel
+  * @param name The town’s name.
+  * @param x The x position of the town.
+  * @param y The y position of the town.
+  * @param welcomingLevel The welcoming level of a town (between 0 and 1).
+  */
 class Town(
   val name: String,
   val x: Double,
@@ -28,7 +35,10 @@ class Town(
   def neighbours: List[Town] = routes.map { _.end }
   /** The town population. */
   def population: Int = residents.sum
+  /** The passengers number of the town. */
   def passengersNumber: Int = passengers.values.map(_.sum).sum
+  
+  /** The note of the town. */
   def note: Double = {
     if(population == 0)
       1
@@ -36,13 +46,19 @@ class Town(
       welcomingLevel * (1 - population.toDouble / Game.world.population)
   }
 
-  def addResidents(nb: Int, status: Status.Val): Unit =
-    residents(status.id) += nb
+  /** Adds <code>number</code residents of status <code>status</code> 
+      to the town.
+    *      
+    * @param number The number of residents to add.
+    * @param status The sattus of these residents.    
+    */
+  def addResidents(number: Int, status: Status.Val): Unit =
+    residents(status.id) += number
 
-  def deleteResidents(nb: Int, status: Status.Val): Unit = {
-    if(nb > residents(status.id))
+  def deleteResidents(number: Int, status: Status.Val): Unit = {
+    if(number > residents(status.id))
       throw new IllegalArgumentException("population should stay positive")
-    residents(status.id) -= nb
+    residents(status.id) -= number
   }
 
   def deletePassengers(nb: Int, status: Status.Val, destination: Town): Unit = {

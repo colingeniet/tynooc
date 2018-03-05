@@ -25,9 +25,9 @@ final case class CantFree(
   private val cause: Throwable = None.orNull)
 extends Exception(message, cause)
 
-/** A class to represent a room in a train, each room associated to a carriage.
+/** A room in a train.
   *
-  * @constructor Creates a new room with a travel and a carriage.
+  * @constructor Creates a room with a travel and a carriage.
   * @param travel The travel in which this room is present.
   * @param carriage The carriage associated to the room.
  */
