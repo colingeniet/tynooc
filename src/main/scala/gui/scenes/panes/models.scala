@@ -8,17 +8,17 @@ import scalafx.event._
 
 import gui.scenes.elements._
 import logic.train._
-import logic.player._
+import logic.company._
 import formatter._
 
 /** Display a catalog of engines and carriages.
  *
  *  Engines/Carriages can be previewed and bougth from the catalog.
- *  @param player the player buying new stock.
- *  @param updateStock a callback used to indicate that the player stock
+ *  @param company the company buying new stock.
+ *  @param updateStock a callback used to indicate that the company stock
  *   needs to be updated.
  */
-class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
+class ModelsList(company: Company, updateStock: => Unit) extends VBox(3) {
   // 2 submenus : engines and carriages
   private val typeList: SelectionMenu = new SelectionMenu()
   typeList.addMenu("engines", listEngines)
@@ -56,7 +56,7 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
   private def displayEngine(engine: EngineModel): Unit = {
     buy.text = "buy(" + MoneyFormatter.format(engine.price) + ")"
     buy.onAction = (event: ActionEvent) => {
-      player.buyEngine(engine.name)
+      company.buyEngine(engine.name)
       updateStock
     }
     children = List(
@@ -74,7 +74,7 @@ class ModelsList(player: Player, updateStock: => Unit) extends VBox(3) {
   private def displayCarriage(carriage: CarriageModel): Unit = {
     buy.text = "buy(" + MoneyFormatter.format(carriage.price) + ")"
     buy.onAction = (event: ActionEvent) => {
-      player.buyCarriage(carriage.name)
+      company.buyCarriage(carriage.name)
       updateStock
     }
     children = List(

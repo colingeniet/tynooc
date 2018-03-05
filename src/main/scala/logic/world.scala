@@ -4,7 +4,7 @@ import logic.graph._
 import logic.town._
 import logic.travel._
 import logic.room._
-import logic.player._
+import logic.company._
 import logic.route._
 
 import collection.mutable.HashMap
@@ -69,9 +69,9 @@ class World {
     onAddTravel(travel)
   }
 
-  /** Gets all travels of a specific player in the world. */
-  def travelsOf(player: Player): HashSet[Travel] =
-    travels.filter { _.owner == player }
+  /** Gets all travels of a specific company in the world. */
+  def travelsOf(company: Company): HashSet[Travel] =
+    travels.filter { _.owner == company }
 
 
   def tryTravel(
