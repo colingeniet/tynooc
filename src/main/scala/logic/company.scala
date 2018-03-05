@@ -74,6 +74,7 @@ class Company(val fabricTown: Town) {
   def enginesStoredAt(town: Town): HashSet[Engine] =
     engines.filter(c => !c.isUsed && c.town == town)
 
+  def trainsAvailable: HashSet[Train] = trains.filter { _.isAvailable }
 
   def buyEngine(name: String): Unit = {
     val model = EngineModel(name)
@@ -175,10 +176,7 @@ class Company(val fabricTown: Town) {
     if (train.damaged) {
       throw new IllegalArgumentException("Train is damaged")
     }
-    val routes = Game.world.findPath(train.town, to) match {
-      case None => throw new PathNotFound
-      case Some(routes) => routes
-    }
+    val routes = Game.world.findPath(train.town, to).getOrElse(throw new PathNotFound)
     val travel = new Travel(train, routes, this)
     train.travel = Some(travel)
     Game.world.addTravel(travel)

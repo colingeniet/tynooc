@@ -7,12 +7,18 @@ import logic.game._
 import logic.town._
 import logic.company._
 import parser._
+import ai._
+import player._
 
 object MainJFXApp extends JFXApp {
   /** Initializes the game. */
-  def gameInit(): Unit = {
+  def gameInit(): Player = {
     Game.reset()
     Game.world = Parser.readWorldInformations("Map")
+    Game.players = List(new Player(company()),
+                        new BasicAI(company(), 1.7, 0.5))
+    Game.mainPlayer = Some(Game.players(0))
+    Game.mainPlayer.get
   }
 
   /** Creates a new company. */
@@ -22,7 +28,7 @@ object MainJFXApp extends JFXApp {
     company
   }
 
-  var mainStage = new MainStage(() => gameInit(), () => company())
+  var mainStage = new MainStage(() => gameInit())
   stage = mainStage
 
   /** Allows [[MainStage]] to perform cleanup. */
