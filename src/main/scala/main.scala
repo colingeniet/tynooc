@@ -15,24 +15,8 @@ object MainJFXApp extends JFXApp {
   def gameInit(): Player = {
     Game.reset()
     Game.world = Parser.readWorldInformations("Map")
-    Game.players = List(new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5),
-                        new BasicAI(company(), 1, 0.5))
+    Game.players = List(new Player(company()),
+                        new BasicAI(company(), 1.7, 0.5))
     Game.mainPlayer = Some(Game.players(0))
     Game.mainPlayer.get
   }
