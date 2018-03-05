@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
+\usepackage{enumitem}
 
 \begin{document}
 \title{Tynooc --- A Tycoon clone \\ \large{Project report --- part 1}}
@@ -12,15 +13,34 @@
 \tableofcontents
 
 \section{General program organization}
-The game is split into two main parts : the game logic engine (or engine), and the interface (or gui).
-The interaction between the two can be separated 
+The game is split into two main parts : the game logic engine (or engine), and the interface (or gui) :
 \begin{itemize}
+\item The game engine simulates the world, that is simulates passengers and trains.
+\item The gui interacts with the engine by transmitting player actions to the engine, 
+and printing back the world content (trains, population\dots).
+\end{itemize}
+
+This pattern can be compared to a simplified Model-View-Controller pattern :
+\begin{itemize}[noitemsep]
+\item The model corresponds to the game engine.
+\item The view corresponds to the gui.
+\item The controller is implemented by the graphic library (scalaFX), and is therefore mostly hidden in the game code.
+The controller setup, in the form of of scalaFX event handlers, is integrated in the gui.
 \end{itemize}
 
 
-\section{Game logic}
+
+\section{Game logic engine}
+The game engine (package \verb|logic|) defines all game objects (towns, routes, trains, ...), and simulates world evolution.
+World simulation uses a step by step logic : at each step, 
 
 
 \section{GUI}
+The main problem we faced in implementing the game gui with scalaFX was to display constantly changing objects ---
+typically trains on the world map. A typical way to handle would be a through a main loop which continuously updates
+the interface.
+
+This, however, conflicts with the scalaFX event handling logic in which changes in the interface come as a result of an event
+(user action, ...).
 
 \end{document}
