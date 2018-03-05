@@ -49,8 +49,10 @@ extends JFXApp.PrimaryStage {
         val mainLoopThread: Thread = new Thread {
           override def run {
             while(true) {
-              Game.update()
-              Platform.runLater(gameScene.draw())
+              Platform.runLater( () => {
+                Game.update()
+                gameScene.draw()
+              })
               Thread.sleep(10)
             }
           }
