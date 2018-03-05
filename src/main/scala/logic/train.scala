@@ -17,7 +17,7 @@ trait NameMap[T] {
   /** Get an element from its name.
    *
    *  @param name the element name.
-   *  @throws java.util.NoSuchElementException if no such model exists.
+   *  @throws NoSuchElementException if no such model exists.
    */
   def apply(name: String): T = this.models.get(name).get
 }

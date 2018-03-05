@@ -31,7 +31,7 @@ object MainJFXApp extends JFXApp {
   var mainStage = new MainStage(() => gameInit())
   stage = mainStage
 
-  /** Allows [[MainStage]] to perform cleanup. */
+  /** Allows [[gui.MainStage]] to perform cleanup. */
   override def stopApp(): Unit = {
     mainStage.onExit()
   }

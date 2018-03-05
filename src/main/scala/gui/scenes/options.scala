@@ -9,7 +9,11 @@ import scalafx.geometry._
 
 import gui.MainStage
 
-class Options(sceneModifier: MainStage.States.Val=>Unit)
+/** Option menu.
+ *
+ *  Currently unused.
+ */
+class Options(sceneModifier: MainStage.States.Val => Unit)
 extends MainStage.Scene(sceneModifier) {
   private var menuBtn = new Button("Main Menu")
   menuBtn.onAction = (event: ActionEvent) => {

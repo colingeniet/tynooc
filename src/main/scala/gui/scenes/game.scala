@@ -20,6 +20,12 @@ import logic.travel._
 
 import player._
 
+/** Game scene.
+ *
+ *  Main game interface, contains the world map and side panels.
+ *  @param world the world to be displayed on the map.
+ *  @param player the player.
+ */
 class Game(
   val world: World,
   val player: Player,
@@ -27,20 +33,19 @@ class Game(
 extends MainStage.Scene(sceneModifier) with Drawable {
   // panes contents
   private var top: TopMenu = new TopMenu(sceneModifier)
-  
   private var left: DrawableVBox = new CompanyInfo(
     player.company,
     world,
     displayTrain,
     displayEngine,
     displayCarriage)
-
+  // empty by default
   private var right: DrawableVBox = new DrawableVBox()
   private var bottom: DrawableHBox = new DrawableHBox()
   private var center: Map = new Map(world, player.company,displayTown, displayRoute,
                                     displayTravel)
 
-  // content
+  // set content
   private var pane: BorderPane = new BorderPane(
     center,
     top,
