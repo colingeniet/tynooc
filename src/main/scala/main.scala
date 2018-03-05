@@ -15,15 +15,15 @@ object MainJFXApp extends JFXApp {
   def gameInit(): Player = {
     Game.reset()
     Game.world = Parser.readWorldInformations("map/Map")
-    Game.players = List(new Player(company()),
-                        new BasicAI(company(), 1.7, 0.5))
+    Game.players = List(new Player(company("Player")),
+                        new BasicAI(company("AI 1"), 1.7, 0.5))
     Game.mainPlayer = Some(Game.players(0))
     Game.mainPlayer.get
   }
 
   /** Creates a new company. */
-  def company(): Company = {
-    val company = new Company(Game.world.towns.find(_.name == "C411").get)
+  def company(name: String): Company = {
+    val company = new Company(name, Game.world.towns.find(_.name == "C411").get)
     company.credit(10000)
     company
   }
