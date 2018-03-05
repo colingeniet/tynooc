@@ -1,13 +1,11 @@
 package gui.scenes
 
 import scalafx.Includes._
-import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.control.Label
-import scalafx.event.ActionEvent
-import scalafx.scene.layout.VBox
+import scalafx.scene._
+import scalafx.scene.control._
+import scalafx.scene.layout._
+import scalafx.event._
 import scalafx.geometry._
-import scalafx.geometry.Insets
 
 import gui.MainStage
 
