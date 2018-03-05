@@ -73,8 +73,8 @@ extends VehicleModel(name, weight, health, price, upgrades)
 object CarriageModel extends NameMap[CarriageModel] {
   private var _models: HashMap[String, CarriageModel] =
     HashMap(
-      "Basic" -> new CarriageModel("Basic", 80, 50, 10, 100, 500, List("Advanced")),
-      "Advanced" -> new CarriageModel("Advanced", 80, 50, 15, 100, 1000, List()))
+      "Basic" -> new CarriageModel("Basic", 80, 40, 10, 100, 500, List("Advanced")),
+      "Advanced" -> new CarriageModel("Advanced", 80, 60, 15, 100, 1000, List()))
 
   override def models = _models
 }
@@ -161,7 +161,7 @@ class Train (
   }
 
   def isAvailable: Boolean = !damaged && !onRoute && !tooHeavy
-  
+
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
     carriages = c :: carriages
