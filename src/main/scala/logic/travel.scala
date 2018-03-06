@@ -8,7 +8,7 @@ import logic.route._
 import logic.company._
 import logic.game._
 
-object State {
+private object State {
   sealed trait Val
   case object Launched extends Val
   case object Waiting extends Val //Waiting for passengers
@@ -18,9 +18,9 @@ object State {
 
 /** A travel. */
 class Travel(val train: Train, private val roads: List[Route],
-             val owner: Company) {
+             val company: Company) {
 
-  if(!owner.ownsTrain(train))
+  if(train.owner != company)
     throw new IllegalArgumentException("Company doesn’t own the train")
 
   private val rooms: List[Room] = train.carriages.map { new Room(this, _) }
@@ -116,7 +116,7 @@ class Travel(val train: Train, private val roads: List[Route],
           }
         }
         case State.Arrived => {
-          owner.debit(train.consumption(currentRoute.length) * Game.world.fuelPrice)
+          company.debit(train.consumption(currentRoute.length) * Game.world.fuelPrice)
           train.deteriorate(currentRoute)
           state = State.Waiting
           landPassengers

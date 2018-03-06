@@ -43,7 +43,7 @@ extends DrawableVBox {
         parent.value.requestFocus()
       }
     }
-  
+
   menu.addMenu("rolling stock", displayStock())
   menu.addMenu("catalog", displayModels())
 

@@ -13,58 +13,60 @@
 \tableofcontents
 
 \section{General program organization}
-The game is split into two main parts : the game logic engine (or engine), and the interface (or gui) :
+The game is split into two main parts: the game logic engine (or engine), and the interface (or gui).
 \begin{itemize}
-\item The game engine simulates the world, that is simulates passengers and trains.
+\item The game engine simulates the world, that is simulates passengers and trains movements.
 \item The gui interacts with the engine by transmitting player actions to the engine, 
 and printing back the world content (trains, population\dots).
 \end{itemize}
 
-This pattern can be compared to a simplified Model-View-Controller pattern :
+This pattern is similar to a simplified Model-View-Controller design pattern:
 \begin{itemize}[noitemsep]
 \item The model corresponds to the game engine.
 \item The view corresponds to the gui.
 \item The controller is implemented by the graphic library (scalaFX), and is therefore mostly hidden in the game code.
-The controller setup, in the form of of scalaFX event handlers, is integrated in the gui.
+The controller setup, in the form of scalaFX event handlers, is integrated in the gui.
 \end{itemize}
 
 
 
 \section{Game logic engine}
-The game engine (package \verb|logic|) defines all game objects (towns, routes, trains, ...), and simulates world evolution.
-World simulation uses a step by step logic : at each step, trains advance based on the time passed since last step,
+The game engine defines all game objects (towns, routes, trains, carriages ...), and simulates world evolution.
+World simulation uses a step by step logic: at each step, trains move based on the time that passed since last step,
 and towns generate passengers.
 
 \subsection{Passengers}
-This last part raised several questions regarding the way town population and passengers are represented,
-as well as generation mechanics.
+Passenger generation raised several questions regarding the way town population and passengers are represented.
 
 Our initial idea, aimed at relatively small population, was to simulate each person individually.
 Each person would then have a position, and decide to go on trips based on various parameters.
-Obviously, this approach poses efficiency problems as the world population grows bigger,
-and had to be excluded to allow for larger simulation.
+Obviously, this approach poses efficiency problems as the world population grows bigger.
 
 An alternative that we considered is to simulate groups of persons instead, in a similar way.
 What was the simulation of one person would then become the simulation of a group of a few hundred of persons,
 considered to have similar behavior.
 
-However we preferred to redo this system, by 
+However we preferred to redo this system. Only the population size and the number of passengers are stored
+for each town. This obviously allows the simulation to be significantly more efficient than with the previous method.
 
+In an effort to keep some of the extra features of the first version, we did however decide to add
+a notion of passenger `status'. Passengers of different status have slightly different simulation rules,
+in their train choices for instance. The way this is implemented is by keeping population records for each 
+status separately.
 
 \section{GUI}
 The main problem we faced in implementing the game gui with scalaFX was to display constantly changing objects ---
 typically trains on the world map. A typical way to handle is to use a main loop which continuously updates the interface.
-However, the scalaFX library is oriented towards the an event handling logic
-in which changes in the interface come as a result of an event (user action, ...).
+However, the scalaFX library has an event handling logic in which changes in the interface come as a result of an event (user action, ...).
 
 We decided to solve this problem by combining the two methods, 
-and using the most appropriate one, depending on the situation :
+and using the most appropriate one, depending on the situation:
 \begin{itemize}
 \item Interface elements that only change as a result of user actions (typically menus) 
-are perfectly implemented through event handling.
+are implemented through event handling.
 
-\item Elements that constantly change (trains, towns population) are continuously refreshed by a loop.
-However, to integrate this method in scalaFX event handling, this loop is ran in a background thread,
+\item Changing elements (trains, towns population) are continuously refreshed by a loop.
+To integrate this in scalaFX event handling logic, this loop is ran in a background thread,
 and merely request scalaFX to update the interface.
 
 Of course, to avoid overloading scalaFX with update requests, care was taken to keep updates as light as possible.

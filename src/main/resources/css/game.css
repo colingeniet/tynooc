@@ -8,6 +8,11 @@
     -fx-background-color: #222222;
 }
 
+.text-field {
+    -fx-background-color: #777777;
+    -fx-text-fill: #dddddd;
+}
+
 .alert {
     -fx-font-size: 14px;
     -fx-text-fill: #ff0000;

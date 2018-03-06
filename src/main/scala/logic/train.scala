@@ -1,9 +1,9 @@
 package logic.train
 
 import logic.route._
-import logic.game._
 import logic.town._
 import logic.travel._
+import logic.company._
 
 import collection.mutable.HashMap
 
@@ -17,7 +17,6 @@ trait NameMap[T] {
   /** Get an element from its name.
    *
    *  @param name the element name.
-   *  @throws NoSuchElementException if no such model exists.
    */
   def apply(name: String): T = this.models.get(name).get
 }
@@ -82,6 +81,7 @@ object CarriageModel extends NameMap[CarriageModel] {
 trait Vehicle {
   var train: Option[Train]
   var health: Double
+  var owner: Company
 
   def isUsed: Boolean = train.isDefined
 
@@ -92,12 +92,15 @@ trait Vehicle {
 /** Implements [[Vehicle]] based on a [[VehicleModel]]. */
 class VehicleFromModel[Model <: VehicleModel](
   private var _model: Model,
-  var town: Town)
+  var town: Town,
+  var owner: Company)
 extends Vehicle {
   var train: Option[Train] = None
   var health: Double = model.health
 
-  def damaged: Boolean = health == 0
+  def isDamaged: Boolean = health == 0
+
+  def isAvailable: Boolean = !isDamaged && !isUsed
 
   def model: Model = _model
   def model_=(newModel: Model): Unit = {
@@ -113,9 +116,9 @@ extends Vehicle {
  *
  *  @param _model the engine model.
  */
-class Engine(model: EngineModel, town: Town)
-extends VehicleFromModel[EngineModel](model, town) {
-  def this(name: String, town: Town) = this(EngineModel(name), town)
+class Engine(model: EngineModel, town: Town, owner: Company)
+extends VehicleFromModel[EngineModel](model, town, owner) {
+  def this(name: String, town: Town, owner: Company) = this(EngineModel(name), town, owner)
 
   def speed:Double = model.speed * (0.75 + 0.25 * health/model.health)
 }
@@ -124,28 +127,29 @@ extends VehicleFromModel[EngineModel](model, town) {
  *
  *  @param _model the carriage model.
  */
-class Carriage(model: CarriageModel, town: Town)
-extends VehicleFromModel[CarriageModel](model, town) {
+class Carriage(model: CarriageModel, town: Town, owner: Company)
+extends VehicleFromModel[CarriageModel](model, town, owner) {
   var placePrice: Double = 0.20
 
   def capacity: Int = model.capacity
   def comfort:Double = model.comfort * (0.75 + 0.25 * health/model.health)
 
-  def this(name: String, town: Town) = this(CarriageModel(name), town)
+  def this(name: String, town: Town, owner: Company) = this(CarriageModel(name), town, owner)
 }
 
 
 class Train (
   var engine: Engine,
   var carriages: List[Carriage],
-  var town: Town) {
-  var name: String = "train"
+  var town: Town,
+  var owner: Company) {
+  var name: String = "train name"
 
   var travel: Option[Travel] = None
 
   def onRoute: Boolean = travel.isDefined
 
-  def damaged: Boolean = engine.damaged || carriages.exists(_.damaged)
+  def isDamaged: Boolean = engine.isDamaged || carriages.exists(_.isDamaged)
 
   def weight: Double = {
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
@@ -160,7 +164,7 @@ class Train (
     carriages.foreach { c => c.health = Math.max(0, c.health - route.damageToVehicle) }
   }
 
-  def isAvailable: Boolean = !damaged && !onRoute && !tooHeavy
+  def isAvailable: Boolean = !isDamaged && !onRoute && !tooHeavy
 
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
@@ -168,8 +172,6 @@ class Train (
   }
 
   /** Remove the last carriage of the train and returns it.
-   *
-   *  @throws NoSuchElementException if train has no carriage.
    */
   def removeCarriage(): Carriage = {
     val last = carriages.head

@@ -76,8 +76,6 @@ class Room(val travel: Travel, val carriage: Carriage) {
     * @param number The number of passenger who free their places.
     * @param destination The destination of these passengers.
     * @param status The status of these passengers.
-    * @throws CantFreeException exception if it have to free more places than
-    *         taken places.
     */
   def freePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
     if(number > passengers(destination)(status.id))
@@ -103,12 +101,11 @@ class Room(val travel: Travel, val carriage: Carriage) {
     * @param number The number of passenger who take places.
     * @param destination The destination of these passengers.
     * @param status The status of these passengers.
-    * @throws CantBuyException exception if there are not enough available places.
     */
   def takePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
     if(number > availablePlaces)
       throw new CantBuyException
     passengers(destination)(status.id) += number
-    travel.owner.credit(price(destination) * number)
+    travel.company.credit(price(destination) * number)
   }
 }

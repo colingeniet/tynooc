@@ -91,7 +91,7 @@ class TrainStats(train: Train) extends DrawableVBox {
       Some(status),
       (if (train.tooHeavy) Some(tooHeavy) else None),
       Some(weight),
-      (if (train.damaged) Some(damaged) else None),
+      (if (train.isDamaged) Some(damaged) else None),
       Some(power)).flatMap(x => x)
   }
 }

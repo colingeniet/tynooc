@@ -1,6 +1,5 @@
 package logic.town
 
-import logic.graph._
 import logic.route._
 import logic.game._
 import logic.world._
@@ -47,7 +46,7 @@ class Town(
   }
 
   /** Adds <code>number</code residents of status <code>status</code> 
-      to the town.
+    * to the town.
     *      
     * @param number The number of residents to add.
     * @param status The status of these residents.    
@@ -56,10 +55,11 @@ class Town(
     residents(status.id) += number
 
   /** Deletes <code>number</code residents of status <code>status</code> 
-      to the town.
+    * to the town.
     *
     * @param number The number of residents to delete.
-    * @param status The status of these residents. 
+    * @param status The status of these residents.
+    * 
     */
   def deleteResidents(number: Int, status: Status.Val): Unit = {
     if(number > residents(status.id))
@@ -68,7 +68,7 @@ class Town(
   }
 
   /** Deletes <code>number</code passengers of status <code>status</code> 
-      to the town.
+    * to the town.
     *
     * @param number The number of passengers to delete.
     * @param status The status of these passengers. 
