@@ -1,9 +1,9 @@
 package logic.game
 
-import logic.company._
 import logic.world._
 import ai._
 import player._
+import parser._
 
 /** Game logic main object. */
 object Game {
@@ -46,8 +46,8 @@ object Game {
   }
 
   /** Reinitialize game state. */
-  def reset(): Unit = {
-    world = new World()
+  def init(): Unit = {
+    world = Parser.readWorldInformations("map/Map")
     time = 0
     paused = false
     timeAcceleration = 1

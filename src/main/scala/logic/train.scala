@@ -1,7 +1,6 @@
 package logic.train
 
 import logic.route._
-import logic.game._
 import logic.town._
 import logic.travel._
 
