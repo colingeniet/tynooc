@@ -6,16 +6,29 @@ import logic.world._
 import scala.util.Random
 import player._
 
+/** A trait representing an AI. */
 trait AI {
   val company: Company
   var lastAction: Double
   val actionDelay: Double
   
+  /** Make some actions for <code>company</code>. 
+    *
+    * @param world The world where <code>company</code> progress.
+    * @param dt The time passed since the last call of <code>play</code>.
+    */
   def play(world: World, dt: Double)
 }
 
+/** A basic AI which plays randomly.
+  *
+  * @constructor Creates a basic AI with company, an action delay and the time of its last action.
+  * @param company The company of this AI.
+  * @param actionDelay The delay between the actions of the AI.
+  * @param lastAction The time of the last action (it will play at <code>actionDelay</code> - <code>lastAction</code>).
+  */
 class BasicAI(
-  override val company: Company, 
+  company: Company, 
   val actionDelay: Double, 
   var lastAction: Double)
 extends Player(company) with AI {

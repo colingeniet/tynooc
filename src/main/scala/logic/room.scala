@@ -12,7 +12,7 @@ import collection.mutable.HashSet
 /** An exception which could be throwed if a places in a room
     can’t be bought.
   */
-final case class CantBuy(
+final case class CantBuyException(
   private val message: String = "",
   private val cause: Throwable = None.orNull)
 extends Exception(message, cause)
@@ -20,14 +20,14 @@ extends Exception(message, cause)
 /** An exception which could be throwed if a places in a room
     can’t be released.
   */
-final case class CantFree(
+final case class CantFreeException(
   private val message: String = "",
   private val cause: Throwable = None.orNull)
 extends Exception(message, cause)
 
-/** A class to represent a room in a train, each room associated to a carriage.
+/** A room in a train.
   *
-  * @constructor Creates a new room with a travel and a carriage.
+  * @constructor Creates a room with a travel and a carriage.
   * @param travel The travel in which this room is present.
   * @param carriage The carriage associated to the room.
  */
@@ -76,12 +76,12 @@ class Room(val travel: Travel, val carriage: Carriage) {
     * @param number The number of passenger who free their places.
     * @param destination The destination of these passengers.
     * @param status The status of these passengers.
-    * @throws CantFree exception if it have to free more places than
+    * @throws CantFreeException exception if it have to free more places than
     *         taken places.
     */
   def freePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
     if(number > passengers(destination)(status.id))
-      throw new CantFree
+      throw new CantFreeException
     passengers(destination)(status.id) -= number
   }
 
@@ -103,12 +103,12 @@ class Room(val travel: Travel, val carriage: Carriage) {
     * @param number The number of passenger who take places.
     * @param destination The destination of these passengers.
     * @param status The status of these passengers.
-    * @throws CantBuy exception if there are not enough available places.
+    * @throws CantBuyException exception if there are not enough available places.
     */
   def takePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
     if(number > availablePlaces)
-      throw new CantBuy
+      throw new CantBuyException
     passengers(destination)(status.id) += number
-    travel.owner.credit(price(destination) * number)
+    travel.company.credit(price(destination) * number)
   }
 }

@@ -246,8 +246,10 @@ extends DrawableVBox {
     val upgradeButton: Button = new Button("Upgrade")
 
     val priceField: TextField = new TextField() {
-      text = s"${MoneyFormatter.format(carriage.placePrice)} (place price by distance)."
-      onMouseClicked = (event: MouseEvent) => {
+      onMouseExited = (event: MouseEvent) => {
+        text = s"${MoneyFormatter.format(carriage.placePrice)} (place price by distance)."
+      }
+      onMouseEntered = (event: MouseEvent) => {
         text = carriage.placePrice.toString
       }
       onAction = (event: ActionEvent) => {
@@ -255,8 +257,7 @@ extends DrawableVBox {
           case Some(x) => carriage.placePrice = x
           case None    =>
         }
-        displayCarriages()
-        detailCarriage(carriage)
+        parent.value.requestFocus()
       }
     }
 

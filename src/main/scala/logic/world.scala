@@ -18,9 +18,9 @@ object Status {
     def this() { this(_id) }
   }
 
-  object RICH extends Status.Val
-  object POOR extends Status.Val
-  object WELL extends Status.Val
+  object Rich extends Status.Val
+  object Poor extends Status.Val
+  object Well extends Status.Val
 }
 
 /** The game world representation.
@@ -29,7 +29,7 @@ object Status {
  *  This class handles all travels, as well as town population.
  */
 class World {
-  var status = Array(Status.RICH, Status.POOR, Status.WELL)
+  var status = Array(Status.Rich, Status.Poor, Status.Well)
   var statusCriteria = Array((d:Town) => (r:Room) => r.comfort,
                              (d:Town) => (r:Room) => r.price(d),
                              (d:Town) => (r:Room) => r.comfort / (r.price(d)+1))
@@ -39,7 +39,8 @@ class World {
   private var _towns: HashSet[Town] = HashSet()
 
   private var _travels: HashSet[Travel] = HashSet()
-
+  private var _companies: HashSet[Company] = HashSet()
+  
   /** Callback called any time a new travel is added.
    *
    *  This is used to signal the new travel to the gui. */
@@ -51,6 +52,9 @@ class World {
   /** The current travels in the world. */
   def travels: HashSet[Travel] = _travels
 
+  /** The train companies in the world. */
+  def companies: HashSet[Company] = _companies
+  
   /** Total world population. */
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
@@ -62,6 +66,14 @@ class World {
     addTown(new Town(name, x, y, welcomingLevel))
   }
 
+  /** Adds a new company to the world 
+    *
+    * @param company The new company.    
+    */
+  def addCompany(company: Company): Unit = {
+    _companies.add(company)
+  }
+  
   /** Adds a new travel in the world. */
   def addTravel(travel:Travel): Unit = {
     _travels.add(travel)
@@ -71,7 +83,7 @@ class World {
 
   /** Gets all travels of a specific company in the world. */
   def travelsOf(company: Company): HashSet[Travel] =
-    travels.filter { _.owner == company }
+    travels.filter { _.company == company }
 
 
   def tryTravel(
@@ -166,9 +178,5 @@ class World {
       }
     }
     accessibles.toList
-  }
-
-  override def toString: String = {
-    towns.foldLeft[String]("") { (d, t) => d + s"$t\n" }
   }
 }

@@ -32,11 +32,18 @@ class CompanyInfo(
   detailCarriage: Carriage => Unit)
 extends DrawableVBox {
   private val money: Label = new Label()
+  private val schwoon: Label = new Label()
   private val sep1: Separator = new Separator()
   private val menu: SelectionMenu = new SelectionMenu()
   private val sep2: Separator = new Separator()
   private var panel: Node = new Pane()
-
+  private val nameField: TextField = new TextField() {
+      text = company.name
+      onAction = (event: ActionEvent) => {
+        company.name = text()
+        parent.value.requestFocus()
+      }
+    }
   
   menu.addMenu("rolling stock", displayStock())
   menu.addMenu("catalog", displayModels())
@@ -55,7 +62,9 @@ extends DrawableVBox {
   /* Updates children list from attributes. */
   private def setChildren(): Unit = {
     children = List(
+      nameField,
       money,
+      schwoon,
       sep1,
       menu,
       sep2,
@@ -83,6 +92,8 @@ extends DrawableVBox {
 
   override def draw(): Unit = {
     money.text = MoneyFormatter.format(company.money)
+    if(company.schwoon)
+      schwoon.text = "Schwoon mode."
     stock.draw()
   }
 }
