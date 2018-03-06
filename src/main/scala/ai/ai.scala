@@ -42,17 +42,20 @@ extends Player(company) with AI {
         company.buyEngine("Basic")
       if(company.money > 2000 && company.carriages.size < 50)
         company.buyCarriage("Basic")
-      if(!company.enginesAvailable.isEmpty) {
-        val train = company.createTrainFromEngine(company.enginesAvailable.head)
-        if(!company.carriagesAvailable.isEmpty) {
-          company.addCarriageToTrain(train, company.carriagesAvailable.head)
-            company.launchTravel(train, Random.shuffle(train.town.neighbours).head)
+      val engines = company.enginesAvailable
+      if(!engines.isEmpty) {
+        val train = company.createTrainFromEngine(engines.head)
+        val carriages = company.carriagesAvailable
+        if(!carriages.isEmpty) {
+          company.addCarriageToTrain(train, carriages.head)
+          company.launchTravel(train, Random.shuffle(train.town.neighbours).head)
         }
       }
       val trains = company.trainsAvailable.filter { !_.carriages.isEmpty }
-      if(!trains.isEmpty)
-        company.launchTravel(trains.head, 
-               Random.shuffle(Random.shuffle(trains).head.town.neighbours).head)
+      if(!trains.isEmpty) {
+        val train = Random.shuffle(trains).head
+        company.launchTravel(train, Random.shuffle(train.town.neighbours).head)
+      }
     }
   }
 }
