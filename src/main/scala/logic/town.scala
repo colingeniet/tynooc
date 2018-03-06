@@ -46,7 +46,7 @@ class Town(
   }
 
   /** Adds <code>number</code residents of status <code>status</code> 
-      to the town.
+    * to the town.
     *      
     * @param number The number of residents to add.
     * @param status The status of these residents.    
@@ -55,7 +55,7 @@ class Town(
     residents(status.id) += number
 
   /** Deletes <code>number</code residents of status <code>status</code> 
-      to the town.
+    * to the town.
     *
     * @param number The number of residents to delete.
     * @param status The status of these residents.
@@ -68,7 +68,7 @@ class Town(
   }
 
   /** Deletes <code>number</code passengers of status <code>status</code> 
-      to the town.
+    * to the town.
     *
     * @param number The number of passengers to delete.
     * @param status The status of these passengers. 
