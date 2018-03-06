@@ -15,7 +15,7 @@
 \section{General program organization}
 The game is split into two main parts : the game logic engine (or engine), and the interface (or gui) :
 \begin{itemize}
-\item The game engine simulates the world, that is simulates passengers and trains.
+\item The game engine simulates the world, that is simulates passengers and trains movements.
 \item The gui interacts with the engine by transmitting player actions to the engine, 
 and printing back the world content (trains, population\dots).
 \end{itemize}
@@ -31,7 +31,7 @@ The controller setup, in the form of of scalaFX event handlers, is integrated in
 
 
 \section{Game logic engine}
-The game engine defines all game objects (towns, routes, trains, ...), and simulates world evolution.
+The game engine defines all game objects (towns, routes, trains, carriages ...), and simulates world evolution.
 World simulation uses a step by step logic : at each step, trains advance based on the time passed since last step,
 and towns generate passengers.
 
