@@ -44,8 +44,6 @@ class Company(var name: String, val fabricTown: Town) {
   val vehicles: HashSet[Vehicle] = HashSet()
   /** The company money. */
   var money: Double = 0
-  /** The Schoown state of the company. */
-  var schwoon: Boolean = false
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
@@ -60,11 +58,8 @@ class Company(var name: String, val fabricTown: Town) {
     * @param amount The money to delete to the company’s current amount.
     */
   def debit(amount: Double): Unit = {
+    // interest rate
     money -= (amount + (0.02*Math.max(0, amount-money)))
-    if(money < -10000) {
-      schwoon = true
-      money = 42424242
-    }
   }
 
   /** Returns the carriages of this company. */
@@ -145,7 +140,6 @@ class Company(var name: String, val fabricTown: Town) {
     *
     * @param train The train to extend.
     * @param carriage The carriage to add to <code>train</code>.
-    * @throws IllegalArgumentException if the carriage can’t be added to the train.
     */
   def addCarriageToTrain(train: Train, carriage: Carriage): Unit = {
     if (!ownsTrain(train)) {
@@ -171,7 +165,6 @@ class Company(var name: String, val fabricTown: Town) {
   /** Removes the tail carriage of an existing train.
     *
     * @param train The train.
-    * @throws IllegalArgumentException if the carriage can’t be removed from the train.
     */
   def removeCarriageFromTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
@@ -188,7 +181,6 @@ class Company(var name: String, val fabricTown: Town) {
   /** Completely disassemble an existing train.
     *
     * @param train The train to disassemble.
-    * @throw IllegalArgumentException if the train can’t be disassembled.
     */
   def disassembleTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
@@ -211,7 +203,6 @@ class Company(var name: String, val fabricTown: Town) {
    *
    * @param train The train to launch.
    * @param to The destination of the travel.
-   * @throws IllegalArgumentException if the travel can’t be launched.
    */
   def launchTravel(train: Train, to: Town): Unit = {
     if (!ownsTrain(train)) {
@@ -235,7 +226,6 @@ class Company(var name: String, val fabricTown: Town) {
   /** Repair a vehicle (a carriage or an engine).
     *
     * @param vehicle The vehicle to repair.
-    * @throws IllegalArgumentException if the vehicle can’t be repaired.
     */
   def repair(vehicle: Vehicle): Unit = {
     if (!ownsVehicle(vehicle)) {
@@ -252,7 +242,6 @@ class Company(var name: String, val fabricTown: Town) {
     *
     * @param old The vehicle to upgrade.
     * @param model The upgraded model.
-    * @throws IllegalArgumentException if the vehicle can’t be upgraded.
     */
   def upgrade[Model <: VehicleModel](old: VehicleFromModel[Model], model: Model): Unit = {
     if (!ownsVehicle(old)) {

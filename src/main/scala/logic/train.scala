@@ -17,7 +17,6 @@ trait NameMap[T] {
   /** Get an element from its name.
    *
    *  @param name the element name.
-   *  @throws NoSuchElementException if no such model exists.
    */
   def apply(name: String): T = this.models.get(name).get
 }
@@ -173,8 +172,6 @@ class Train (
   }
 
   /** Remove the last carriage of the train and returns it.
-   *
-   *  @throws NoSuchElementException if train has no carriage.
    */
   def removeCarriage(): Carriage = {
     val last = carriages.head

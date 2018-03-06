@@ -34,7 +34,7 @@ object Parser {
   private val rIf = s"${rI}, "
   private val rTown = s"Town : ${rN}, ${rD}, ${rD}, ${rD}, "
 
-  /** Parse a town line. 
+  /** Parse a town line.
     *
     * @param line The line string to parse.
     * @param world The world we are building.
@@ -53,8 +53,8 @@ object Parser {
     town
   }
 
-  /** Parse a route line. 
-    * 
+  /** Parse a route line.
+    *
     * @param line The line string to parse.
     * @param towns The list of the towns of the world.
     */
@@ -68,9 +68,9 @@ object Parser {
     }
   }
 
-  /** Parse a world file. 
+  /** Parse a world file.
     *
-    * @filename The path of the file to parse.
+    * @param filename The path of the file to parse.
     */
   def readWorldInformations(filename: String): World = {
     val world = new World()

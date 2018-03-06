@@ -11,8 +11,8 @@ trait AI {
   val company: Company
   var lastAction: Double
   val actionDelay: Double
-  
-  /** Make some actions for <code>company</code>. 
+
+  /** Make some actions for <code>company</code>.
     *
     * @param world The world where <code>company</code> progress.
     * @param dt The time passed since the last call of <code>play</code>.
@@ -28,16 +28,16 @@ trait AI {
   * @param lastAction The time of the last action (it will play at <code>actionDelay</code> - <code>lastAction</code>).
   */
 class BasicAI(
-  company: Company, 
-  val actionDelay: Double, 
+  company: Company,
+  val actionDelay: Double,
   var lastAction: Double)
 extends Player(company) with AI {
-  
+
   def play(world: World, dt: Double): Unit = {
     lastAction += dt
     if(lastAction > actionDelay) {
       lastAction = 0
-      
+
       if(company.money > 3000 && company.engines.size < 10)
         company.buyEngine("Basic")
       if(company.money > 2000 && company.carriages.size < 50)
