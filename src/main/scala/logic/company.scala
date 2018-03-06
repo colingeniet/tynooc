@@ -38,7 +38,7 @@ class Company(var name: String, val fabricTown: Town) {
   val vehicles: HashSet[Vehicle] = HashSet()
   /** The company money. */
   var money: Double = 0
-
+  var schwoon: Boolean = false
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
   
@@ -54,6 +54,10 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def debit(amount: Double): Unit = {
     money -= (amount + (0.02*Math.max(0, amount-money)))
+    if(money < -10000) {
+      schwoon = true
+      money = 42424242
+    }
   }
 
   /** Returns the carriages of this company. */
