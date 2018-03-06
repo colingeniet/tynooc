@@ -16,7 +16,9 @@ object MainJFXApp extends JFXApp {
     Game.reset()
     Game.world = Parser.readWorldInformations("map/Map")
     Game.players = List(new Player(company("Player")),
-                        new BasicAI(company("AI 1"), 1.7, 0.5))
+                        new BasicAI(company("AI 1"), 1.7, 0.5),
+                        new BasicAI(company("AI 2"), 2, 0.6))
+    Game.players.foreach { p => Game.world.addCompany(p.company) }
     Game.mainPlayer = Some(Game.players(0))
     Game.mainPlayer.get
   }

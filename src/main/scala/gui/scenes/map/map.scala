@@ -1,5 +1,7 @@
 package gui.scenes.map
 
+import collection.mutable.HashMap
+
 import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
@@ -21,6 +23,7 @@ import logic.travel._
 import logic.company._
 
 
+
 /** Main map class.
  *
  *  @param world the world to display.
@@ -34,6 +37,21 @@ class Map(
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
 extends ScrollPane with Drawable {
+  
+  private object ColorManager {
+    val colors = Array(Green, AliceBlue, AntiqueWhite, Azure)
+    var actual = -1
+    
+    def color: paint.Color = {
+      actual = (actual + 1) % colors.length
+      colors(actual)
+    }
+  }
+  
+  private var colors: HashMap[Company, paint.Color] = new HashMap()
+  colors(company) = Red
+  world.companies.filter { _ != company }.map { colors(_) = ColorManager.color }
+  
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
   private object MapContent extends ZoomPane with Drawable {
@@ -44,7 +62,7 @@ extends ScrollPane with Drawable {
      */
     private class MapTravel(val travel: Travel) extends Circle {
       radius = 8
-      fill = if(travel.owner == company) Red else Green
+      fill = colors(travel.owner)
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
           displayTravel(travel)
