@@ -76,7 +76,6 @@ class Room(val travel: Travel, val carriage: Carriage) {
     * @param number The number of passenger who free their places.
     * @param destination The destination of these passengers.
     * @param status The status of these passengers.
-    *         taken places.
     */
   def freePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
     if(number > passengers(destination)(status.id))
