@@ -83,7 +83,7 @@ trait Vehicle {
   var train: Option[Train]
   var health: Double
   var owner: Company
-  
+
   def isUsed: Boolean = train.isDefined
 
   def repairPrice: Double
@@ -99,7 +99,7 @@ extends Vehicle {
   var train: Option[Train] = None
   var health: Double = model.health
 
-  def damaged: Boolean = health == 0
+  def isDamaged: Boolean = health == 0
 
   def model: Model = _model
   def model_=(newModel: Model): Unit = {
@@ -148,7 +148,7 @@ class Train (
 
   def onRoute: Boolean = travel.isDefined
 
-  def damaged: Boolean = engine.damaged || carriages.exists(_.damaged)
+  def isDamaged: Boolean = engine.isDamaged || carriages.exists(_.isDamaged)
 
   def weight: Double = {
     carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
@@ -163,7 +163,7 @@ class Train (
     carriages.foreach { c => c.health = Math.max(0, c.health - route.damageToVehicle) }
   }
 
-  def isAvailable: Boolean = !damaged && !onRoute && !tooHeavy
+  def isAvailable: Boolean = !isDamaged && !onRoute && !tooHeavy
 
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {

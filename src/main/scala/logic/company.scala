@@ -12,7 +12,7 @@ import logic.graph._
 /** An object to manage prices. */
 object PriceSimulation {
   /** Returns the price of an upgrade.
-    * 
+    *
     * @param from The old model.
     * @param to The upgraded model.
     */
@@ -24,7 +24,7 @@ object PriceSimulation {
 }
 
 /** An exception which could be throwed if a player try to launchTravel
-  * a travel to an unattainable destination. 
+  * a travel to an unattainable destination.
   */
 final case class PathNotFoundException(
   private val message: String = "",
@@ -48,7 +48,7 @@ class Company(var name: String, val fabricTown: Town) {
   var schwoon: Boolean = false
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
-  
+
   /** Credits the player with <code>amount</code> euros.
     *
     * @param amount The money to add to the company’s current amount.
@@ -56,8 +56,8 @@ class Company(var name: String, val fabricTown: Town) {
   def credit(amount: Double): Unit = money += amount
 
   /** Debit the player of <code>amount</code> euros.
-    * 
-    * @param amount The money to delete to the company’s current amount.    
+    *
+    * @param amount The money to delete to the company’s current amount.
     */
   def debit(amount: Double): Unit = {
     money -= (amount + (0.02*Math.max(0, amount-money)))
@@ -102,7 +102,7 @@ class Company(var name: String, val fabricTown: Town) {
 
   /** Buy an engine and add it to the company’s engines.
     *
-    * @param name The name of the engine to buy. 
+    * @param name The name of the engine to buy.
     */
   def buyEngine(name: String): Unit = {
     val model = EngineModel(name)
@@ -125,7 +125,7 @@ class Company(var name: String, val fabricTown: Town) {
   }
 
   /** Creates a new train, with only an engine.
-    * 
+    *
     * @param engine The engine of the new train.
     */
   def createTrainFromEngine(engine: Engine): Train = {
@@ -141,7 +141,7 @@ class Company(var name: String, val fabricTown: Town) {
     train
   }
 
-  /** Adds a carriage at the tail of an existing train. 
+  /** Adds a carriage at the tail of an existing train.
     *
     * @param train The train to extend.
     * @param carriage The carriage to add to <code>train</code>.
@@ -168,8 +168,8 @@ class Company(var name: String, val fabricTown: Town) {
     carriage.train = Some(train)
   }
 
-  /** Removes the tail carriage of an existing train. 
-    * 
+  /** Removes the tail carriage of an existing train.
+    *
     * @param train The train.
     * @throws IllegalArgumentException if the carriage can’t be removed from the train.
     */
@@ -185,7 +185,7 @@ class Company(var name: String, val fabricTown: Town) {
     carriage.town = train.town
   }
 
-  /** Completely disassemble an existing train. 
+  /** Completely disassemble an existing train.
     *
     * @param train The train to disassemble.
     * @throw IllegalArgumentException if the train can’t be disassembled.
@@ -210,8 +210,8 @@ class Company(var name: String, val fabricTown: Town) {
   /** Start a new travel (starting town will be the train's current town.)
    *
    * @param train The train to launch.
-   * @param to The destination of the travel.  
-   * @throws IllegalArgumentException if the travel can’t be launched. 
+   * @param to The destination of the travel.
+   * @throws IllegalArgumentException if the travel can’t be launched.
    */
   def launchTravel(train: Train, to: Town): Unit = {
     if (!ownsTrain(train)) {
@@ -223,7 +223,7 @@ class Company(var name: String, val fabricTown: Town) {
     if (train.tooHeavy) {
       throw new IllegalArgumentException("Train is too heavy")
     }
-    if (train.damaged) {
+    if (train.isDamaged) {
       throw new IllegalArgumentException("Train is damaged")
     }
     val routes = Game.world.findPath(train.town, to).getOrElse(throw new PathNotFoundException)
@@ -247,11 +247,11 @@ class Company(var name: String, val fabricTown: Town) {
     debit(vehicle.repairPrice)
     vehicle.repair()
   }
-  
+
   /** Upgrade a vehicle (a carriage or an engine).
     *
     * @param old The vehicle to upgrade.
-    * @param model The upgraded model. 
+    * @param model The upgraded model.
     * @throws IllegalArgumentException if the vehicle can’t be upgraded.
     */
   def upgrade[Model <: VehicleModel](old: VehicleFromModel[Model], model: Model): Unit = {
@@ -266,7 +266,7 @@ class Company(var name: String, val fabricTown: Town) {
       old.model = model
     }
   }
-  
+
   /** Returns true if <code>train</code> owns to the company. */
   def ownsTrain(train: Train): Boolean = train.owner == this
   /** Returns true if <code>vehicle</cpde> owns to the company. */

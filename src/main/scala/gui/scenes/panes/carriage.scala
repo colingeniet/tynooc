@@ -39,7 +39,7 @@ class CarriageDetail(carriage: Carriage) extends DrawableVBox {
       Some(name),
       Some(status),
       Some(health),
-      (if (carriage.damaged) Some(damaged) else None),
+      (if (carriage.isDamaged) Some(damaged) else None),
       Some(model)).flatMap(x => x)
   }
 }
@@ -72,7 +72,7 @@ class EngineDetail(engine: Engine) extends DrawableVBox {
       Some(name),
       Some(status),
       Some(health),
-      (if (engine.damaged) Some(damaged) else None),
+      (if (engine.isDamaged) Some(damaged) else None),
       Some(model)).flatMap(x => x)
   }
 }
