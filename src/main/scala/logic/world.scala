@@ -10,6 +10,7 @@ import logic.route._
 import collection.mutable.HashMap
 import collection.mutable.HashSet
 
+/** An object enumeration for people status. */
 object Status {
   var _id = 0
 
@@ -17,9 +18,12 @@ object Status {
     _id += 1
     def this() { this(_id) }
   }
-
+  
+  /** Represents rich people. */
   object Rich extends Status.Val
+  /** Represents poor people. */
   object Poor extends Status.Val
+  /** Represents well-off people. */
   object Well extends Status.Val
 }
 
@@ -29,11 +33,15 @@ object Status {
  *  This class handles all travels, as well as town population.
  */
 class World {
-  var status = Array(Status.Rich, Status.Poor, Status.Well)
-  var statusCriteria = Array((d:Town) => (r:Room) => r.comfort,
+  /** List of the status available in the world. */
+  val status = Array(Status.Rich, Status.Poor, Status.Well)
+  /** Criteria used to choose a room. */
+  val statusCriteria = Array((d:Town) => (r:Room) => r.comfort,
                              (d:Town) => (r:Room) => r.price(d),
                              (d:Town) => (r:Room) => r.comfort / (r.price(d)+1))
-  var statusNumber = status.length
+  /** The number of status in the world. */
+  val statusNumber = status.length
+  /** The fuel price in the world. */
   var fuelPrice = 1
 
   private var _towns: HashSet[Town] = HashSet()
@@ -42,8 +50,9 @@ class World {
   private var _companies: HashSet[Company] = HashSet()
   
   /** Callback called any time a new travel is added.
-   *
-   *  This is used to signal the new travel to the gui. */
+    *
+    *  This is used to signal the new travel to the gui. 
+    */
   var onAddTravel: Travel => Unit = {_ => ()}
 
   /** The towns in the world. */
@@ -58,10 +67,19 @@ class World {
   /** Total world population. */
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
-  /** Adds a new town. */
+  /** Adds a new town. 
+    *
+    * @param town The town to add.
+    */
   def addTown(town: Town): Unit = _towns.add(town)
 
-  /** Creates and add a new town. */
+  /** Creates and add a new town. 
+    *
+    * @param name The name of the town.
+    * @param x the x position of the town.
+    * @param y the y position of the town.
+    * @param welcomingLevel The welcoming level of the town (between 0 and 1).
+    */
   def addTown(name: String, x: Double, y: Double, welcomingLevel: Double): Unit = {
     addTown(new Town(name, x, y, welcomingLevel))
   }
@@ -74,18 +92,30 @@ class World {
     _companies.add(company)
   }
   
-  /** Adds a new travel in the world. */
+  /** Adds a new travel in the world. 
+    *
+    * @param travel The travel to add.
+    */
   def addTravel(travel:Travel): Unit = {
     _travels.add(travel)
     // callback
     onAddTravel(travel)
   }
 
-  /** Gets all travels of a specific company in the world. */
+  /** Gets all travels of a specific company in the world. 
+    *
+    * @param company The company.
+    */
   def travelsOf(company: Company): HashSet[Travel] =
     travels.filter { _.company == company }
 
-
+  /** Try to send some passengers from <code>start</code> to
+    * <code>destination</code>. 
+    *
+    * @param start The start town.
+    * @param destination The destination town.
+    * @param migrantByStatus The number of passengers by status.
+    */
   def tryTravel(
     start: Town,
     destination: Town,
@@ -118,7 +148,6 @@ class World {
   def update(dt: Double): Unit = {
     travels.foreach(_.update(dt))
     _travels = travels.filter(!_.isDone)
-    // add later
     towns.foreach(_.update(dt))
   }
 
@@ -161,7 +190,10 @@ class World {
     }
   }
 
-  /** Returns the list of towns accessibles from a starting town. */
+  /** Returns the list of towns accessibles from a starting town.
+    *
+    * @param from The town.
+    */
   def townsAccessibleFrom(from: Town): List[Town] = {
     var closed: Set[Town] = Set()
     var open: Set[Town] = Set(from)
