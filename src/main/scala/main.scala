@@ -9,7 +9,7 @@ import ai._
 import player._
 
 object MainJFXApp extends JFXApp {
-  /** Initializes the game. */
+  /** Initializes the game and return the main player. */
   def gameInit(): Player = {
     Game.init()
     Game.players = List(new Player(company("Company name")),
@@ -20,7 +20,10 @@ object MainJFXApp extends JFXApp {
     Game.mainPlayer.get
   }
 
-  /** Creates a new company. */
+  /** Creates a new company. 
+    *
+    * @param name The name of the company.
+    */
   def company(name: String): Company = {
     val company = new Company(name, Game.world.towns.find(_.name == "C411").get)
     company.credit(10000)

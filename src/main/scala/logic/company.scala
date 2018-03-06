@@ -33,10 +33,10 @@ extends Exception(message, cause)
 
 
 /** A company.
- *
- *  @param name The name of the company.
- *  @param fabricTown The town in which the company rolling stock is produced.
- */
+  *
+  * @param name The name of the company.
+  * @param fabricTown The town in which the company rolling stock is produced.
+  */
 class Company(var name: String, val fabricTown: Town) {
   /** The company trains. */
   val trains: HashSet[Train] = HashSet()
@@ -69,11 +69,14 @@ class Company(var name: String, val fabricTown: Town) {
   }
 
   /** Returns the available carriages of this company.
-   *
-   *  A carriage is available if not in a train and not damaged. */
+    * A carriage is available if not in a train and not damaged.
+    */
   def carriagesAvailable: HashSet[Carriage] = carriages.filter(_.isAvailable)
 
-  /** Returns the carriages of this company available in a town. */
+  /** Returns the carriages of this company available in a town. 
+    *
+    * @param town The town.
+    */
   def carriagesStoredAt(town: Town): HashSet[Carriage] =
     carriages.filter(c => !c.isUsed && c.town == town)
 
@@ -84,11 +87,14 @@ class Company(var name: String, val fabricTown: Town) {
   }
 
   /** Returns the available engines of this company.
-   *
-   *  An engine is available if not in a train and not damaged. */
+    * An engine is available if not in a train and not damaged.
+    */
   def enginesAvailable: HashSet[Engine] = engines.filter(_.isAvailable)
 
-  /** Returns the engines of this company available in a town. */
+  /** Returns the engines of this company available in a town. 
+    *
+    * @param town The town.
+    */
   def enginesStoredAt(town: Town): HashSet[Engine] =
     engines.filter(e => !e.isUsed && e.town == town)
 
@@ -200,10 +206,10 @@ class Company(var name: String, val fabricTown: Town) {
   }
 
   /** Start a new travel (starting town will be the train's current town.)
-   *
-   * @param train The train to launch.
-   * @param to The destination of the travel.
-   */
+    *
+    * @param train The train to launch.
+    * @param to The destination of the travel.
+    */
   def launchTravel(train: Train, to: Town): Unit = {
     if (!ownsTrain(train)) {
       throw new IllegalArgumentException("Company doesn’t own the train")
