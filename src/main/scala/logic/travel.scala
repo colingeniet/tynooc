@@ -8,7 +8,7 @@ import logic.route._
 import logic.company._
 import logic.game._
 
-object State {
+private object State {
   sealed trait Val
   case object Launched extends Val
   case object Waiting extends Val //Waiting for passengers

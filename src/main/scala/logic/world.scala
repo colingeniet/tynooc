@@ -18,9 +18,9 @@ object Status {
     def this() { this(_id) }
   }
 
-  object RICH extends Status.Val
-  object POOR extends Status.Val
-  object WELL extends Status.Val
+  object Rich extends Status.Val
+  object Poor extends Status.Val
+  object Well extends Status.Val
 }
 
 /** The game world representation.
@@ -29,7 +29,7 @@ object Status {
  *  This class handles all travels, as well as town population.
  */
 class World {
-  var status = Array(Status.RICH, Status.POOR, Status.WELL)
+  var status = Array(Status.Rich, Status.Poor, Status.Well)
   var statusCriteria = Array((d:Town) => (r:Room) => r.comfort,
                              (d:Town) => (r:Room) => r.price(d),
                              (d:Town) => (r:Room) => r.comfort / (r.price(d)+1))

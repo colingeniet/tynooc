@@ -1,6 +1,5 @@
 package logic.town
 
-import logic.graph._
 import logic.route._
 import logic.game._
 import logic.world._

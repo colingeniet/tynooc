@@ -138,7 +138,7 @@ class Train (
   var engine: Engine,
   var carriages: List[Carriage],
   var town: Town) {
-  var name: String = "train"
+  var name: String = "train name"
 
   var travel: Option[Travel] = None
 
