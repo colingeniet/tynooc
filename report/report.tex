@@ -13,7 +13,7 @@
 \tableofcontents
 
 \section{General program organization}
-The game is split into two main parts : the game logic engine (or engine), and the interface (or gui):
+The game is split into two main parts: the game logic engine (or engine), and the interface (or gui).
 \begin{itemize}
 \item The game engine simulates the world, that is simulates passengers and trains movements.
 \item The gui interacts with the engine by transmitting player actions to the engine, 
@@ -25,14 +25,14 @@ This pattern is similar to a simplified Model-View-Controller design pattern:
 \item The model corresponds to the game engine.
 \item The view corresponds to the gui.
 \item The controller is implemented by the graphic library (scalaFX), and is therefore mostly hidden in the game code.
-The controller setup, in the form of of scalaFX event handlers, is integrated in the gui.
+The controller setup, in the form of scalaFX event handlers, is integrated in the gui.
 \end{itemize}
 
 
 
 \section{Game logic engine}
 The game engine defines all game objects (towns, routes, trains, carriages ...), and simulates world evolution.
-World simulation uses a step by step logic : at each step, trains advance based on the time passed since last step,
+World simulation uses a step by step logic: at each step, trains move based on the time that passed since last step,
 and towns generate passengers.
 
 \subsection{Passengers}
@@ -61,7 +61,7 @@ However, the scalaFX library is oriented towards the an event handling logic
 in which changes in the interface come as a result of an event (user action, ...).
 
 We decided to solve this problem by combining the two methods, 
-and using the most appropriate one, depending on the situation :
+and using the most appropriate one, depending on the situation:
 \begin{itemize}
 \item Interface elements that only change as a result of user actions (typically menus) 
 are implemented through event handling.
