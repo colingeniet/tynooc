@@ -3,6 +3,7 @@ package logic.train
 import logic.route._
 import logic.town._
 import logic.travel._
+import logic.company._
 
 import collection.mutable.HashMap
 
@@ -81,7 +82,8 @@ object CarriageModel extends NameMap[CarriageModel] {
 trait Vehicle {
   var train: Option[Train]
   var health: Double
-
+  var owner: Company
+  
   def isUsed: Boolean = train.isDefined
 
   def repairPrice: Double
@@ -91,7 +93,8 @@ trait Vehicle {
 /** Implements [[Vehicle]] based on a [[VehicleModel]]. */
 class VehicleFromModel[Model <: VehicleModel](
   private var _model: Model,
-  var town: Town)
+  var town: Town,
+  var owner: Company)
 extends Vehicle {
   var train: Option[Train] = None
   var health: Double = model.health
@@ -112,9 +115,9 @@ extends Vehicle {
  *
  *  @param _model the engine model.
  */
-class Engine(model: EngineModel, town: Town)
-extends VehicleFromModel[EngineModel](model, town) {
-  def this(name: String, town: Town) = this(EngineModel(name), town)
+class Engine(model: EngineModel, town: Town, owner: Company)
+extends VehicleFromModel[EngineModel](model, town, owner) {
+  def this(name: String, town: Town, owner: Company) = this(EngineModel(name), town, owner)
 
   def speed:Double = model.speed * (0.75 + 0.25 * health/model.health)
 }
@@ -123,21 +126,22 @@ extends VehicleFromModel[EngineModel](model, town) {
  *
  *  @param _model the carriage model.
  */
-class Carriage(model: CarriageModel, town: Town)
-extends VehicleFromModel[CarriageModel](model, town) {
+class Carriage(model: CarriageModel, town: Town, owner: Company)
+extends VehicleFromModel[CarriageModel](model, town, owner) {
   var placePrice: Double = 0.20
 
   def capacity: Int = model.capacity
   def comfort:Double = model.comfort * (0.75 + 0.25 * health/model.health)
 
-  def this(name: String, town: Town) = this(CarriageModel(name), town)
+  def this(name: String, town: Town, owner: Company) = this(CarriageModel(name), town, owner)
 }
 
 
 class Train (
   var engine: Engine,
   var carriages: List[Carriage],
-  var town: Town) {
+  var town: Town,
+  var owner: Company) {
   var name: String = "train name"
 
   var travel: Option[Travel] = None
