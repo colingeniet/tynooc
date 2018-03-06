@@ -10,7 +10,7 @@ It has a 'quality' note, based on welcoming level and population.
 # Roads
 
 Roads join two cities, and have a length and a damage value (see train damage).
-They are oriented for genericity and simplicity purpose.
+Roads are oriented for simplicity.
 
 # World
 
@@ -21,11 +21,11 @@ and travels simulation.
 ## Passengers generation.
 
 Every simulation tick, each town generates a number of passengers toward
-a neighbour town. Passenger generation approximately follows a binomial law,
+a neighbor town. Passenger generation approximately follows a binomial law,
 with parameters depending on the town population, and the respective town
 notes.
 
-We may later add passengers toward any town (not only immediate neighbours).
+We may later add passengers toward any town (not only immediate neighbors).
 
 Passengers are awaiting for departure are registered in the `Town` class.
 They will try to take any train going to their destination.
@@ -35,7 +35,7 @@ Passengers that board a train are recorded in the corresponding `Travel` object.
 # Travels
 
 Class `Travel` defines the state of a train on a travel.
-It consist of a train, a travel plan as list of routes, the current position,
+It consist of a train, a travel plan as a list of routes, the current position,
 and a list of passengers.
 
 At each update step, the train advance of the appropriate distance.
