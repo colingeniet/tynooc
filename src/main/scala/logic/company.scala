@@ -101,7 +101,7 @@ class Company(var name: String, val fabricTown: Town) {
     val model = EngineModel(name)
     if (model.price <= money) {
       debit(model.price)
-      vehicles.add(new Engine(model, fabricTown))
+      vehicles.add(new Engine(model, fabricTown, this))
     }
   }
 
@@ -113,7 +113,7 @@ class Company(var name: String, val fabricTown: Town) {
     val model = CarriageModel(name)
     if (model.price <= money) {
       debit(model.price)
-      vehicles.add(new Carriage(model, fabricTown))
+      vehicles.add(new Carriage(model, fabricTown, this))
     }
   }
 
@@ -128,7 +128,7 @@ class Company(var name: String, val fabricTown: Town) {
     if (engine.isUsed) {
       throw new IllegalArgumentException("Engine is in use")
     }
-    val train = new Train(engine, List(), engine.town)
+    val train = new Train(engine, List(), engine.town, this)
     engine.train = Some(train)
     trains.add(train)
     train
@@ -261,7 +261,7 @@ class Company(var name: String, val fabricTown: Town) {
   }
   
   /** Returns true if <code>train</code> owns to the company. */
-  def ownsTrain(train: Train): Boolean = trains.contains(train)
+  def ownsTrain(train: Train): Boolean = train.owner == this
   /** Returns true if <code>vehicle</cpde> owns to the company. */
-  def ownsVehicle(vehicle: Vehicle): Boolean = vehicles.contains(vehicle)
+  def ownsVehicle(vehicle: Vehicle): Boolean = vehicle.owner == this
 }
