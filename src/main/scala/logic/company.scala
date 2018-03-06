@@ -9,7 +9,13 @@ import logic.game._
 import logic.world._
 import logic.graph._
 
+/** An object to manage prices. */
 object PriceSimulation {
+  /** Returns the price of an upgrade.
+    * 
+    * @param from The old model.
+    * @param to The upgraded model.
+    */
   def upgradePrice[Model <: VehicleModel](
     from: VehicleFromModel[Model],
     to: Model): Double = {
@@ -38,6 +44,7 @@ class Company(var name: String, val fabricTown: Town) {
   val vehicles: HashSet[Vehicle] = HashSet()
   /** The company money. */
   var money: Double = 0
+  /** The Schoown state of the company. */
   var schwoon: Boolean = false
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)

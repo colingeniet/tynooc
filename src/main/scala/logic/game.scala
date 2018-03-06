@@ -17,10 +17,10 @@ object Game {
   /* Simulation rate control. */
   var paused: Boolean = false
   var timeAcceleration: Double = 1
+  var mapPath = "map/Map"
 
   /** Advance simulation.
-   */
-
+    */
   def update(): Unit = {
     val a: Double = System.currentTimeMillis()
     if (!paused) {
@@ -45,9 +45,9 @@ object Game {
     world.update(dt)
   }
 
-  /** Reinitialize game state. */
+  /** Init game state. */
   def init(): Unit = {
-    world = Parser.readWorldInformations("map/Map")
+    world = Parser.readWorldInformations(mapPath)
     time = 0
     paused = false
     timeAcceleration = 1
@@ -57,11 +57,11 @@ object Game {
   // 4 sec (real time) = 1 hours (game time)
   def realToVirtualTime(t: Double): Double = t / 4000
 
-  /** Convert a time as a double to its string representation.
-   *
-   *  The double value is interpreted as hours.
-   *  Format : <Hours>h<Min>
-   */
+  /** Convert a time as a double to its string representation. 
+    * Format : <Hours>h<Min>
+    *
+    *  @param t The <code>Double</code> value is interpreted as hours.
+    */
   def timeToHourString(t: Double): String =
     f"${t.floor}%02.0fh${t * 60 % 60}%02.0f"
 
