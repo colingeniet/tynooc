@@ -109,6 +109,6 @@ class Room(val travel: Travel, val carriage: Carriage) {
     if(number > availablePlaces)
       throw new CantBuyException
     passengers(destination)(status.id) += number
-    travel.owner.credit(price(destination) * number)
+    travel.company.credit(price(destination) * number)
   }
 }
