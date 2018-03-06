@@ -10,7 +10,7 @@ object Game {
   /* Time of last update. Used to control simulation rate. */
   private var last: Double = System.currentTimeMillis()
 
-  var world: World = null
+  var world: World = new World()
   var time: Double = 0
   /** List of the players */
   var players: List[Player] = List()
