@@ -101,6 +101,8 @@ extends Vehicle {
 
   def isDamaged: Boolean = health == 0
 
+  def isAvailable: Boolean = !isDamaged && !isUsed
+
   def model: Model = _model
   def model_=(newModel: Model): Unit = {
     _model = newModel
