@@ -57,8 +57,7 @@ status separately.
 \section{GUI}
 The main problem we faced in implementing the game gui with scalaFX was to display constantly changing objects ---
 typically trains on the world map. A typical way to handle is to use a main loop which continuously updates the interface.
-However, the scalaFX library is oriented towards the an event handling logic
-in which changes in the interface come as a result of an event (user action, ...).
+However, the scalaFX library has an event handling logic in which changes in the interface come as a result of an event (user action, ...).
 
 We decided to solve this problem by combining the two methods, 
 and using the most appropriate one, depending on the situation:
