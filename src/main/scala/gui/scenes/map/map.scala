@@ -36,7 +36,7 @@ class Map(
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
 extends ScrollPane with Drawable {
-  
+
   private object ColorManager {
     val colors = Array(
     AliceBlue,
@@ -187,18 +187,18 @@ extends ScrollPane with Drawable {
     WhiteSmoke,
     Yellow,
     YellowGreen)
-    var actual = -1
-    
+    var current = -1
+
     def color: paint.Color = {
-      actual = (actual + 1) % colors.length
-      colors(actual)
+      current = (current + 1) % colors.length
+      colors(current)
     }
   }
-  
+
   private var colors: HashMap[Company, paint.Color] = new HashMap()
   colors(company) = Red
   world.companies.filter { _ != company }.map { colors(_) = ColorManager.color }
-  
+
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
   private object MapContent extends ZoomPane with Drawable {
