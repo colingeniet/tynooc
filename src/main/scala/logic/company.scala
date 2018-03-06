@@ -256,8 +256,8 @@ class Company(var name: String, val fabricTown: Town) {
     }
   }
 
-  /** Returns true if <code>train</code> owns to the company. */
+  /** Returns true if this company owns <code>train</code>. */
   def ownsTrain(train: Train): Boolean = train.owner == this
-  /** Returns true if <code>vehicle</cpde> owns to the company. */
+  /** Returns true if this company owns <code>vehicle</code>. */
   def ownsVehicle(vehicle: Vehicle): Boolean = vehicle.owner == this
 }
