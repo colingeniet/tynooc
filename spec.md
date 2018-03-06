@@ -1,4 +1,4 @@
-This is a short specification of basic game mechanics.
+This is a summary of basic game mechanics.
 
 # Towns
 
@@ -75,7 +75,7 @@ They can either be on route or stored. When on route, most actions
 are impossible (assembling, disassembling).
 
 
-# Players (/Companies)
+# Companies (players)
 
 A player owns engines, carriages, trains and money.
 He can buy vehicles, upgrade them (if they are not in use),
