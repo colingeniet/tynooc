@@ -209,7 +209,7 @@ extends ScrollPane with Drawable {
      */
     private class MapTravel(val travel: Travel) extends Circle {
       radius = 8
-      fill = colors(travel.owner)
+      fill = colors(travel.company)
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
           displayTravel(travel)
