@@ -64,7 +64,7 @@ class TravelInfo(travel: Travel) extends DrawableVBox {
       nextETA.text = s" ETA : ${Game.timeToHourString(travel.remainingTime)}"
       passengers.text = s"pass. : ${travel.passengerNumber}"
     }
-    company.text = travel.owner.name
+    company.text = travel.company.name
     trainInfo.draw()
   }
 }
