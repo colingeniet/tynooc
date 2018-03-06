@@ -75,7 +75,7 @@ class Company(var name: String, val fabricTown: Town) {
 
   /** Returns the available carriages of this company.
    *
-   *  A carriage is available if not in a train. */
+   *  A carriage is available if not in a train and not damaged. */
   def carriagesAvailable: HashSet[Carriage] = carriages.filter(_.isAvailable)
 
   /** Returns the carriages of this company available in a town. */
@@ -84,18 +84,18 @@ class Company(var name: String, val fabricTown: Town) {
 
   /** Returns the engines of this company. */
   def engines: HashSet[Engine] = vehicles.flatMap {
-    case c: Engine => Some(c)
+    case e: Engine => Some(e)
     case _ => None
   }
 
   /** Returns the available engines of this company.
    *
-   *  An engine is available if not in a train. */
+   *  An engine is available if not in a train and not damaged. */
   def enginesAvailable: HashSet[Engine] = engines.filter(_.isAvailable)
 
   /** Returns the engines of this company available in a town. */
   def enginesStoredAt(town: Town): HashSet[Engine] =
-    engines.filter(c => !c.isUsed && c.town == town)
+    engines.filter(e => !e.isUsed && e.town == town)
 
   /** Returns the available trains of this company. */
   def trainsAvailable: HashSet[Train] = trains.filter { _.isAvailable }
