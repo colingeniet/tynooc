@@ -28,7 +28,7 @@ trait AI {
   * @param lastAction The time of the last action (it will play at <code>actionDelay</code> - <code>lastAction</code>).
   */
 class BasicAI(
-  override val company: Company, 
+  company: Company, 
   val actionDelay: Double, 
   var lastAction: Double)
 extends Player(company) with AI {
