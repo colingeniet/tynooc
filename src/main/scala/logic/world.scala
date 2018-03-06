@@ -83,7 +83,7 @@ class World {
 
   /** Gets all travels of a specific company in the world. */
   def travelsOf(company: Company): HashSet[Travel] =
-    travels.filter { _.owner == company }
+    travels.filter { _.company == company }
 
 
   def tryTravel(
