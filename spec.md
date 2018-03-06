@@ -1,11 +1,11 @@
-This is a summary of basic game mechanics.
+This is a summary of game mechanics.
 
 # Towns
 
 Towns have position, a welcoming level, roads towards other towns
 and a number of inhabitants that varies with passengers movements.
 
-It has a quality note, based on welcoming level and population.
+It has a 'quality' note, based on welcoming level and population.
 
 # Roads
 
