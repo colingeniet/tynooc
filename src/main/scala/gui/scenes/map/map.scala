@@ -1,6 +1,7 @@
 package gui.scenes.map
 
 import collection.mutable.HashMap
+import scala.util.Random
 
 import scalafx.Includes._
 import scalafx.scene._
@@ -38,7 +39,7 @@ class Map(
 extends ScrollPane with Drawable {
 
   private object ColorManager {
-    val colors = Array(
+    val colors = Random.shuffle(List(
     AliceBlue,
     AntiqueWhite,
     Aqua,
@@ -158,7 +159,6 @@ extends ScrollPane with Drawable {
     Plum,
     PowderBlue,
     Purple,
-    Red,
     RosyBrown,
     RoyalBlue,
     SaddleBrown,
@@ -186,7 +186,7 @@ extends ScrollPane with Drawable {
     White,
     WhiteSmoke,
     Yellow,
-    YellowGreen)
+    YellowGreen)).toArray
     var current = -1
 
     def color: paint.Color = {
