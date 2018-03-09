@@ -246,6 +246,7 @@ extends DrawableVBox {
     val upgradeButton: Button = new Button("Upgrade")
 
     val priceField: TextField = new TextField() {
+      text = s"${MoneyFormatter.format(carriage.placePrice)} (place price by distance)."
       onMouseExited = (event: MouseEvent) => {
         text = s"${MoneyFormatter.format(carriage.placePrice)} (place price by distance)."
       }
