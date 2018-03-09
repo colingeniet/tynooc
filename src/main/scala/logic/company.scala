@@ -138,7 +138,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def createTrainFromEngine(engine: Engine): Train = {
     if (!ownsVehicle(engine)) {
-      throw new IllegalArgumentException("Company doesn't own the engine")
+      throw new IllegalOwnerException("Company doesn't own the engine")
     }
     val train = new Train(engine, List(), engine.town, this)
     trains.add(train)
@@ -152,10 +152,10 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def addCarriageToTrain(train: Train, carriage: Carriage): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn't own the train")
+      throw new IllegalOwnerException("Company doesn't own the train")
     }
     if (!ownsVehicle(carriage)) {
-      throw new IllegalArgumentException("Company doesn't own the carriage")
+      throw new IllegalOwnerException("Company doesn't own the carriage")
     }
     train.addCarriage(carriage)
   }
@@ -166,7 +166,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def removeCarriageFromTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn't own the train")
+      throw new IllegalOwnerException("Company doesn't own the train")
     }
     train.removeCarriage()
   }
@@ -177,7 +177,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def disassembleTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn't own the train")
+      throw new IllegalOwnerException("Company doesn't own the train")
     }
     train.disassemble()
     trains.remove(train)
@@ -190,7 +190,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def launchTravel(train: Train, to: Town): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn't own the train")
+      throw new IllegalOwnerException("Company doesn't own the train")
     }
     val routes = Game.world.findPath(train.town, to).getOrElse(throw new PathNotFoundException)
     val travel = new Travel(train, routes, this)
@@ -204,7 +204,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def repair(vehicle: Vehicle): Unit = {
     if (!ownsVehicle(vehicle)) {
-      throw new IllegalArgumentException("Company doesn't own the vehicle")
+      throw new IllegalOwnerException("Company doesn't own the vehicle")
     }
     debit(vehicle.repairPrice)
     vehicle.repair()
@@ -217,7 +217,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def upgrade[Model <: VehicleModel](old: VehicleFromModel[Model], model: Model): Unit = {
     if (!ownsVehicle(old)) {
-      throw new IllegalArgumentException("Company doesn't own the vehicle")
+      throw new IllegalOwnerException("Company doesn't own the vehicle")
     }
     if (money >= PriceSimulation.upgradePrice(old, model)) {
       debit(PriceSimulation.upgradePrice(old, model))
