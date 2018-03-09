@@ -7,6 +7,11 @@ import logic.company._
 
 import collection.mutable.HashMap
 
+final case class IllegalActionException(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
+
 /** A class mapping names to objects.
  *
  *  @param T the type of objects in the map.
@@ -103,13 +108,21 @@ extends Vehicle {
   def isAvailable: Boolean = !isDamaged && !isUsed
 
   def model: Model = _model
-  def model_=(newModel: Model): Unit = {
+  
+  def upgradeTo(newModel: Model): Unit = {
+    if (isUsed)
+      throw new IllegalArgumentException("Vehicle is in use")
     _model = newModel
-    repair()
+    health = model.health
   }
 
   override def repairPrice: Double = 0.25 * model.price * (health/model.health)
-  override def repair(): Unit = health = model.health
+  
+  override def repair(): Unit = {
+    if(isUsed)
+      throw new IllegalActionException("This vehicle is used.")
+    health = model.health
+  }
 }
 
 /** An engine.
@@ -143,8 +156,13 @@ class Train (
   var carriages: List[Carriage],
   var town: Town,
   var owner: Company) {
-  var name: String = "train name"
-
+  
+  if(engine.isUsed)
+    throw new IllegalActionException("Can't create train with already used engine.")
+  engine.train = Some(this)
+  
+  var name: String = "Train name"
+  
   var travel: Option[Travel] = None
 
   def onRoute: Boolean = travel.isDefined
@@ -168,14 +186,46 @@ class Train (
 
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
+    if(c.isUsed)
+      throw new IllegalActionException("Can't add used carriage to a train.")
+    if(onRoute)
+      throw new IllegalActionException("Can't add carriage to on road train.")    
+    if (town != c.town)
+      throw new IllegalActionException(s"Can't add ${c.town} stocked carriage to a ${town} stocked train.")
+    c.train = Some(this)
     carriages = c :: carriages
   }
 
-  /** Remove the last carriage of the train and returns it.
-   */
+  /** Remove the last carriage of the train and returns it. */
   def removeCarriage(): Carriage = {
+    if(onRoute)
+      throw IllegalActionException("Can't remove carriage to on road train.")
     val last = carriages.head
     carriages = carriages.tail
+    last.train = None
+    last.town = town
     last
+  }
+  
+  /** Disassemble a train. */
+  def disassemble(): Unit = {
+    if (onRoute)
+      throw new IllegalActionException("Can't disassemble used train.")
+    engine.town = town
+    engine.train = None
+    carriages.foreach{ c =>
+      c.town = town
+      c.train = None
+    }
+  }
+  
+  def launchTravel(newTravel : Travel): Unit = {
+    if (onRoute)
+      throw new IllegalActionException("Can't launch travel with used train.")
+    if (tooHeavy)
+      throw new IllegalActionException("Can't launch travel with too heavy train.")
+    if (isDamaged)
+      throw new IllegalActionException("Can't launch travel with damaged train.")
+    travel = Some(newTravel)
   }
 }

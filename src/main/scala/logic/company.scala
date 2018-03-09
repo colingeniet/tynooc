@@ -16,12 +16,19 @@ object PriceSimulation {
     * @param from The old model.
     * @param to The upgraded model.
     */
+  // TODO include the repair price.
   def upgradePrice[Model <: VehicleModel](
     from: VehicleFromModel[Model],
     to: Model): Double = {
     (to.price - from.model.price) * 1.2
-  }
+  } 
 }
+
+final case class IllegalOwnerException(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
+
 
 /** An exception which could be throwed if a player try to launchTravel
   * a travel to an unattainable destination.
@@ -49,13 +56,13 @@ class Company(var name: String, val fabricTown: Town) {
 
   /** Credits the player with <code>amount</code> euros.
     *
-    * @param amount The money to add to the company’s current amount.
+    * @param amount The money to add to the company's current amount.
     */
   def credit(amount: Double): Unit = money += amount
 
   /** Debit the player of <code>amount</code> euros.
     *
-    * @param amount The money to delete to the company’s current amount.
+    * @param amount The money to delete to the company's current amount.
     */
   def debit(amount: Double): Unit = {
     // interest rate
@@ -101,7 +108,7 @@ class Company(var name: String, val fabricTown: Town) {
   /** Returns the available trains of this company. */
   def trainsAvailable: HashSet[Train] = trains.filter { _.isAvailable }
 
-  /** Buy an engine and add it to the company’s engines.
+  /** Buy an engine and add it to the company's engines.
     *
     * @param name The name of the engine to buy.
     */
@@ -113,7 +120,7 @@ class Company(var name: String, val fabricTown: Town) {
     }
   }
 
-  /** Buy a carriage and add it to the company’s carriages.
+  /** Buy a carriage and add it to the company's carriages.
     *
     * @param name The name of the carriage to buy.
     */
@@ -131,13 +138,9 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def createTrainFromEngine(engine: Engine): Train = {
     if (!ownsVehicle(engine)) {
-      throw new IllegalArgumentException("Company doesn’t own the engine")
-    }
-    if (engine.isUsed) {
-      throw new IllegalArgumentException("Engine is in use")
+      throw new IllegalArgumentException("Company doesn't own the engine")
     }
     val train = new Train(engine, List(), engine.town, this)
-    engine.train = Some(train)
     trains.add(train)
     train
   }
@@ -149,23 +152,12 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def addCarriageToTrain(train: Train, carriage: Carriage): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn’t own the train")
-    }
-    if (train.onRoute) {
-      throw new IllegalArgumentException("Train is in use")
+      throw new IllegalArgumentException("Company doesn't own the train")
     }
     if (!ownsVehicle(carriage)) {
-      throw new IllegalArgumentException("Company doesn’t own the carriage")
+      throw new IllegalArgumentException("Company doesn't own the carriage")
     }
-    if (carriage.isUsed) {
-      throw new IllegalArgumentException("Carriage is in use")
-    }
-    if (train.town != carriage.town) {
-      throw new IllegalArgumentException("Train and Carriage in different locations")
-    }
-
     train.addCarriage(carriage)
-    carriage.train = Some(train)
   }
 
   /** Removes the tail carriage of an existing train.
@@ -174,14 +166,9 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def removeCarriageFromTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn’t own the train")
+      throw new IllegalArgumentException("Company doesn't own the train")
     }
-    if (train.onRoute) {
-      throw new IllegalArgumentException("Train is in use")
-    }
-    val carriage: Carriage = train.removeCarriage()
-    carriage.train = None
-    carriage.town = train.town
+    train.removeCarriage()
   }
 
   /** Completely disassemble an existing train.
@@ -190,18 +177,9 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def disassembleTrain(train: Train): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn’t own the train")
+      throw new IllegalArgumentException("Company doesn't own the train")
     }
-    if (train.onRoute) {
-      throw new IllegalArgumentException("Train is in use")
-    }
-    train.engine.town = train.town
-    train.engine.train = None
-
-    train.carriages.foreach{ c =>
-      c.town = train.town
-      c.train = None
-    }
+    train.disassemble()
     trains.remove(train)
   }
 
@@ -212,20 +190,11 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def launchTravel(train: Train, to: Town): Unit = {
     if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn’t own the train")
-    }
-    if (train.onRoute) {
-      throw new IllegalArgumentException("Train is in use")
-    }
-    if (train.tooHeavy) {
-      throw new IllegalArgumentException("Train is too heavy")
-    }
-    if (train.isDamaged) {
-      throw new IllegalArgumentException("Train is damaged")
+      throw new IllegalArgumentException("Company doesn't own the train")
     }
     val routes = Game.world.findPath(train.town, to).getOrElse(throw new PathNotFoundException)
     val travel = new Travel(train, routes, this)
-    train.travel = Some(travel)
+    train.launchTravel(travel)
     Game.world.addTravel(travel)
   }
 
@@ -235,10 +204,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def repair(vehicle: Vehicle): Unit = {
     if (!ownsVehicle(vehicle)) {
-      throw new IllegalArgumentException("Company doesn’t own the vehicle")
-    }
-    if (vehicle.isUsed) {
-      throw new IllegalArgumentException("Vehicle is in use")
+      throw new IllegalArgumentException("Company doesn't own the vehicle")
     }
     debit(vehicle.repairPrice)
     vehicle.repair()
@@ -251,14 +217,11 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def upgrade[Model <: VehicleModel](old: VehicleFromModel[Model], model: Model): Unit = {
     if (!ownsVehicle(old)) {
-      throw new IllegalArgumentException("Company doesn’t own the vehicle")
-    }
-    if (old.isUsed) {
-      throw new IllegalArgumentException("Vehicle is in use")
+      throw new IllegalArgumentException("Company doesn't own the vehicle")
     }
     if (money >= PriceSimulation.upgradePrice(old, model)) {
       debit(PriceSimulation.upgradePrice(old, model))
-      old.model = model
+      old.upgradeTo(model)
     }
   }
 
