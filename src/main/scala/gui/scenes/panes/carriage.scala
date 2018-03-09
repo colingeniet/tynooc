@@ -18,13 +18,10 @@ import logic.train._
 class CarriageDetail(carriage: Carriage) extends DrawableVBox {
   private val name: Label = new Label(carriage.model.name + " carriage")
   private val status: Label = new Label()
-  private val health: Label = new Label()
-  private val damaged: Label = new Label("damaged !") {
-    styleClass.add("alert")
-  }
   private val model: VBox = new CarriageModelStats(carriage.model)
 
   spacing = 3
+  children = List(name, status, model)
   draw()
 
   override def draw(): Unit = {
@@ -33,14 +30,6 @@ class CarriageDetail(carriage: Carriage) extends DrawableVBox {
     } else {
       status.text = "stored at " + carriage.town.name
     }
-    health.text = f"health : ${carriage.health}%.0f / ${carriage.model.health}%.0f"
-
-    children = List(
-      Some(name),
-      Some(status),
-      Some(health),
-      (if (carriage.isDamaged) Some(damaged) else None),
-      Some(model)).flatMap(x => x)
   }
 }
 
@@ -52,12 +41,10 @@ class EngineDetail(engine: Engine) extends DrawableVBox {
   private val name: Label = new Label(engine.model.name + " engine")
   private val status: Label = new Label()
   private val health: Label = new Label()
-  private val damaged: Label = new Label("damaged !") {
-    styleClass.add("alert")
-  }
   private val model: VBox = new EngineModelStats(engine.model)
 
   spacing = 3
+  children = List(name, status, model)
   draw()
 
   override def draw(): Unit = {
@@ -66,14 +53,6 @@ class EngineDetail(engine: Engine) extends DrawableVBox {
     } else {
       status.text = "stored at " + engine.town.name
     }
-    health.text = f"health : ${engine.health}%.0f / ${engine.model.health}%.0f"
-
-    children = List(
-      Some(name),
-      Some(status),
-      Some(health),
-      (if (engine.isDamaged) Some(damaged) else None),
-      Some(model)).flatMap(x => x)
   }
 }
 

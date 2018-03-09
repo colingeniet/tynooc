@@ -117,7 +117,6 @@ class Travel(val train: Train, private val roads: List[Route],
         }
         case State.Arrived => {
           company.debit(train.consumption(currentRoute.length) * Game.world.fuelPrice)
-          train.deteriorate(currentRoute)
           state = State.Waiting
           landPassengers
           remainingRoutes = remainingRoutes.tail

@@ -161,7 +161,7 @@ extends DrawableVBox {
       addCarriage.disable = train.onRoute
       disassembleOne.disable = train.onRoute || train.carriages.isEmpty
       disassembleAll.disable = train.onRoute
-      sendTravel.disable = train.onRoute || train.tooHeavy || train.isDamaged
+      sendTravel.disable = train.onRoute || train.tooHeavy
     }
 
     children = List(
@@ -186,11 +186,6 @@ extends DrawableVBox {
       company.createTrainFromEngine(engine)
     }
 
-    val repairButton: Button = new Button("Repair")
-    repairButton.onAction = (event: ActionEvent) => {
-      company.repair(engine)
-    }
-
     val upgradeButton: Button = new Button("Upgrade")
     upgradeButton.onAction = (event: ActionEvent) => {
       // when pressing the button, display the list of upgrades
@@ -213,7 +208,6 @@ extends DrawableVBox {
         list,
         sep2,
         createButton,
-        repairButton,
         upgradeButton,
         new Separator(),
         new Label("select upgrade"),
@@ -226,13 +220,11 @@ extends DrawableVBox {
       list,
       sep2,
       createButton,
-      repairButton,
       upgradeButton)
 
     // disable buttons as needed
     drawCallback = () => {
       createButton.disable = engine.isUsed
-      repairButton.disable = engine.isUsed
       upgradeButton.disable = engine.isUsed
     }
   }
@@ -242,7 +234,6 @@ extends DrawableVBox {
     // display stats in a separate window via callback
     statsCarriage(carriage)
 
-    val repairButton: Button = new Button("Repair")
     val upgradeButton: Button = new Button("Upgrade")
 
     val priceField: TextField = new TextField() {
@@ -260,10 +251,6 @@ extends DrawableVBox {
         }
         parent.value.requestFocus()
       }
-    }
-
-    repairButton.onAction = (event: ActionEvent) => {
-      company.repair(carriage)
     }
 
     upgradeButton.onAction = (event: ActionEvent) => {
@@ -286,7 +273,6 @@ extends DrawableVBox {
         sep1,
         list,
         sep2,
-        repairButton,
         upgradeButton,
         priceField,
         new Separator(),
@@ -295,10 +281,9 @@ extends DrawableVBox {
     }
 
 
-    children = List(menu, sep1, list, sep2, repairButton, upgradeButton, priceField)
+    children = List(menu, sep1, list, sep2, upgradeButton, priceField)
     // disable buttons as needed
     drawCallback = () => {
-      repairButton.disable = carriage.isUsed
       upgradeButton.disable = carriage.isUsed
     }
   }

@@ -2,6 +2,7 @@ package logic.company
 
 import collection.mutable.HashSet
 
+import logic.vehicle._
 import logic.train._
 import logic.travel._
 import logic.town._
@@ -17,11 +18,11 @@ object PriceSimulation {
     * @param to The upgraded model.
     */
   // TODO include the repair price.
-  def upgradePrice[Model <: VehicleModel](
-    from: VehicleFromModel[Model],
+  def upgradePrice[Model <: VehicleUnitModel](
+    from: VehicleUnitFromModel[Model],
     to: Model): Double = {
     (to.price - from.model.price) * 1.2
-  } 
+  }
 }
 
 final case class IllegalOwnerException(
@@ -48,7 +49,7 @@ class Company(var name: String, val fabricTown: Town) {
   /** The company trains. */
   val trains: HashSet[Train] = HashSet()
   /** The company carriages. */
-  val vehicles: HashSet[Vehicle] = HashSet()
+  val vehicles: HashSet[VehicleUnit] = HashSet()
   /** The company money. */
   var money: Double = 0
   /** Current travels for this company. */
@@ -78,9 +79,9 @@ class Company(var name: String, val fabricTown: Town) {
   /** Returns the available carriages of this company.
     * A carriage is available if not in a train and not damaged.
     */
-  def carriagesAvailable: HashSet[Carriage] = carriages.filter(_.isAvailable)
+  def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed)
 
-  /** Returns the carriages of this company available in a town. 
+  /** Returns the carriages of this company available in a town.
     *
     * @param town The town.
     */
@@ -96,9 +97,9 @@ class Company(var name: String, val fabricTown: Town) {
   /** Returns the available engines of this company.
     * An engine is available if not in a train and not damaged.
     */
-  def enginesAvailable: HashSet[Engine] = engines.filter(_.isAvailable)
+  def enginesAvailable: HashSet[Engine] = engines.filter(!_.isUsed)
 
-  /** Returns the engines of this company available in a town. 
+  /** Returns the engines of this company available in a town.
     *
     * @param town The town.
     */
@@ -198,24 +199,14 @@ class Company(var name: String, val fabricTown: Town) {
     Game.world.addTravel(travel)
   }
 
-  /** Repair a vehicle (a carriage or an engine).
-    *
-    * @param vehicle The vehicle to repair.
-    */
-  def repair(vehicle: Vehicle): Unit = {
-    if (!ownsVehicle(vehicle)) {
-      throw new IllegalOwnerException("Company doesn't own the vehicle")
-    }
-    debit(vehicle.repairPrice)
-    vehicle.repair()
-  }
-
   /** Upgrade a vehicle (a carriage or an engine).
     *
     * @param old The vehicle to upgrade.
     * @param model The upgraded model.
     */
-  def upgrade[Model <: VehicleModel](old: VehicleFromModel[Model], model: Model): Unit = {
+  def upgrade[Model <: VehicleUnitModel](
+    old: VehicleUnitFromModel[Model],
+    model: Model): Unit = {
     if (!ownsVehicle(old)) {
       throw new IllegalOwnerException("Company doesn't own the vehicle")
     }
@@ -228,5 +219,5 @@ class Company(var name: String, val fabricTown: Town) {
   /** Returns true if this company owns <code>train</code>. */
   def ownsTrain(train: Train): Boolean = train.owner == this
   /** Returns true if this company owns <code>vehicle</code>. */
-  def ownsVehicle(vehicle: Vehicle): Boolean = vehicle.owner == this
+  def ownsVehicle(vehicle: VehicleUnit): Boolean = vehicle.owner == this
 }
