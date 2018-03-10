@@ -43,7 +43,7 @@ class Travel(val train: Train, private val roads: List[Route],
   /** Current travel route. */
   def currentRoute: Route = remainingRoutes.head
   /** Last town reached. */
-  def currentTown: Town = train.town
+  def currentTown: Town = train.town()
   /** Destination reached. */
   def isDone: Boolean = remainingRoutes.isEmpty
   /** Tests if the travel will stop at a specific town.
@@ -121,10 +121,10 @@ class Travel(val train: Train, private val roads: List[Route],
           landPassengers
           remainingRoutes = remainingRoutes.tail
           currentRouteDistanceDone = 0
-          if(isDone) train.travel = None
+          if(isDone) train.travel() = None
         }
         case State.Waiting => {
-          train.town = nextTown
+          train.town() = nextTown
           state = State.OnRoute
         }
       }

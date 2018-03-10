@@ -47,27 +47,18 @@ extends DrawableVBox {
   private def displayTrains(): Unit = {
     list = new TrainList(company.trains.toList, detailTrain)
     children = List(menu, sep1, list)
-
-    // reset draw method
-    drawCallback = () => ()
   }
 
   /** Displays the engines list. */
   private def displayEngines(): Unit = {
     list = new EngineList(company.engines.toList, detailEngine)
     children = List(menu, sep1, list)
-
-    // reset draw method
-    drawCallback = () => ()
   }
 
   /** Displays the carriages list. */
   private def displayCarriages(): Unit = {
     list = new CarriageList(company.carriages.toList, detailCarriage)
     children = List(menu, sep1, list)
-
-    // reset draw method
-    drawCallback = () => ()
   }
 
   /** Displays a specific train. */
@@ -108,7 +99,7 @@ extends DrawableVBox {
       // when pressing the button, display a new carriage list
       val selectionList: CarriageList =
         new CarriageList(
-          company.carriagesStoredAt(train.town).toList,
+          company.carriagesStoredAt(train.town()).toList,
           carriage => {
             // when selecting a carriage, add it to the train
             company.addCarriageToTrain(train, carriage)
@@ -133,7 +124,7 @@ extends DrawableVBox {
     sendTravel.onAction = (event: ActionEvent) => {
       // when pressing the button, display the list of towns
       val selectionList: SelectionList[Town] = new SelectionList[Town](
-        world.townsAccessibleFrom(train.town),
+        world.townsAccessibleFrom(train.town()),
         _.name,
         town => {
           // when selecting a town, travel to it
@@ -157,12 +148,10 @@ extends DrawableVBox {
     }
 
     // disable buttons as needed
-    drawCallback = () => {
-      addCarriage.disable = train.onRoute
-      disassembleOne.disable = train.onRoute || train.carriages.isEmpty
-      disassembleAll.disable = train.onRoute
-      sendTravel.disable = train.onRoute || train.tooHeavy
-    }
+    addCarriage.disable <== train.onTravel
+    disassembleOne.disable <== train.onTravel // FIX ME || train.carriages.isEmpty
+    disassembleAll.disable <== train.onTravel
+    sendTravel.disable <== train.onTravel || train.tooHeavy
 
     children = List(
       menu,
@@ -223,10 +212,8 @@ extends DrawableVBox {
       upgradeButton)
 
     // disable buttons as needed
-    drawCallback = () => {
-      createButton.disable = engine.isUsed
-      upgradeButton.disable = engine.isUsed
-    }
+    createButton.disable <== engine.isUsed
+    upgradeButton.disable <== engine.isUsed
   }
 
   /** Displays a specific carriage. */
@@ -283,16 +270,7 @@ extends DrawableVBox {
 
     children = List(menu, sep1, list, sep2, upgradeButton, priceField)
     // disable buttons as needed
-    drawCallback = () => {
-      upgradeButton.disable = carriage.isUsed
-    }
-  }
-
-  // The actual draw function, changed as needed
-  private var drawCallback: () => Unit = () => ()
-
-  override def draw(): Unit = {
-    drawCallback()
+    upgradeButton.disable <== carriage.isUsed
   }
 }
 

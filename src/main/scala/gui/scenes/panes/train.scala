@@ -7,6 +7,7 @@ import scalafx.scene.layout._
 import scalafx.event._
 import scalafx.geometry._
 import scalafx.scene.paint.Color
+import scalafx.beans.binding._
 
 import gui.draw._
 import gui.scenes.elements._
@@ -74,19 +75,26 @@ class TrainStats(train: Train) extends DrawableVBox {
 
   children = List(name, status, weight, power)
   spacing = 3
+
+  status.text <== Bindings.createStringBinding(
+    () => (if (train.onTravel()) "en route to " else "stored at ")
+      + train.town().name,
+    train.onTravel,
+    train.town)
+  weight.text <== Bindings.createStringBinding(
+    () => "weight : " + train.weight(),
+    train.weight)
+
   draw()
 
   override def draw(): Unit = {
     name.text = train.name
-    status.text =
-      (if (train.onRoute) "en route to " else "stored at ") + train.town.name
-    weight.text = "weight : " + train.weight
     power.text = "power : " + train.engine.model.power
 
     children = List(
       Some(name),
       Some(status),
-      (if (train.tooHeavy) Some(tooHeavy) else None),
+      (if (train.tooHeavy()) Some(tooHeavy) else None),
       Some(weight),
       Some(power)).flatMap(x => x)
   }

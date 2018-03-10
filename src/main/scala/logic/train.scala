@@ -1,5 +1,8 @@
 package logic.train
 
+import scalafx.beans.property._
+import scalafx.beans.binding._
+
 import logic.route._
 import logic.town._
 import logic.travel._
@@ -84,13 +87,16 @@ object CarriageModel extends NameMap[CarriageModel] {
 
 
 class RailVehicle[Model <: RailVehicleModel](
-  _model: Model,
+  model: Model,
   town: Town,
   owner: Company)
-extends VehicleUnitFromModel[Model](_model, town, owner) {
-  var train: Option[Train] = None
+extends VehicleUnitFromModel[Model](model, town, owner) {
+  val train: ObjectProperty[Option[Train]] = ObjectProperty(None)
 
-  override def isUsed: Boolean = train.isDefined
+  val isUsed: BooleanBinding =
+    Bindings.createBooleanBinding(
+      () => train().isDefined,
+      train)
 }
 
 /** An engine.
@@ -113,7 +119,7 @@ extends RailVehicle[CarriageModel](model, town, owner) {
   var placePrice: Double = 0.20
 
   def capacity: Int = model.capacity
-  def comfort:Double = model.comfort
+  def comfort: Double = model.comfort
 
   def this(name: String, town: Town, owner: Company) = this(CarriageModel(name), town, owner)
 }
@@ -122,69 +128,75 @@ extends RailVehicle[CarriageModel](model, town, owner) {
 class Train (
   var engine: Engine,
   var carriages: List[Carriage],
-  var town: Town,
-  var owner: Company) {
+  _town: Town,
+  val owner: Company) extends Vehicle {
+  val town: ObjectProperty[Town] = ObjectProperty(_town)
 
-  if(engine.isUsed)
+  if(engine.isUsed())
     throw new IllegalActionException("Can't create train with already used engine.")
-  engine.train = Some(this)
+  engine.train() = Some(this)
 
   var name: String = "Train name"
 
-  var travel: Option[Travel] = None
+  override def speed: Double = engine.speed
+  override def consumption(distance: Double): Double = engine.model.consumption * distance
 
-  def onRoute: Boolean = travel.isDefined
+  val weight: DoubleProperty = DoubleProperty(
+    carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight))
 
-  def weight: Double = {
-    carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight)
-  }
+  val tooHeavy: BooleanBinding =
+    Bindings.createBooleanBinding(
+      () => weight() > engine.model.power,
+      weight)
 
-  def consumption(distance: Double): Double = engine.model.consumption * distance
-
-  def tooHeavy: Boolean = weight > engine.model.power
-
-  def isAvailable: Boolean = !onRoute && !tooHeavy
+  override val isAvailable: BooleanBinding =
+    Bindings.createBooleanBinding(
+      () => !tooHeavy() && !onTravel(),
+      tooHeavy,
+      onTravel)
 
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
-    if(c.isUsed)
+    if(c.isUsed())
       throw new IllegalActionException("Can't add used carriage to a train.")
-    if(onRoute)
+    if(onTravel())
       throw new IllegalActionException("Can't add carriage to on road train.")
-    if (town != c.town)
+    if (town() != c.town())
       throw new IllegalActionException(s"Can't add ${c.town} stocked carriage to a ${town} stocked train.")
-    c.train = Some(this)
+    c.train() = Some(this)
     carriages = c :: carriages
+    weight() += c.model.weight
   }
 
   /** Remove the last carriage of the train and returns it. */
   def removeCarriage(): Carriage = {
-    if(onRoute)
+    if(onTravel())
       throw IllegalActionException("Can't remove carriage to on road train.")
     val last = carriages.head
     carriages = carriages.tail
-    last.train = None
-    last.town = town
+    last.train() = None
+    last.town() = town()
+    weight() -= last.model.weight
     last
   }
 
   /** Disassemble a train. */
   def disassemble(): Unit = {
-    if (onRoute)
+    if (onTravel())
       throw new IllegalActionException("Can't disassemble used train.")
-    engine.town = town
-    engine.train = None
+    engine.town() = town()
+    engine.train() = None
     carriages.foreach{ c =>
-      c.town = town
-      c.train = None
+      c.town() = town()
+      c.train() = None
     }
   }
 
   def launchTravel(newTravel : Travel): Unit = {
-    if (onRoute)
+    if (onTravel())
       throw new IllegalActionException("Can't launch travel with used train.")
-    if (tooHeavy)
+    if (tooHeavy())
       throw new IllegalActionException("Can't launch travel with too heavy train.")
-    travel = Some(newTravel)
+    travel() = Some(newTravel)
   }
 }

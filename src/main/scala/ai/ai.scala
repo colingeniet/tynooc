@@ -48,13 +48,13 @@ extends Player(company) with AI {
         val carriages = company.carriagesAvailable
         if(!carriages.isEmpty) {
           company.addCarriageToTrain(train, carriages.head)
-          company.launchTravel(train, Random.shuffle(train.town.neighbours).head)
+          company.launchTravel(train, Random.shuffle(train.town().neighbours).head)
         }
       }
       val trains = company.trainsAvailable.filter { !_.carriages.isEmpty }
       if(!trains.isEmpty) {
         val train = Random.shuffle(trains).head
-        company.launchTravel(train, Random.shuffle(train.town.neighbours).head)
+        company.launchTravel(train, Random.shuffle(train.town().neighbours).head)
       }
     }
   }
