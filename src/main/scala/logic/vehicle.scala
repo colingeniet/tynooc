@@ -56,7 +56,7 @@ extends VehicleUnit {
 trait Vehicle {
   val owner: Company
   val town: ObjectProperty[Town]
-  var name: String
+  val name: StringProperty
   val travel: ObjectProperty[Option[Travel]] = ObjectProperty(None)
 
   val onTravel: BooleanBinding =

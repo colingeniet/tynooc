@@ -25,7 +25,7 @@ class CarriageDetail(carriage: Carriage) extends DrawableVBox {
   children = List(name, status, model)
   status.text <== Bindings.createStringBinding(
     () => {
-      if(carriage.isUsed()) "in " + carriage.train().get.name
+      if(carriage.isUsed()) "in " + carriage.train().get.name()
       else "stored at " + carriage.town().name
     },
     carriage.isUsed)
@@ -44,7 +44,7 @@ class EngineDetail(engine: Engine) extends DrawableVBox {
   children = List(name, status, model)
   status.text <== Bindings.createStringBinding(
     () => {
-      if(engine.isUsed()) "in " + engine.train().get.name
+      if(engine.isUsed()) "in " + engine.train().get.name()
       else "stored at " + engine.town().name
     },
     engine.isUsed)

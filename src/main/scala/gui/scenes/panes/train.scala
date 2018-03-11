@@ -76,6 +76,7 @@ class TrainStats(train: Train) extends DrawableVBox {
   children = List(name, status, weight, power)
   spacing = 3
 
+  name.text <== train.name
   status.text <== Bindings.createStringBinding(
     () => (if (train.onTravel()) "en route to " else "stored at ")
       + train.town().name,
@@ -88,7 +89,6 @@ class TrainStats(train: Train) extends DrawableVBox {
   draw()
 
   override def draw(): Unit = {
-    name.text = train.name
     power.text = "power : " + train.engine.model.power
 
     children = List(

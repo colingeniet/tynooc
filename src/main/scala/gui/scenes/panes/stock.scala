@@ -72,14 +72,8 @@ extends DrawableVBox {
     val addCarriage: Button = new Button("Add carriage")
     val sendTravel: Button = new Button("Travel")
     val nameField: TextField = new TextField() {
-      text = train.name
-      onAction = (event: ActionEvent) => {
-        train.name = text()
-        // redraw train list
-        displayTrains()
-        // display trains
-        detailTrain(train)
-      }
+      text = train.name()
+      train.name <== text
     }
 
     disassembleAll.onAction = (event: ActionEvent) => {
@@ -280,7 +274,7 @@ extends DrawableVBox {
  *  @param detail a callback called whenever a train is selected from the list.
  */
 class TrainList(trains: List[Train], detail: Train => Unit)
-extends SelectionList[Train](trains, _.name, detail)
+extends SelectionListDynamic[Train](trains, _.name, detail)
 
 /** Displays a list of carriages.
  *

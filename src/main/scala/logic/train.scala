@@ -136,7 +136,7 @@ class Train (
     throw new IllegalActionException("Can't create train with already used engine.")
   engine.train() = Some(this)
 
-  var name: String = "Train name"
+  val name: StringProperty = StringProperty("Train")
 
   override def speed: Double = engine.speed
   override def consumption(distance: Double): Double = engine.model.consumption * distance
