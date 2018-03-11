@@ -113,27 +113,30 @@ extends RailVehicle[CarriageModel](model, town, owner) {
 
 
 class Train (
-  var engine: Engine,
-  var carriages: List[Carriage],
+  val engine: Engine,
+  _carriages: List[Carriage],
   _town: Town,
   val owner: Company) extends Vehicle {
+  val carriages: ObjectProperty[List[Carriage]] = ObjectProperty(_carriages)
   val town: ObjectProperty[Town] = ObjectProperty(_town)
+
+  val name: StringProperty = StringProperty("Train")
 
   if(engine.isUsed())
     throw new IllegalActionException("Can't create train with already used engine.")
   engine.train() = Some(this)
 
-  val name: StringProperty = StringProperty("Train")
-
   override def speed: Double = engine.speed
   override def consumption(distance: Double): Double = engine.model.consumption * distance
 
-  val weight: DoubleProperty = DoubleProperty(
-    carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight))
+  val weight: DoubleProperty = DoubleProperty(0)
+  weight <== Bindings.createDoubleBinding(
+      () => carriages().foldLeft[Double](engine.model.weight)(_ + _.model.weight),
+      carriages)
 
   val tooHeavy: BooleanBinding =
     Bindings.createBooleanBinding(
-      () => weight() > engine.model.power,
+      () => weight.toDouble > engine.model.power,
       weight)
 
   override val isAvailable: BooleanBinding =
@@ -141,6 +144,11 @@ class Train (
       () => !tooHeavy() && !onTravel(),
       tooHeavy,
       onTravel)
+
+  val isEmpty: BooleanBinding =
+    Bindings.createBooleanBinding(
+      () => carriages().isEmpty,
+      carriages)
 
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
@@ -151,19 +159,17 @@ class Train (
     if (town() != c.town())
       throw new IllegalActionException(s"Can't add ${c.town} stocked carriage to a ${town} stocked train.")
     c.train() = Some(this)
-    carriages = c :: carriages
-    weight() += c.model.weight
+    carriages() = c :: carriages()
   }
 
   /** Remove the last carriage of the train and returns it. */
   def removeCarriage(): Carriage = {
     if(onTravel())
       throw IllegalActionException("Can't remove carriage to on road train.")
-    val last = carriages.head
-    carriages = carriages.tail
+    val last = carriages().head
+    carriages() = carriages().tail
     last.train() = None
     last.town() = town()
-    weight() -= last.model.weight
     last
   }
 
@@ -173,7 +179,7 @@ class Train (
       throw new IllegalActionException("Can't disassemble used train.")
     engine.town() = town()
     engine.train() = None
-    carriages.foreach{ c =>
+    carriages().foreach{ c =>
       c.town() = town()
       c.train() = None
     }

@@ -51,7 +51,7 @@ extends Player(company) with AI {
           company.launchTravel(train, Random.shuffle(train.town().neighbours).head)
         }
       }
-      val trains = company.trainsAvailable.filter { !_.carriages.isEmpty }
+      val trains = company.trainsAvailable.filter { !_.isEmpty() }
       if(!trains.isEmpty) {
         val train = Random.shuffle(trains).head
         company.launchTravel(train, Random.shuffle(train.town().neighbours).head)

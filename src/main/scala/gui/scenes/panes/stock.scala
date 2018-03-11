@@ -143,7 +143,7 @@ extends DrawableVBox {
 
     // disable buttons as needed
     addCarriage.disable <== train.onTravel
-    disassembleOne.disable <== train.onTravel // FIX ME || train.carriages.isEmpty
+    disassembleOne.disable <== train.onTravel || train.isEmpty
     disassembleAll.disable <== train.onTravel
     sendTravel.disable <== train.onTravel || train.tooHeavy
 
