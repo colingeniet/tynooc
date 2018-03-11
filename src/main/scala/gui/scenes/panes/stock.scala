@@ -86,7 +86,6 @@ extends DrawableVBox {
 
     disassembleOne.onAction = (event: ActionEvent) => {
       company.removeCarriageFromTrain(train)
-      detailTrain(train)
     }
 
     addCarriage.onAction = (event: ActionEvent) => {
@@ -97,7 +96,6 @@ extends DrawableVBox {
           carriage => {
             // when selecting a carriage, add it to the train
             company.addCarriageToTrain(train, carriage)
-            detailTrain(train)
           })
       // display new selection list upon button pressed
       children = List(

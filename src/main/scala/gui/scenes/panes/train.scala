@@ -8,6 +8,9 @@ import scalafx.event._
 import scalafx.geometry._
 import scalafx.scene.paint.Color
 import scalafx.beans.binding._
+import scalafx.beans.property._
+import scalafx.collections._
+import scalafx.collections.ObservableBuffer._
 
 import gui.draw._
 import gui.scenes.elements._
@@ -19,12 +22,24 @@ import logic.train._
  *  @param train the train to display.
  */
 class TrainDetail(train: Train) extends DrawableVBox {
-  private val list: SelectionMenu = new SelectionMenu()
-  list.addMenu(
-    train.engine.model.name + " engine",
-    displayEngine(train.engine))
-  train.carriages().reverse.foreach(carriage =>
-    list.addMenu(carriage.model.name + " carriage", displayCarriage(carriage)))
+  private val list: ScrollPane = new ScrollPane {
+    content = new SelectionMenu {
+      addMenu(train.engine.model.name + " engine", displayEngine(train.engine))
+      train.carriages.foreach { carriage =>
+        addMenu(carriage.model.name + " carriage", displayCarriage(carriage))
+      }
+
+      train.carriages.onChange(
+        (_: ObservableBuffer[Carriage], changes: Seq[Change[Carriage]]) => {
+          changes.foreach(_ match {
+            case Add(_, added) => added.foreach(c =>
+              addMenu(c.model.name + " carriage", displayCarriage(c)))
+            case Remove(pos, removed) => children.remove(pos, pos + removed.size)
+            case _ => ()
+          })
+        })
+    }
+  }
 
   // train statistics
   private val stats: TrainStats = new TrainStats(train)

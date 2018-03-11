@@ -2,6 +2,7 @@ package logic.train
 
 import scalafx.beans.property._
 import scalafx.beans.binding._
+import scalafx.collections._
 
 import logic.route._
 import logic.town._
@@ -117,7 +118,8 @@ class Train (
   _carriages: List[Carriage],
   _town: Town,
   val owner: Company) extends Vehicle {
-  val carriages: ObjectProperty[List[Carriage]] = ObjectProperty(_carriages)
+  val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
+
   val town: ObjectProperty[Town] = ObjectProperty(_town)
 
   val name: StringProperty = StringProperty("Train")
@@ -131,7 +133,7 @@ class Train (
 
   val weight: DoubleProperty = DoubleProperty(0)
   weight <== Bindings.createDoubleBinding(
-      () => carriages().foldLeft[Double](engine.model.weight)(_ + _.model.weight),
+      () => carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight),
       carriages)
 
   val tooHeavy: BooleanBinding =
@@ -147,7 +149,7 @@ class Train (
 
   val isEmpty: BooleanBinding =
     Bindings.createBooleanBinding(
-      () => carriages().isEmpty,
+      () => carriages.isEmpty(),
       carriages)
 
   /** Adds a carriage at the end of the train. */
@@ -159,15 +161,15 @@ class Train (
     if (town() != c.town())
       throw new IllegalActionException(s"Can't add ${c.town} stocked carriage to a ${town} stocked train.")
     c.train() = Some(this)
-    carriages() = c :: carriages()
+    carriages += c
   }
 
   /** Remove the last carriage of the train and returns it. */
   def removeCarriage(): Carriage = {
     if(onTravel())
       throw IllegalActionException("Can't remove carriage to on road train.")
-    val last = carriages().head
-    carriages() = carriages().tail
+    val last = carriages.last
+    carriages.remove(carriages.size - 1)
     last.train() = None
     last.town() = town()
     last
@@ -179,7 +181,7 @@ class Train (
       throw new IllegalActionException("Can't disassemble used train.")
     engine.town() = town()
     engine.train() = None
-    carriages().foreach{ c =>
+    carriages.foreach{ c =>
       c.town() = town()
       c.train() = None
     }

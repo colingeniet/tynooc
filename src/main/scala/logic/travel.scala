@@ -23,7 +23,7 @@ class Travel(val train: Train, private val roads: List[Route],
   if(train.owner != company)
     throw new IllegalArgumentException("Company doesn’t own the train")
 
-  private val rooms: List[Room] = train.carriages().map { new Room(this, _) }
+  private val rooms: List[Room] = train.carriages.toList.map { new Room(this, _) }
 
   /** Total travel distance. */
   private val distance: Double = (roads.map { _.length }).sum
