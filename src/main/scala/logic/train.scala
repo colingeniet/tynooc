@@ -16,19 +16,6 @@ final case class IllegalActionException(
   private val cause: Throwable = None.orNull)
 extends Exception(message, cause)
 
-/** A class mapping names to objects.
- *
- *  @param T the type of objects in the map.
- */
-trait NameMap[T] {
-  def models: HashMap[String, T]
-
-  /** Get an element from its name.
-   *
-   *  @param name the element name.
-   */
-  def apply(name: String): T = this.models.get(name).get
-}
 
 /** Template for a vehicle model class. */
 class RailVehicleModel(

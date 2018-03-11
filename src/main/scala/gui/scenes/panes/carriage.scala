@@ -73,3 +73,21 @@ class EngineModelStats(model: EngineModel) extends VBox(3) {
     new Label("weight : " + model.weight),
     new Label("consum. : " + model.consumption))
 }
+
+/** Generic info display.
+ *
+ *  @param m the class with the info do display
+ */
+object Stats {
+  def statFilter(field: java.lang.reflect.Field): Boolean = false
+}
+
+/** Generic info display.
+ *
+ *  @param m the class with the info do display
+ */
+class Stats[A](m: A) extends VBox(3) {
+  children = m.getClass().getDeclaredFields.toList.map(a => {a.setAccessible(true); a}).filterNot(Stats.statFilter(_)).map {
+    a => new Label(a.getName() + " : " + a.get(m))
+  }
+}
