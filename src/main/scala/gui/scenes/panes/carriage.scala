@@ -16,7 +16,7 @@ import logic.train._
  *
  *  @param carriage the carriage to display.
  */
-class CarriageDetail(carriage: Carriage) extends DrawableVBox {
+class CarriageDetail(carriage: Carriage) extends VBox {
   private val name: Label = new Label(carriage.model.name + " carriage")
   private val status: Label = new Label()
   private val model: VBox = new CarriageModelStats(carriage.model)
@@ -35,7 +35,7 @@ class CarriageDetail(carriage: Carriage) extends DrawableVBox {
  *
  *  @param engine the engine to display.
  */
-class EngineDetail(engine: Engine) extends DrawableVBox {
+class EngineDetail(engine: Engine) extends VBox {
   private val name: Label = new Label(engine.model.name + " engine")
   private val status: Label = new Label()
   private val model: VBox = new EngineModelStats(engine.model)

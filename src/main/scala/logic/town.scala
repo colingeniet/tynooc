@@ -8,7 +8,7 @@ import collection.mutable.HashMap
 import java.util.Random
 
 
-/** A town in the world. 
+/** A town in the world.
   *
   * @constructor Creates a town with its name, its position and its welcomingLevel
   * @param name The town’s name.
@@ -36,7 +36,7 @@ class Town(
   def population: Int = residents.sum
   /** The passengers number of the town. */
   def passengersNumber: Int = passengers.values.map(_.sum).sum
-  
+
   /** The note of the town. */
   def note: Double = {
     if(population == 0)
@@ -45,21 +45,21 @@ class Town(
       welcomingLevel * (1 - population.toDouble / Game.world.population)
   }
 
-  /** Adds <code>number</code residents of status <code>status</code> 
+  /** Adds <code>number</code residents of status <code>status</code>
     * to the town.
-    *      
+    *
     * @param number The number of residents to add.
-    * @param status The status of these residents.    
+    * @param status The status of these residents.
     */
   def addResidents(number: Int, status: Status.Val): Unit =
     residents(status.id) += number
 
-  /** Deletes <code>number</code residents of status <code>status</code> 
+  /** Deletes <code>number</code residents of status <code>status</code>
     * to the town.
     *
     * @param number The number of residents to delete.
     * @param status The status of these residents.
-    * 
+    *
     */
   def deleteResidents(number: Int, status: Status.Val): Unit = {
     if(number > residents(status.id))
@@ -67,11 +67,11 @@ class Town(
     residents(status.id) -= number
   }
 
-  /** Deletes <code>number</code passengers of status <code>status</code> 
+  /** Deletes <code>number</code passengers of status <code>status</code>
     * to the town.
     *
     * @param number The number of passengers to delete.
-    * @param status The status of these passengers. 
+    * @param status The status of these passengers.
     */
   def deletePassengers(number: Int, status: Status.Val, destination: Town): Unit = {
     if(number > passengers(destination)(status.id))
@@ -80,7 +80,7 @@ class Town(
     deleteResidents(number, status)
   }
 
-  /** Generate passengers to a town. 
+  /** Generate passengers to a town.
     *
     * @param to The destination town.
     * @param dt The time passed since the last generation.
@@ -98,8 +98,8 @@ class Town(
     (((random.nextGaussian() * mean + mean) max 0) min pop).toInt
   }
 
-  /** Adds a new route. 
-    * 
+  /** Adds a new route.
+    *
     * @param route The route to add to the town.
     */
   def addRoute(route: Route): Unit = {
@@ -112,11 +112,11 @@ class Town(
     }
   }
 
-  /** Creates and adds a new route to a town. 
+  /** Creates and adds a new route to a town.
     *
     * @param end The destination of the route.
     * @param length The length of the town.
-    * @param state 
+    * @param state
     */
   def addRoute(end: Town, length: Double, damageToVehicle: Double): Unit = {
     _routes = (new Route(this, end, length, damageToVehicle)) :: _routes

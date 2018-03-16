@@ -21,7 +21,7 @@ import logic.train._
  *
  *  @param train the train to display.
  */
-class TrainDetail(train: Train) extends DrawableVBox {
+class TrainDetail(train: Train) extends VBox {
   private val list: ScrollPane = new ScrollPane {
     content = new SelectionMenu {
       addMenu(train.engine.model.name + " engine", displayEngine(train.engine))
@@ -46,7 +46,7 @@ class TrainDetail(train: Train) extends DrawableVBox {
   private val sep1: Separator = new Separator()
   private val sep2: Separator = new Separator()
   // bottom panel for detailed statistics
-  private var detail: DrawableVBox = new DrawableVBox()
+  private var detail: VBox = new VBox()
 
   spacing = 3
   setChildren()
@@ -71,41 +71,34 @@ class TrainDetail(train: Train) extends DrawableVBox {
     detail = new CarriageDetail(carriage)
     setChildren()
   }
-
-  override def draw(): Unit = {
-    stats.draw()
-    detail.draw()
-  }
 }
 
 /** General train statistics. */
-class TrainStats(train: Train) extends DrawableVBox {
+class TrainStats(train: Train) extends VBox {
   private val name: Label = new Label()
   private val status: Label = new Label()
   private val tooHeavy: Label = new Label("Too heavy !") {
     styleClass.add("alert")
   }
   private val weight: Label = new Label()
-  private val power: Label = new Label()
+  private val power: Label = new Label("power : " + train.engine.model.power)
 
   children = List(name, status, weight, power)
   spacing = 3
 
   name.text <== train.name
+
   status.text <== Bindings.createStringBinding(
     () => (if (train.onTravel()) "en route to " else "stored at ")
       + train.town().name,
     train.onTravel,
     train.town)
+
   weight.text <== Bindings.createStringBinding(
     () => "weight : " + train.weight(),
     train.weight)
 
-  draw()
-
-  override def draw(): Unit = {
-    power.text = "power : " + train.engine.model.power
-
+  private def updateChildren(): Unit = {
     children = List(
       Some(name),
       Some(status),
@@ -113,4 +106,6 @@ class TrainStats(train: Train) extends DrawableVBox {
       Some(weight),
       Some(power)).flatMap(x => x)
   }
+
+  train.tooHeavy.onChange(updateChildren())
 }

@@ -76,10 +76,7 @@ class Travel(val train: Train, private val routes: List[Route],
   /* bindings are calculated lazily */
   val totalRemainingDistance: NumberBinding =
     jfxNumberBinding2sfx(createDoubleBinding(
-      () => {
-        (remainingRoutes.toList.map(_.length)).sum
-        - currentRouteDistanceDone()
-      },
+      () => remainingRoutes.toList.map(_.length).sum - currentRouteDistanceDone(),
       remainingRoutes,
       currentRouteDistanceDone))
 
