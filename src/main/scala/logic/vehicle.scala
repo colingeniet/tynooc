@@ -2,6 +2,7 @@ package logic.vehicle
 
 import scalafx.beans.property._
 import scalafx.beans.binding._
+import scalafx.beans.binding.BindingIncludes._
 
 import logic.company._
 import logic.town._
@@ -64,10 +65,7 @@ trait Vehicle {
       () => travel().isDefined,
       travel)
 
-  val isAvailable: BooleanBinding =
-    Bindings.createBooleanBinding(
-      () => !onTravel(),
-      onTravel)
+  val isAvailable: BooleanBinding = jfxBooleanBinding2sfx(!onTravel)
 
   def speed: Double
   def consumption(distance: Double): Double

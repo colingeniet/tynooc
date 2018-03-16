@@ -3,7 +3,6 @@ package gui.scenes.map
 import collection.mutable.HashMap
 import scala.util.Random
 
-import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.shape._
@@ -13,6 +12,10 @@ import scalafx.event._
 import javafx.scene.input.MouseEvent
 import javafx.event.EventHandler
 import scalafx.scene.paint.Color._
+
+import scalafx.beans.binding._
+import scalafx.beans.binding.BindingIncludes._
+import scalafx.collections._
 
 import gui.draw._
 import gui.scenes.elements._
@@ -216,18 +219,10 @@ extends ScrollPane with Drawable {
         }
       }
 
-      /** Updates circle position. */
-      def draw(): Unit = {
-        // Coordonates of start and end towns
-        val x1 = travel.currentRoute.start.x
-        val y1 = travel.currentRoute.start.y
-        val x2 = travel.currentRoute.end.x
-        val y2 = travel.currentRoute.end.y
-        val p = travel.currentRouteProportion
-        // train coordonates
-        centerX = x1 * (1-p) + x2 * p
-        centerY = y1 * (1-p) + y2 * p
-      }
+      centerX <== travel.posX
+      centerY <== travel.posY
+
+      disable <== travel.isDone
     }
 
     // the list of current travels
@@ -325,9 +320,7 @@ extends ScrollPane with Drawable {
     /** Update dynamic map. */
     override def draw(): Unit = {
       // remove finished travels
-      travels = travels.filter(!_.travel.isDone)
-      // update all positions
-      travels.foreach(_.draw())
+      travels = travels.filter(!_.disable())
       // update content
       dynamicMap.children = travels
     }
