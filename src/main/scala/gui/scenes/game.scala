@@ -91,7 +91,6 @@ extends MainStage.Scene(sceneModifier) with Drawable {
 
   // update content
   override def draw(): Unit = {
-    center.draw()
     top.draw()
     left.draw()
     right.draw()

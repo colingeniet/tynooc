@@ -39,7 +39,7 @@ class Map(
   displayTown: Town => Unit,
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
-extends ScrollPane with Drawable {
+extends ScrollPane {
 
   private object ColorManager {
     val colors = Random.shuffle(List(
@@ -204,7 +204,7 @@ extends ScrollPane with Drawable {
 
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
-  private object MapContent extends ZoomPane with Drawable {
+  private object MapContent extends ZoomPane {
     /** The dots representing a train on route on the map.
      *
      *  The `Circle` object is associated with the corresponding `Travel`
@@ -222,11 +222,18 @@ extends ScrollPane with Drawable {
       centerX <== travel.posX
       centerY <== travel.posY
 
-      disable <== travel.isDone
+      private def deleteIfDone(): Unit = {
+        if(travel.isDone()) {
+          disable = true
+          dynamicMap.children.remove(this)
+        }
+      }
+
+      travel.isDone.onChange(deleteIfDone())
     }
 
     // the list of current travels
-    private var travels: List[MapTravel] = List()
+    private var travels: ObservableBuffer[MapTravel] = ObservableBuffer()
 
     /* The map is organized as several superposed layers. */
     // map layers, from bottom to top :
@@ -312,18 +319,10 @@ extends ScrollPane with Drawable {
 
     /** Add a new travel. */
     private def addTravel(travel: Travel): Unit = {
-      travels = new MapTravel(travel) :: travels
+      dynamicMap.children.add(new MapTravel(travel))
     }
 
     world.onAddTravel = addTravel
-
-    /** Update dynamic map. */
-    override def draw(): Unit = {
-      // remove finished travels
-      travels = travels.filter(!_.disable())
-      // update content
-      dynamicMap.children = travels
-    }
   }
 
   content = MapContent
@@ -332,6 +331,4 @@ extends ScrollPane with Drawable {
   hmax = 0
   hbarPolicy = ScrollPane.ScrollBarPolicy.Never
   vbarPolicy = ScrollPane.ScrollBarPolicy.Never
-
-  override def draw(): Unit = MapContent.draw()
 }
