@@ -3,6 +3,7 @@ package logic.train
 import scalafx.beans.property._
 import scalafx.beans.binding._
 import scalafx.collections._
+import scalafx.beans.binding.BindingIncludes._
 
 import logic.route._
 import logic.town._
@@ -137,15 +138,12 @@ class Train (
       carriages)
 
   val tooHeavy: BooleanBinding =
-    Bindings.createBooleanBinding(
-      () => weight.toDouble > engine.model.power,
-      weight)
+    jfxBooleanBinding2sfx(weight > engine.model.power)
 
   override val isAvailable: BooleanBinding =
-    Bindings.createBooleanBinding(
-      () => !tooHeavy() && !onTravel(),
-      tooHeavy,
-      onTravel)
+    jfxBooleanBinding2sfx(
+      jfxBooleanBinding2sfx(!tooHeavy) && jfxBooleanBinding2sfx(!onTravel))
+
 
   val isEmpty: BooleanBinding =
     Bindings.createBooleanBinding(
