@@ -15,7 +15,8 @@ import gui.scenes.elements._
 import logic.world._
 import logic.town._
 import logic.route._
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 import logic.travel._
 
 import player._

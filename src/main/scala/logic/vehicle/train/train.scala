@@ -1,4 +1,4 @@
-package logic.train
+package logic.vehicle.train
 
 import scalafx.beans.property._
 import scalafx.beans.binding._

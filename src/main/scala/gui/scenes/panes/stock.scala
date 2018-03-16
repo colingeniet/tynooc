@@ -11,7 +11,8 @@ import scalafx.scene.input.MouseEvent
 import gui.draw._
 import gui.scenes.elements._
 import logic.company._
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 import logic.world._
 import logic.town._
 import formatter._

@@ -9,7 +9,8 @@ import scalafx.beans.binding._
 import gui.draw._
 import gui.scenes.elements._
 import gui.scenes.panes._
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 import logic.travel._
 import logic.game._
 

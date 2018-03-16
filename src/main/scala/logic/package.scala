@@ -6,8 +6,8 @@ package object graph
 /** Provides world map definition. */
 package object world
 
-/** Provides trains definition. */
-package object train
+/** Provides vehicle definition. */
+package object vehicle
 
 /** Provides company definition. */
 package object company

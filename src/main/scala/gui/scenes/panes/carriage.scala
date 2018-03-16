@@ -9,7 +9,8 @@ import scalafx.beans.binding._
 
 import gui.draw._
 import gui.scenes.elements.Link
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 
 
 /** Carriage detailed info display.

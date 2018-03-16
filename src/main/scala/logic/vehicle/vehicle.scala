@@ -7,7 +7,6 @@ import scalafx.beans.binding.BindingIncludes._
 import logic.company._
 import logic.town._
 import logic.travel._
-import logic.train._
 
 import collection.mutable.HashMap
 

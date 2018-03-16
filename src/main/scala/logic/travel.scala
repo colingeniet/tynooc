@@ -5,7 +5,8 @@ import scalafx.beans.binding._
 import scalafx.collections._
 import scalafx.beans.binding.BindingIncludes._
 
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 import logic.world._
 import logic.town._
 import logic.room._

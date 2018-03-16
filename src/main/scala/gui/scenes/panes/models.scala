@@ -7,7 +7,8 @@ import scalafx.scene.layout._
 import scalafx.event._
 
 import gui.scenes.elements._
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 import logic.company._
 import formatter._
 

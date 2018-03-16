@@ -3,7 +3,7 @@ package logic.company
 import collection.mutable.HashSet
 
 import logic.vehicle._
-import logic.train._
+import logic.vehicle.train._
 import logic.travel._
 import logic.town._
 import logic.game._
