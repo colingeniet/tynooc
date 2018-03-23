@@ -1,6 +1,7 @@
 package logic.room
 
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 import logic.travel._
 import logic.game._
 import logic.world._

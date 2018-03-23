@@ -18,7 +18,7 @@ object Status {
     _id += 1
     def this() { this(_id) }
   }
-  
+
   /** Represents rich people. */
   object Rich extends Status.Val
   /** Represents poor people. */
@@ -48,10 +48,10 @@ class World {
 
   private var _travels: HashSet[Travel] = HashSet()
   private var _companies: HashSet[Company] = HashSet()
-  
+
   /** Callback called any time a new travel is added.
     *
-    *  This is used to signal the new travel to the gui. 
+    *  This is used to signal the new travel to the gui.
     */
   var onAddTravel: Travel => Unit = {_ => ()}
 
@@ -63,17 +63,17 @@ class World {
 
   /** The train companies in the world. */
   def companies: HashSet[Company] = _companies
-  
+
   /** Total world population. */
   def population: Int = towns.foldLeft[Int](0) { _ + _.population }
 
-  /** Adds a new town. 
+  /** Adds a new town.
     *
     * @param town The town to add.
     */
   def addTown(town: Town): Unit = _towns.add(town)
 
-  /** Creates and add a new town. 
+  /** Creates and add a new town.
     *
     * @param name The name of the town.
     * @param x the x position of the town.
@@ -84,15 +84,15 @@ class World {
     addTown(new Town(name, x, y, welcomingLevel))
   }
 
-  /** Adds a new company to the world 
+  /** Adds a new company to the world
     *
-    * @param company The new company.    
+    * @param company The new company.
     */
   def addCompany(company: Company): Unit = {
     _companies.add(company)
   }
-  
-  /** Adds a new travel in the world. 
+
+  /** Adds a new travel in the world.
     *
     * @param travel The travel to add.
     */
@@ -102,7 +102,7 @@ class World {
     onAddTravel(travel)
   }
 
-  /** Gets all travels of a specific company in the world. 
+  /** Gets all travels of a specific company in the world.
     *
     * @param company The company.
     */
@@ -110,7 +110,7 @@ class World {
     travels.filter { _.company == company }
 
   /** Try to send some passengers from <code>start</code> to
-    * <code>destination</code>. 
+    * <code>destination</code>.
     *
     * @param start The start town.
     * @param destination The destination town.
@@ -147,7 +147,7 @@ class World {
    */
   def update(dt: Double): Unit = {
     travels.foreach(_.update(dt))
-    _travels = travels.filter(!_.isDone)
+    _travels = travels.filter(!_.isDone())
     towns.foreach(_.update(dt))
   }
 

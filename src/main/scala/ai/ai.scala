@@ -1,7 +1,8 @@
 package ai
 
 import logic.company._
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 import logic.world._
 import scala.util.Random
 import player._
@@ -48,13 +49,13 @@ extends Player(company) with AI {
         val carriages = company.carriagesAvailable
         if(!carriages.isEmpty) {
           company.addCarriageToTrain(train, carriages.head)
-          company.launchTravel(train, Random.shuffle(train.town.neighbours).head)
+          company.launchTravel(train, Random.shuffle(train.town().neighbours).head)
         }
       }
-      val trains = company.trainsAvailable.filter { !_.carriages.isEmpty }
+      val trains = company.trainsAvailable.filter { !_.isEmpty() }
       if(!trains.isEmpty) {
         val train = Random.shuffle(trains).head
-        company.launchTravel(train, Random.shuffle(train.town.neighbours).head)
+        company.launchTravel(train, Random.shuffle(train.town().neighbours).head)
       }
     }
   }

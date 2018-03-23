@@ -3,7 +3,6 @@ package gui.scenes.map
 import collection.mutable.HashMap
 import scala.util.Random
 
-import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.shape._
@@ -13,6 +12,10 @@ import scalafx.event._
 import javafx.scene.input.MouseEvent
 import javafx.event.EventHandler
 import scalafx.scene.paint.Color._
+
+import scalafx.beans.binding._
+import scalafx.beans.binding.BindingIncludes._
+import scalafx.collections._
 
 import gui.draw._
 import gui.scenes.elements._
@@ -36,7 +39,7 @@ class Map(
   displayTown: Town => Unit,
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
-extends ScrollPane with Drawable {
+extends ScrollPane {
 
   private object ColorManager {
     val colors = Random.shuffle(List(
@@ -201,7 +204,7 @@ extends ScrollPane with Drawable {
 
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
-  private object MapContent extends ZoomPane with Drawable {
+  private object MapContent extends ZoomPane {
     /** The dots representing a train on route on the map.
      *
      *  The `Circle` object is associated with the corresponding `Travel`
@@ -216,22 +219,21 @@ extends ScrollPane with Drawable {
         }
       }
 
-      /** Updates circle position. */
-      def draw(): Unit = {
-        // Coordonates of start and end towns
-        val x1 = travel.currentRoute.start.x
-        val y1 = travel.currentRoute.start.y
-        val x2 = travel.currentRoute.end.x
-        val y2 = travel.currentRoute.end.y
-        val p = travel.currentRouteProportion
-        // train coordonates
-        centerX = x1 * (1-p) + x2 * p
-        centerY = y1 * (1-p) + y2 * p
+      centerX <== travel.posX
+      centerY <== travel.posY
+
+      private def deleteIfDone(): Unit = {
+        if(travel.isDone()) {
+          disable = true
+          dynamicMap.children.remove(this)
+        }
       }
+
+      travel.isDone.onChange(deleteIfDone())
     }
 
     // the list of current travels
-    private var travels: List[MapTravel] = List()
+    private var travels: ObservableBuffer[MapTravel] = ObservableBuffer()
 
     /* The map is organized as several superposed layers. */
     // map layers, from bottom to top :
@@ -317,20 +319,10 @@ extends ScrollPane with Drawable {
 
     /** Add a new travel. */
     private def addTravel(travel: Travel): Unit = {
-      travels = new MapTravel(travel) :: travels
+      dynamicMap.children.add(new MapTravel(travel))
     }
 
     world.onAddTravel = addTravel
-
-    /** Update dynamic map. */
-    override def draw(): Unit = {
-      // remove finished travels
-      travels = travels.filter(!_.travel.isDone)
-      // update all positions
-      travels.foreach(_.draw())
-      // update content
-      dynamicMap.children = travels
-    }
   }
 
   content = MapContent
@@ -339,6 +331,4 @@ extends ScrollPane with Drawable {
   hmax = 0
   hbarPolicy = ScrollPane.ScrollBarPolicy.Never
   vbarPolicy = ScrollPane.ScrollBarPolicy.Never
-
-  override def draw(): Unit = MapContent.draw()
 }
