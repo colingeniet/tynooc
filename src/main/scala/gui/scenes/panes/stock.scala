@@ -96,6 +96,7 @@ extends VBox {
           carriage => {
             // when selecting a carriage, add it to the train
             company.addCarriageToTrain(train, carriage)
+            detailTrain(train)
           })
       // display new selection list upon button pressed
       children = List(

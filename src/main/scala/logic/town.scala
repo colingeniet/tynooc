@@ -98,7 +98,7 @@ class Town(
     /* avoid accumulating too many passengers :
      * slow down passengers production when proportion increases,
      * and hard cap it at 1/4 of total population */
-    val coef = 0.005 * (1 - 4 * pass / pop)
+    val coef = 0.008 * (1 - 4 * pass / pop)
     // mean for gaussian approximation
     val mean = (pop - pass) * (1 + to.note - note) * coef * dt
     // With this coef value, deviance is barely different from the mean
