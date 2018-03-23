@@ -40,9 +40,9 @@ class Plane(
   town: Town,
   owner: Company) extends VehicleUnitFromModel[PlaneModel](_model, town, owner) with Vehicle {
 
-  var name: String = _name
+  val name: StringProperty = StringProperty(_name)
   def speed: Double = _model.speed
-  def consumption: Double = _model.consumption
+  def consumption(distance: Double): Double = _model.consumption * distance
 
-  def isUsed: Boolean = true
+  val isUsed: BooleanBinding = Bindings.createBooleanBinding(() => true)
 }

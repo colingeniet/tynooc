@@ -20,10 +20,19 @@ import logic.route._
  *  @param displayRoute callback used to display a route.
  */
 class TownInfo(town: Town, displayRoute: Route => Unit)
-extends DrawableHBox {
+extends HBox(3) {
   // needs to be updated at redraw
-  private val popLbl = new Label()
-  private val pasLbl = new Label()
+  private val popLbl = new Label {
+    text <== createStringBinding(
+      () => "Population : " + town.population(),
+      town.population)
+  }
+  private val pasLbl = new Label {
+    text <== createStringBinding(
+      () => ", Passengers : " + town.passengersNumber(),
+      town.passengersNumber)
+  }
+
 
   children = List(
     new Label(town.name),
@@ -39,14 +48,6 @@ extends DrawableHBox {
       displayRoute(route))
     children.add(label)
   }
-
-  spacing = 3
-
-  // Only update population
-  override def draw(): Unit = {
-    popLbl.text = "Population : " + town.population
-    pasLbl.text = ", Passengers : " + town.passengersNumber
-  }
 }
 
 /** Town display panel.
@@ -55,13 +56,11 @@ extends DrawableHBox {
  *  @param displayTown callback used to display a town.
  */
 class RouteInfo(route: Route, displayTown: Town => Unit)
-extends DrawableHBox {
+extends HBox(3) {
   children = List(
     new Link(route.start.name)(displayTown(route.start)),
     new Label("-"),
     new Link(route.end.name)(displayTown(route.end)),
     new Separator{ orientation = Orientation.Vertical },
     new Label("Distance : " + route.length))
-
-  spacing = 3
 }

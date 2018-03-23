@@ -65,7 +65,7 @@ class World {
   def companies: HashSet[Company] = _companies
 
   /** Total world population. */
-  def population: Int = towns.foldLeft[Int](0) { _ + _.population }
+  def population: Int = towns.foldLeft[Int](0) { _ + _.population() }
 
   /** Adds a new town.
     *

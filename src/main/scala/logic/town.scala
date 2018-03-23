@@ -1,5 +1,8 @@
 package logic.town
 
+import scalafx.beans.binding._
+import scalafx.beans.property._
+
 import logic.route._
 import logic.game._
 import logic.world._
@@ -33,9 +36,9 @@ class Town(
   /** The neighbours towns. */
   def neighbours: List[Town] = routes.map { _.end }
   /** The town population. */
-  def population: Int = residents.sum
+  val population: IntegerProperty = IntegerProperty(0)
   /** The passengers number of the town. */
-  def passengersNumber: Int = passengers.values.map(_.sum).sum
+  val passengersNumber: IntegerProperty = IntegerProperty(0)
 
   /** The note of the town. */
   def note: Double = {
@@ -51,8 +54,10 @@ class Town(
     * @param number The number of residents to add.
     * @param status The status of these residents.
     */
-  def addResidents(number: Int, status: Status.Val): Unit =
+  def addResidents(number: Int, status: Status.Val): Unit = {
     residents(status.id) += number
+    population() = population() + number
+  }
 
   /** Deletes <code>number</code residents of status <code>status</code>
     * to the town.
@@ -65,6 +70,7 @@ class Town(
     if(number > residents(status.id))
       throw new IllegalArgumentException("population should stay positive")
     residents(status.id) -= number
+    population() = population() - number
   }
 
   /** Deletes <code>number</code passengers of status <code>status</code>
@@ -77,6 +83,7 @@ class Town(
     if(number > passengers(destination)(status.id))
       throw new IllegalArgumentException("population should stay positive")
     passengers(destination)(status.id) -= number
+    passengersNumber() = passengersNumber() - number
     deleteResidents(number, status)
   }
 
@@ -86,12 +93,12 @@ class Town(
     * @param dt The time passed since the last generation.
     */
   def generatePassengers(to: Town, dt: Double): Int = {
-    val pop = population
-    val pass = passengersNumber
+    val pop = population()
+    val pass = passengersNumber()
     /* avoid accumulating too many passengers :
      * slow down passengers production when proportion increases,
      * and hard cap it at 1/4 of total population */
-    val coef = 0.02 * (1 - 4 * pass / pop)
+    val coef = 0.005 * (1 - 4 * pass / pop)
     // mean for gaussian approximation
     val mean = (pop - pass) * (1 + to.note - note) * coef * dt
     // With this coef value, deviance is barely different from the mean
@@ -127,10 +134,11 @@ class Town(
    *  @param dt The time passed since the last update step.
    */
   def update(dt: Double): Unit = {
-    val p = population
+    val p = population()
     val possibleDestinations = neighbours.sortBy { _.note }
     possibleDestinations.foreach { destination =>
       val migrantNumber = generatePassengers(destination, dt)
+      passengersNumber() = passengersNumber() + migrantNumber
       val byStatus = {
         if(p == 0)
           residents

@@ -16,7 +16,7 @@ import logic.game._
 
 /** Information on a travel.
  */
-class TravelInfo(travel: Travel) extends DrawableVBox {
+class TravelInfo(travel: Travel) extends VBox {
   private val trainInfo: TrainDetail = new TrainDetail(travel.train)
 
   private val dest: Label = new Label("destination :")

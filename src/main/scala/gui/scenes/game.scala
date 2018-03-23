@@ -42,7 +42,7 @@ extends MainStage.Scene(sceneModifier) with Drawable {
     displayCarriage)
   // empty by default
   private var right: VBox = new VBox()
-  private var bottom: DrawableHBox = new DrawableHBox()
+  private var bottom: HBox = new HBox()
   private var center: Map = new Map(world, player.company,displayTown, displayRoute,
                                     displayTravel)
 
@@ -94,6 +94,5 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   override def draw(): Unit = {
     top.draw()
     left.draw()
-    bottom.draw()
   }
 }
