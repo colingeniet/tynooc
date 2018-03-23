@@ -48,7 +48,11 @@ class TravelInfo(travel: Travel) extends DrawableVBox {
       () => s" ETA : ${Game.timeToHourString(travel.remainingTime.toDouble)}",
       travel.remainingTime)
   }
-  private val passengers: Label = new Label()
+  private val passengers: Label = new Label {
+    text <== createStringBinding(
+      () => s"pass. : ${travel.passengerNumber.toInt}",
+      travel.passengerNumber)
+  }
   private val company: Label = new Label(travel.company.name)
 
   private val arrivedLbl: Label = new Label(s"arrived at ${travel.destination.name}")
@@ -75,8 +79,4 @@ class TravelInfo(travel: Travel) extends DrawableVBox {
   }
 
   travel.isDone.onChange(onArrival())
-
-  override def draw(): Unit = {
-    passengers.text = s"pass. : ${travel.passengerNumber}"
-  }
 }

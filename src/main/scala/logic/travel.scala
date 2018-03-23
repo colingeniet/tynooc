@@ -149,7 +149,7 @@ class Travel(val train: Train, private val routes: List[Route],
 
 
   /** Number of passengers in the train. */
-  def passengerNumber: Int = (rooms.map { _.passengerNumber}).sum
+  val passengerNumber: IntegerProperty = IntegerProperty(0)
 
   val isWaiting: BooleanBinding = jfxBooleanBinding2sfx(state === State.Waiting)
   val isLaunched: BooleanBinding = jfxBooleanBinding2sfx(state === State.Launched)
@@ -192,6 +192,7 @@ class Travel(val train: Train, private val routes: List[Route],
         }
         case State.Waiting => {
           train.town() = nextTown()
+          passengerNumber() = (rooms.map { _.passengerNumber}).sum
           state() = State.OnRoute
         }
       }
