@@ -20,7 +20,7 @@ object MainJFXApp extends JFXApp {
     Game.mainPlayer.get
   }
 
-  /** Creates a new company. 
+  /** Creates a new company.
     *
     * @param name The name of the company.
     */
