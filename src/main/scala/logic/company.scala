@@ -1,5 +1,7 @@
 package logic.company
 
+import scalafx.beans.property._
+
 import collection.mutable.HashSet
 
 import logic.vehicle._
@@ -51,7 +53,7 @@ class Company(var name: String, val fabricTown: Town) {
   /** The company carriages. */
   val vehicles: HashSet[VehicleUnit] = HashSet()
   /** The company money. */
-  var money: Double = 0
+  val money: DoubleProperty = DoubleProperty(0)
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
@@ -59,7 +61,7 @@ class Company(var name: String, val fabricTown: Town) {
     *
     * @param amount The money to add to the company's current amount.
     */
-  def credit(amount: Double): Unit = money += amount
+  def credit(amount: Double): Unit = money() = money() + amount
 
   /** Debit the player of <code>amount</code> euros.
     *
@@ -67,7 +69,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def debit(amount: Double): Unit = {
     // interest rate
-    money -= (amount + (0.02*Math.max(0, amount-money)))
+    money() = money() - (amount + (0.02*Math.max(0, amount-money())))
   }
 
   /** Returns the carriages of this company. */
@@ -115,7 +117,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def buyEngine(name: String): Unit = {
     val model = EngineModel(name)
-    if (model.price <= money) {
+    if (model.price <= money()) {
       debit(model.price)
       vehicles.add(new Engine(model, fabricTown, this))
     }
@@ -127,7 +129,7 @@ class Company(var name: String, val fabricTown: Town) {
     */
   def buyCarriage(name: String): Unit = {
     val model = CarriageModel(name)
-    if (model.price <= money) {
+    if (model.price <= money()) {
       debit(model.price)
       vehicles.add(new Carriage(model, fabricTown, this))
     }
@@ -210,7 +212,7 @@ class Company(var name: String, val fabricTown: Town) {
     if (!ownsVehicle(old)) {
       throw new IllegalOwnerException("Company doesn't own the vehicle")
     }
-    if (money >= PriceSimulation.upgradePrice(old, model)) {
+    if (money() >= PriceSimulation.upgradePrice(old, model)) {
       debit(PriceSimulation.upgradePrice(old, model))
       old.upgradeTo(model)
     }

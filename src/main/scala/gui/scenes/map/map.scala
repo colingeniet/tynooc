@@ -17,7 +17,6 @@ import scalafx.beans.binding._
 import scalafx.beans.binding.BindingIncludes._
 import scalafx.collections._
 
-import gui.draw._
 import gui.scenes.elements._
 import logic.game._
 import logic.world._

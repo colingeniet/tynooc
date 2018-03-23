@@ -7,7 +7,6 @@ import scalafx.scene.layout._
 import scalafx.geometry._
 import scalafx.beans.binding._
 
-import gui.draw._
 import gui.scenes.elements.Link
 import logic.vehicle._
 import logic.vehicle.train._

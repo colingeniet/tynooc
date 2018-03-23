@@ -39,9 +39,9 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money > 3000 && company.engines.size < 10)
+      if(company.money() > 3000 && company.engines.size < 10)
         company.buyEngine("Basic")
-      if(company.money > 2000 && company.carriages.size < 50)
+      if(company.money() > 2000 && company.carriages.size < 50)
         company.buyCarriage("Basic")
       val engines = company.enginesAvailable
       if(!engines.isEmpty) {

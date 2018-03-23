@@ -8,7 +8,6 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
-import gui.draw._
 import gui.scenes.elements.Link
 import logic.town._
 import logic.route._

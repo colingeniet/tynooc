@@ -6,7 +6,6 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.beans.binding._
 
-import gui.draw._
 import gui.scenes.elements._
 import gui.scenes.panes._
 import logic.vehicle._

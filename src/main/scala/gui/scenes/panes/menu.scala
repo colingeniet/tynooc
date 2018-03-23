@@ -7,13 +7,12 @@ import scalafx.scene.layout._
 import scalafx.scene.image._
 import scalafx.event._
 
-import gui.draw._
 import gui.MainStage
 import logic.game._
 
 /** Game top menu bar. */
 class TopMenu(sceneModifier: MainStage.States.Val => Unit)
-extends BorderPane with Drawable {
+extends BorderPane {
   // left side : quit button
   left = new HBox {
     children = List(
@@ -29,7 +28,11 @@ extends BorderPane with Drawable {
 
   // right side : time control
   /** Current time. */
-  val timeLabel = new Label()
+  val timeLabel = new Label {
+    text <== createStringBinding(
+      () => Game.timeToDateString(Game.time()),
+      Game.time)
+  }
 
   // control buttons
   val pauseButton = new ToggleButton {
@@ -66,10 +69,5 @@ extends BorderPane with Drawable {
       buttonX1,
       buttonX2,
       buttonX3)
-  }
-
-  // update current time
-  override def draw(): Unit = {
-    timeLabel.text = Game.timeToDateString(Game.time)
   }
 }

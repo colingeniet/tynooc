@@ -1,5 +1,7 @@
 package logic.game
 
+import scalafx.beans.property._
+
 import logic.world._
 import ai._
 import player._
@@ -11,7 +13,7 @@ object Game {
   private var last: Double = System.currentTimeMillis()
 
   var world: World = new World()
-  var time: Double = 0
+  var time: DoubleProperty = DoubleProperty(0)
   /** List of the players */
   var players: List[Player] = List()
   /** Main player of the game. */
@@ -33,7 +35,7 @@ object Game {
         case ai: AI => ai.play(world, dt)
         case _      =>
       }
-      time += dt
+      time() = time() + dt
     }
     last = a
   }
@@ -50,7 +52,7 @@ object Game {
   /** Init game state. */
   def init(): Unit = {
     world = Parser.readWorldInformations(mapPath)
-    time = 0
+    time() = 0
     paused = false
     timeAcceleration = 1
     last = System.currentTimeMillis()

@@ -5,7 +5,6 @@ import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
 
-import gui.draw.Drawable
 import gui.scenes._
 import logic.world._
 import logic.game._
@@ -17,7 +16,7 @@ import player._
  *  Handles, displays and switch between menus and game screens.
  */
 class MainStage(gameInit: () => Player)
-extends JFXApp.PrimaryStage with Drawable {
+extends JFXApp.PrimaryStage {
   /* Actual scenes displayed. */
   private var mainMenuScene: MainMenu = new MainMenu(changeScene)
   private var gameScene: Game = null
@@ -54,7 +53,6 @@ extends JFXApp.PrimaryStage with Drawable {
             while(true) {
               Platform.runLater(() => {
                 Game.update()
-                gameScene.draw()
               })
               Thread.sleep(33)
             }

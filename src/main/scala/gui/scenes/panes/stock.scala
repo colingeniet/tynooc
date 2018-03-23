@@ -8,7 +8,6 @@ import scalafx.event._
 import scala.util.Try
 import scalafx.scene.input.MouseEvent
 
-import gui.draw._
 import gui.scenes.elements._
 import logic.company._
 import logic.vehicle._
@@ -30,7 +29,7 @@ class CompanyStock(
   statsTrain: Train => Unit,
   statsEngine: Engine => Unit,
   statsCarriage: Carriage => Unit)
-extends DrawableVBox {
+extends VBox {
   private val menu: SelectionMenu = new SelectionMenu()
   menu.addMenu("trains", displayTrains())
   menu.addMenu("engines", displayEngines())

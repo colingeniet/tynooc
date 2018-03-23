@@ -8,7 +8,6 @@ import scalafx.scene.layout._
 import scalafx.geometry._
 
 import gui.MainStage
-import gui.draw._
 import gui.scenes.map._
 import gui.scenes.panes._
 import gui.scenes.elements._
@@ -31,10 +30,10 @@ class Game(
   val world: World,
   val player: Player,
   sceneModifier: MainStage.States.Val => Unit)
-extends MainStage.Scene(sceneModifier) with Drawable {
+extends MainStage.Scene(sceneModifier) {
   // panes contents
   private var top: TopMenu = new TopMenu(sceneModifier)
-  private var left: DrawableVBox = new CompanyInfo(
+  private var left: VBox = new CompanyInfo(
     player.company,
     world,
     displayTrain,
@@ -88,11 +87,5 @@ extends MainStage.Scene(sceneModifier) with Drawable {
   private def displayCarriage(carriage: Carriage): Unit = {
     right = new CarriageDetail(carriage)
     pane.right = right
-  }
-
-  // update content
-  override def draw(): Unit = {
-    top.draw()
-    left.draw()
   }
 }

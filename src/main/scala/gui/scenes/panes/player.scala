@@ -7,8 +7,6 @@ import scalafx.scene.layout._
 import scalafx.event._
 
 
-
-import gui.draw._
 import gui.scenes.elements._
 import logic.company._
 import logic.vehicle._
@@ -31,13 +29,17 @@ class CompanyInfo(
   detailTrain: Train => Unit,
   detailEngine: Engine => Unit,
   detailCarriage: Carriage => Unit)
-extends DrawableVBox {
-  private val money: Label = new Label()
+extends VBox {
+  private val money: Label = new Label {
+    text <== createStringBinding(
+      () => MoneyFormatter.format(company.money()),
+      company.money)
+  }
   private val sep1: Separator = new Separator()
   private val menu: SelectionMenu = new SelectionMenu()
   private val sep2: Separator = new Separator()
   private var panel: Node = new Pane()
-  private val nameField: TextField = new TextField() {
+  private val nameField: TextField = new TextField {
       text = company.name
       onAction = (event: ActionEvent) => {
         company.name = text()
@@ -56,7 +58,6 @@ extends DrawableVBox {
   private val models: ModelsList = new ModelsList(company, updateStock)
 
   spacing = 5
-  draw()
   setChildren()
 
   /* Updates children list from attributes. */
@@ -86,11 +87,5 @@ extends DrawableVBox {
   private def updateStock(): Unit = {
     stock =
       new CompanyStock(company, world, detailTrain, detailEngine, detailCarriage)
-    money.text = MoneyFormatter.format(company.money)
-  }
-
-  override def draw(): Unit = {
-    money.text = MoneyFormatter.format(company.money)
-    stock.draw()
   }
 }

@@ -12,7 +12,6 @@ import scalafx.beans.property._
 import scalafx.collections._
 import scalafx.collections.ObservableBuffer._
 
-import gui.draw._
 import gui.scenes.elements._
 import gui.scenes.panes._
 import logic.vehicle._
