@@ -11,7 +11,8 @@ import scalafx.scene.input.MouseEvent
 import gui.draw._
 import gui.scenes.elements._
 import logic.company._
-import logic.train._
+import logic.vehicle._
+import logic.vehicle.train._
 import logic.world._
 import logic.town._
 import formatter._
@@ -47,27 +48,18 @@ extends DrawableVBox {
   private def displayTrains(): Unit = {
     list = new TrainList(company.trains.toList, detailTrain)
     children = List(menu, sep1, list)
-
-    // reset draw method
-    drawCallback = () => ()
   }
 
   /** Displays the engines list. */
   private def displayEngines(): Unit = {
     list = new EngineList(company.engines.toList, detailEngine)
     children = List(menu, sep1, list)
-
-    // reset draw method
-    drawCallback = () => ()
   }
 
   /** Displays the carriages list. */
   private def displayCarriages(): Unit = {
     list = new CarriageList(company.carriages.toList, detailCarriage)
     children = List(menu, sep1, list)
-
-    // reset draw method
-    drawCallback = () => ()
   }
 
   /** Displays a specific train. */
@@ -81,14 +73,8 @@ extends DrawableVBox {
     val addCarriage: Button = new Button("Add carriage")
     val sendTravel: Button = new Button("Travel")
     val nameField: TextField = new TextField() {
-      text = train.name
-      onAction = (event: ActionEvent) => {
-        train.name = text()
-        // redraw train list
-        displayTrains()
-        // display trains
-        detailTrain(train)
-      }
+      text = train.name()
+      train.name <== text
     }
 
     disassembleAll.onAction = (event: ActionEvent) => {
@@ -101,18 +87,16 @@ extends DrawableVBox {
 
     disassembleOne.onAction = (event: ActionEvent) => {
       company.removeCarriageFromTrain(train)
-      detailTrain(train)
     }
 
     addCarriage.onAction = (event: ActionEvent) => {
       // when pressing the button, display a new carriage list
       val selectionList: CarriageList =
         new CarriageList(
-          company.carriagesStoredAt(train.town).toList,
+          company.carriagesStoredAt(train.town()).toList,
           carriage => {
             // when selecting a carriage, add it to the train
             company.addCarriageToTrain(train, carriage)
-            detailTrain(train)
           })
       // display new selection list upon button pressed
       children = List(
@@ -133,7 +117,7 @@ extends DrawableVBox {
     sendTravel.onAction = (event: ActionEvent) => {
       // when pressing the button, display the list of towns
       val selectionList: SelectionList[Town] = new SelectionList[Town](
-        world.townsAccessibleFrom(train.town),
+        world.townsAccessibleFrom(train.town()),
         _.name,
         town => {
           // when selecting a town, travel to it
@@ -157,12 +141,10 @@ extends DrawableVBox {
     }
 
     // disable buttons as needed
-    drawCallback = () => {
-      addCarriage.disable = train.onRoute
-      disassembleOne.disable = train.onRoute || train.carriages.isEmpty
-      disassembleAll.disable = train.onRoute
-      sendTravel.disable = train.onRoute || train.tooHeavy
-    }
+    addCarriage.disable <== train.onTravel
+    disassembleOne.disable <== train.onTravel || train.isEmpty
+    disassembleAll.disable <== train.onTravel
+    sendTravel.disable <== train.onTravel || train.tooHeavy
 
     children = List(
       menu,
@@ -223,10 +205,8 @@ extends DrawableVBox {
       upgradeButton)
 
     // disable buttons as needed
-    drawCallback = () => {
-      createButton.disable = engine.isUsed
-      upgradeButton.disable = engine.isUsed
-    }
+    createButton.disable <== engine.isUsed
+    upgradeButton.disable <== engine.isUsed
   }
 
   /** Displays a specific carriage. */
@@ -283,16 +263,7 @@ extends DrawableVBox {
 
     children = List(menu, sep1, list, sep2, upgradeButton, priceField)
     // disable buttons as needed
-    drawCallback = () => {
-      upgradeButton.disable = carriage.isUsed
-    }
-  }
-
-  // The actual draw function, changed as needed
-  private var drawCallback: () => Unit = () => ()
-
-  override def draw(): Unit = {
-    drawCallback()
+    upgradeButton.disable <== carriage.isUsed
   }
 }
 
@@ -302,7 +273,7 @@ extends DrawableVBox {
  *  @param detail a callback called whenever a train is selected from the list.
  */
 class TrainList(trains: List[Train], detail: Train => Unit)
-extends SelectionList[Train](trains, _.name, detail)
+extends SelectionListDynamic[Train](trains, _.name, detail)
 
 /** Displays a list of carriages.
  *

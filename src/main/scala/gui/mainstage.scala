@@ -56,7 +56,7 @@ extends JFXApp.PrimaryStage with Drawable {
                 Game.update()
                 gameScene.draw()
               })
-              Thread.sleep(10)
+              Thread.sleep(33)
             }
           }
         }

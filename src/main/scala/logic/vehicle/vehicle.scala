@@ -1,9 +1,12 @@
 package logic.vehicle
 
+import scalafx.beans.property._
+import scalafx.beans.binding._
+import scalafx.beans.binding.BindingIncludes._
+
 import logic.company._
 import logic.town._
 import logic.travel._
-import logic.train._
 
 import collection.mutable.HashMap
 
@@ -29,20 +32,22 @@ class VehicleUnitModel(
 
 
 trait VehicleUnit {
-  var town: Town
+  val town: ObjectProperty[Town]
   val owner: Company
-  def isUsed: Boolean
+  val isUsed: BooleanBinding
 }
 
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
   private var _model: Model,
-  var town: Town,
+  _town: Town,
   val owner: Company)
 extends VehicleUnit {
+  val town: ObjectProperty[Town] = ObjectProperty(_town)
+
   def model: Model = _model
 
   def upgradeTo(newModel: Model): Unit = {
-    if (isUsed) throw new IllegalArgumentException("Vehicle is in use")
+    if (isUsed()) throw new IllegalArgumentException("Vehicle is in use")
     _model = newModel
   }
 }
@@ -50,13 +55,17 @@ extends VehicleUnit {
 
 trait Vehicle {
   val owner: Company
-  var town: Town
-  var name: String
-  var travel: Option[Travel] = None
+  val town: ObjectProperty[Town]
+  val name: StringProperty
+  val travel: ObjectProperty[Option[Travel]] = ObjectProperty(None)
 
-  def onTravel: Boolean = travel.isDefined
-  def isAvailable: Boolean = !onTravel
+  val onTravel: BooleanBinding =
+    Bindings.createBooleanBinding(
+      () => travel().isDefined,
+      travel)
+
+  val isAvailable: BooleanBinding = jfxBooleanBinding2sfx(!onTravel)
 
   def speed: Double
-  def consumption: Double
+  def consumption(distance: Double): Double
 }
