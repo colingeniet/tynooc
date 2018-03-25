@@ -59,10 +59,10 @@ object Parser {
     * @param towns The list of the towns of the world.
     */
   private def parseRoute(line: String, towns: List[Town]): Route = {
-  var reg = (s"^Route : ${rI}, ${rI}, ${rD}, ${rD}" + "$").r
+  var reg = (s"^Route : ${rI}, ${rI}, ${rD}" + "$").r
     line match {
-      case reg(id0, id1, length, damage) => {
-        new Route(towns(id0.toInt), towns(id1.toInt), length.toDouble, damage.toDouble)
+      case reg(id0, id1, length) => {
+        new Route(towns(id0.toInt), towns(id1.toInt), length.toDouble)
       }
       case _                             => throw new BadFileFormatException
     }

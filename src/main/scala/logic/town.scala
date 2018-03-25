@@ -125,8 +125,8 @@ class Town(
     * @param length The length of the town.
     * @param state
     */
-  def addRoute(end: Town, length: Double, damageToVehicle: Double): Unit = {
-    _routes = (new Route(this, end, length, damageToVehicle)) :: _routes
+  def addRoute(end: Town, length: Double): Unit = {
+    this.addRoute(new Route(this, end, length))
   }
 
   /** Update the population state.
