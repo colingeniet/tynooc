@@ -29,6 +29,7 @@ object Game {
   private var actionQueue: PriorityQueue[(Double, () => Unit)] =
     new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))
 
+  /** Execute an action at a given in game time. */
   def addAction(actionTime: Double, action: () => Unit) =
     actionQueue.enqueue((actionTime, action))
 
@@ -48,7 +49,7 @@ object Game {
         case ai: AI => ai.play(world, dt)
         case _      =>
       }
-      while(!actionQueue.isEmpty && actionQueue.head._1 <= time()) {
+      while (!actionQueue.isEmpty && actionQueue.head._1 <= time()) {
         actionQueue.dequeue()._2()
       }
     }
@@ -70,6 +71,7 @@ object Game {
     time() = 0
     paused = false
     timeAcceleration = 1
+    actionQueue = new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))
     last = System.currentTimeMillis()
   }
 
