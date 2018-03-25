@@ -8,6 +8,8 @@ import scalafx.scene.control._
 import scalafx.scene.shape._
 import scalafx.scene.text._
 import scalafx.scene.layout._
+import scalafx.scene.image._
+import scalafx.scene.effect._
 import scalafx.event._
 import javafx.scene.input.MouseEvent
 import javafx.event.EventHandler
@@ -39,167 +41,11 @@ class Map(
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
 extends ScrollPane {
-
-  private object ColorManager {
-    val colors = Random.shuffle(List(
-    AliceBlue,
-    AntiqueWhite,
-    Aqua,
-    Aquamarine,
-    Azure,
-    Beige,
-    Bisque,
-    Black,
-    BlanchedAlmond,
-    Blue,
-    BlueViolet,
-    Brown,
-    Burlywood,
-    CadetBlue,
-    Chartreuse,
-    Chocolate,
-    Coral,
-    CornflowerBlue,
-    Cornsilk,
-    Crimson,
-    Cyan,
-    DarkBlue,
-    DarkCyan,
-    DarkGoldenrod,
-    DarkGray,
-    DarkGreen,
-    DarkGrey,
-    DarkKhaki,
-    DarkMagenta,
-    DarkOliveGreen,
-    DarkOrange,
-    DarkOrchid,
-    DarkRed,
-    DarkSalmon,
-    DarkSeaGreen,
-    DarkSlateBlue,
-    DarkSlateGray,
-    DarkSlateGrey,
-    DarkTurquoise,
-    DarkViolet,
-    DeepPink,
-    DeepSkyBlue,
-    DimGray,
-    DimGrey,
-    DodgerBlue,
-    FireBrick,
-    FloralWhite,
-    ForestGreen,
-    Fuchsia,
-    Gainsboro,
-    GhostWhite,
-    Gold,
-    Goldenrod,
-    Gray,
-    Green,
-    GreenYellow,
-    Grey,
-    Honeydew,
-    HotPink,
-    IndianRed,
-    Indigo,
-    Ivory,
-    Khaki,
-    Lavender,
-    LavenderBlush,
-    LawnGreen,
-    LemonChiffon,
-    LightBlue,
-    LightCoral,
-    LightCyan,
-    LightGoldrenrodYellow,
-    LightGray,
-    LightGreen,
-    LightGrey,
-    LightPink,
-    LightSalmon,
-    LightSeaGreen,
-    LightSkyBlue,
-    LightSlateGray,
-    LightSlateGrey,
-    LightSteelBlue,
-    LightYellow,
-    Lime,
-    LimeGreen,
-    Linen,
-    Magenta,
-    Maroon,
-    MediumAquamarine,
-    MediumBlue,
-    MediumOrchid,
-    MediumPurple,
-    MediumSeaGreen,
-    MediumSlateBlue,
-    MediumSpringGreen,
-    MediumTurquoise,
-    MediumVioletRed,
-    MidnightBlue,
-    MintCream,
-    MistyRose,
-    Moccasin,
-    NavajoWhite,
-    Navy,
-    OldLace,
-    Olive,
-    OliveDrab,
-    Orange,
-    OrangeRed,
-    Orchid,
-    PaleGoldrenrod,
-    PaleGreen,
-    PaleTurquoise,
-    PaleVioletRed,
-    PapayaWhip,
-    PeachPuff,
-    Peru,
-    Pink,
-    Plum,
-    PowderBlue,
-    Purple,
-    RosyBrown,
-    RoyalBlue,
-    SaddleBrown,
-    Salmon,
-    SandyBrown,
-    SeaGreen,
-    SeaShell,
-    Sienna,
-    Silver,
-    SkyBlue,
-    SlateBlue,
-    SlateGray,
-    SlateGrey,
-    Snow,
-    SpringGreen,
-    SteelBlue,
-    Tan,
-    Teal,
-    Thistle,
-    Tomato,
-    Transparent,
-    Turquoise,
-    Violet,
-    Wheat,
-    White,
-    WhiteSmoke,
-    Yellow,
-    YellowGreen)).toArray
-    var current = -1
-
-    def color: paint.Color = {
-      current = (current + 1) % colors.length
-      colors(current)
-    }
+  private var colors: HashMap[Company, Double] = new HashMap()
+  colors(company) = 0.0
+  world.companies.filter(_ != company).map {
+    colors(_) = Random.nextFloat()
   }
-
-  private var colors: HashMap[Company, paint.Color] = new HashMap()
-  colors(company) = Red
-  world.companies.filter { _ != company }.map { colors(_) = ColorManager.color }
 
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
@@ -209,17 +55,16 @@ extends ScrollPane {
      *  The `Circle` object is associated with the corresponding `Travel`
      *  to allow automatic updating of its position.
      */
-    private class MapTravel(val travel: Travel) extends Circle {
-      radius = 8
-      fill = colors(travel.company)
+    private class MapTravel(val travel: Travel) extends ImageView("/icons/train.png") {
+      effect = new ColorAdjust(colors(travel.company), 0.0, 0.0, 0.0)
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
           displayTravel(travel)
         }
       }
 
-      centerX <== travel.posX
-      centerY <== travel.posY
+      x <== travel.posX - 15
+      y <== travel.posY - 15
 
       private def deleteIfDone(): Unit = {
         if(travel.isDone()) {
