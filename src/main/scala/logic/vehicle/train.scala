@@ -151,6 +151,7 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
       c.town() = town()
       c.train() = None
     }
+    carriages.clear()
   }
 
   def launchTravel(newTravel : Travel): Unit = {

@@ -46,7 +46,7 @@ extends Player(company) with AI {
       val engines = company.enginesAvailable
       if(!engines.isEmpty) {
         val train = engines.head
-        val carriages = company.carriagesAvailable
+        val carriages = company.carriagesStoredAt(train.town())
         if(!carriages.isEmpty) {
           company.addCarriageToTrain(train, carriages.head)
           company.launchTravel(train, Random.shuffle(train.town().neighbours).head)
