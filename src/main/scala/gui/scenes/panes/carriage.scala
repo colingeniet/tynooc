@@ -37,17 +37,10 @@ class CarriageDetail(carriage: Carriage) extends VBox {
  */
 class EngineDetail(engine: Engine) extends VBox {
   private val name: Label = new Label(engine.model.name + " engine")
-  private val status: Label = new Label()
   private val model: VBox = new EngineModelStats(engine.model)
 
   spacing = 3
-  children = List(name, status, model)
-  status.text <== Bindings.createStringBinding(
-    () => {
-      if(engine.isUsed()) "in " + engine.train().get.name()
-      else "stored at " + engine.town().name
-    },
-    engine.isUsed)
+  children = List(name, model)
 }
 
 

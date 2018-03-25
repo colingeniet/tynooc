@@ -26,7 +26,7 @@ import formatter._
 class CompanyInfo(
   company: Company,
   world: World,
-  detailTrain: Train => Unit,
+  detailTrain: Engine => Unit,
   detailEngine: Engine => Unit,
   detailCarriage: Carriage => Unit)
 extends VBox {

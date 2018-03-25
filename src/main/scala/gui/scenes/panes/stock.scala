@@ -26,7 +26,7 @@ import formatter._
 class CompanyStock(
   company: Company,
   world: World,
-  statsTrain: Train => Unit,
+  statsTrain: Engine => Unit,
   statsEngine: Engine => Unit,
   statsCarriage: Carriage => Unit)
 extends VBox {
@@ -62,7 +62,7 @@ extends VBox {
   }
 
   /** Displays a specific train. */
-  private def detailTrain(train: Train): Unit = {
+  private def detailTrain(train: Engine): Unit = {
     // display stats in a separate window via callback
     statsTrain(train)
 
@@ -81,7 +81,7 @@ extends VBox {
       displayTrains()
       // display stats for the engine instead,
       // this is mostly to clear the stats screen
-      statsEngine(train.engine)
+      statsEngine(train)
     }
 
     disassembleOne.onAction = (event: ActionEvent) => {
@@ -162,11 +162,6 @@ extends VBox {
   private def detailEngine(engine: Engine): Unit = {
     // display stats in a separate window via callback
     statsEngine(engine)
-    // create buttons for engine specific actions
-    val createButton: Button = new Button("New train")
-    createButton.onAction = (event: ActionEvent) => {
-      company.createTrainFromEngine(engine)
-    }
 
     val upgradeButton: Button = new Button("Upgrade")
     upgradeButton.onAction = (event: ActionEvent) => {
@@ -189,7 +184,6 @@ extends VBox {
         sep1,
         list,
         sep2,
-        createButton,
         upgradeButton,
         new Separator(),
         new Label("select upgrade"),
@@ -201,11 +195,9 @@ extends VBox {
       sep1,
       list,
       sep2,
-      createButton,
       upgradeButton)
 
     // disable buttons as needed
-    createButton.disable <== engine.isUsed
     upgradeButton.disable <== engine.isUsed
   }
 
@@ -272,8 +264,8 @@ extends VBox {
  *  @param trains the list to display.
  *  @param detail a callback called whenever a train is selected from the list.
  */
-class TrainList(trains: List[Train], detail: Train => Unit)
-extends SelectionListDynamic[Train](trains, _.name, detail)
+class TrainList(trains: List[Engine], detail: Engine => Unit)
+extends SelectionListDynamic[Engine](trains, _.name, detail)
 
 /** Displays a list of carriages.
  *

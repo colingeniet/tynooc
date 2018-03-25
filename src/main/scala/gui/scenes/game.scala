@@ -69,7 +69,7 @@ extends MainStage.Scene(sceneModifier) {
     pane.bottom = bottom
   }
 
-  private def displayTrain(train: Train): Unit = {
+  private def displayTrain(train: Engine): Unit = {
     right = new TrainDetail(train)
     pane.right = right
   }

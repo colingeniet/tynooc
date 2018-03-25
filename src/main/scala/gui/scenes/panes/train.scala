@@ -21,10 +21,10 @@ import logic.vehicle.train._
  *
  *  @param train the train to display.
  */
-class TrainDetail(train: Train) extends VBox {
+class TrainDetail(train: Engine) extends VBox {
   private val list: ScrollPane = new ScrollPane {
     content = new SelectionMenu {
-      addMenu(train.engine.model.name + " engine", displayEngine(train.engine))
+      addMenu(train.model.name + " engine", displayEngine(train))
       train.carriages.foreach { carriage =>
         addMenu(carriage.model.name + " carriage", displayCarriage(carriage))
       }
@@ -74,14 +74,14 @@ class TrainDetail(train: Train) extends VBox {
 }
 
 /** General train statistics. */
-class TrainStats(train: Train) extends VBox {
+class TrainStats(train: Engine) extends VBox {
   private val name: Label = new Label()
   private val status: Label = new Label()
   private val tooHeavy: Label = new Label("Too heavy !") {
     styleClass.add("alert")
   }
   private val weight: Label = new Label()
-  private val power: Label = new Label("power : " + train.engine.model.power)
+  private val power: Label = new Label("power : " + train.model.power)
 
   children = List(name, status, weight, power)
   spacing = 3
