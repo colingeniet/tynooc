@@ -2,8 +2,8 @@ package logic.model
 
 import collection.mutable.HashMap
 
-class Model(val name: String, val upgrades: List[String])
 
+class Model(val name: String)
 
 abstract class ModelNameMap[T <: Model] {
   private var _models: HashMap[String, T] = new HashMap()
@@ -16,11 +16,18 @@ abstract class ModelNameMap[T <: Model] {
   def apply(name: String): T = this.models.get(name).get
 }
 
+abstract class FromModel[T <: Model](var model: T)
 
-abstract class FromModel[T <: Model](private var _model: T) {
-  def model: T = _model
 
+class BuyableModel(
+  name: String,
+  val price: Double,
+  val upgrades: List[String])
+extends Model(name)
+
+abstract class FromBuyableModel[T <: BuyableModel](_model: T)
+extends FromModel[T](_model) {
   def upgradeTo(newModel: T): Unit = {
-    _model = newModel
+    model = newModel
   }
 }
