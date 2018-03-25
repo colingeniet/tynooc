@@ -21,7 +21,7 @@ extends Exception(message, cause)
 
 
 /** Template for a vehicle model class. */
-trait RailVehicleUnitModel extends BuyableModel {
+trait RailVehicleUnitModel extends VehicleUnitModel {
   val weight: Double
 }
 
@@ -97,7 +97,7 @@ class Engine(
   model: EngineModel,
   _town: Town,
   owner: Company,
-  _carriages: List[Carriage])
+  _carriages: List[Carriage] = List())
 extends VehicleFromModel[EngineModel](model, _town, owner) {
   val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
 

@@ -10,7 +10,7 @@ trait TravelInstruction {
   def execute(onCompleted: () => Unit = () => ()): Unit
 }
 
-case class TravelTo(company: Company, train: Train, town: Town)
+case class TravelTo(company: Company, train: Engine, town: Town)
 extends TravelInstruction {
   def execute(onCompleted: () => Unit): Unit = {
     company.launchTravel(train, town, onCompleted)

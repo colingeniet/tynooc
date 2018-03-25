@@ -23,12 +23,10 @@ private object State {
 }
 
 /** A travel. */
-class Travel(val train: Train, private val routes: List[Route],
-             val company: Company) {
-  if(train.owner != company)
-    throw new IllegalArgumentException("Company doesn’t own the train")
+class Travel(val vehicle: Engine, private val routes: List[Route]) {
+  val company = vehicle.owner
 
-  private val rooms: List[Room] = train.carriages.toList.map { new Room(this, _) }
+  private val rooms: List[Room] = vehicle.carriages.toList.map { new Room(this, _) }
 
   /** Total travel distance. */
   private val distance: Double = (routes.map { _.length }).sum
@@ -62,7 +60,7 @@ class Travel(val train: Train, private val routes: List[Route],
       currentRoute)
 
   /** Last town reached. */
-  val currentTown: ObjectProperty[Town] = train.town
+  val currentTown: ObjectProperty[Town] = vehicle.town
 
   /** Destination reached. */
   val isDone: BooleanBinding = createBooleanBinding(
@@ -110,9 +108,9 @@ class Travel(val train: Train, private val routes: List[Route],
   }
 
   /** Time remaining until destination, without stop time. */
-  val totalRemainingTime: NumberBinding = totalRemainingDistance / train.engine.speed
+  val totalRemainingTime: NumberBinding = totalRemainingDistance / vehicle.speed
   /** Time remaining until next stop. */
-  val remainingTime: NumberBinding = remainingDistance / train.engine.speed
+  val remainingTime: NumberBinding = remainingDistance / vehicle.speed
 
   /** Position on the current route, as a proportion. */
   val currentRouteProportion: NumberBinding =
@@ -149,7 +147,7 @@ class Travel(val train: Train, private val routes: List[Route],
       currentRouteProportion))
 
 
-  /** Number of passengers in the train. */
+  /** Number of passengers in the vehicle. */
   val passengerNumber: IntegerProperty = IntegerProperty(0)
 
   val isWaiting: BooleanBinding = jfxBooleanBinding2sfx(state === State.Waiting)
@@ -178,21 +176,21 @@ class Travel(val train: Train, private val routes: List[Route],
       state() match {
         case State.Launched => state() = State.Waiting
         case State.OnRoute => {
-          currentRouteDistanceDone() += dt * train.engine.speed
+          currentRouteDistanceDone() += dt * vehicle.speed
           if(currentRouteDistanceDone() >= currentRoute().get.length) {
             state() = State.Arrived
           }
         }
         case State.Arrived => {
-          company.debit(train.consumption(currentRoute().get.length) * Game.world.fuelPrice)
+          company.debit(vehicle.consumption(currentRoute().get.length) * Game.world.fuelPrice)
           state() = State.Waiting
           landPassengers()
           remainingRoutes.remove(0)
           currentRouteDistanceDone() = 0
-          if(isDone()) train.travel() = None
+          if(isDone()) vehicle.travel() = None
         }
         case State.Waiting => {
-          train.town() = nextTown()
+          vehicle.town() = nextTown()
           passengerNumber() = (rooms.map { _.passengerNumber}).sum
           state() = State.OnRoute
         }

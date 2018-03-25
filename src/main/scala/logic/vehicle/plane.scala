@@ -13,14 +13,13 @@ import scalafx.beans.property._
 
 /** A plane model. */
 class PlaneModel(
-  name: String,
-  val power: Double,
-  val consumption: Double,
+  val name: String,
+  val price: Double,
+  val upgrades: List[String],
   val speed: Double,
-  val capacity: Int,
-  price: Double,
-  upgrades: List[String])
-extends VehicleUnitModel(name, price, upgrades)
+  val consumption: Double,
+  val capacity: Int)
+extends VehicleModel
 
 /** EngineModel companion object.
  *
@@ -28,19 +27,12 @@ extends VehicleUnitModel(name, price, upgrades)
  */
 object PlaneModel extends ModelNameMap[PlaneModel] {
   models = List(
-    new PlaneModel("Basic", 5, 50, 10, 50, 100, List("Advanced")),
-    new PlaneModel("Advanced", 10, 20, 500, 100, 200, List()))
+    new PlaneModel("Basic", 500, List("Advanced"), 200, 20, 30),
+    new PlaneModel("Advanced", 1000, List(), 300, 20, 40))
 }
 
 class Plane(
-  _name: String,
-  _model: PlaneModel,
+  model: PlaneModel,
   town: Town,
-  owner: Company) extends VehicleUnitFromModel[PlaneModel](_model, town, owner) with Vehicle {
-
-  val name: StringProperty = StringProperty(_name)
-  def speed: Double = _model.speed
-  def consumption(distance: Double): Double = _model.consumption * distance
-
-  val isUsed: BooleanBinding = Bindings.createBooleanBinding(() => true)
-}
+  owner: Company)
+extends VehicleFromModel[PlaneModel](model, town, owner)

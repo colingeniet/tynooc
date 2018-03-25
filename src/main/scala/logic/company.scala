@@ -49,9 +49,9 @@ extends Exception(message, cause)
   */
 class Company(var name: String, val fabricTown: Town) {
   /** The company trains. */
-  val trains: HashSet[Train] = HashSet()
+  val vehicles: HashSet[Vehicle] = HashSet()
   /** The company carriages. */
-  val vehicles: HashSet[VehicleUnit] = HashSet()
+  val vehicleUnits: HashSet[VehicleUnit] = HashSet()
   /** The company money. */
   val money: DoubleProperty = DoubleProperty(0)
   /** Current travels for this company. */
@@ -73,13 +73,13 @@ class Company(var name: String, val fabricTown: Town) {
   }
 
   /** Returns the carriages of this company. */
-  def carriages: HashSet[Carriage] = vehicles.flatMap {
+  def carriages: HashSet[Carriage] = vehicleUnits.flatMap {
     case c: Carriage => Some(c)
     case _ => None
   }
 
   /** Returns the available carriages of this company.
-    * A carriage is available if not in a train and not damaged.
+    * A carriage is available if not in a train.
     */
   def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed())
 
@@ -91,13 +91,13 @@ class Company(var name: String, val fabricTown: Town) {
     carriages.filter(c => !c.isUsed() && c.town() == town)
 
   /** Returns the engines of this company. */
-  def engines: HashSet[Engine] = vehicles.flatMap {
+  def engines: HashSet[Engine] = vehicleUnits.flatMap {
     case e: Engine => Some(e)
     case _ => None
   }
 
   /** Returns the available engines of this company.
-    * An engine is available if not in a train and not damaged.
+    * An engine is available if not in a train.
     */
   def enginesAvailable: HashSet[Engine] = engines.filter(!_.isUsed())
 
@@ -108,8 +108,16 @@ class Company(var name: String, val fabricTown: Town) {
   def enginesStoredAt(town: Town): HashSet[Engine] =
     engines.filter(e => !e.isUsed() && e.town() == town)
 
+
+  /** Returns the engines of this company. */
+  def trains: HashSet[Engine] = vehicles.flatMap {
+    case e: Engine => Some(e)
+    case _ => None
+  }
+
   /** Returns the available trains of this company. */
-  def trainsAvailable: HashSet[Train] = trains.filter { _.isAvailable() }
+  def trainsAvailable: HashSet[Engine] = trains.filter { _.isAvailable() }
+
 
   /** Buy an engine and add it to the company's engines.
     *
@@ -119,7 +127,9 @@ class Company(var name: String, val fabricTown: Town) {
     val model = EngineModel(name)
     if (model.price <= money()) {
       debit(model.price)
-      vehicles.add(new Engine(model, fabricTown, this))
+      val engine = new Engine(model, fabricTown, this)
+      vehicleUnits.add(engine)
+      vehicles.add(engine)
     }
   }
 
@@ -131,30 +141,18 @@ class Company(var name: String, val fabricTown: Town) {
     val model = CarriageModel(name)
     if (model.price <= money()) {
       debit(model.price)
-      vehicles.add(new Carriage(model, fabricTown, this))
+      vehicleUnits.add(new Carriage(model, fabricTown, this))
     }
   }
 
-  /** Creates a new train, with only an engine.
-    *
-    * @param engine The engine of the new train.
-    */
-  def createTrainFromEngine(engine: Engine): Train = {
-    if (!ownsVehicle(engine)) {
-      throw new IllegalOwnerException("Company doesn't own the engine")
-    }
-    val train = new Train(engine, List(), engine.town(), this)
-    trains.add(train)
-    train
-  }
 
   /** Adds a carriage at the tail of an existing train.
     *
     * @param train The train to extend.
     * @param carriage The carriage to add to <code>train</code>.
     */
-  def addCarriageToTrain(train: Train, carriage: Carriage): Unit = {
-    if (!ownsTrain(train)) {
+  def addCarriageToTrain(train: Engine, carriage: Carriage): Unit = {
+    if (!ownsVehicle(train)) {
       throw new IllegalOwnerException("Company doesn't own the train")
     }
     if (!ownsVehicle(carriage)) {
@@ -167,8 +165,8 @@ class Company(var name: String, val fabricTown: Town) {
     *
     * @param train The train.
     */
-  def removeCarriageFromTrain(train: Train): Unit = {
-    if (!ownsTrain(train)) {
+  def removeCarriageFromTrain(train: Engine): Unit = {
+    if (!ownsVehicle(train)) {
       throw new IllegalOwnerException("Company doesn't own the train")
     }
     train.removeCarriage()
@@ -178,12 +176,11 @@ class Company(var name: String, val fabricTown: Town) {
     *
     * @param train The train to disassemble.
     */
-  def disassembleTrain(train: Train): Unit = {
-    if (!ownsTrain(train)) {
+  def disassembleTrain(train: Engine): Unit = {
+    if (!ownsVehicle(train)) {
       throw new IllegalOwnerException("Company doesn't own the train")
     }
     train.disassemble()
-    trains.remove(train)
   }
 
   /** Start a new travel (starting town will be the train's current town.)
@@ -191,12 +188,12 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train to launch.
     * @param to The destination of the travel.
     */
-  def launchTravel(train: Train, to: Town, _onCompleted: () => Unit = () => ()): Unit = {
-    if (!ownsTrain(train)) {
+  def launchTravel(train: Engine, to: Town, _onCompleted: () => Unit = () => ()): Unit = {
+    if (!ownsVehicle(train)) {
       throw new IllegalOwnerException("Company doesn't own the train")
     }
     val routes = Game.world.findPath(train.town(), to).getOrElse(throw new PathNotFoundException)
-    val travel = new Travel(train, routes, this) {
+    val travel = new Travel(train, routes) {
       onCompleted = _onCompleted
     }
     train.launchTravel(travel)
@@ -220,8 +217,6 @@ class Company(var name: String, val fabricTown: Town) {
     }
   }
 
-  /** Returns true if this company owns <code>train</code>. */
-  def ownsTrain(train: Train): Boolean = train.owner == this
   /** Returns true if this company owns <code>vehicle</code>. */
   def ownsVehicle(vehicle: VehicleUnit): Boolean = vehicle.owner == this
 }

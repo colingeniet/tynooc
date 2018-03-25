@@ -12,6 +12,8 @@ import logic.travel._
 import collection.mutable.HashMap
 
 
+trait VehicleUnitModel extends BuyableModel
+
 trait VehicleUnit {
   val town: ObjectProperty[Town]
   val owner: Company
@@ -19,7 +21,7 @@ trait VehicleUnit {
   val name: StringProperty
 }
 
-abstract class VehicleUnitFromModel[Model <: BuyableModel](
+abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
   model: Model,
   _town: Town,
   val owner: Company)
@@ -34,7 +36,7 @@ extends FromBuyableModel[Model](model) with VehicleUnit {
 }
 
 
-trait VehicleModel extends BuyableModel {
+trait VehicleModel extends VehicleUnitModel {
   val speed: Double
   val consumption: Double
 }

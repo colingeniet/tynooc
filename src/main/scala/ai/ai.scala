@@ -45,7 +45,7 @@ extends Player(company) with AI {
         company.buyCarriage("Basic")
       val engines = company.enginesAvailable
       if(!engines.isEmpty) {
-        val train = company.createTrainFromEngine(engines.head)
+        val train = engines.head
         val carriages = company.carriagesAvailable
         if(!carriages.isEmpty) {
           company.addCarriageToTrain(train, carriages.head)
