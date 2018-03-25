@@ -58,8 +58,11 @@ object Game {
     last = System.currentTimeMillis()
   }
 
+  val virtualToRealRatio: Double = 4000
+
   // 4 sec (real time) = 1 hours (game time)
-  def realToVirtualTime(t: Double): Double = t / 4000
+  def realToVirtualTime(t: Double): Double = t / virtualToRealRatio
+  def virtualToRealTime(t: Double): Double = t * virtualToRealRatio
 
   /** Convert a time as a double to its string representation.
     *

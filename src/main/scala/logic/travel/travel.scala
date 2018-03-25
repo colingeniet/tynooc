@@ -25,7 +25,6 @@ private object State {
 /** A travel. */
 class Travel(val train: Train, private val routes: List[Route],
              val company: Company) {
-
   if(train.owner != company)
     throw new IllegalArgumentException("Company doesn’t own the train")
 
@@ -44,6 +43,8 @@ class Travel(val train: Train, private val routes: List[Route],
 
   /** Travel destination. */
   val destination: Town = routes.last.end
+
+  var onCompleted: () => Unit = () => ()
 
   /** Current travel route. */
   val currentRoute: ObjectBinding[Option[Route]] =
@@ -196,6 +197,9 @@ class Travel(val train: Train, private val routes: List[Route],
           state() = State.OnRoute
         }
       }
+    } else {
+      onCompleted()
+      onCompleted = () => ()
     }
   }
 }

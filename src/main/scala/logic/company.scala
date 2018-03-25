@@ -191,12 +191,14 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train to launch.
     * @param to The destination of the travel.
     */
-  def launchTravel(train: Train, to: Town): Unit = {
+  def launchTravel(train: Train, to: Town, _onCompleted: () => Unit = () => ()): Unit = {
     if (!ownsTrain(train)) {
       throw new IllegalOwnerException("Company doesn't own the train")
     }
     val routes = Game.world.findPath(train.town(), to).getOrElse(throw new PathNotFoundException)
-    val travel = new Travel(train, routes, this)
+    val travel = new Travel(train, routes, this) {
+      onCompleted = _onCompleted
+    }
     train.launchTravel(travel)
     Game.world.addTravel(travel)
   }
