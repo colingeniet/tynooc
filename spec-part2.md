@@ -3,16 +3,27 @@ This is a summary of the game mecanics of Part 2 and how they should be implemen
 # New route system
 ## Complex Routing
 
-TODO
+A simple system of instructions will be implemented to give orders to a train.
+An order is a list of instruction; here are some that should be implemented:
+
+```
+  .Goto c: go to the city c
+  .Wait t: wait a certain amount of time t
+  .Load x n: Loads a certain amount <= n of good x, as much as possible if n is unspecified.
+  .Loop: Goes to the beginning of the list.
+  (.Wait_for t: wait for a certain date ?)
+
+```
 
 ## Connections
 
 They all share the same trait
 
------------------
+
+```
 Trait Connection:
   accept(v: Vehicle): Boolean
-----------------
+```
 
 accept is a function that return yes if the vehicle can go on the path.
 There a multiple factors that are taken into account in the multiple implementations:
@@ -29,7 +40,8 @@ Exemples of connections:
 
 They are like this
 
-------------------------
+
+```
 Class Station / Upgradable / :
   
   accept(v: Vehicle): Boolean
@@ -37,22 +49,23 @@ Class Station / Upgradable / :
   Vars:
   .owner
   .model // For it is upgradable.
--------------------------
+
+```
 
 accept returns yes if the vehicle can go in...
 Here is what is contained in the model;
 
----------------
+
+```
 .vehicle -> (price/time) (for non owners)
 .size
 .capacity/vehicle
 .capacity/citizen
---------------
+```
 
 # Different vehicles type.
 
 This is the most difficult part of the project:
-
 
 
 # Goods
@@ -68,7 +81,7 @@ They depend on:
 
 They are as follow:
 
----------------
+```
 Class Factory /Upgradable/: 
 
   .timeTable ; When does the factory starts/stop producing ?
@@ -77,7 +90,7 @@ Class Factory /Upgradable/:
     A1/Q1, ...., An/Qn => B/Q
     Where Ai & B are Goods, Qi  is a quantity necessary of good, Q is the quantity produced with that.
 
----------------
+```
 
 They shall use the simplex algorithm at each beginning of production to try to maximise their income.
 
