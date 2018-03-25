@@ -26,17 +26,23 @@ extends FromBuyableModel[Model](model) with VehicleUnit {
   val town: ObjectProperty[Town] = ObjectProperty(_town)
 
   override def upgradeTo(newModel: Model): Unit = {
-    if (this.isUsed) throw new IllegalArgumentException("Vehicle is in use")
+    if (this.isUsed()) throw new IllegalArgumentException("Vehicle is in use")
     super.upgradeTo(newModel)
   }
 }
 
 
-class VehicleModel extends BuyableModel
+class VehicleModel(
+  name: String,
+  price: Double,
+  upgrades: List[String],
+  val weight: Double,
+  val speed: Double,
+  val consumption: Double)
+extends BuyableModel(name, price, upgrades)
 
 trait Vehicle extends VehicleUnit {
-  val owner: Company
-  val town: ObjectProperty[Town]
+
   val name: StringProperty
   val travel: ObjectProperty[Option[Travel]] = ObjectProperty(None)
 
@@ -51,5 +57,15 @@ trait Vehicle extends VehicleUnit {
   def consumption(distance: Double): Double
 }
 
-abstract class VehicleFromModel[Model <: VehicleModel]
-extends VehicleUnitFromModel with Vehicle
+abstract class VehicleFromModel[Model <: VehicleModel](
+  model: Model,
+  _town: Town,
+  val owner: Company,
+  val name: String)
+extends VehicleUnitFromModel(model, _town, owner) with Vehicle {
+
+  def speed: Double = model.speed
+
+  def consumption(distance: Double): Double = model.consumption*distance
+
+}

@@ -23,21 +23,21 @@ extends Exception(message, cause)
 /** Template for a vehicle model class. */
 class RailVehicleModel(
   name: String,
-  val weight: Double,
   price: Double,
-  upgrades: List[String])
-extends VehicleUnitModel(name, price, upgrades)
+  upgrades: List[String],
+  val weight: Double)
+extends BuyableModel(name, price, upgrades)
 
 /** An engine model. */
 class EngineModel(
   name: String,
-  weight: Double,
-  val power: Double,
-  val speed: Double,
-  val consumption: Double,
   price: Double,
-  upgrades: List[String])
-extends RailVehicleModel(name, weight, price, upgrades)
+  upgrades: List[String],
+  weight: Double,
+  speed: Double,
+  consumption: Double,
+  val power: Double)
+extends VehicleModel(name, price, upgrades, weight, speed, consumption)
 
 /** EngineModel companion object.
  *
@@ -45,19 +45,19 @@ extends RailVehicleModel(name, weight, price, upgrades)
  */
 object EngineModel extends ModelNameMap[EngineModel] {
   models = List(
-    new EngineModel("Basic", 100, 500, 80, 10, 500, List("Advanced")),
-    new EngineModel("Advanced", 120, 900, 120, 12, 1000, List()))
+    new EngineModel("Basic", 100,  List("Advanced"), 500, 80, 10, 500),
+    new EngineModel("Advanced", 120, List(), 900, 120, 12, 1000))
 }
 
 /** A carriage model. */
 class CarriageModel(
   name: String,
   weight: Double,
-  val capacity: Int,
-  val comfort: Double,
   price: Double,
-  upgrades: List[String])
-extends RailVehicleModel(name, weight,  price, upgrades)
+  upgrades: List[String],
+  val capacity: Int,
+  val comfort: Double)
+extends RailVehicleModel(name, price, upgrades, weight)
 
 /** CarriageModel companion object.
  *
@@ -65,33 +65,21 @@ extends RailVehicleModel(name, weight,  price, upgrades)
  */
 object CarriageModel extends ModelNameMap[CarriageModel] {
   models = List(
-    new CarriageModel("Basic", 80, 40, 10, 500, List("Advanced")),
-    new CarriageModel("Advanced", 80, 60, 15, 1000, List()))
+    new CarriageModel("Basic", 80, 40, List("Advanced"), 500, 900),
+    new CarriageModel("Advanced", 80, 60, List(), 15, 1000))
 }
-
 
 class RailVehicle[Model <: RailVehicleModel](
   model: Model,
   town: Town,
   owner: Company)
 extends VehicleUnitFromModel[Model](model, town, owner) {
-  val train: ObjectProperty[Option[Train]] = ObjectProperty(None)
+  val train: ObjectProperty[Option[Engine]] = ObjectProperty(None)
 
   val isUsed: BooleanBinding =
     Bindings.createBooleanBinding(
       () => train().isDefined,
       train)
-}
-
-/** An engine.
- *
- *  @param _model the engine model.
- */
-class Engine(model: EngineModel, town: Town, owner: Company)
-extends RailVehicle[EngineModel](model, town, owner) {
-  def this(name: String, town: Town, owner: Company) = this(EngineModel(name), town, owner)
-
-  def speed:Double = model.speed
 }
 
 /** A carriage.
@@ -108,32 +96,29 @@ extends RailVehicle[CarriageModel](model, town, owner) {
   def this(name: String, town: Town, owner: Company) = this(CarriageModel(name), town, owner)
 }
 
+/** An engine.
+ *
+ *  @param _model the engine model.
+ */
+class Engine(model: EngineModel, _town: Town, owner: Company, _name: String, _carriages: List[Carriage])
+extends VehicleFromModel[EngineModel](model, _town, owner, _name) with Vehicle {
 
-class Train (
-  val engine: Engine,
-  _carriages: List[Carriage],
-  _town: Town,
-  val owner: Company) extends Vehicle {
   val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
 
   val town: ObjectProperty[Town] = ObjectProperty(_town)
 
-  val name: StringProperty = StringProperty("Train")
+  val name: StringProperty = StringProperty(_name)
 
-  if(engine.isUsed())
-    throw new IllegalActionException("Can't create train with already used engine.")
-  engine.train() = Some(this)
-
-  override def speed: Double = engine.speed
-  override def consumption(distance: Double): Double = engine.model.consumption * distance
+  //override def speed: Double = engine.speed
+  //override def consumption(distance: Double): Double = engine.model.consumption * distance
 
   val weight: DoubleProperty = DoubleProperty(0)
   weight <== Bindings.createDoubleBinding(
-      () => carriages.foldLeft[Double](engine.model.weight)(_ + _.model.weight),
+      () => carriages.foldLeft[Double](0)(_ + _.model.weight),
       carriages)
 
   val tooHeavy: BooleanBinding =
-    jfxBooleanBinding2sfx(weight > engine.model.power)
+    jfxBooleanBinding2sfx(weight > model.power)
 
   override val isAvailable: BooleanBinding =
     jfxBooleanBinding2sfx(
@@ -172,8 +157,7 @@ class Train (
   def disassemble(): Unit = {
     if (onTravel())
       throw new IllegalActionException("Can't disassemble used train.")
-    engine.town() = town()
-    engine.train() = None
+
     carriages.foreach{ c =>
       c.town() = town()
       c.train() = None
@@ -187,4 +171,8 @@ class Train (
       throw new IllegalActionException("Can't launch travel with too heavy train.")
     travel() = Some(newTravel)
   }
+
+  def this(modelName: String, _town: Town, owner: Company, _name: String, _carriages: List[Carriage]) = this(EngineModel(modelName), _town, owner, _name, _carriages)
+  def speed:Double = model.speed
+
 }
