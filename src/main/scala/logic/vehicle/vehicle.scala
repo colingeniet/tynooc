@@ -4,6 +4,7 @@ import scalafx.beans.property._
 import scalafx.beans.binding._
 import scalafx.beans.binding.BindingIncludes._
 
+import logic.model._
 import logic.company._
 import logic.town._
 import logic.travel._
@@ -11,24 +12,11 @@ import logic.travel._
 import collection.mutable.HashMap
 
 
-/** A class mapping names to objects.
- *
- *  @param T the type of objects in the map.
- */
-trait NameMap[T] {
-  def models: HashMap[String, T]
-
-  /** Get an element from its name.
-   *
-   *  @param name the element name.
-   */
-  def apply(name: String): T = this.models.get(name).get
-}
-
 class VehicleUnitModel(
-  val name: String,
+  name: String,
   val price: Double,
-  val upgrades: List[String])
+  upgrades: List[String])
+extends Model(name, upgrades)
 
 
 trait VehicleUnit {
@@ -38,17 +26,15 @@ trait VehicleUnit {
 }
 
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
-  private var _model: Model,
+  model: Model,
   _town: Town,
   val owner: Company)
-extends VehicleUnit {
+extends FromModel[Model](model) with VehicleUnit {
   val town: ObjectProperty[Town] = ObjectProperty(_town)
 
-  def model: Model = _model
-
-  def upgradeTo(newModel: Model): Unit = {
+  override def upgradeTo(newModel: Model): Unit = {
     if (isUsed()) throw new IllegalArgumentException("Vehicle is in use")
-    _model = newModel
+    super.upgradeTo(newModel)
   }
 }
 

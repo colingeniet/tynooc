@@ -6,6 +6,8 @@ package object graph
 /** Provides world map definition. */
 package object world
 
+package object model
+
 /** Provides vehicle definition. */
 package object vehicle
 

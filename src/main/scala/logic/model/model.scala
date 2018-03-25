@@ -4,6 +4,7 @@ import collection.mutable.HashMap
 
 class Model(val name: String, val upgrades: List[String])
 
+
 abstract class ModelNameMap[T <: Model] {
   private var _models: HashMap[String, T] = new HashMap()
 
@@ -14,6 +15,7 @@ abstract class ModelNameMap[T <: Model] {
 
   def apply(name: String): T = this.models.get(name).get
 }
+
 
 abstract class FromModel[T <: Model](private var _model: T) {
   def model: T = _model

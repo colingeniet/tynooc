@@ -4,6 +4,7 @@ import logic.route._
 import logic.town._
 import logic.travel._
 import logic.company._
+import logic.model._
 import logic.vehicle._
 
 import collection.mutable.HashMap
@@ -25,13 +26,10 @@ extends VehicleUnitModel(name, price, upgrades)
  *
  *  Gets standard models from their names.
  */
-object PlaneModel extends NameMap[PlaneModel] {
-  private var _models: HashMap[String, PlaneModel] =
-    HashMap(
-      "Basic" -> new PlaneModel("Basic", 5, 50, 10, 50, 100, List("Advanced")),
-      "Advanced" -> new PlaneModel("Advanced", 10, 20, 500, 100, 200, List()))
-
-  override def models = _models
+object PlaneModel extends ModelNameMap[PlaneModel] {
+  models = List(
+    new PlaneModel("Basic", 5, 50, 10, 50, 100, List("Advanced")),
+    new PlaneModel("Advanced", 10, 20, 500, 100, 200, List()))
 }
 
 class Plane(

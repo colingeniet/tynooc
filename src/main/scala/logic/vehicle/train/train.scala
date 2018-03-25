@@ -9,6 +9,7 @@ import logic.route._
 import logic.town._
 import logic.travel._
 import logic.company._
+import logic.model._
 import logic.vehicle._
 
 import collection.mutable.HashMap
@@ -42,13 +43,10 @@ extends RailVehicleModel(name, weight, price, upgrades)
  *
  *  Gets standard models from their names.
  */
-object EngineModel extends NameMap[EngineModel] {
-  private var _models: HashMap[String, EngineModel] =
-    HashMap(
-      "Basic" -> new EngineModel("Basic", 100, 500, 80, 10, 500, List("Advanced")),
-      "Advanced" -> new EngineModel("Advanced", 120, 900, 120, 12, 1000, List()))
-
-  override def models = _models
+object EngineModel extends ModelNameMap[EngineModel] {
+  models = List(
+    new EngineModel("Basic", 100, 500, 80, 10, 500, List("Advanced")),
+    new EngineModel("Advanced", 120, 900, 120, 12, 1000, List()))
 }
 
 /** A carriage model. */
@@ -65,13 +63,10 @@ extends RailVehicleModel(name, weight,  price, upgrades)
  *
  *  Get standard models from their names.
  */
-object CarriageModel extends NameMap[CarriageModel] {
-  private var _models: HashMap[String, CarriageModel] =
-    HashMap(
-      "Basic" -> new CarriageModel("Basic", 80, 40, 10, 500, List("Advanced")),
-      "Advanced" -> new CarriageModel("Advanced", 80, 60, 15, 1000, List()))
-
-  override def models = _models
+object CarriageModel extends ModelNameMap[CarriageModel] {
+  models = List(
+    new CarriageModel("Basic", 80, 40, 10, 500, List("Advanced")),
+    new CarriageModel("Advanced", 80, 60, 15, 1000, List()))
 }
 
 
