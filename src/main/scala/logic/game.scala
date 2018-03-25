@@ -2,6 +2,8 @@ package logic.game
 
 import scalafx.beans.property._
 
+import scala.collection.mutable.PriorityQueue
+
 import logic.world._
 import ai._
 import player._
@@ -24,18 +26,31 @@ object Game {
   /** Path of the map file. */
   var mapPath = "map/Map"
 
+  private var actionQueue: PriorityQueue[(Double, () => Unit)] =
+    new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))
+
+  def addAction(actionTime: Double, action: () => Unit) =
+    actionQueue.enqueue((actionTime, action))
+
+  def delayAction(delay: Double, action: () => Unit) =
+    addAction(time() + delay, action)
+
   /** Advance simulation. */
   def update(): Unit = {
     val a: Double = System.currentTimeMillis()
     if (!paused) {
       // in game time passed
       val dt: Double = timeAcceleration * realToVirtualTime(a - last)
+      time() = time() + dt
+
       logic(dt)
       players.foreach {
         case ai: AI => ai.play(world, dt)
         case _      =>
       }
-      time() = time() + dt
+      while(!actionQueue.isEmpty && actionQueue.head._1 <= time()) {
+        actionQueue.dequeue()._2()
+      }
     }
     last = a
   }
