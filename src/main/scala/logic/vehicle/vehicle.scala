@@ -16,6 +16,7 @@ trait VehicleUnit {
   val town: ObjectProperty[Town]
   val owner: Company
   val isUsed: BooleanBinding
+  val name: StringProperty
 }
 
 abstract class VehicleUnitFromModel[Model <: BuyableModel](
@@ -24,6 +25,7 @@ abstract class VehicleUnitFromModel[Model <: BuyableModel](
   val owner: Company)
 extends FromBuyableModel[Model](model) with VehicleUnit {
   val town: ObjectProperty[Town] = ObjectProperty(_town)
+  val name: StringProperty = StringProperty(model.name)
 
   override def upgradeTo(newModel: Model): Unit = {
     if (this.isUsed()) throw new IllegalArgumentException("Vehicle is in use")
@@ -32,24 +34,20 @@ extends FromBuyableModel[Model](model) with VehicleUnit {
 }
 
 
-class VehicleModel(
-  name: String,
-  price: Double,
-  upgrades: List[String],
-  val weight: Double,
-  val speed: Double,
-  val consumption: Double)
-extends BuyableModel(name, price, upgrades)
+trait VehicleModel extends BuyableModel {
+  val speed: Double
+  val consumption: Double
+}
 
 trait Vehicle extends VehicleUnit {
-
-  val name: StringProperty
   val travel: ObjectProperty[Option[Travel]] = ObjectProperty(None)
 
   val onTravel: BooleanBinding =
     Bindings.createBooleanBinding(
       () => travel().isDefined,
       travel)
+
+  val isUsed: BooleanBinding = onTravel
 
   val isAvailable: BooleanBinding = jfxBooleanBinding2sfx(!onTravel)
 
@@ -59,13 +57,9 @@ trait Vehicle extends VehicleUnit {
 
 abstract class VehicleFromModel[Model <: VehicleModel](
   model: Model,
-  _town: Town,
-  val owner: Company,
-  val name: String)
-extends VehicleUnitFromModel(model, _town, owner) with Vehicle {
-
+  town: Town,
+  owner: Company)
+extends VehicleUnitFromModel(model, town, owner) with Vehicle {
   def speed: Double = model.speed
-
-  def consumption(distance: Double): Double = model.consumption*distance
-
+  def consumption(distance: Double): Double = model.consumption * distance
 }

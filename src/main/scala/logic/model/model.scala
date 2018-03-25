@@ -3,7 +3,9 @@ package logic.model
 import collection.mutable.HashMap
 
 
-class Model(val name: String)
+trait Model {
+  val name: String
+}
 
 abstract class ModelNameMap[T <: Model] {
   private var _models: HashMap[String, T] = new HashMap()
@@ -19,11 +21,10 @@ abstract class ModelNameMap[T <: Model] {
 abstract class FromModel[T <: Model](var model: T)
 
 
-class BuyableModel(
-  name: String,
-  val price: Double,
-  val upgrades: List[String])
-extends Model(name)
+trait BuyableModel extends Model{
+  val price: Double
+  val upgrades: List[String]
+}
 
 abstract class FromBuyableModel[T <: BuyableModel](_model: T)
 extends FromModel[T](_model) {
