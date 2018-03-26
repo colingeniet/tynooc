@@ -8,6 +8,7 @@ import scalafx.geometry._
 import scalafx.beans.binding._
 
 import gui.scenes.elements.Link
+import gui.scenes.panes.model._
 import logic.vehicle._
 import logic.vehicle.train._
 
@@ -48,39 +49,14 @@ class EngineDetail(engine: Engine) extends VBox {
  *
  *  @param model the carriage model to display.
  */
-class CarriageModelStats(model: CarriageModel) extends VBox(3) {
-  children = List (
-    new Label("cap. : " + model.capacity),
-    new Label("weight : " + model.weight),
-    new Label("comfort : " + model.comfort))
-}
+class CarriageModelStats(model: CarriageModel)
+extends BuyableModelStats[CarriageModel](model)
 
 /** Engine model info display.
  *
  *  @param model the engine model to display.
  */
-class EngineModelStats(model: EngineModel) extends VBox(3) {
-  children = List (
-    new Label("speed : " + model.speed),
-    new Label("power : " + model.power),
-    new Label("weight : " + model.weight),
-    new Label("consum. : " + model.consumption))
-}
-
-/** Generic info display.
- *
- *  @param m the class with the info do display
- */
-object Stats {
-  def statFilter(field: java.lang.reflect.Field): Boolean = false
-}
-
-/** Generic info display.
- *
- *  @param m the class with the info do display
- */
-class Stats[A](m: A) extends VBox(3) {
-  children = m.getClass().getDeclaredFields.toList.map(a => {a.setAccessible(true); a}).filterNot(Stats.statFilter(_)).map {
-    a => new Label(a.getName() + " : " + a.get(m))
-  }
+class EngineModelStats(model: EngineModel)
+extends BuyableModelStats[EngineModel](model) {
+  override def nameSuffix = Some("engine")
 }
