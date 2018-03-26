@@ -12,7 +12,7 @@ import logic.model._
  *
  *  @param m the object to display.
  */
-class Stats[M](m: M) extends VBox(3) {
+class Stats(m: Object) extends VBox(3) {
   def filter(a: java.lang.reflect.Field): Boolean = false
   def display(a: java.lang.reflect.Field): Node = {
     new Label(a.getName() + ": " + a.get(m).toString)
@@ -24,7 +24,7 @@ class Stats[M](m: M) extends VBox(3) {
     }.filterNot(this.filter(_)).map(this.display(_))
 }
 
-class ModelStats[M <: Model](m: M) extends Stats[M](m) {
+class ModelStats(m: Model) extends Stats(m) {
   def nameSuffix: Option[String] = None
 
   override def display(a: java.lang.reflect.Field): Node = {
@@ -38,7 +38,7 @@ class ModelStats[M <: Model](m: M) extends Stats[M](m) {
   }
 }
 
-class BuyableModelStats[M <: BuyableModel](m: M) extends ModelStats[M](m) {
+class BuyableModelStats(m: BuyableModel) extends ModelStats(m) {
   override def display(a: java.lang.reflect.Field): Node = {
     if(a.getName() == "upgrades") {
       val str: StringBuilder = new StringBuilder(a.get(m).toString)
@@ -52,7 +52,7 @@ class BuyableModelStats[M <: BuyableModel](m: M) extends ModelStats[M](m) {
 }
 
 /* Do not display price and upgrades */
-class BuyableModelShortStats[M <: BuyableModel](m: M) extends ModelStats[M](m) {
+class BuyableModelShortStats(m: BuyableModel) extends ModelStats(m) {
   override def filter(a: java.lang.reflect.Field): Boolean = {
     a.getName() == "price" || a.getName() == "upgrades" || super.filter(a)
   }

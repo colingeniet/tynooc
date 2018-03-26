@@ -26,7 +26,7 @@ trait RailVehicleUnitModel extends VehicleUnitModel {
 }
 
 /** An engine model. */
-class EngineModel(
+case class EngineModel(
   val name: String,
   val price: Double,
   val upgrades: List[String],
@@ -47,7 +47,7 @@ object EngineModel extends ModelNameMap[EngineModel] {
 }
 
 /** A carriage model. */
-class CarriageModel(
+case class CarriageModel(
   val name: String,
   val price: Double,
   val upgrades: List[String],

@@ -8,7 +8,7 @@ import scalafx.geometry._
 import scalafx.beans.binding._
 
 import gui.scenes.elements.Link
-import gui.scenes.panes.model._
+import gui.scenes.panes.vehicle._
 import logic.vehicle._
 import logic.vehicle.train._
 
@@ -20,7 +20,7 @@ import logic.vehicle.train._
 class CarriageDetail(carriage: Carriage) extends VBox {
   private val name: Label = new Label(carriage.model.name + " carriage")
   private val status: Label = new Label()
-  private val model: VBox = new CarriageModelStats(carriage.model)
+  private val model: VBox = new VehicleModelShortStats(carriage.model)
 
   spacing = 3
   children = List(name, status, model)
@@ -38,25 +38,8 @@ class CarriageDetail(carriage: Carriage) extends VBox {
  */
 class EngineDetail(engine: Engine) extends VBox {
   private val name: Label = new Label(engine.model.name + " engine")
-  private val model: VBox = new EngineModelStats(engine.model)
+  private val model: VBox = new VehicleModelShortStats(engine.model)
 
   spacing = 3
   children = List(name, model)
-}
-
-
-/** Carriage model info display.
- *
- *  @param model the carriage model to display.
- */
-class CarriageModelStats(model: CarriageModel)
-extends BuyableModelStats[CarriageModel](model)
-
-/** Engine model info display.
- *
- *  @param model the engine model to display.
- */
-class EngineModelStats(model: EngineModel)
-extends BuyableModelStats[EngineModel](model) {
-  override def nameSuffix = Some("engine")
 }

@@ -7,6 +7,7 @@ import scalafx.scene.layout._
 import scalafx.event._
 
 import gui.scenes.elements._
+import gui.scenes.panes.vehicle._
 import logic.vehicle._
 import logic.vehicle.train._
 import logic.company._
@@ -19,7 +20,7 @@ import formatter._
  *  @param updateStock a callback used to indicate that the company stock
  *   needs to be updated.
  */
-class ModelsList(company: Company, updateStock: => Unit) extends VBox(3) {
+class Catalog(company: Company, updateStock: => Unit) extends VBox(3) {
   // 2 submenus : engines and carriages
   private val typeList: SelectionMenu = new SelectionMenu()
   typeList.addMenu("engines", listEngines)
@@ -62,7 +63,7 @@ class ModelsList(company: Company, updateStock: => Unit) extends VBox(3) {
     }
     children = List(
       typeList, sep1, enginesList, sep2, buy,
-      new EngineModelStats(engine))
+      new VehicleModelStats(engine))
   }
 
   /** Displays the list of carriages. */
@@ -80,6 +81,6 @@ class ModelsList(company: Company, updateStock: => Unit) extends VBox(3) {
     }
     children = List(
       typeList, sep1, carriagesList, sep2, buy,
-      new CarriageModelStats(carriage))
+      new VehicleModelStats(carriage))
   }
 }

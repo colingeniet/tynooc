@@ -55,7 +55,7 @@ extends VBox {
     new CompanyStock(company, world, detailTrain, detailEngine, detailCarriage)
 
   // model catalog subpanel
-  private val models: ModelsList = new ModelsList(company, updateStock)
+  private val catalog: Catalog = new Catalog(company, updateStock)
 
   spacing = 5
   setChildren()
@@ -79,7 +79,7 @@ extends VBox {
 
   /** Displays catalog panel. */
   private def displayModels(): Unit = {
-    panel = models
+    panel = catalog
     setChildren()
   }
 
