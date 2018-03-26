@@ -10,7 +10,6 @@ import logic.travel._
 import logic.town._
 import logic.game._
 import logic.world._
-import logic.graph._
 
 /** An object to manage prices. */
 object PriceSimulation {

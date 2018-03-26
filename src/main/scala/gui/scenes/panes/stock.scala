@@ -5,7 +5,6 @@ import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
-import scala.util.Try
 import scalafx.scene.input.MouseEvent
 
 import gui.scenes.elements._
@@ -15,6 +14,8 @@ import logic.vehicle.train._
 import logic.world._
 import logic.town._
 import formatter._
+
+import scala.util.Try
 
 /** Displays a company rolling stock.
  *

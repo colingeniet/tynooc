@@ -1,6 +1,5 @@
 package logic.world
 
-import logic.graph._
 import logic.town._
 import logic.travel._
 import logic.room._

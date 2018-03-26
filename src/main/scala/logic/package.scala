@@ -1,8 +1,5 @@
 package logic
 
-/** Provides graph manipulation class. */
-package object graph
-
 /** Provides world map definition. */
 package object world
 

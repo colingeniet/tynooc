@@ -3,7 +3,6 @@ import scalafx.application._
 
 import gui.MainStage
 import logic.game._
-import logic.town._
 import logic.company._
 import ai._
 import player._

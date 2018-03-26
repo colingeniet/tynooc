@@ -1,6 +1,5 @@
 package logic.route
 
-import logic.graph._
 import logic.town._
 
 /** A route between two towns.
