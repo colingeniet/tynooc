@@ -11,23 +11,7 @@ import logic.vehicle.train._
 
 
 class VehicleModelStats(model: VehicleUnitModel)
-extends BuyableModelStats(model) {
-  override def nameSuffix: Option[String] = {
-    model match {
-      case e: EngineModel => Some("engine")
-      case c: CarriageModel => Some("carriage")
-      case _ => None
-    }
-  }
-}
+extends BuyableModelStats(model)
 
 class VehicleModelShortStats(model: VehicleUnitModel)
-extends BuyableModelShortStats(model) {
-  override def nameSuffix: Option[String] = {
-    model match {
-      case e: EngineModel => Some("engine")
-      case c: CarriageModel => Some("carriage")
-      case _ => None
-    }
-  }
-}
+extends BuyableModelShortStats(model)

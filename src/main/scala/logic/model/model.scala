@@ -7,13 +7,8 @@ trait Model {
   val name: String
 }
 
-abstract class ModelNameMap[T <: Model] {
-  private var _models: HashMap[String, T] = new HashMap()
-
-  def models: HashMap[String, T] = _models
-  def models_=(listModels: List[T]): Unit = {
-    listModels.foreach(m => _models(m.name) = m)
-  }
+trait ModelNameMap[T <: Model] {
+  def models: HashMap[String, T]
 
   def apply(name: String): T = this.models.get(name).get
 }

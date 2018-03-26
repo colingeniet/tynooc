@@ -40,9 +40,9 @@ extends Player(company) with AI {
       lastAction = 0
 
       if(company.money() > 3000 && company.engines.size < 10)
-        company.buyEngine("Basic")
+        company.buyEngine("basic")
       if(company.money() > 2000 && company.carriages.size < 50)
-        company.buyCarriage("Basic")
+        company.buyCarriage("basic")
       val engines = company.enginesAvailable
       if(!engines.isEmpty) {
         val train = engines.head

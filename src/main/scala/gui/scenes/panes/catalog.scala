@@ -58,7 +58,7 @@ class Catalog(company: Company, updateStock: => Unit) extends VBox(3) {
   private def displayEngine(engine: EngineModel): Unit = {
     buy.text = "buy(" + MoneyFormatter.format(engine.price) + ")"
     buy.onAction = (event: ActionEvent) => {
-      company.buyEngine(engine.name)
+      company.buyEngine(engine)
       updateStock
     }
     children = List(
@@ -76,7 +76,7 @@ class Catalog(company: Company, updateStock: => Unit) extends VBox(3) {
   private def displayCarriage(carriage: CarriageModel): Unit = {
     buy.text = "buy(" + MoneyFormatter.format(carriage.price) + ")"
     buy.onAction = (event: ActionEvent) => {
-      company.buyCarriage(carriage.name)
+      company.buyCarriage(carriage)
       updateStock
     }
     children = List(

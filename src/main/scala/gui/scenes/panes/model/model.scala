@@ -25,16 +25,9 @@ class Stats(m: Object) extends VBox(3) {
 }
 
 class ModelStats(m: Model) extends Stats(m) {
-  def nameSuffix: Option[String] = None
-
   override def display(a: java.lang.reflect.Field): Node = {
-    if(a.getName() == "name") {
-      val nameStr = this.nameSuffix match {
-        case Some(suf) => a.get(m).toString + " " + suf
-        case None => a.get(m).toString
-      }
-      new Label(nameStr)
-    } else super.display(a)
+    if(a.getName() == "name") new Label(a.get(m).toString)
+    else super.display(a)
   }
 }
 

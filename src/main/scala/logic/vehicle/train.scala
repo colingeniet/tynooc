@@ -41,9 +41,11 @@ extends RailVehicleUnitModel with VehicleModel
  *  Gets standard models from their names.
  */
 object EngineModel extends ModelNameMap[EngineModel] {
-  models = List(
-    new EngineModel("Basic", 500,  List("Advanced"), 100, 80, 10, 500),
-    new EngineModel("Advanced", 1000, List(), 120, 120, 12, 900))
+  private var _models: HashMap[String, EngineModel] = HashMap(
+    "basic" -> new EngineModel("basic engine", 500,  List("advanced"), 100, 80, 10, 500),
+    "advanced" -> new EngineModel("advanced engine", 1000, List(), 120, 120, 12, 900))
+
+  override def models: HashMap[String, EngineModel] = _models
 }
 
 /** A carriage model. */
@@ -61,9 +63,11 @@ extends RailVehicleUnitModel
  *  Get standard models from their names.
  */
 object CarriageModel extends ModelNameMap[CarriageModel] {
-  models = List(
-    new CarriageModel("Basic", 500, List("Advanced"), 80, 40, 10),
-    new CarriageModel("Advanced", 1000, List(), 80, 50, 15))
+  private var _models: HashMap[String, CarriageModel] = HashMap(
+    "basic" -> new CarriageModel("basic carriage", 500, List("advanced"), 80, 40, 10),
+    "advanced" -> new CarriageModel("advanced carriage", 1000, List(), 80, 50, 15))
+
+  override def models: HashMap[String, CarriageModel] = _models
 }
 
 

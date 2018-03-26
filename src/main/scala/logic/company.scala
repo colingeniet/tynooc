@@ -119,12 +119,7 @@ class Company(var name: String, val fabricTown: Town) {
   def trainsAvailable: HashSet[Engine] = trains.filter { _.isAvailable() }
 
 
-  /** Buy an engine and add it to the company's engines.
-    *
-    * @param name The name of the engine to buy.
-    */
-  def buyEngine(name: String): Unit = {
-    val model = EngineModel(name)
+  def buyEngine(model: EngineModel): Unit = {
     if (model.price <= money()) {
       debit(model.price)
       val engine = new Engine(model, fabricTown, this)
@@ -133,16 +128,27 @@ class Company(var name: String, val fabricTown: Town) {
     }
   }
 
+  /** Buy an engine and add it to the company's engines.
+    *
+    * @param name The name of the engine to buy.
+    */
+  def buyEngine(name: String): Unit = {
+    buyEngine(EngineModel(name))
+  }
+
   /** Buy a carriage and add it to the company's carriages.
     *
     * @param name The name of the carriage to buy.
     */
-  def buyCarriage(name: String): Unit = {
-    val model = CarriageModel(name)
+  def buyCarriage(model: CarriageModel): Unit = {
     if (model.price <= money()) {
       debit(model.price)
       vehicleUnits.add(new Carriage(model, fabricTown, this))
     }
+  }
+
+  def buyCarriage(name: String): Unit = {
+    buyCarriage(CarriageModel(name))
   }
 
 

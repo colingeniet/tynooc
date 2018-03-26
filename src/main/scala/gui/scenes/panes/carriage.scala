@@ -18,9 +18,14 @@ import logic.vehicle.train._
  *  @param carriage the carriage to display.
  */
 class CarriageDetail(carriage: Carriage) extends VBox {
-  private val name: Label = new Label(carriage.model.name + " carriage")
+  private val name: Label = new Label(carriage.model.name)
   private val status: Label = new Label()
-  private val model: VBox = new VehicleModelShortStats(carriage.model)
+  private val model: VBox = new VehicleModelShortStats(carriage.model) {
+    // don't display name
+    override def filter(a: java.lang.reflect.Field): Boolean = {
+      a.getName() == "name" || super.filter(a)
+    }
+  }
 
   spacing = 3
   children = List(name, status, model)
@@ -37,8 +42,13 @@ class CarriageDetail(carriage: Carriage) extends VBox {
  *  @param engine the engine to display.
  */
 class EngineDetail(engine: Engine) extends VBox {
-  private val name: Label = new Label(engine.model.name + " engine")
-  private val model: VBox = new VehicleModelShortStats(engine.model)
+  private val name: Label = new Label(engine.model.name)
+  private val model: VBox = new VehicleModelShortStats(engine.model) {
+    // don't display name
+    override def filter(a: java.lang.reflect.Field): Boolean = {
+      a.getName() == "name" || super.filter(a)
+    }
+  }
 
   spacing = 3
   children = List(name, model)

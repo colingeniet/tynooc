@@ -26,9 +26,11 @@ extends VehicleModel
  *  Gets standard models from their names.
  */
 object PlaneModel extends ModelNameMap[PlaneModel] {
-  models = List(
-    new PlaneModel("Basic", 500, List("Advanced"), 200, 20, 30),
-    new PlaneModel("Advanced", 1000, List(), 300, 20, 40))
+  private var _models: HashMap[String, PlaneModel] = HashMap(
+    "basic" -> new PlaneModel("basic plane", 500, List("advanced"), 200, 20, 30),
+    "advanced" -> new PlaneModel("advanced plane", 1000, List(), 300, 20, 40))
+
+  override def models: HashMap[String, PlaneModel] = _models
 }
 
 class Plane(
