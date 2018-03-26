@@ -10,6 +10,7 @@ import scalafx.geometry._
 import gui.MainStage
 import gui.scenes.map._
 import gui.scenes.panes._
+import gui.scenes.panes.vehicle._
 import gui.scenes.elements._
 import logic.world._
 import logic.town._
@@ -80,12 +81,12 @@ extends MainStage.Scene(sceneModifier) {
   }
 
   private def displayEngine(engine: Engine): Unit = {
-    right = new EngineDetail(engine)
+    right = new VehicleUnitDetail(engine)
     pane.right = right
   }
 
   private def displayCarriage(carriage: Carriage): Unit = {
-    right = new CarriageDetail(carriage)
+    right = new VehicleUnitDetail(carriage)
     pane.right = right
   }
 }

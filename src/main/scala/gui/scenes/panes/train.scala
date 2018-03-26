@@ -14,6 +14,7 @@ import scalafx.collections.ObservableBuffer._
 
 import gui.scenes.elements._
 import gui.scenes.panes._
+import gui.scenes.panes.vehicle._
 import logic.vehicle._
 import logic.vehicle.train._
 
@@ -62,13 +63,13 @@ class TrainDetail(train: Engine) extends VBox {
 
   /** Display engine detail in the lower panel */
   private def displayEngine(engine: Engine): Unit = {
-    detail = new EngineDetail(engine)
+    detail = new VehicleUnitDetail(engine)
     setChildren()
   }
 
   /** Display carriage detail in the lower panel */
   private def displayCarriage(carriage: Carriage): Unit = {
-    detail = new CarriageDetail(carriage)
+    detail = new VehicleUnitDetail(carriage)
     setChildren()
   }
 }

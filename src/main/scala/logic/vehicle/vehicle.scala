@@ -19,6 +19,7 @@ trait VehicleUnit {
   val owner: Company
   val isUsed: BooleanBinding
   val name: StringProperty
+  def model: VehicleUnitModel
 }
 
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](

@@ -15,3 +15,19 @@ extends BuyableModelStats(model)
 
 class VehicleModelShortStats(model: VehicleUnitModel)
 extends BuyableModelShortStats(model)
+
+
+class VehicleUnitDetail(vehicle: VehicleUnit)
+extends VBox(3) {
+  private val name: Label = new Label {
+    text <== vehicle.name
+  }
+  private val model: VBox = new VehicleModelShortStats(vehicle.model) {
+    // don't display name
+    override def filter(a: java.lang.reflect.Field): Boolean = {
+      a.getName() == "name" || super.filter(a)
+    }
+  }
+
+  children = List(name, model)
+}

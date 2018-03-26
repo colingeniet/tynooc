@@ -13,7 +13,7 @@ trait ModelNameMap[T <: Model] {
   def apply(name: String): T = this.models.get(name).get
 }
 
-abstract class FromModel[T <: Model](var model: T)
+class FromModel[T <: Model](var model: T)
 
 
 trait BuyableModel extends Model{
@@ -21,7 +21,7 @@ trait BuyableModel extends Model{
   val upgrades: List[String]
 }
 
-abstract class FromBuyableModel[T <: BuyableModel](_model: T)
+class FromBuyableModel[T <: BuyableModel](_model: T)
 extends FromModel[T](_model) {
   def upgradeTo(newModel: T): Unit = {
     model = newModel
