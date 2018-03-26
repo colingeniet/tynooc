@@ -38,8 +38,7 @@ extends MainStage.Scene(sceneModifier) {
     player.company,
     world,
     displayTrain,
-    displayEngine,
-    displayCarriage)
+    displayVehicleUnit)
   // empty by default
   private var right: VBox = new VBox()
   private var bottom: HBox = new HBox()
@@ -80,13 +79,8 @@ extends MainStage.Scene(sceneModifier) {
     pane.right = right
   }
 
-  private def displayEngine(engine: Engine): Unit = {
-    right = new VehicleUnitDetail(engine)
-    pane.right = right
-  }
-
-  private def displayCarriage(carriage: Carriage): Unit = {
-    right = new VehicleUnitDetail(carriage)
+  private def displayVehicleUnit(vehicle: VehicleUnit): Unit = {
+    right = VehicleUnitDetail(vehicle)
     pane.right = right
   }
 }

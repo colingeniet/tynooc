@@ -89,8 +89,7 @@ extends VehicleUnitFromModel[CarriageModel](model, town, owner) {
   def capacity: Int = model.capacity
   def comfort: Double = model.comfort
 
-  def this(name: String, town: Town, owner: Company) =
-    this(CarriageModel(name), town, owner)
+  def modelNameMap(name: String): CarriageModel = CarriageModel(name)
 }
 
 /** An engine.
@@ -166,6 +165,5 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
     travel() = Some(newTravel)
   }
 
-  def this(name: String, _town: Town, owner: Company, _carriages: List[Carriage]) =
-    this(EngineModel(name), _town, owner, _carriages)
+  def modelNameMap(name: String): EngineModel = EngineModel(name)
 }

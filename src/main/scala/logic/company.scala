@@ -18,11 +18,8 @@ object PriceSimulation {
     * @param from The old model.
     * @param to The upgraded model.
     */
-  // TODO include the repair price.
-  def upgradePrice[Model <: VehicleUnitModel](
-    from: VehicleUnitFromModel[Model],
-    to: Model): Double = {
-    (to.price - from.model.price) * 1.2
+  def upgradePrice(from: VehicleUnit, to: String): Double = {
+    (from.modelNameMap(to).price - from.model.price) * 1.2
   }
 }
 
@@ -210,9 +207,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param old The vehicle to upgrade.
     * @param model The upgraded model.
     */
-  def upgrade[Model <: VehicleUnitModel](
-    old: VehicleUnitFromModel[Model],
-    model: Model): Unit = {
+  def upgrade(old: VehicleUnit, model: String): Unit = {
     if (!ownsVehicle(old)) {
       throw new IllegalOwnerException("Company doesn't own the vehicle")
     }

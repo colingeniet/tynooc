@@ -37,4 +37,6 @@ class Plane(
   model: PlaneModel,
   town: Town,
   owner: Company)
-extends VehicleFromModel[PlaneModel](model, town, owner)
+extends VehicleFromModel[PlaneModel](model, town, owner) {
+  def modelNameMap(name: String): PlaneModel = PlaneModel(name)
+}

@@ -63,13 +63,13 @@ class TrainDetail(train: Engine) extends VBox {
 
   /** Display engine detail in the lower panel */
   private def displayEngine(engine: Engine): Unit = {
-    detail = new VehicleUnitDetail(engine)
+    detail = VehicleUnitDetail(engine)
     setChildren()
   }
 
   /** Display carriage detail in the lower panel */
   private def displayCarriage(carriage: Carriage): Unit = {
-    detail = new VehicleUnitDetail(carriage)
+    detail = VehicleUnitDetail(carriage)
     setChildren()
   }
 }

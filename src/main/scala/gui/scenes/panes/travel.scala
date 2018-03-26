@@ -19,7 +19,7 @@ class TravelInfo(travel: Travel) extends VBox {
   private val trainInfo: TrainDetail = new TrainDetail(travel.vehicle)
 
   private val dest: Label = new Label("destination :")
-  private val destName: Label = new Label(travel.destination.name)
+  private val destName: Label = new Label(s" ${travel.destination.name}")
   private val destDist: Label = new Label {
     text <== createStringBinding(
       () => f" dist : ${travel.totalRemainingDistance.toDouble}%.0f",

@@ -14,12 +14,10 @@ import collection.mutable.HashMap
 
 trait VehicleUnitModel extends BuyableModel
 
-trait VehicleUnit {
+trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   val town: ObjectProperty[Town]
   val owner: Company
   val isUsed: BooleanBinding
-  val name: StringProperty
-  def model: VehicleUnitModel
 }
 
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
@@ -28,7 +26,6 @@ abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
   val owner: Company)
 extends FromBuyableModel[Model](model) with VehicleUnit {
   val town: ObjectProperty[Town] = ObjectProperty(_town)
-  val name: StringProperty = StringProperty(model.name)
 
   override def upgradeTo(newModel: Model): Unit = {
     if (this.isUsed()) throw new IllegalArgumentException("Vehicle is in use")
@@ -43,6 +40,7 @@ trait VehicleModel extends VehicleUnitModel {
 }
 
 trait Vehicle extends VehicleUnit {
+  val name: StringProperty
   val travel: ObjectProperty[Option[Travel]] = ObjectProperty(None)
 
   val onTravel: BooleanBinding =
@@ -63,6 +61,7 @@ abstract class VehicleFromModel[Model <: VehicleModel](
   town: Town,
   owner: Company)
 extends VehicleUnitFromModel(model, town, owner) with Vehicle {
+  val name: StringProperty = StringProperty("train")
   def speed: Double = model.speed
   def consumption(distance: Double): Double = model.consumption * distance
 }

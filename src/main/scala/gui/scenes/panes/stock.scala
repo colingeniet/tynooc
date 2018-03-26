@@ -27,45 +27,90 @@ import scala.util.Try
 class CompanyStock(
   company: Company,
   world: World,
-  statsTrain: Engine => Unit,
-  statsEngine: Engine => Unit,
-  statsCarriage: Carriage => Unit)
-extends VBox {
-  private val menu: SelectionMenu = new SelectionMenu()
-  menu.addMenu("trains", displayTrains())
-  menu.addMenu("engines", displayEngines())
-  menu.addMenu("carriages", displayCarriages())
-
-  private val sep1: Separator = new Separator()
-  private val sep2: Separator = new Separator()
-
+  stats: VehicleUnit => Unit)
+extends VBox(3) {
   private var list: Node = new Pane()
 
-  children = List(menu, sep1)
-  spacing = 3
+  private val sep: Separator = new Separator()
 
-  /** Displays the trains list. */
-  private def displayTrains(): Unit = {
-    list = new TrainList(company.trains.toList, detailTrain)
-    children = List(menu, sep1, list)
+  updateList()
+  children = List(list)
+
+
+  private def updateList(): Unit = {
+    list = new SelectionList[VehicleUnit](
+      company.vehicleUnits.toList,
+      _.model.name,
+      detailVehicle)
   }
 
-  /** Displays the engines list. */
-  private def displayEngines(): Unit = {
-    list = new EngineList(company.engines.toList, detailEngine)
-    children = List(menu, sep1, list)
+  /** Displays a specific engine. */
+  private def detailVehicle(vehicle: VehicleUnit): Unit = {
+    // display stats in a separate window via callback
+    stats(vehicle)
+
+    val upgradeButton: Button = new Button("Upgrade")
+    upgradeButton.onAction = (event: ActionEvent) => {
+      // when pressing the button, display the list of upgrades
+      val selectionList: SelectionList[String] =
+        new SelectionList[String](
+          vehicle.model.upgrades,
+          name => s"${name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(vehicle, name))})",
+          name => {
+            // upgrade engine upon selection
+            company.upgrade(vehicle, name)
+            updateList()
+            detailVehicle(vehicle)
+        })
+
+      // display new selection list upon button pressed
+      children = List(
+        list,
+        sep,
+        upgradeButton,
+        new Separator(),
+        new Label("select upgrade"),
+        selectionList)
+    }
+
+    children = List(
+      list,
+      sep,
+      upgradeButton)
+
+    // disable buttons as needed
+    upgradeButton.disable <== vehicle.isUsed
+  }
+}
+
+
+
+
+class VehicleList(
+  company: Company,
+  world: World,
+  stats: Engine => Unit)
+extends VBox(3) {
+  private var list: Node = new Pane()
+
+  private val sep: Separator = new Separator()
+
+  updateList()
+  children = List(list)
+
+
+  private def updateList(): Unit = {
+    list = new SelectionListDynamic[Engine](
+      company.engines.toList,
+      _.name,
+      detailTrain)
   }
 
-  /** Displays the carriages list. */
-  private def displayCarriages(): Unit = {
-    list = new CarriageList(company.carriages.toList, detailCarriage)
-    children = List(menu, sep1, list)
-  }
 
   /** Displays a specific train. */
   private def detailTrain(train: Engine): Unit = {
     // display stats in a separate window via callback
-    statsTrain(train)
+    stats(train)
 
     // create buttons for assemble/disassemble actions
     val disassembleAll: Button = new Button("Disassemble all")
@@ -79,10 +124,6 @@ extends VBox {
 
     disassembleAll.onAction = (event: ActionEvent) => {
       company.disassembleTrain(train)
-      displayTrains()
-      // display stats for the engine instead,
-      // this is mostly to clear the stats screen
-      statsEngine(train)
     }
 
     disassembleOne.onAction = (event: ActionEvent) => {
@@ -91,9 +132,10 @@ extends VBox {
 
     addCarriage.onAction = (event: ActionEvent) => {
       // when pressing the button, display a new carriage list
-      val selectionList: CarriageList =
-        new CarriageList(
+      val selectionList: SelectionList[Carriage] =
+        new SelectionList(
           company.carriagesStoredAt(train.town()).toList,
+          _.model.name,
           carriage => {
             // when selecting a carriage, add it to the train
             company.addCarriageToTrain(train, carriage)
@@ -101,10 +143,8 @@ extends VBox {
           })
       // display new selection list upon button pressed
       children = List(
-        menu,
-        sep1,
         list,
-        sep2,
+        sep,
         addCarriage,
         disassembleOne,
         disassembleAll,
@@ -127,10 +167,8 @@ extends VBox {
         })
       // display new selection list upon button pressed
       children = List(
-        menu,
-        sep1,
         list,
-        sep2,
+        sep,
         addCarriage,
         disassembleOne,
         disassembleAll,
@@ -148,140 +186,12 @@ extends VBox {
     sendTravel.disable <== train.onTravel || train.tooHeavy
 
     children = List(
-      menu,
-      sep1,
       list,
-      sep2,
+      sep,
       addCarriage,
       disassembleOne,
       disassembleAll,
       sendTravel,
       nameField)
   }
-
-  /** Displays a specific engine. */
-  private def detailEngine(engine: Engine): Unit = {
-    // display stats in a separate window via callback
-    statsEngine(engine)
-
-    val upgradeButton: Button = new Button("Upgrade")
-    upgradeButton.onAction = (event: ActionEvent) => {
-      // when pressing the button, display the list of upgrades
-      val selectionList: SelectionList[EngineModel] =
-        new SelectionList[EngineModel](
-        engine.model.upgrades.map(EngineModel(_)),
-        model => s"${model.name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(engine, model))})",
-        model => {
-          // upgrade engine upon selection
-          company.upgrade(engine, model)
-          // redraw stock menu
-          displayEngines()
-          detailEngine(engine)
-        })
-
-      // display new selection list upon button pressed
-      children = List(
-        menu,
-        sep1,
-        list,
-        sep2,
-        upgradeButton,
-        new Separator(),
-        new Label("select upgrade"),
-        selectionList)
-    }
-
-    children = List(
-      menu,
-      sep1,
-      list,
-      sep2,
-      upgradeButton)
-
-    // disable buttons as needed
-    upgradeButton.disable <== engine.isUsed
-  }
-
-  /** Displays a specific carriage. */
-  private def detailCarriage(carriage: Carriage): Unit = {
-    // display stats in a separate window via callback
-    statsCarriage(carriage)
-
-    val upgradeButton: Button = new Button("Upgrade")
-
-    val priceField: TextField = new TextField() {
-      text = s"${MoneyFormatter.format(carriage.placePrice)} (place price by distance)."
-      onMouseExited = (event: MouseEvent) => {
-        text = s"${MoneyFormatter.format(carriage.placePrice)} (place price by distance)."
-      }
-      onMouseEntered = (event: MouseEvent) => {
-        text = carriage.placePrice.toString
-      }
-      onAction = (event: ActionEvent) => {
-        Try(text().toDouble).toOption match {
-          case Some(x) => carriage.placePrice = x
-          case None    =>
-        }
-        parent.value.requestFocus()
-      }
-    }
-
-    upgradeButton.onAction = (event: ActionEvent) => {
-      // when pressing the button, display the list of upgrades
-      val selectionList: SelectionList[CarriageModel] =
-        new SelectionList[CarriageModel](
-          carriage.model.upgrades.map(CarriageModel(_)),
-          model => s"${model.name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(carriage, model))})",
-          model => {
-          // upgrade engine upon selection
-          company.upgrade(carriage, model)
-          // redraw stock menu
-          displayCarriages()
-          detailCarriage(carriage)
-        })
-
-      // display new selection list upon button pressed
-      children = List(
-        menu,
-        sep1,
-        list,
-        sep2,
-        upgradeButton,
-        priceField,
-        new Separator(),
-        new Label("select upgrade"),
-        selectionList)
-    }
-
-
-    children = List(menu, sep1, list, sep2, upgradeButton, priceField)
-    // disable buttons as needed
-    upgradeButton.disable <== carriage.isUsed
-  }
 }
-
-/** Displays a list of trains.
- *
- *  @param trains the list to display.
- *  @param detail a callback called whenever a train is selected from the list.
- */
-class TrainList(trains: List[Engine], detail: Engine => Unit)
-extends SelectionListDynamic[Engine](trains, _.name, detail)
-
-/** Displays a list of carriages.
- *
- *  @param carriages the list to display.
- *  @param detail a callback called whenever a carriage is selected from the list.
- */
-class CarriageList(carriages: List[Carriage], detail: Carriage => Unit)
-extends SelectionList[Carriage](carriages, _.model.name, detail)
-
-/** Displays a list of engines.
- *
- *  @param engines the list to display.
- *  @param detail a callback called whenever an engine is selected from the list.
- */
-class EngineList(
-  engines: List[Engine],
-  detail: Engine => Unit)
-extends SelectionList[Engine](engines, _.model.name, detail)

@@ -27,9 +27,15 @@ class CompanyInfo(
   company: Company,
   world: World,
   detailTrain: Engine => Unit,
-  detailEngine: Engine => Unit,
-  detailCarriage: Carriage => Unit)
-extends VBox {
+  detailVehicleUnit: VehicleUnit => Unit)
+extends VBox(5) {
+  private val nameField: TextField = new TextField {
+      text = company.name
+      onAction = (event: ActionEvent) => {
+        company.name = text()
+        parent.value.requestFocus()
+      }
+    }
   private val money: Label = new Label {
     text <== createStringBinding(
       () => MoneyFormatter.format(company.money()),
@@ -38,54 +44,43 @@ extends VBox {
   private val sep1: Separator = new Separator()
   private val menu: SelectionMenu = new SelectionMenu()
   private val sep2: Separator = new Separator()
-  private var panel: Node = new Pane()
-  private val nameField: TextField = new TextField {
-      text = company.name
-      onAction = (event: ActionEvent) => {
-        company.name = text()
-        parent.value.requestFocus()
-      }
-    }
 
-  menu.addMenu("rolling stock", displayStock())
-  menu.addMenu("catalog", displayModels())
+  menu.addMenu("vehicles", displayVehicles())
+  menu.addMenu("stock", displayStock())
+  menu.addMenu("catalog", displayCatalog())
 
-  // stock subpanel
-  private var stock: CompanyStock =
-    new CompanyStock(company, world, detailTrain, detailEngine, detailCarriage)
+  children = List(nameField, money, sep1, menu, sep2)
 
-  // model catalog subpanel
-  private val catalog: Catalog = new Catalog(company, updateStock)
-
-  spacing = 5
-  setChildren()
-
-  /* Updates children list from attributes. */
-  private def setChildren(): Unit = {
+  /** Displays vehicles panel. */
+  private def displayVehicles(): Unit = {
     children = List(
       nameField,
       money,
       sep1,
       menu,
       sep2,
-      panel)
+      new VehicleList(company, world, detailTrain))
   }
 
   /** Displays stock panel. */
   private def displayStock(): Unit = {
-    panel = stock
-    setChildren()
+    children = List(
+      nameField,
+      money,
+      sep1,
+      menu,
+      sep2,
+      new CompanyStock(company, world, detailVehicleUnit))
   }
 
   /** Displays catalog panel. */
-  private def displayModels(): Unit = {
-    panel = catalog
-    setChildren()
-  }
-
-  /** Update the stock subpanel. */
-  private def updateStock(): Unit = {
-    stock =
-      new CompanyStock(company, world, detailTrain, detailEngine, detailCarriage)
+  private def displayCatalog(): Unit = {
+    children = List(
+      nameField,
+      money,
+      sep1,
+      menu,
+      sep2,
+      new Catalog(company))
   }
 }

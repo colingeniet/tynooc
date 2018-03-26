@@ -20,7 +20,7 @@ import formatter._
  *  @param updateStock a callback used to indicate that the company stock
  *   needs to be updated.
  */
-class Catalog(company: Company, updateStock: => Unit) extends VBox(3) {
+class Catalog(company: Company) extends VBox(3) {
   // 2 submenus : engines and carriages
   private val typeList: SelectionMenu = new SelectionMenu()
   typeList.addMenu("engines", listEngines)
@@ -59,7 +59,6 @@ class Catalog(company: Company, updateStock: => Unit) extends VBox(3) {
     buy.text = "buy(" + MoneyFormatter.format(engine.price) + ")"
     buy.onAction = (event: ActionEvent) => {
       company.buyEngine(engine)
-      updateStock
     }
     children = List(
       typeList, sep1, enginesList, sep2, buy,
@@ -77,7 +76,6 @@ class Catalog(company: Company, updateStock: => Unit) extends VBox(3) {
     buy.text = "buy(" + MoneyFormatter.format(carriage.price) + ")"
     buy.onAction = (event: ActionEvent) => {
       company.buyCarriage(carriage)
-      updateStock
     }
     children = List(
       typeList, sep1, carriagesList, sep2, buy,
