@@ -46,7 +46,7 @@ extends VBox(5) {
   private val sep2: Separator = new Separator()
 
   menu.addMenu("vehicles", displayVehicles())
-  menu.addMenu("stock", displayStock())
+  menu.addMenu("stock", displayVehicleUnits())
   menu.addMenu("catalog", displayCatalog())
 
   children = List(nameField, money, sep1, menu, sep2)
@@ -63,14 +63,14 @@ extends VBox(5) {
   }
 
   /** Displays stock panel. */
-  private def displayStock(): Unit = {
+  private def displayVehicleUnits(): Unit = {
     children = List(
       nameField,
       money,
       sep1,
       menu,
       sep2,
-      new CompanyStock(company, world, detailVehicleUnit))
+      new VehicleUnitList(company, world, detailVehicleUnit))
   }
 
   /** Displays catalog panel. */

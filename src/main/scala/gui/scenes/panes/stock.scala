@@ -24,7 +24,7 @@ import scala.util.Try
  *  @param statsEngine a callback used to display information on a engine.
  *  @param statsCarriage a callback used to display information on a carriage.
  */
-class CompanyStock(
+class VehicleUnitList(
   company: Company,
   world: World,
   stats: VehicleUnit => Unit)
