@@ -2,11 +2,37 @@ package logic.route
 
 import logic.town._
 
-/** A route between two towns.
-  *
-  * @constructor Creates a route with its ends town, its lenght
-  * @param start The town at the beginning of the route.
-  * @param end The town at the end of the route.
-  * @param length The lenght of the route.
-  */
-class Route(val start: Town, val end: Town, val length: Double)
+trait Connection {
+  val start: Town
+  val end: Town
+  val length: Double
+}
+
+class Route(
+  val start: Town,
+  val end: Town,
+  val length: Double)
+extends Connection
+
+class Rail(
+  val start: Town ,
+  val end: Town,
+  val length: Double,
+  val maximum_speed: Int,
+  val tracks: Int,
+  val electrified: Boolean)
+extends Connection
+
+class Canal(
+  val start: Town,
+  val end: Town,
+  val length: Double,
+  val beam_clearance: Int)
+extends Connection
+
+class River(
+  val start: Town,
+  val end: Town,
+  val length: Double,
+  val beam_clearance: Int)
+extends Connection
