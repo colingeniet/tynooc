@@ -52,7 +52,9 @@ class City(
   @JacksonXmlProperty(localName = "Airport") val airport: Airport,
   @JacksonXmlProperty(localName = "Port") val port: Port) {
   var factories: List[Factory] = List()
-  _factories.asScala.foreach (f => factories = f::factories)
+  if(_factories != null) {
+    _factories.asScala.foreach (f => factories = f::factories)
+  }
 
   override def toString: String = {
     s"${name}, ${x} ${y}, ${population}\n" +
@@ -117,8 +119,12 @@ class Map(
 
   var city: List[City] = List()
   var connections: List[Connection] = List()
-  _city.asScala.foreach { c => city = c::city }
-  _connections.asScala.foreach { c => connections = c::connections}
+  if(_city != null) {
+    _city.asScala.foreach { c => city = c::city }
+  }
+  if(_connections != null) {
+    _connections.asScala.foreach { c => connections = c::connections}
+  }
 
   override def toString: String = {
     var str = s"${name} of width ${width} and height ${height}"
@@ -131,7 +137,7 @@ class Map(
 
 object Parser {
   def buildTown(c: City, minX: Int, minY: Int): Town = {
-    var t = new Town(c.name, c.x + minX + 50, c.y + minY + 50, 1)
+    var t = new Town(c.name, c.x - minX + 30, c.y - minY + 30, 1)
     t.addResidents(c.population / 3, Status.Well)
     t.addResidents(c.population / 3, Status.Poor)
     t.addResidents(c.population - t.population(), Status.Rich)
@@ -172,8 +178,9 @@ object Parser {
 
   def convertToWorld(world_map: Map): World = {
     val world: World = new World(world_map.width, world_map.height)
-    val minX: Int = world_map.city.maxBy {_.x }.x
-    val minY: Int = world_map.city.maxBy {_.y }.y
+    val minX: Int = world_map.city.minBy {_.x }.x
+    val minY: Int = world_map.city.minBy {_.y }.y
+    println(minX, minY)
     var towns: List[Town] = world_map.city.map { c => buildTown(c, minX, minY) }
     world_map.connections.foreach { c => buildRoute(towns, c) }
     towns.foreach { t => world.addTown(t) }
