@@ -24,7 +24,7 @@ object MainJFXApp extends JFXApp {
     * @param name The name of the company.
     */
   def company(name: String): Company = {
-    val company = new Company(name, Game.world.towns.find(_.name == "C411").get)
+    val company = new Company(name, Game.world.towns.head)
     company.credit(10000)
     company
   }
