@@ -1,10 +1,11 @@
 package parser
 
+import scala.util.{Try, Success, Failure}
 import scala.io.Source
+
 import logic.town._
 import logic.world._
 import logic.route._
-
 
 import java.util.{List => JList}
 import collection.JavaConverters._
@@ -16,30 +17,15 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 
 class Factory(
   @JacksonXmlProperty(localName = "type") val _type: String,
-  @JacksonXmlProperty(localName = "size") val size: Int) {
-
-  override def toString: String = {
-    s"${_type} factory of size ${size}."
-  }
-}
+  @JacksonXmlProperty(localName = "size") val size: Int)
 
 class Port(
   @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int,
-  @JacksonXmlProperty(localName = "size") val size: Int) {
-
-  override def toString: String = {
-    s"Port of size ${size} and beam clearance ${beam_clearance}."
-  }
-}
+  @JacksonXmlProperty(localName = "size") val size: Int)
 
 class Airport(
   @JacksonXmlProperty(localName = "runway_length") val runway_length: Int,
-  @JacksonXmlProperty(localName = "size") val size: Int) {
-
-  override def toString: String = {
-    s"Airport of size ${size} and runway length ${runway_length}."
-  }
-}
+  @JacksonXmlProperty(localName = "size") val size: Int)
 
 class City(
   @JacksonXmlProperty(localName = "name") val name: String,
@@ -48,43 +34,28 @@ class City(
   @JacksonXmlProperty(localName = "population") val population : Int,
   @JacksonXmlProperty(localName = "Factory")
   @JacksonXmlElementWrapper(useWrapping = false)
-  _factories: JList[Factory],
+  val factories: JList[Factory],
   @JacksonXmlProperty(localName = "Airport") val airport: Airport,
-  @JacksonXmlProperty(localName = "Port") val port: Port) {
-  var factories: List[Factory] = List()
-  if(_factories != null) {
-    _factories.asScala.foreach (f => factories = f::factories)
-  }
-
-  override def toString: String = {
-    s"${name}, ${x} ${y}, ${population}\n" +
-    factories.foldLeft("") { (a, f) => a + s"  ${f.toString}\n" }
-  }
-}
+  @JacksonXmlProperty(localName = "Port") val port: Port)
 
 class Rail(
   @JacksonXmlProperty(localName = "length") val length: Int,
   @JacksonXmlProperty(localName = "maximum_speed") val maximum_speed: Int,
   @JacksonXmlProperty(localName = "tracks") val tracks: Int,
-  @JacksonXmlProperty(localName = "electrified") _electrified: String){
-  val electrified = _electrified == "yes"
-}
+  @JacksonXmlProperty(localName = "electrified") electrified: String)
 
 class Canal(
   @JacksonXmlProperty(localName = "length") val length: Int,
-  @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int){
-}
+  @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int)
 
 class River(
   @JacksonXmlProperty(localName = "length") val length: Int,
-  @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int){
-}
+  @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int)
 
 class Road(
   @JacksonXmlProperty(localName = "length") val length: Int,
   @JacksonXmlProperty(localName = "maximum_speed") val maximum_speed: Int,
-  @JacksonXmlProperty(localName = "lanes") val lanes: Int){
-}
+  @JacksonXmlProperty(localName = "lanes") val lanes: Int)
 
 class Connection(
   @JacksonXmlProperty(localName = "Sea") val sea: String,
@@ -93,47 +64,16 @@ class Connection(
   @JacksonXmlProperty(localName = "Road") val road: Road,
   @JacksonXmlProperty(localName = "Rail") val rail: Rail,
   @JacksonXmlProperty(localName = "upstream") val upstream: String,
-  @JacksonXmlProperty(localName = "downstream") val downstream: String) {
-
-  override def toString: String = {
-    var ret = s"connection from ${upstream} to ${downstream}\n"
-    if(sea != null) { ret += "  sea\n" }
-    if(river != null) { ret += "  river\n" }
-    if(canal != null) { ret += "  canal\n" }
-    if(road != null) { ret += "  road\n" }
-    if(rail != null) { ret += "  rail\n" }
-    ret
-  }
-}
+  @JacksonXmlProperty(localName = "downstream") val downstream: String)
 
 class Map(
   @JacksonXmlProperty(localName = "name") val name: String,
   @JacksonXmlProperty(localName = "width") val width : Int,
   @JacksonXmlProperty(localName = "height") val height : Int,
   @JacksonXmlProperty(localName = "City")
-  @JacksonXmlElementWrapper(useWrapping = false)
-  _city : JList[City],
+  @JacksonXmlElementWrapper(useWrapping = false) val cities : JList[City],
   @JacksonXmlProperty(localName = "Connection")
-  @JacksonXmlElementWrapper(useWrapping = false)
-  _connections: JList[Connection]) {
-
-  var city: List[City] = List()
-  var connections: List[Connection] = List()
-  if(_city != null) {
-    _city.asScala.foreach { c => city = c::city }
-  }
-  if(_connections != null) {
-    _connections.asScala.foreach { c => connections = c::connections}
-  }
-
-  override def toString: String = {
-    var str = s"${name} of width ${width} and height ${height}"
-    str += city.foldLeft("") { (a, c) => a + s" ${c.toString}\n" }
-    str += connections.foldLeft("") { (a, c) => a + s" ${c.toString}\n" }
-    str
-  }
-
-}
+  @JacksonXmlElementWrapper(useWrapping = false) val connections: JList[Connection])
 
 object Parser {
   def buildTown(c: City, minX: Int, minY: Int): Town = {
@@ -144,47 +84,43 @@ object Parser {
     t
   }
 
-  /* Code to optimize. Note that it adds town1 -> town2 and town1 -> town2. */
-  def buildRoute(towns: List[Town], connection: Connection): Unit = {
-    if(connection.rail != null) {
-      val rail = connection.rail
-      val town1: Town = towns.find(_.name == connection.upstream).getOrElse(towns(0))
-      val town2: Town = towns.find(_.name == connection.downstream).getOrElse(towns(1))
-      town1.addRoute(new Route(town1, town2, rail.length))
-      town2.addRoute(new Route(town2, town1, rail.length))
-    }
-    if(connection.road != null) {
-      val rail = connection.road
-      val town1: Town = towns.find(_.name == connection.upstream).getOrElse(towns(0))
-      val town2: Town = towns.find(_.name == connection.downstream).getOrElse(towns(1))
-      town1.addRoute(new Route(town1, town2, rail.length))
-      town2.addRoute(new Route(town2, town1, rail.length))
-    }
-    if(connection.canal != null) {
-      val rail = connection.canal
-      val town1: Town = towns.find(_.name == connection.upstream).getOrElse(towns(0))
-      val town2: Town = towns.find(_.name == connection.downstream).getOrElse(towns(1))
-      town1.addRoute(new Route(town1, town2, rail.length))
-      town2.addRoute(new Route(town2, town1, rail.length))
-    }
-    if(connection.river != null) {
-      val rail = connection.river
-      val town1: Town = towns.find(_.name == connection.upstream).getOrElse(towns(0))
-      val town2: Town = towns.find(_.name == connection.downstream).getOrElse(towns(1))
-      town1.addRoute(new Route(town1, town2, rail.length))
-      town2.addRoute(new Route(town2, town1, rail.length))
-    }
+  //def buildRoute(start: Town, end: Town, road: Road): Unit = {
+  def buildRoute(start: Town, end: Town, length: Double): Unit = {
+    start.addRoute(end, length)
+    end.addRoute(start, length)
   }
 
-  def convertToWorld(world_map: Map): World = {
+  /* Code to optimize. Note that it adds town1 -> town2 and town1 -> town2. */
+  def buildRoute(towns: List[Town], c: Connection): Unit = {
+    val start: Town = towns.find(_.name == c.upstream).get
+    val end: Town = towns.find(_.name == c.downstream).get
+    if(c.rail != null) { buildRoute(start, end, c.rail.length) }
+    if(c.road != null) { buildRoute(start, end, c.road.length) }
+    if(c.canal != null) { buildRoute(start, end, c.canal.length) }
+    if(c.river != null) { buildRoute(start, end, c.river.length) }
+  }
+
+  def convertToWorld(world_map: Map): Try[World] = {
     val world: World = new World(world_map.width, world_map.height)
-    val minX: Int = world_map.city.minBy {_.x }.x
-    val minY: Int = world_map.city.minBy {_.y }.y
-    println(minX, minY)
-    var towns: List[Town] = world_map.city.map { c => buildTown(c, minX, minY) }
-    world_map.connections.foreach { c => buildRoute(towns, c) }
-    towns.foreach { t => world.addTown(t) }
-    world
+    val minX: Int = world_map.cities.asScala.minBy {_.x }.x
+    val minY: Int = world_map.cities.asScala.minBy {_.y }.y
+    Try {
+      if(world_map.cities == null)
+        throw new IllegalArgumentException("No cities in the world.")
+      if(world_map.connections == null)
+        throw new IllegalArgumentException("No connections in the world.")
+
+      val towns = world_map.cities.asScala.toList.map {
+        c => buildTown(c, minX, minY)
+      }
+      towns.foreach { t => world.addTown(t) }
+
+      world_map.connections.asScala.toList.filter { c =>
+        c.upstream != null && c.downstream != null
+      }.foreach { c => buildRoute(towns.toList, c) }
+
+      world
+    }
   }
 
   /** Parse a world file.
@@ -197,6 +133,6 @@ object Parser {
     file.close()
     val mapper = new XmlMapper()
     val world_map: Map = mapper.readValue(yaml, classOf[Map])
-    convertToWorld(world_map)
+    convertToWorld(world_map).get
   }
 }
