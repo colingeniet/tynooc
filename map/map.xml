@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Map name="the_bug_island" width="500" height="500">
+    <City name="Rock Roach" x="-190" y="-56" population="76981">
+        <Port size="10" beam_clearance="50"/>
+        <Factory type="steel_mill" size="4"/>
+        <Factory type="oil_refinery" size="3"/>
+        <Factory type="tannery" size="2"/>
+        <Factory type="brick_works" size="5"/>
+    </City>
+    <City name="The Beetles" x="-72" y="-108" population="81280">
+        <Airport size="2" runway_length="2108"/>
+        <Factory type="printing_press" size="2"/>
+        <Factory type="brewery" size="3"/>
+        <Factory type="sheep_farm" size="2"/>
+        <Factory type="fruit_orchard" size="4"/>
+    </City>
+    <City name="Ladybag" x="-16" y="-194" population="11562">
+        <Factory type="fishery" size="3"/>
+    </City>
+    <City name="Warm Earth" x="120" y="-122" population="32665">
+        <Factory type="vegetable_farm" size="5"/>
+        <Factory type="bauxite_mine" size="3"/>
+        <Factory type="clay_pit" size="4"/>
+    </City>
+    <City name="Water Striker" x="155" y="-59" population="9870">
+        <Port size="1" beam_clearance="50"/>
+        <Factory type="oil_wells" size="4"/>
+    </City>
+    <City name="Crater Pillar" x="172" y="43" population="49761">
+        <Airport size="1" runway_length="1980"/>
+        <Factory type="tyre_factory" size="2"/>
+        <Factory type="paper_mill" size="3"/>
+        <Factory type="cotton_plantation" size="8"/>
+    </City>
+    <City name="Centipeak" x="161" y="112" population="29884">
+        <Factory type="cattle_ranch" size="2"/>
+        <Factory type="pig_farm" size="1"/>
+        <Factory type="sand_pit" size="4"/>
+    </City>
+    <City name="Moosequito Bay" x="33" y="168" population="47592">
+        <Factory type="grain_farm" size="4"/>
+        <Factory type="fishery" size="2"/>
+        <Factory type="rubber_plantation" size="1"/>
+    </City>
+    <City name="Horse Fae" x="-8" y="152" population="37661">
+        <Port size="4" beam_clearance="30"/>
+        <Factory type="lumber_mill" size="4"/>
+        <Factory type="brewery" size="1"/>
+        <Factory type="wire_mill" size="4"/>
+    </City>
+    <City name="Butter Fae" x="-23" y="159" population="63989">
+        <Airport size="2" runway_length="2586"/>
+        <Factory type="bakery" size="6"/>
+        <Factory type="textile_mill" size="6"/>
+        <Factory type="glass_works" size="4"/>
+        <Factory type="aluminum_plant" size="2"/>
+    </City>
+    <City name="Croqette" x="-75" y="131" population="22308">
+        <Factory type="cattle_ranch" size="1"/>
+        <Factory type="grain_farm" size="4"/>
+        <Factory type="sand_pit" size="1"/>
+    </City>
+    <City name="Rock Chafer" x="-146" y="129" population="52388">
+        <Port size="6" beam_clearance="50"/>
+        <Factory type="chemical_plant" size="4"/>
+        <Factory type="copper_mine" size="2"/>
+        <Factory type="stockyard" size="2"/>
+    </City>
+    <City name="Lea" x="-141" y="44" population="10106">
+        <Factory type="fishery" size="1"/>
+        <Factory type="stone_quarry" size="2"/>
+    </City>
+    <City name="Loose Head" x="68" y="-80" population="17905">
+        <Factory type="grain_farm" size="2"/>
+        <Factory type="fruit_orchard" size="2"/>
+        <Factory type="forestry" size="2"/>
+    </City>
+    <City name="End Hill" x="83" y="62" population="176543">
+        <Airport size="6" runway_length="3102"/>
+        <Factory type="electronics_factory" size="3"/>
+        <Factory type="liquor_distillery" size="8"/>
+        <Factory type="bakery" size="6"/>
+        <Factory type="cannery" size="5"/>
+        <Factory type="glass_works" size="2"/>
+        <Factory type="furniture_factory" size="3"/>
+    </City>
+    <City name="Copper Grass" x="-70" y="3" population="50337">
+        <Factory type="iron_mine" size="4"/>
+        <Factory type="forestry" size="2"/>
+        <Factory type="cement_factory" size="6"/>
+    </City>
+    <City name="Mound Terramite" x="-37" y="65" population="77161">
+        <Airport size="1" runway_length="2056"/>
+        <Factory type="coal_mine" size="10"/>
+        <Factory type="vehicle_factory" size="2"/>
+        <Factory type="stockyard" size="1"/>
+        <Factory type="brewery" size="5"/>
+    </City>
+    <Connection upstream="Rock Roach" downstream="The Beetles">
+        <Sea/>
+        <Road length="198" maximum_speed="130" lanes="2"/>
+    </Connection>
+    <Connection upstream="The Beetles" downstream="Ladybag">
+        <Sea/>
+        <Road length="130" maximum_speed="70" lanes="1"/>
+    </Connection>
+    <Connection upstream="Ladybag" downstream="Warm Earth">
+        <Sea/>
+        <Road length="216" maximum_speed="70" lanes="1"/>
+    </Connection>
+    <Connection upstream="Warm Earth" downstream="Water Striker">
+        <Sea/>
+        <Road length="132" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Water Striker" downstream="Crater Pillar">
+        <Sea/>
+        <Road length="141" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Crater Pillar" downstream="Centipeak">
+        <Sea/>
+        <Road length="94" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Centipeak" downstream="Moosequito Bay">
+        <Sea/>
+        <Road length="237" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Moosequito Bay" downstream="Horse Fae">
+        <Sea/>
+        <Rail length="72" maximum_speed="100" tracks="1" electrified="no"/>
+        <Road length="77" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Horse Fae" downstream="Butter Fae">
+        <Rail length="27" maximum_speed="120" tracks="2" electrified="yes"/>
+        <Road length="29" maximum_speed="130" lanes="2"/>
+        <Sea/>
+    </Connection>
+    <Connection upstream="Butter Fae" downstream="Croquette">
+        <Sea/>
+        <Rail length="108" maximum_speed="80" tracks="2" electrified="no"/>
+        <Road length="115" maximum_speed="70" lanes="1"/>
+    </Connection>
+    <Connection upstream="Croquette" downstream="Rock Chafer">
+        <Sea/>
+        <Rail length="86" maximum_speed="90" tracks="1" electrified="yes"/>
+        <Road length="92" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Rock Chafer" downstream="Lea">
+        <Sea/>
+        <Road length="101" maximum_speed="70" lanes="1"/>
+    </Connection>
+    <Connection upstream="Lea" downstream="Rock Roach">
+        <Sea/>
+    </Connection>
+    <Connection upstream="Copper Grass" downstream="Lea">
+        <River length="153" beam_clearance="10"/>
+        <Road length="129" maximum_speed="70" lanes="1"/>
+    </Connection>
+    <Connection upstream="Mound Terramite" downstream="Croquette">
+        <River length="142" beam_clearance="8"/>
+        <Rail length="112" maximum_speed="90" tracks="1" electrified="yes"/>
+        <Road length="118" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Loose Head" downstream="End Hill">
+        <River length="227" beam_clearance="10"/>
+        <Road length="204" maximum_speed="70" lanes="1"/>
+    </Connection>
+    <Connection upstream="End Hill" downstream="Horse Fae">
+        <River length="268" beam_clearance="15"/>
+        <Rail length="212" maximum_speed="120" tracks="2" electrified="yes"/>
+        <Road length="231" maximum_speed="130" lanes="2"/>
+    </Connection>
+    <Connection upstream="End Hill" downstream="Mound Terramite">
+        <Canal length="104" beam_clearance="20"/>
+        <Rail length="113" maximum_speed="180" tracks="2" electrified="yes"/>
+        <Road length="118" maximum_speed="130" lanes="2"/>
+    </Connection>
+    <Connection upstream="Copper Grass" downstream="Mound Terramite">
+        <Canal length="99" beam_clearance="10"/>
+        <Rail length="107" maximum_speed="180" tracks="2" electrified="yes"/>
+        <Road length="121" maximum_speed="130" lanes="2"/>
+    </Connection>
+    <Connection upstream="Copper Grass" downstream="The Beetles">
+        <Canal length="126" beam_clearance="12"/>
+        <Rail length="131" maximum_speed="180" tracks="2" electrified="yes"/>
+        <Road length="132" maximum_speed="130" lanes="2"/>
+    </Connection>
+    <Connection upstream="End Hill" downstream="Crater Pillar">
+        <Rail length="181" maximum_speed="50" tracks="1" electrified="no"/>
+        <Road length="196" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Copper Grass" downstream="Rock Roach">
+        <Rail length="243" maximum_speed="60" tracks="1" electrified="no"/>
+    </Connection>
+    <Connection upstream="End Hill" downstream="Crater Pillar">
+        <Road length="301" maximum_speed="130" lanes="2"/>
+    </Connection>
+    <Connection upstream="Mound Terramite" downstream="Butter Fae">
+        <Road length="134" maximum_speed="90" lanes="1"/>
+    </Connection>
+</Map>
