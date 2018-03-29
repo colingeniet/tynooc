@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Map name="Cachan Saclay" width="1000" height="1000">
+    <City name="C411" x="700" y="50" population="13000">
+    </City>
+    <City name="C421" x="650" y="120" population="9000">
+    </City>
+    <City name="C321" x="500" y="40" population="9000">
+    </City>
+    <City name="RU" x="900" y="300" population="18000">
+    </City>
+    <City name="Kfet" x="100" y="500" population="19000">
+    </City>
+    <City name="Carib" x="800" y="800" population="19000">
+    </City>
+    <City name="Yoan" x="750" y="300" population="9000">
+    </City>
+    <City name="Valentin" x="670" y="320" population="10000">
+    </City>
+    <City name="Colin" x="450" y="600" population="6300">
+    </City>
+    <City name="LSV" x="50" y="100" population="14000">
+    </City>
+    <City name="Med" x="250" y="550" population="13000">
+    </City>
+    <Connection upstream="C411" downstream="C421">
+        <Road length="40" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="C421" downstream="C321">
+        <Road length="70" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="C411" downstream="C321">
+        <Road length="70" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="C411" downstream="RU">
+        <Road length="150" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="C321" downstream="LSV">
+        <Road length="500" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Valentin" downstream="Yoan">
+        <Road length="30" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="C411" downstream="Yoan">
+        <Road length="120" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Carib" downstream="Colin">
+        <Road length="320" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Valentin" downstream="Carib">
+        <Road length="350" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Colin" downstream="Valentin">
+        <Road length="400" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Colin" downstream="Med">
+        <Road length="140" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="LSV" downstream="Kfet">
+        <Road length="400" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Colin" downstream="C321">
+        <Road length="450" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="RU" downstream="Yoan">
+        <Road length="180" maximum_speed="90" lanes="1"/>
+    </Connection>
+    <Connection upstream="Med" downstream="Kfet">
+        <Road length="120" maximum_speed="90" lanes="1"/>
+    </Connection>
+</Map>
