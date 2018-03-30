@@ -28,8 +28,8 @@ extends VehicleModel
  */
 object PlaneModel extends ModelNameMap[PlaneModel] {
   private var _models: HashMap[String, PlaneModel] = HashMap(
-    "basic" -> new PlaneModel("basic plane", 500, List("advanced"), 200, 20, 30),
-    "advanced" -> new PlaneModel("advanced plane", 1000, List(), 300, 20, 40))
+    "basic" -> new PlaneModel("basic plane", 500, List("advanced"), 350, 20, 30),
+    "advanced" -> new PlaneModel("advanced plane", 1000, List(), 500, 20, 40))
 
   override def models: HashMap[String, PlaneModel] = _models
 }
@@ -50,7 +50,9 @@ class Plane(
   _town: Town,
   owner: Company)
 extends VehicleFromModel[PlaneModel](model, _town, owner) {
-  def modelNameMap(name: String): PlaneModel = PlaneModel(name)
+  val name: StringProperty = StringProperty("plane")
+
+  def modelNameMap(modelName: String): PlaneModel = PlaneModel(modelName)
 
   def launchTravel(to: Town): Travel = {
     if (onTravel())
@@ -59,7 +61,7 @@ extends VehicleFromModel[PlaneModel](model, _town, owner) {
     val from = this.town()
     val distX = from.x - to.x
     val distY = from.y - to.y
-    val dist = math.sqrt(distX * distX + distY * distY)
+    val dist = math.hypot(distX, distY)
 
     val route = new Airway(from, to, dist)
     val newTravel = new Travel(this, List(route))

@@ -145,6 +145,14 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
       currentRoute,
       currentRouteProportion))
 
+  val heading: NumberBinding =
+    jfxNumberBinding2sfx(createDoubleBinding(
+      () => currentRoute() match {
+        case Some(r) => math.atan2(r.end.x - r.start.x, r.start.y - r.end.y) * 180/3.14159
+        case None => 50
+      },
+      currentRoute))
+
 
   /** Number of passengers in the vehicle. */
   val passengerNumber: IntegerProperty = IntegerProperty(0)

@@ -112,6 +112,11 @@ extends ScrollPane {
       x <== travel.posX - image().getWidth()/2
       y <== travel.posY - image().getHeight()/2
 
+      travel.vehicle match {
+        case _: Plane => rotate <== travel.heading
+        case _ => ()
+      }
+
       private def deleteIfDone(): Unit = {
         if(travel.isDone()) {
           disable = true

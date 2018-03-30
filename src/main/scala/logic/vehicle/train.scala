@@ -126,6 +126,8 @@ class Engine(
   owner: Company,
   _carriages: List[Carriage] = List())
 extends VehicleFromModel[EngineModel](model, _town, owner) {
+  val name: StringProperty = StringProperty("train")
+
   val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
 
   val weight: DoubleProperty = DoubleProperty(0)

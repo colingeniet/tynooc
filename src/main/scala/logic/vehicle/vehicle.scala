@@ -65,7 +65,7 @@ abstract class VehicleFromModel[Model <: VehicleModel](
   town: Town,
   owner: Company)
 extends VehicleUnitFromModel(model, town, owner) with Vehicle {
-  val name: StringProperty = StringProperty("train")
+  val name: StringProperty
   def speed: Double = model.speed
   def consumption(distance: Double): Double = model.consumption * distance
 }
