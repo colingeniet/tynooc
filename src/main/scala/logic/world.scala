@@ -11,19 +11,13 @@ import collection.mutable.HashSet
 
 /** An object enumeration for people status. */
 object Status {
-  var _id = 0
-
-  sealed class Val(val id: Int) {
-    _id += 1
-    def this() { this(_id) }
-  }
-
+  sealed trait Val
   /** Represents rich people. */
-  object Rich extends Status.Val
+  case object Rich extends Status.Val
   /** Represents poor people. */
-  object Poor extends Status.Val
+  case object Poor extends Status.Val
   /** Represents well-off people. */
-  object Well extends Status.Val
+  case object Well extends Status.Val
 }
 
 
@@ -49,9 +43,10 @@ class World(val width : Int = 0, val height : Int = 0) {
   /** List of the status available in the world. */
   val status = Array(Status.Rich, Status.Poor, Status.Well)
   /** Criteria used to choose a room. */
-  val statusCriteria = Array((d:Town) => (r:Room) => r.comfort,
-                             (d:Town) => (r:Room) => r.price(d),
-                             (d:Town) => (r:Room) => r.comfort / (r.price(d)+1))
+  val statusCriteria: HashMap[Status.Val, Town => Room => Double] = new HashMap()
+  statusCriteria(Status.Rich) = (d:Town) => (r:Room) => r.comfort
+  statusCriteria(Status.Poor) = (d:Town) => (r:Room) => r.price(d)
+  statusCriteria(Status.Well) = (d:Town) => (r:Room) => r.comfort / (r.price(d)+1)
   /** The number of status in the world. */
   val statusNumber = status.length
   /** The fuel price in the world. */
@@ -132,15 +127,15 @@ class World(val width : Int = 0, val height : Int = 0) {
   def tryTravel(
     start: Town,
     destination: Town,
-    migrantByStatus: Array[Int]): Unit = {
+    migrantByStatus: HashMap[Status.Val, Int]): Unit = {
     val availableTravels = travels.toList.filter {
       t => t.isWaitingAt(start) && t.stopsAt(destination)
     }
     var rooms = availableTravels.flatMap { _.availableRooms }
     status.foreach { status =>
       var takenPlacesNumber = 0
-      var p = migrantByStatus(status.id)
-      rooms = rooms.sortBy { statusCriteria(status.id)(destination) }
+      var p = migrantByStatus(status)
+      rooms = rooms.sortBy { statusCriteria(status)(destination) }
       while(takenPlacesNumber < p && !rooms.isEmpty) {
         val room = rooms.head
         val nb = Math.min(p, room.availablePlaces)
