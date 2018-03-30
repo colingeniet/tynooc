@@ -14,6 +14,12 @@ class Road(
   val length: Double)
 extends Route
 
+class Airway(
+  val start: Town,
+  val end: Town,
+  val length: Double)
+extends Route
+
 class Rail(
   val start: Town ,
   val end: Town,

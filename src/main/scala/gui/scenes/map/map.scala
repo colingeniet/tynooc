@@ -109,8 +109,8 @@ extends ScrollPane {
         }
       }
 
-      x <== travel.posX - 15
-      y <== travel.posY - 15
+      x <== travel.posX - image().getWidth()/2
+      y <== travel.posY - image().getHeight()/2
 
       private def deleteIfDone(): Unit = {
         if(travel.isDone()) {

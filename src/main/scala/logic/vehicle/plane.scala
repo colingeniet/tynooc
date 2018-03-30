@@ -61,7 +61,7 @@ extends VehicleFromModel[PlaneModel](model, _town, owner) {
     val distY = from.y - to.y
     val dist = math.sqrt(distX * distX + distY * distY)
 
-    val route = new Route(from, to, dist)
+    val route = new Airway(from, to, dist)
     val newTravel = new Travel(this, List(route))
     travel() = Some(newTravel)
     newTravel
