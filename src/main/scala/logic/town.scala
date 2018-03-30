@@ -25,22 +25,17 @@ class Town(
   val y: Double,
   val welcomingLevel: Double) {
   private var residents: Array[Int] = new Array(Game.world.statusNumber)
-  private var _connections: List[Connection] = List()
+  private var _routes: List[Route] = List()
   private var passengers: HashMap[Town, Array[Int]] = new HashMap()
 
   // PRNG
   private var random: Random = new Random()
 
-  /** The connections starting from this town. */
-  def connections: List[Connection] = _connections
+  /** The routes starting from this town. */
+  def routes: List[Route] = _routes
   /** The neighbours towns. */
 
-  def routes: List[Route] = connections.flatMap {
-    case c: Route => Some(c)
-    case _ => None
-  }
-
-  def neighbours: List[Town] = connections.map { _.end }
+  def neighbours: List[Town] = routes.map { _.end }
   /** The town population. */
   val population: IntegerProperty = IntegerProperty(0)
   /** The passengers number of the town. */
@@ -115,13 +110,13 @@ class Town(
     *
     * @param route The route to add to the town.
     */
-  def addConnection(connection: Connection): Unit = {
-    if(connection.start != this)
-      throw new IllegalArgumentException("connection should start from $name town")
-    _connections = connection :: _connections
+  def addRoad(route: Route): Unit = {
+    if(route.start != this)
+      throw new IllegalArgumentException("route should start from $name town")
+    _routes = route :: _routes
     // Add new entry to passengers map
-    if(!passengers.contains(connection.end)) {
-      passengers(connection.end) = Array.ofDim(Game.world.statusNumber)
+    if(!passengers.contains(route.end)) {
+      passengers(route.end) = Array.ofDim(Game.world.statusNumber)
     }
   }
 
@@ -133,8 +128,8 @@ class Town(
     * @param length The length of the town.
     * @param state
     */
-  def addRoute(end: Town, length: Double): Unit = {
-    this.addConnection(new Route(this, end, length))
+  def addRoad(end: Town, length: Double): Unit = {
+    this.addRoad((new Road(this, end, length)))
   }
 
   /** Update the population state.
