@@ -44,9 +44,8 @@ extends VBox(3) {
     text <== vehicle.name
   }
   private val status: Label = new Label {
-    status.text <== createStringBinding(
-      () => (if (vehicle.onTravel()) "en route to " else "stored at ")
-        + vehicle.town().name,
+    text <== createStringBinding(
+      () => (if (vehicle.onTravel()) "en route to " else "stored at ") + vehicle.town().name,
       vehicle.onTravel,
       vehicle.town)
   }

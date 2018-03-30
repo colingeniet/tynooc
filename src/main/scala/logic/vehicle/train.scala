@@ -74,6 +74,16 @@ object CarriageModel extends ModelNameMap[CarriageModel] {
 }
 
 
+object Carriage {
+  def apply(model: CarriageModel, company: Company): Carriage = {
+    new Carriage(model, company.fabricTown, company)
+  }
+
+  def apply(name: String, company: Company): Carriage = {
+    apply(CarriageModel(name), company)
+  }
+}
+
 /** A carriage.
  *
  *  @param _model the carriage model.
@@ -91,6 +101,19 @@ extends VehicleUnitFromModel[CarriageModel](model, town, owner) {
   def comfort: Double = model.comfort
 
   def modelNameMap(name: String): CarriageModel = CarriageModel(name)
+}
+
+
+
+
+object Engine {
+  def apply(model: EngineModel, company: Company): Engine = {
+    new Engine(model, company.fabricTown, company)
+  }
+
+  def apply(name: String, company: Company): Engine = {
+    apply(EngineModel(name), company)
+  }
 }
 
 /** An engine.

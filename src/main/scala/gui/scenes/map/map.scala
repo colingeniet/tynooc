@@ -25,6 +25,7 @@ import logic.town._
 import logic.route._
 import logic.travel._
 import logic.company._
+import logic.vehicle._
 
 
 /** Main map class.
@@ -83,12 +84,24 @@ extends ScrollPane {
   /* Actual content, inside a ZoomPane.
      The ScrollPane is only a container. */
   private object MapContent extends ZoomPane {
+
+    private object MapTravel {
+      def icon(travel: Travel): String = {
+        travel.vehicle match {
+          case _: Engine => "/icons/train.png"
+          case _: Plane => "/icons/plane.png"
+          case _ => "/icons/train.png"
+        }
+      }
+    }
+
     /** The dots representing a train on route on the map.
      *
      *  The `Circle` object is associated with the corresponding `Travel`
      *  to allow automatic updating of its position.
      */
-    private class MapTravel(val travel: Travel) extends ImageView("/icons/train.png") {
+    private class MapTravel(val travel: Travel)
+    extends ImageView(MapTravel.icon(travel)) {
       effect = new ColorAdjust(colors(travel.company), 0.0, 0.0, 0.0)
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {

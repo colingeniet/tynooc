@@ -24,6 +24,7 @@ class Catalog(company: Company) extends VBox(3) {
   private val typeList: SelectionMenu = new SelectionMenu()
   typeList.addMenu("engines", listEngines)
   typeList.addMenu("carriages", listCarriages)
+  typeList.addMenu("planes", listPlanes)
 
   private val sep1: Separator = new Separator()
 
@@ -39,6 +40,13 @@ class Catalog(company: Company) extends VBox(3) {
       CarriageModel.models.values.toList,
       _.name,
       displayCarriage(_))
+
+  private val planesList: SelectionList[PlaneModel] =
+    new SelectionList[PlaneModel](
+      PlaneModel.models.values.toList,
+      _.name,
+      displayPlane(_))
+
 
   private val sep2: Separator = new Separator()
 
@@ -57,7 +65,7 @@ class Catalog(company: Company) extends VBox(3) {
   private def displayEngine(engine: EngineModel): Unit = {
     buy.text = "buy(" + MoneyFormatter.format(engine.price) + ")"
     buy.onAction = (event: ActionEvent) => {
-      company.buyEngine(engine)
+      company.buy(Engine(engine, company))
     }
     children = List(
       typeList, sep1, enginesList, sep2, buy,
@@ -74,10 +82,26 @@ class Catalog(company: Company) extends VBox(3) {
   private def displayCarriage(carriage: CarriageModel): Unit = {
     buy.text = "buy(" + MoneyFormatter.format(carriage.price) + ")"
     buy.onAction = (event: ActionEvent) => {
-      company.buyCarriage(carriage)
+      company.buy(Carriage(carriage, company))
     }
     children = List(
       typeList, sep1, carriagesList, sep2, buy,
       new VehicleModelStats(carriage))
+  }
+
+  private def listPlanes(): Unit = {
+    planesList.deselect()
+    children = List(typeList, sep1, planesList, sep2)
+  }
+
+  /** Displays a specific engine model. */
+  private def displayPlane(plane: PlaneModel): Unit = {
+    buy.text = "buy(" + MoneyFormatter.format(plane.price) + ")"
+    buy.onAction = (event: ActionEvent) => {
+      company.buy(Plane(plane, company))
+    }
+    children = List(
+      typeList, sep1, planesList, sep2, buy,
+      new VehicleModelStats(plane))
   }
 }

@@ -6,6 +6,7 @@ import logic.travel._
 import logic.company._
 import logic.model._
 import logic.vehicle._
+import logic.room._
 
 import collection.mutable.HashMap
 import scalafx.beans.binding._
@@ -33,10 +34,40 @@ object PlaneModel extends ModelNameMap[PlaneModel] {
   override def models: HashMap[String, PlaneModel] = _models
 }
 
-abstract class Plane(
+
+object Plane {
+  def apply(model: PlaneModel, company: Company): Plane = {
+    new Plane(model, company.fabricTown, company)
+  }
+
+  def apply(name: String, company: Company): Plane = {
+    apply(PlaneModel(name), company)
+  }
+}
+
+class Plane(
   model: PlaneModel,
   _town: Town,
   owner: Company)
 extends VehicleFromModel[PlaneModel](model, _town, owner) {
   def modelNameMap(name: String): PlaneModel = PlaneModel(name)
+
+  def launchTravel(to: Town): Travel = {
+    if (onTravel())
+      throw new IllegalActionException("Can't launch travel with used plane.")
+
+    val from = this.town()
+    val distX = from.x - to.x
+    val distY = from.y - to.y
+    val dist = math.sqrt(distX * distX + distY * distY)
+
+    val route = new Route(from, to, dist)
+    val newTravel = new Travel(this, List(route))
+    travel() = Some(newTravel)
+    newTravel
+  }
+
+  def createRooms(travel: Travel): List[Room] = {
+    List(new Room(travel, this))
+  }
 }
