@@ -11,6 +11,8 @@ import logic.travel._
 import logic.company._
 import logic.model._
 import logic.vehicle._
+import logic.world._
+import logic.game._
 
 import collection.mutable.HashMap
 
@@ -26,7 +28,7 @@ trait RailVehicleUnitModel extends VehicleUnitModel {
 }
 
 /** An engine model. */
-case class EngineModel(
+class EngineModel(
   val name: String,
   val price: Double,
   val upgrades: List[String],
@@ -49,7 +51,7 @@ object EngineModel extends ModelNameMap[EngineModel] {
 }
 
 /** A carriage model. */
-case class CarriageModel(
+class CarriageModel(
   val name: String,
   val price: Double,
   val upgrades: List[String],
@@ -157,12 +159,16 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
     carriages.clear()
   }
 
-  def launchTravel(newTravel : Travel): Unit = {
+  def launchTravel(to: Town): Travel = {
     if (onTravel())
       throw new IllegalActionException("Can't launch travel with used train.")
     if (tooHeavy())
       throw new IllegalActionException("Can't launch travel with too heavy train.")
+
+    val routes = Game.world.findPath(this.town(), to).getOrElse(throw new PathNotFoundException)
+    val newTravel = new Travel(this, routes)
     travel() = Some(newTravel)
+    newTravel
   }
 
   def modelNameMap(name: String): EngineModel = EngineModel(name)

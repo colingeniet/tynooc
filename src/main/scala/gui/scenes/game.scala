@@ -37,13 +37,12 @@ extends MainStage.Scene(sceneModifier) {
   private var left: VBox = new CompanyInfo(
     player.company,
     world,
-    displayTrain,
+    displayVehicle,
     displayVehicleUnit)
   // empty by default
   private var right: VBox = new VBox()
   private var bottom: HBox = new HBox()
-  private var center: Map = new Map(world, player.company,displayTown, displayRoute,
-                                    displayTravel)
+  private var center: Map = new Map(world, player.company, displayTown, displayRoute, displayTravel)
 
   // set content
   private var pane: BorderPane = new BorderPane(
@@ -69,13 +68,13 @@ extends MainStage.Scene(sceneModifier) {
     pane.bottom = bottom
   }
 
-  private def displayTrain(train: Engine): Unit = {
-    right = new TrainDetail(train)
+  private def displayTravel(travel: Travel): Unit = {
+    right = new TravelInfo(travel)
     pane.right = right
   }
 
-  private def displayTravel(travel: Travel): Unit = {
-    right = new TravelInfo(travel)
+  private def displayVehicle(vehicle: Vehicle): Unit = {
+    right = VehicleDetail(vehicle)
     pane.right = right
   }
 

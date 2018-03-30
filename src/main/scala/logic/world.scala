@@ -26,13 +26,23 @@ object Status {
   object Well extends Status.Val
 }
 
+
+/** An exception which could be throwed if a player try to launchTravel
+  * a travel to an unattainable destination.
+  */
+final case class PathNotFoundException(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
+
+
 /** The game world representation.
  *
  *  The world is a graph, with vertices being towns, and edges being routes.
  *  This class handles all travels, as well as town population.
  *
  * @constructor Creates an empty world with its height and its width.
- * @param width The size of the world 100 by default). 
+ * @param width The size of the world 100 by default).
  * @param height The height of the world (100 by default).
  */
 class World(val width : Int = 0, val height : Int = 0) {

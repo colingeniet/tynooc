@@ -33,10 +33,10 @@ object PlaneModel extends ModelNameMap[PlaneModel] {
   override def models: HashMap[String, PlaneModel] = _models
 }
 
-class Plane(
+abstract class Plane(
   model: PlaneModel,
-  town: Town,
+  _town: Town,
   owner: Company)
-extends VehicleFromModel[PlaneModel](model, town, owner) {
+extends VehicleFromModel[PlaneModel](model, _town, owner) {
   def modelNameMap(name: String): PlaneModel = PlaneModel(name)
 }

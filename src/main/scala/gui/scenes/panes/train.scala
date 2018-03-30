@@ -22,7 +22,7 @@ import logic.vehicle.train._
  *
  *  @param train the train to display.
  */
-class TrainDetail(train: Engine) extends VBox {
+class TrainDetail(train: Engine) extends VBox(3) {
   private val list: ScrollPane = new ScrollPane {
     content = new SelectionMenu {
       addMenu(train.model.name, displayEngine(train))
@@ -49,7 +49,6 @@ class TrainDetail(train: Engine) extends VBox {
   // bottom panel for detailed statistics
   private var detail: VBox = new VBox()
 
-  spacing = 3
   setChildren()
 
   private def setChildren(): Unit = {
@@ -95,7 +94,7 @@ class TrainStats(train: Engine) extends VBox {
     train.onTravel,
     train.town)
 
-  weight.text <== Bindings.createStringBinding(
+  weight.text <== createStringBinding(
     () => "weight : " + train.weight(),
     train.weight)
 

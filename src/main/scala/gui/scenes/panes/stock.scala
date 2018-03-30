@@ -85,11 +85,10 @@ extends VBox(3) {
 
 
 
-
 class VehicleList(
   company: Company,
   world: World,
-  stats: Engine => Unit)
+  stats: Vehicle => Unit)
 extends VBox(3) {
   private var list: Node = new Pane()
 
@@ -100,12 +99,55 @@ extends VBox(3) {
 
 
   private def updateList(): Unit = {
-    list = new SelectionListDynamic[Engine](
-      company.engines.toList,
+    list = new SelectionListDynamic[Vehicle](
+      company.vehicles.toList,
       _.name,
-      detailTrain)
+      _ match {
+        case e: Engine => detailTrain(e)
+        case v: Vehicle => detailVehicle(v)
+      })
   }
 
+
+  /** Displays a specific vehicle. */
+  private def detailVehicle(vehicle: Vehicle): Unit = {
+    // display stats in a separate window via callback
+    stats(vehicle)
+
+    val sendTravel: Button = new Button("Travel")
+    val nameField: TextField = new TextField() {
+      text <==> vehicle.name
+    }
+
+    sendTravel.onAction = (event: ActionEvent) => {
+      // when pressing the button, display the list of towns
+      val selectionList: SelectionList[Town] = new SelectionList[Town](
+        world.townsAccessibleFrom(vehicle.town()),
+        _.name,
+        town => {
+          // when selecting a town, travel to it
+          company.launchTravel(vehicle, town)
+          detailVehicle(vehicle)
+        })
+      // display new selection list upon button pressed
+      children = List(
+        list,
+        sep,
+        sendTravel,
+        nameField,
+        new Separator(),
+        new Label("select destination"),
+        selectionList)
+    }
+
+    sendTravel.disable <== vehicle.onTravel
+
+    children = List(
+      list,
+      sep,
+      sendTravel,
+      nameField)
+  }
 
   /** Displays a specific train. */
   private def detailTrain(train: Engine): Unit = {
@@ -118,8 +160,7 @@ extends VBox(3) {
     val addCarriage: Button = new Button("Add carriage")
     val sendTravel: Button = new Button("Travel")
     val nameField: TextField = new TextField() {
-      text = train.name()
-      train.name <== text
+      text <==> train.name
     }
 
     disassembleAll.onAction = (event: ActionEvent) => {

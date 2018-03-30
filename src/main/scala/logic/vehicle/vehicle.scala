@@ -54,6 +54,8 @@ trait Vehicle extends VehicleUnit {
 
   def speed: Double
   def consumption(distance: Double): Double
+
+  def launchTravel(destination: Town): Travel
 }
 
 abstract class VehicleFromModel[Model <: VehicleModel](

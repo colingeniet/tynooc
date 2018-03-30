@@ -8,6 +8,7 @@ import scalafx.beans.binding._
 
 import gui.scenes.elements._
 import gui.scenes.panes._
+import gui.scenes.panes.vehicle._
 import logic.vehicle._
 import logic.vehicle.train._
 import logic.travel._
@@ -16,7 +17,7 @@ import logic.game._
 /** Information on a travel.
  */
 class TravelInfo(travel: Travel) extends VBox {
-  private val trainInfo: TrainDetail = new TrainDetail(travel.vehicle)
+  private val vehicleInfo: VBox = VehicleDetail(travel.vehicle)
 
   private val dest: Label = new Label("destination :")
   private val destName: Label = new Label(s" ${travel.destination.name}")
@@ -70,11 +71,11 @@ class TravelInfo(travel: Travel) extends VBox {
     nextETA,
     passengers,
     sep,
-    trainInfo)
+    vehicleInfo)
   spacing = 3
 
   private def onArrival(): Unit = {
-    children = List(arrivedLbl, sep, trainInfo)
+    children = List(arrivedLbl, sep, vehicleInfo)
   }
 
   travel.isDone.onChange(onArrival())

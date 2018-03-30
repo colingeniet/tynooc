@@ -26,7 +26,7 @@ import formatter._
 class CompanyInfo(
   company: Company,
   world: World,
-  detailTrain: Engine => Unit,
+  detailVehicle: Vehicle => Unit,
   detailVehicleUnit: VehicleUnit => Unit)
 extends VBox(5) {
   private val nameField: TextField = new TextField {
@@ -59,7 +59,7 @@ extends VBox(5) {
       sep1,
       menu,
       sep2,
-      new VehicleList(company, world, detailTrain))
+      new VehicleList(company, world, detailVehicle))
   }
 
   /** Displays stock panel. */

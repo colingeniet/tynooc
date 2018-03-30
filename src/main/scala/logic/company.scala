@@ -29,15 +29,6 @@ final case class IllegalOwnerException(
 extends Exception(message, cause)
 
 
-/** An exception which could be throwed if a player try to launchTravel
-  * a travel to an unattainable destination.
-  */
-final case class PathNotFoundException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
-
-
 /** A company.
   *
   * @param name The name of the company.
@@ -190,15 +181,12 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train to launch.
     * @param to The destination of the travel.
     */
-  def launchTravel(train: Engine, to: Town, _onCompleted: () => Unit = () => ()): Unit = {
-    if (!ownsVehicle(train)) {
+  def launchTravel(vehicle: Vehicle, to: Town, _onCompleted: () => Unit = () => ()): Unit = {
+    if (!ownsVehicle(vehicle)) {
       throw new IllegalOwnerException("Company doesn't own the train")
     }
-    val routes = Game.world.findPath(train.town(), to).getOrElse(throw new PathNotFoundException)
-    val travel = new Travel(train, routes) {
-      onCompleted = _onCompleted
-    }
-    train.launchTravel(travel)
+    val travel = vehicle.launchTravel(to)
+    travel.onCompleted = _onCompleted
     Game.world.addTravel(travel)
   }
 
