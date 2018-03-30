@@ -120,18 +120,6 @@ class Town(
     }
   }
 
-
-  /* WARNING To delete. */
-  /** Creates and adds a new route to a town.
-    *
-    * @param end The destination of the route.
-    * @param length The length of the town.
-    * @param state
-    */
-  def addRoad(end: Town, length: Double): Unit = {
-    this.addRoute((new Road(this, end, length)))
-  }
-
   /** Update the population state.
    *
    *  @param dt The time passed since the last update step.

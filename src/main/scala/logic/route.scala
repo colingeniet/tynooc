@@ -11,7 +11,9 @@ trait Route {
 class Road(
   val start: Town,
   val end: Town,
-  val length: Double)
+  val length: Double,
+  val maximum_speed: Int,
+  val lanes: Int)
 extends Route
 
 class Airway(
@@ -21,7 +23,7 @@ class Airway(
 extends Route
 
 class Rail(
-  val start: Town ,
+  val start: Town,
   val end: Town,
   val length: Double,
   val maximum_speed: Int,
