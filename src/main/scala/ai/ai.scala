@@ -2,7 +2,6 @@ package ai
 
 import logic.company._
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.world._
 import scala.util.Random
 import player._

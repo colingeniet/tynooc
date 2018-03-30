@@ -8,7 +8,6 @@ import scalafx.scene.layout._
 import gui.scenes.panes._
 import gui.scenes.panes.model._
 import logic.vehicle._
-import logic.vehicle.train._
 
 
 class VehicleModelStats(model: VehicleUnitModel)

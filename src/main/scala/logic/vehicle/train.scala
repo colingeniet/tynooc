@@ -1,4 +1,4 @@
-package logic.vehicle.train
+package logic.vehicle
 
 import scalafx.beans.property._
 import scalafx.beans.binding._
@@ -13,6 +13,7 @@ import logic.model._
 import logic.vehicle._
 import logic.world._
 import logic.game._
+import logic.room._
 
 import collection.mutable.HashMap
 
@@ -85,8 +86,6 @@ extends VehicleUnitFromModel[CarriageModel](model, town, owner) {
     Bindings.createBooleanBinding(
       () => train().isDefined,
       train)
-
-  var placePrice: Double = 0.20
 
   def capacity: Int = model.capacity
   def comfort: Double = model.comfort
@@ -170,6 +169,9 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
     travel() = Some(newTravel)
     newTravel
   }
+
+  def createRooms(travel: Travel): List[Room] =
+    carriages.toList.map(new Room(travel, _))
 
   def modelNameMap(name: String): EngineModel = EngineModel(name)
 }

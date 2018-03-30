@@ -3,7 +3,7 @@ package logic.travel
 import logic.town._
 import logic.game._
 import logic.company._
-import logic.vehicle.train._
+import logic.vehicle._
 
 
 trait TravelInstruction {

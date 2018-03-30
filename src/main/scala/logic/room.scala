@@ -1,7 +1,6 @@
 package logic.room
 
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.travel._
 import logic.game._
 import logic.world._
@@ -28,31 +27,37 @@ extends Exception(message, cause)
 
 /** A room in a train.
   *
-  * @constructor Creates a room with a travel and a carriage.
+  * @constructor Creates a room with a travel and a vehicle unit.
   * @param travel The travel in which this room is present.
-  * @param carriage The carriage associated to the room.
+  * @param vehicle The vehicle unit associated to the room.
  */
-class Room(val travel: Travel, val carriage: Carriage) {
+class Room(val travel: Travel, val vehicle: VehicleUnit) {
   private var passengers: HashMap[Town, Array[Int]] = new HashMap()
   Game.world.towns.foreach(passengers(_) = Array.ofDim[Int](Game.world.statusNumber))
 
   /** Number of passengers in the room. */
   def passengerNumber: Int = passengers.values.map(_.sum).sum
   /** Maximum number of passengers in the room. */
-  def capacity: Int = carriage.capacity
+  def capacity: Int = vehicle match {
+    case c: Carriage => c.capacity
+    case v => 40
+  }
   /** Returns <code>true</code> if some places are available in the room. */
   def isAvailable: Boolean = passengerNumber < capacity
   /** Number of available places in the room. */
   def availablePlaces: Int = capacity - passengerNumber
   /** The comfort note of the room (betwween 0 and 1). */
-  def comfort: Double = carriage.comfort
+  def comfort: Double = vehicle match {
+    case c: Carriage => c.comfort
+    case v => 1
+  }
 
   /** The price of a place for <code>destination</code>.
     *
     * @param destination The town where you want to go.
     */
   def price(destination: Town): Double = {
-    carriage.placePrice * travel.remainingDistanceTo(destination)
+    0.20 * travel.remainingDistanceTo(destination)
   }
 
   /** Number of passengers which status <code>status</code> going to

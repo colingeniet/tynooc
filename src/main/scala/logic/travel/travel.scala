@@ -6,7 +6,6 @@ import scalafx.collections._
 import scalafx.beans.binding.BindingIncludes._
 
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.world._
 import logic.town._
 import logic.room._
@@ -23,10 +22,10 @@ private object State {
 }
 
 /** A travel. */
-class Travel(val vehicle: Engine, private val routes: List[Route]) {
+class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
   val company = vehicle.owner
 
-  private val rooms: List[Room] = vehicle.carriages.toList.map { new Room(this, _) }
+  private val rooms: List[Room] = vehicle.createRooms(this)
 
   /** Total travel distance. */
   private val distance: Double = (routes.map { _.length }).sum

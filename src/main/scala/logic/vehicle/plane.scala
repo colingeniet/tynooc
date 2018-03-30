@@ -1,4 +1,4 @@
-package logic.vehicle.plane
+package logic.vehicle
 
 import logic.route._
 import logic.town._

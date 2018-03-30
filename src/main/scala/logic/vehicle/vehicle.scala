@@ -8,6 +8,7 @@ import logic.model._
 import logic.company._
 import logic.town._
 import logic.travel._
+import logic.room._
 
 import collection.mutable.HashMap
 
@@ -56,6 +57,7 @@ trait Vehicle extends VehicleUnit {
   def consumption(distance: Double): Double
 
   def launchTravel(destination: Town): Travel
+  def createRooms(travel: Travel): List[Room]
 }
 
 abstract class VehicleFromModel[Model <: VehicleModel](
