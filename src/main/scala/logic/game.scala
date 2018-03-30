@@ -24,7 +24,7 @@ object Game {
   var paused: Boolean = false
   var timeAcceleration: Double = 1
   /** Path of the map file. */
-  var mapPath = "map/Map"
+  var mapPath = "map/cachan.xml"
 
   private var actionQueue: PriorityQueue[(Double, () => Unit)] =
     new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))

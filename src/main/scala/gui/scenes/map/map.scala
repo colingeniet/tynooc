@@ -1,7 +1,6 @@
 package gui.scenes.map
 
 import collection.mutable.HashMap
-import scala.util.Random
 
 import scalafx.scene._
 import scalafx.scene.control._
@@ -41,10 +40,44 @@ class Map(
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
 extends ScrollPane {
+  /** Player colors generator */
+  object Colors {
+    private var level: Int = 0
+    private var pos: Int = 0
+
+    /** Get next color.
+     *
+     * @return the hue to use with scalafx. */
+    def nextColor(): Double = {
+      // compute next hue between 0 and 1
+      var hue: Double = 0.0
+      if (level == 0) {
+        // special initial comportment
+        hue = pos.toDouble / 3
+        pos += 1
+        if (pos >= 3) {
+          level = 3
+          pos = 0
+        }
+      } else {
+        hue = (pos + 0.5) / level
+        pos += 1
+        if (pos >= level) {
+          level *= 2
+          pos = 0
+        }
+      }
+
+      // scalafx expect it between -1 and 1 (0 is no change)
+      if (hue > 0.5) 2 * hue - 2
+      else 2 * hue
+    }
+  }
+
   private var colors: HashMap[Company, Double] = new HashMap()
-  colors(company) = 0.0
+  colors(company) = Colors.nextColor()
   world.companies.filter(_ != company).map {
-    colors(_) = Random.nextFloat()
+    colors(_) = Colors.nextColor()
   }
 
   /* Actual content, inside a ZoomPane.
