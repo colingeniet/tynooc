@@ -110,7 +110,7 @@ class Town(
     *
     * @param route The route to add to the town.
     */
-  def addRoad(route: Route): Unit = {
+  def addRoute(route: Route): Unit = {
     if(route.start != this)
       throw new IllegalArgumentException("route should start from $name town")
     _routes = route :: _routes
@@ -121,7 +121,7 @@ class Town(
   }
 
 
-  /* WARNING think to add some other functions (addRail, etc.). */
+  /* WARNING To delete. */
   /** Creates and adds a new route to a town.
     *
     * @param end The destination of the route.
@@ -129,7 +129,7 @@ class Town(
     * @param state
     */
   def addRoad(end: Town, length: Double): Unit = {
-    this.addRoad((new Road(this, end, length)))
+    this.addRoute((new Road(this, end, length)))
   }
 
   /** Update the population state.
