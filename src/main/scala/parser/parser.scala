@@ -86,8 +86,8 @@ object Parser {
 
   //def buildRoute(start: Town, end: Town, road: Road): Unit = {
   def buildRoute(start: Town, end: Town, length: Double): Unit = {
-    start.addRoute(end, length)
-    end.addRoute(start, length)
+    start.addRoad(end, length)
+    end.addRoad(start, length)
   }
 
   /* Code to optimize. Note that it adds town1 -> town2 and town1 -> town2. */
