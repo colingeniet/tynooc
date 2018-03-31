@@ -2,6 +2,7 @@ package parser
 
 import scala.util.{Try, Success, Failure}
 import scala.io.Source
+import collection.mutable.HashSet
 
 import logic.town._
 import logic.world._
@@ -11,7 +12,6 @@ import logic.game._
 import java.util.{List => JList}
 import collection.JavaConverters._
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
@@ -78,14 +78,14 @@ class JMap(
 
 object Parser {
 
-  def buildTown(c: JCity, minX: Int, minY: Int): Town = {
-    var t = new Town(c.name, c.x - minX + 30, c.y - minY + 30, 1)
+  def buildTown(c: JCity): Town = {
+    var t = new Town(c.name, c.x, c.y, 1)
     Game.world.status.foreach { s => t.addResidents(c.population / 3, s) }
     t.addResidents(c.population - t.population(), Game.world.status.head)
     t
   }
 
-  def buildRoute(towns: List[Town], c: JConnection): Unit = {
+  def buildRoute(towns: HashSet[Town], c: JConnection): Unit = {
     val start: Town = towns.find(_.name == c.upstream).get
     val end: Town = towns.find(_.name == c.downstream).get
     if(c.road != null) {
@@ -106,29 +106,24 @@ object Parser {
       end.addRoute((new Canal(end, start, c.canal.length, c.canal.beam_clearance)))
     }
     if(c.river != null) {
-      start.addRoute((new River(start, end, c.canal.length, c.canal.beam_clearance)))
-      end.addRoute((new River(end, start, c.canal.length, c.canal.beam_clearance)))
+      start.addRoute((new River(start, end, c.river.length, c.river.beam_clearance)))
+      end.addRoute((new River(end, start, c.river.length, c.river.beam_clearance)))
     }
   }
 
-  def convertToWorld(world_map: JMap): Try[World] = {
+  def buildWorld(jMap: JMap): Try[World] = {
     val world: World = new World()
-    val minX: Int = world_map.cities.asScala.minBy {_.x }.x
-    val minY: Int = world_map.cities.asScala.minBy {_.y }.y
     Try {
-      if(world_map.cities == null)
+      if(jMap.cities == null)
         throw new IllegalArgumentException("No cities in the world.")
-      if(world_map.connections == null)
+      if(jMap.connections == null)
         throw new IllegalArgumentException("No connections in the world.")
 
-      val towns = world_map.cities.asScala.toList.map {
-        c => buildTown(c, minX, minY)
-      }
-      towns.foreach { t => world.addTown(t) }
-
-      world_map.connections.asScala.toList.filter { c =>
+      jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) } 
+      
+      jMap.connections.asScala.filter { c =>
         c.upstream != null && c.downstream != null
-      }.foreach { c => buildRoute(towns.toList, c) }
+      }.foreach { buildRoute(world.towns, _) }
 
       world
     }
@@ -143,7 +138,6 @@ object Parser {
     val yaml = file.getLines.mkString("\n")
     file.close()
     val mapper = new XmlMapper()
-    val world_map: JMap = mapper.readValue(yaml, classOf[JMap])
-    convertToWorld(world_map).get
+    buildWorld(mapper.readValue(yaml, classOf[JMap])).get
   }
 }
