@@ -6,6 +6,7 @@ import scala.io.Source
 import logic.town._
 import logic.world._
 import logic.route._
+import logic.game._
 
 import java.util.{List => JList}
 import collection.JavaConverters._
@@ -79,9 +80,8 @@ object Parser {
 
   def buildTown(c: JCity, minX: Int, minY: Int): Town = {
     var t = new Town(c.name, c.x - minX + 30, c.y - minY + 30, 1)
-    t.addResidents(c.population / 3, Status.Well)
-    t.addResidents(c.population / 3, Status.Poor)
-    t.addResidents(c.population - t.population(), Status.Rich)
+    Game.world.status.foreach { s => t.addResidents(c.population / 3, s) }
+    t.addResidents(c.population - t.population(), Game.world.status.head)
     t
   }
 

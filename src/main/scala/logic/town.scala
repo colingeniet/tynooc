@@ -24,10 +24,10 @@ class Town(
   val x: Double,
   val y: Double,
   val welcomingLevel: Double) {
-  private var residents: Array[Int] = new Array(Game.world.statusNumber)
+  private var residents: HashMap[Status.Val, Int] = new HashMap()
   private var _routes: List[Route] = List()
-  private var passengers: HashMap[Town, Array[Int]] = new HashMap()
-
+  private var passengers: HashMap[Town, HashMap[Status.Val, Int]] = new HashMap()
+  Game.world.status.foreach { s => residents(s) = 0 }
   // PRNG
   private var random: Random = new Random()
 
@@ -56,7 +56,7 @@ class Town(
     * @param status The status of these residents.
     */
   def addResidents(number: Int, status: Status.Val): Unit = {
-    residents(status.id) += number
+    residents(status) += number
     population() = population() + number
   }
 
@@ -68,9 +68,9 @@ class Town(
     *
     */
   def deleteResidents(number: Int, status: Status.Val): Unit = {
-    if(number > residents(status.id))
+    if(number > residents(status))
       throw new IllegalArgumentException("population should stay positive")
-    residents(status.id) -= number
+    residents(status) -= number
     population() = population() - number
   }
 
@@ -81,9 +81,9 @@ class Town(
     * @param status The status of these passengers.
     */
   def deletePassengers(number: Int, status: Status.Val, destination: Town): Unit = {
-    if(number > passengers(destination)(status.id))
+    if(number > passengers(destination)(status))
       throw new IllegalArgumentException("population should stay positive")
-    passengers(destination)(status.id) -= number
+    passengers(destination)(status) -= number
     passengersNumber() = passengersNumber() - number
     deleteResidents(number, status)
   }
@@ -116,7 +116,8 @@ class Town(
     _routes = route :: _routes
     // Add new entry to passengers map
     if(!passengers.contains(route.end)) {
-      passengers(route.end) = Array.ofDim(Game.world.statusNumber)
+      passengers(route.end) = new HashMap()
+      Game.world.status.foreach { s => passengers(route.end)(s) = 0 }
     }
   }
 
@@ -130,14 +131,14 @@ class Town(
     possibleDestinations.foreach { destination =>
       val migrantNumber = generatePassengers(destination, dt)
       passengersNumber() = passengersNumber() + migrantNumber
-      val byStatus = {
-        if(p == 0)
-          residents
-        else
-          residents.map { r => (migrantNumber * r.toDouble / p).floor.toInt }
+      val byStatus: HashMap[Status.Val, Int] = new HashMap()
+      Game.world.status.foreach { s =>
+          if(p == 0)
+            passengers(destination)(s) += residents(s)
+          else
+            passengers(destination)(s) += 
+            (migrantNumber * residents(s).toDouble / p).floor.toInt
       }
-      passengers(destination) = (passengers(destination), byStatus).zipped.map(_ + _)
-
       Game.world.tryTravel(this, destination, passengers(destination))
     }
   }
