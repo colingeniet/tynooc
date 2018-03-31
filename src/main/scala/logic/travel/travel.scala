@@ -106,6 +106,8 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
     remaining
   }
 
+  def remainingTimeTo(to: Town): Double = remainingDistanceTo(to) / vehicle.speed 
+  
   /** Time remaining until destination, without stop time. */
   val totalRemainingTime: NumberBinding = totalRemainingDistance / vehicle.speed
   /** Time remaining until next stop. */
