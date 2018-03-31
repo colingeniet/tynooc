@@ -5,38 +5,55 @@ import logic.game._
 import logic.company._
 import logic.vehicle._
 
+import scalafx.collections._
+import scalafx.beans.property._
 
-trait TravelInstruction {
-  def execute(onCompleted: () => Unit = () => ()): Unit
-}
 
-case class TravelTo(company: Company, vehicle: Vehicle, town: Town)
-extends TravelInstruction {
-  def execute(onCompleted: () => Unit): Unit = {
-    company.launchTravel(vehicle, town, onCompleted)
+class Script(val company: Company, val vehicle: Vehicle) {
+  sealed trait TravelInstruction {
+    def execute(onCompleted: () => Unit = () => ()): Unit
   }
-}
 
-case class Wait(delay: Double)
-extends TravelInstruction {
-  def execute(onCompleted: () => Unit): Unit = {
-    Game.delayAction(delay, onCompleted)
-  }
-}
-
-case class DoTimes(times: Int, instr: List[TravelInstruction])
-extends TravelInstruction {
-  def execute(onCompleted: () => Unit): Unit = executePartial(onCompleted)
-
-  private def executePartial(
-    onCompleted: () => Unit,
-    timesLeft: Int = times,
-    instrLeft: List[TravelInstruction] = instr): Unit = {
-    if(instrLeft.isEmpty) {
-      if(timesLeft > 0) executePartial(onCompleted, timesLeft-1)
-      else onCompleted()
-    } else {
-      instrLeft.head.execute(() => executePartial(onCompleted, timesLeft, instrLeft.tail))
+  case class TravelTo(val town: Town)
+  extends TravelInstruction {
+    def execute(onCompleted: () => Unit): Unit = {
+      company.launchTravel(vehicle, town, onCompleted)
     }
   }
+
+  case class Wait(val delay: Double)
+  extends TravelInstruction {
+    def execute(onCompleted: () => Unit): Unit = {
+      Game.delayAction(delay, onCompleted)
+    }
+  }
+
+
+  val instructions: ObservableBuffer[TravelInstruction] = ObservableBuffer()
+  val repeat: BooleanProperty = BooleanProperty(false)
+  val paused: BooleanProperty = BooleanProperty(true)
+
+  val ip: IntegerProperty = IntegerProperty(0)
+
+  def next(stepCompleted: () => Unit, travelCompleted: () => Unit): Unit = {
+    if(ip() >= instructions.length && repeat()) ip() = 0
+    if(ip() < instructions.length) {
+      instructions(ip()).execute(stepCompleted)
+    } else {
+      paused() = true
+      ip() = 0
+      travelCompleted()
+    }
+  }
+
+  private def step(): Unit = {
+    if(!paused()) {
+      next(() => step(), () => ())
+    }
+  }
+
+  paused.onChange({
+    // resume
+    if (!paused()) step()
+  })
 }

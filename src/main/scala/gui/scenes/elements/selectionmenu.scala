@@ -72,6 +72,7 @@ extends ScrollPane {
   content = menu
 
   def deselect(): Unit = menu.deselect()
+  def nth(n: Int): Node = menu.children.get(n)
 }
 
 /** Creates a SelectionMenu automatically from a list of objects.
@@ -90,4 +91,5 @@ extends ScrollPane {
   content = menu
 
   def deselect(): Unit = menu.deselect()
+  def nth(n: Int): Node = menu.children.get(n)
 }

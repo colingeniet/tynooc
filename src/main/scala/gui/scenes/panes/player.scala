@@ -47,6 +47,7 @@ extends VBox(5) {
   menu.addMenu("vehicles", displayVehicles())
   menu.addMenu("stock", displayVehicleUnits())
   menu.addMenu("catalog", displayCatalog())
+  menu.addMenu("trips", displayTravels())
 
   children = List(nameField, money, sep1, menu, sep2)
 
@@ -81,5 +82,8 @@ extends VBox(5) {
       menu,
       sep2,
       new Catalog(company))
+  }
+
+  private def displayTravels(): Unit = {
   }
 }
