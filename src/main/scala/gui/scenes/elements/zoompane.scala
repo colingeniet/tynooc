@@ -7,49 +7,45 @@ import scalafx.scene.layout._
 import scalafx.event._
 import javafx.scene.input.ScrollEvent
 import javafx.scene.input.MouseEvent
+import javafx.scene.input.DragEvent
 import javafx.event.EventHandler
 import scalafx.geometry._
 
 /** Zoomable and dragable pane.
  */
-class ZoomPane extends Pane {
+trait ZoomPane extends Node {
   /** Minimum scale factor. */
   var minScale: Double = 0
   /** Maximum scale factor. */
   var maxScale: Double = Double.PositiveInfinity
 
-  // On scroll, zoom around cursor
-  onScroll = new EventHandler[ScrollEvent] {
-    override def handle(event: ScrollEvent): Unit = {
-      var zoomFactor: Double = 1.15
-      if (event.getDeltaY() <= 0) {
-        // zoom out
-        zoomFactor = 1 / zoomFactor
-      }
-      zoom(zoomFactor, event.getSceneX(), event.getSceneY())
-      event.consume()
+  def handleScroll(event: ScrollEvent): Unit = {
+    var zoomFactor: Double = 1.15
+    if (event.getDeltaY() <= 0) {
+      // zoom out
+      zoomFactor = 1 / zoomFactor
     }
+    zoom(zoomFactor, event.getSceneX(), event.getSceneY())
+    event.consume()
   }
+
 
   // records cursor position when starting drag
   private var dragDelta: Point2D = new Point2D(0, 0)
 
   // start of drag : save mouse position
-  onMousePressed = new EventHandler[MouseEvent] {
-    override def handle(event: MouseEvent): Unit = {
-      dragDelta = new Point2D(
-        translateX() - event.getSceneX(),
-        translateY() - event.getSceneY()
-      )
-    }
+  def handlePressed(event: MouseEvent): Unit = {
+    dragDelta = new Point2D(
+      translateX() - event.getSceneX(),
+      translateY() - event.getSceneY())
   }
+
   // dragging : update content position
-  onMouseDragged = new EventHandler[MouseEvent] {
-    override def handle(event: MouseEvent): Unit = {
-      translateX = event.getSceneX() + dragDelta.x
-      translateY = event.getSceneY() + dragDelta.y
-    }
+  def handleDragged(event: MouseEvent): Unit = {
+    translateX = event.getSceneX() + dragDelta.x
+    translateY = event.getSceneY() + dragDelta.y
   }
+
 
   /** Zoom centered on a point.
    *
@@ -74,5 +70,27 @@ class ZoomPane extends Pane {
     translateY = translateY() - (correctFactor - 1) * dy
     scaleX = scale
     scaleY = scale
+  }
+}
+
+class ZoomPaneContainer(_content: ZoomPane) extends Pane {
+  children = _content
+
+  onScroll = new EventHandler[ScrollEvent] {
+    override def handle(event: ScrollEvent): Unit = {
+      _content.handleScroll(event)
+    }
+  }
+
+  onMousePressed = new EventHandler[MouseEvent] {
+    override def handle(event: MouseEvent): Unit = {
+      _content.handlePressed(event)
+    }
+  }
+
+  onMouseDragged = new EventHandler[MouseEvent] {
+    override def handle(event: MouseEvent): Unit = {
+      _content.handleDragged(event)
+    }
   }
 }

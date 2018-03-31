@@ -112,7 +112,7 @@ object Parser {
   }
 
   def convertToWorld(world_map: JMap): Try[World] = {
-    val world: World = new World(world_map.width, world_map.height)
+    val world: World = new World()
     val minX: Int = world_map.cities.asScala.minBy {_.x }.x
     val minY: Int = world_map.cities.asScala.minBy {_.y }.y
     Try {

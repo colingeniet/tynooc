@@ -42,10 +42,8 @@ extends Exception(message, cause)
  *  This class handles all travels, as well as town population.
  *
  * @constructor Creates an empty world with its height and its width.
- * @param width The size of the world 100 by default).
- * @param height The height of the world (100 by default).
  */
-class World(val width : Int = 0, val height : Int = 0) {
+class World {
   /** List of the status available in the world. */
   val status = Array(Status.Rich, Status.Poor, Status.Well)
   /** Criteria used to choose a room. */
