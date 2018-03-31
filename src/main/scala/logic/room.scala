@@ -44,6 +44,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   /** Maximum number of passengers in the room. */
   def capacity: Int = vehicle match {
     case c: Carriage => c.capacity
+    case p: Plane => p.capacity
     case v => 40
   }
   /** Returns <code>true</code> if some places are available in the room. */
@@ -53,6 +54,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   /** The comfort note of the room (betwween 0 and 1). */
   def comfort: Double = vehicle match {
     case c: Carriage => c.comfort
+    case p: Plane => p.comfort
     case v => 1
   }
 
