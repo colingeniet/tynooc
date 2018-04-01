@@ -45,6 +45,8 @@ class JRail(
   @JacksonXmlProperty(localName = "tracks") val tracks: Int,
   @JacksonXmlProperty(localName = "electrified") val electrified: String)
 
+class JSea
+
 class JCanal(
   @JacksonXmlProperty(localName = "length") val length: Int,
   @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int)
@@ -59,7 +61,9 @@ class JRoad(
   @JacksonXmlProperty(localName = "lanes") val lanes: Int)
 
 class JConnection(
-  @JacksonXmlProperty(localName = "Sea") val sea: String,
+  @JacksonXmlProperty(localName = "Sea")
+  @JacksonXmlElementWrapper(useWrapping = false)
+  val sea: JList[JSea],
   @JacksonXmlProperty(localName = "River") val river: JRiver,
   @JacksonXmlProperty(localName = "Canal") val canal: JCanal,
   @JacksonXmlProperty(localName = "Road") val road: JRoad,
@@ -131,7 +135,6 @@ object Parser {
       jMap.connections.asScala.filter { c =>
         c.upstream != null && c.downstream != null
       }.foreach { buildRoute(world.towns, _) }
-
       world
     }
   }
