@@ -32,10 +32,6 @@ class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox {
   }
 
 
-  private var instructionList: SelectionList[script.TravelInstruction] = null
-
-  private val list: ScrollPane = new ScrollPane ()
-
   def instructionText(instr: script.TravelInstruction): String = {
     instr match {
       case script.TravelTo(town) => "go to " + town.name
@@ -43,26 +39,11 @@ class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox {
     }
   }
 
-  private def updateList(): Unit = {
-    instructionList = new SelectionList[script.TravelInstruction](
-      script.instructions.toList,
+  private var list: SelectionList[script.TravelInstruction] =
+    new SelectionList[script.TravelInstruction](
+      script.instructions,
       instructionText(_),
       _ => ())
-    list.content = instructionList
-    lastip = script.ip()
-    instructionList.nth(script.ip()).styleClass.add("text-field-highlight")
-  }
 
-  updateList()
-  script.instructions.onChange(updateList())
-
-  private var lastip: Int = script.ip()
-
-  instructionList.nth(script.ip()).styleClass.add("text-field-highlight")
-
-  script.ip.onChange({
-    instructionList.nth(lastip).styleClass.remove("text-field-highlight")
-    instructionList.nth(script.ip()).styleClass.add("text-field-highlight")
-    lastip = script.ip()
-  })
+  children = list
 }
