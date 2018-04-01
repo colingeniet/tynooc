@@ -13,13 +13,9 @@ import logic.model._
 import logic.vehicle._
 import logic.world._
 import logic.game._
+import logic.good._
 
 import collection.mutable.HashMap
-
-final case class IllegalActionException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
 
 
 /** Template for a vehicle model class. */
@@ -36,7 +32,10 @@ class EngineModel(
   val speed: Double,
   val consumption: Double,
   val power: Double)
-extends RailVehicleUnitModel with VehicleModel
+extends RailVehicleUnitModel with VehicleModel {
+
+  val allowed: HashMap[Good, Double] = Good.none
+}
 
 /** EngineModel companion object.
  *
@@ -46,7 +45,6 @@ object EngineModel extends ModelNameMap[EngineModel] {
   private var _models: HashMap[String, EngineModel] = HashMap(
     "basic" -> new EngineModel("basic engine", 500,  List("advanced"), 100, 80, 10, 500),
     "advanced" -> new EngineModel("advanced engine", 1000, List(), 120, 120, 12, 900))
-
   override def models: HashMap[String, EngineModel] = _models
 }
 
@@ -57,7 +55,8 @@ class CarriageModel(
   val upgrades: List[String],
   val weight: Double,
   val capacity: Int,
-  val comfort: Double)
+  val comfort: Double,
+  val allowed: HashMap[Good, Double])
 extends RailVehicleUnitModel
 
 /** CarriageModel companion object.
@@ -66,8 +65,8 @@ extends RailVehicleUnitModel
  */
 object CarriageModel extends ModelNameMap[CarriageModel] {
   private var _models: HashMap[String, CarriageModel] = HashMap(
-    "basic" -> new CarriageModel("basic carriage", 500, List("advanced"), 80, 40, 10),
-    "advanced" -> new CarriageModel("advanced carriage", 1000, List(), 80, 50, 15))
+    "basic" -> new CarriageModel("basic carriage", 500, List("advanced"), 80, 40, 10, HashMap(Food -> 1000)),
+    "advanced" -> new CarriageModel("advanced carriage", 1000, List(), 80, 50, 15, HashMap(Food -> 1000)))
 
   override def models: HashMap[String, CarriageModel] = _models
 }
@@ -80,6 +79,8 @@ object CarriageModel extends ModelNameMap[CarriageModel] {
 class Carriage(model: CarriageModel, town: Town, owner: Company)
 extends VehicleUnitFromModel[CarriageModel](model, town, owner) {
   val train: ObjectProperty[Option[Engine]] = ObjectProperty(None)
+
+  val contents = Good.any(0)
 
   val isUsed: BooleanBinding =
     Bindings.createBooleanBinding(
@@ -104,6 +105,8 @@ class Engine(
   owner: Company,
   _carriages: List[Carriage] = List())
 extends VehicleFromModel[EngineModel](model, _town, owner) {
+
+  val contents = Good.any(0)
   val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
 
   val weight: DoubleProperty = DoubleProperty(0)

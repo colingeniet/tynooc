@@ -8,16 +8,40 @@ import logic.model._
 import logic.company._
 import logic.town._
 import logic.travel._
+import logic.good._
 
 import collection.mutable.HashMap
 
+final case class IllegalActionException(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
 
-trait VehicleUnitModel extends BuyableModel
+
+trait VehicleUnitModel extends BuyableModel {
+  
+  val allowed: HashMap[Good, Double]
+}
 
 trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   val town: ObjectProperty[Town]
   val owner: Company
   val isUsed: BooleanBinding
+
+  val contents: HashMap[Good, Double]
+
+  def load(g: Good, i: Int) : Unit = {
+    
+    if (model.allowed(g) < contents(g) + i)
+      throw new IllegalActionException("Can't load that much on your unit !")
+  
+    contents(g) += i
+  }
+
+  def handleGoods(dt: Double) : Unit = {
+
+    contents.foreach{ case (key, value) => if (value > 0) key.update(this, dt) }
+  }
 }
 
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](

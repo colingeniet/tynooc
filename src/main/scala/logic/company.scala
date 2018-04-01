@@ -10,6 +10,9 @@ import logic.travel._
 import logic.town._
 import logic.game._
 import logic.world._
+import logic.good._
+
+import collection.mutable.HashMap
 
 /** An object to manage prices. */
 object PriceSimulation {
@@ -109,7 +112,7 @@ class Company(var name: String, val fabricTown: Town) {
   def buyEngine(model: EngineModel): Unit = {
     if (model.price <= money()) {
       debit(model.price)
-      val engine = new Engine(model, fabricTown, this)
+      val engine = new Engine(model, fabricTown, this, List())
       vehicleUnits.add(engine)
       vehicles.add(engine)
     }
