@@ -22,24 +22,10 @@ import logic.vehicle._
  *  @param train the train to display.
  */
 class TrainDetail(train: Engine) extends VBox(3) {
-  private val list: ScrollPane = new ScrollPane {
-    content = new SelectionMenu {
-      addMenu(train.model.name, displayEngine(train))
-      train.carriages.foreach { carriage =>
-        addMenu(carriage.model.name, displayCarriage(carriage))
-      }
-
-      train.carriages.onChange(
-        (_: ObservableBuffer[Carriage], changes: Seq[Change[Carriage]]) => {
-          changes.foreach(_ match {
-            case Add(_, added) => added.foreach(c =>
-              addMenu(c.model.name, displayCarriage(c)))
-            case Remove(pos, removed) => children.remove(pos, pos + removed.size)
-            case _ => ()
-          })
-        })
-    }
-  }
+  private val list: SelectionListDynamic[Carriage] = new SelectionListDynamic[Carriage](
+    train.carriages,
+    c => new StringProperty(c.model.name),
+    displayCarriage(_))
 
   // train statistics
   private val stats: TrainStats = new TrainStats(train)

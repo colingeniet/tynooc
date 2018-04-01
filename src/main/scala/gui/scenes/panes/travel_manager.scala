@@ -44,7 +44,7 @@ class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox {
   }
 
   private def updateList(): Unit = {
-    instructionList = new SelectionList(
+    instructionList = new SelectionList[script.TravelInstruction](
       script.instructions.toList,
       instructionText(_),
       _ => ())

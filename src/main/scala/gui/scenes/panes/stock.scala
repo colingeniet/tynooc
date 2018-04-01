@@ -40,7 +40,7 @@ extends VBox(3) {
     list = new SelectionList[VehicleUnit](
       company.vehicleUnits.toList,
       _.model.name,
-      detailVehicle)
+      detailVehicle(_))
   }
 
   /** Displays a specific engine. */
@@ -173,7 +173,7 @@ extends VBox(3) {
     addCarriage.onAction = (event: ActionEvent) => {
       // when pressing the button, display a new carriage list
       val selectionList: SelectionList[Carriage] =
-        new SelectionList(
+        new SelectionList[Carriage](
           company.carriagesStoredAt(train.town()).toList,
           _.model.name,
           carriage => {
