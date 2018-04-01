@@ -22,10 +22,11 @@ import logic.vehicle._
  *  @param train the train to display.
  */
 class TrainDetail(train: Engine) extends VBox(3) {
-  private val list: SelectionListDynamic[Carriage] = new SelectionListDynamic[Carriage](
-    train.carriages,
-    c => new StringProperty(c.model.name),
-    displayCarriage(_))
+  private val list: SelectionListDynamic[Carriage] =
+    new SelectionListDynamic[Carriage](
+      train.carriages,
+      c => new StringProperty(c.model.name),
+      displayUnit(_))
 
   // train statistics
   private val stats: TrainStats = new TrainStats(train)
@@ -45,15 +46,9 @@ class TrainDetail(train: Engine) extends VBox(3) {
       detail)
   }
 
-  /** Display engine detail in the lower panel */
-  private def displayEngine(engine: Engine): Unit = {
-    detail = VehicleUnitDetail(engine)
-    setChildren()
-  }
-
   /** Display carriage detail in the lower panel */
-  private def displayCarriage(carriage: Carriage): Unit = {
-    detail = VehicleUnitDetail(carriage)
+  private def displayUnit(unit: VehicleUnit): Unit = {
+    detail = VehicleUnitDetail(unit)
     setChildren()
   }
 }
@@ -66,9 +61,15 @@ class TrainStats(train: Engine) extends VBox {
     styleClass.add("alert")
   }
   private val weight: Label = new Label()
-  private val power: Label = new Label("power : " + train.model.power)
 
-  children = List(name, status, weight, power)
+  private val stats = new VehicleModelShortStats(train.model) {
+      // don't display name
+      override def filter(a: java.lang.reflect.Field): Boolean = {
+        a.getName() == "name" || a.getName() == "weight" || super.filter(a)
+      }
+    }
+
+  updateChildren()
   spacing = 3
 
   name.text <== train.name
@@ -89,7 +90,7 @@ class TrainStats(train: Engine) extends VBox {
       Some(status),
       (if (train.tooHeavy()) Some(tooHeavy) else None),
       Some(weight),
-      Some(power)).flatMap(x => x)
+      Some(stats)).flatMap(x => x)
   }
 
   train.tooHeavy.onChange(updateChildren())

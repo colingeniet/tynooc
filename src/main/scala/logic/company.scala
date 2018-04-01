@@ -1,8 +1,9 @@
 package logic.company
 
 import scalafx.beans.property._
+import scalafx.collections._
 
-import collection.mutable.HashSet
+import scala.collection.mutable.HashSet
 
 import logic.vehicle._
 import logic.travel._
@@ -35,9 +36,9 @@ extends Exception(message, cause)
   */
 class Company(var name: String, val fabricTown: Town) {
   /** The company trains. */
-  val vehicles: HashSet[Vehicle] = HashSet()
+  val vehicles: ObservableBuffer[Vehicle] = ObservableBuffer()
   /** The company carriages. */
-  val vehicleUnits: HashSet[VehicleUnit] = HashSet()
+  val vehicleUnits: ObservableBuffer[VehicleUnit] = ObservableBuffer()
   /** The company money. */
   val money: DoubleProperty = DoubleProperty(0)
   /** Current travels for this company. */
@@ -59,7 +60,7 @@ class Company(var name: String, val fabricTown: Town) {
   }
 
   /** Returns the carriages of this company. */
-  def carriages: HashSet[Carriage] = vehicleUnits.flatMap {
+  def carriages: ObservableBuffer[Carriage] = vehicleUnits.flatMap {
     case c: Carriage => Some(c)
     case _ => None
   }
@@ -67,17 +68,17 @@ class Company(var name: String, val fabricTown: Town) {
   /** Returns the available carriages of this company.
     * A carriage is available if not in a train.
     */
-  def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed())
+  def carriagesAvailable: ObservableBuffer[Carriage] = carriages.filter(!_.isUsed())
 
   /** Returns the carriages of this company available in a town.
     *
     * @param town The town.
     */
-  def carriagesStoredAt(town: Town): HashSet[Carriage] =
+  def carriagesStoredAt(town: Town): ObservableBuffer[Carriage] =
     carriages.filter(c => !c.isUsed() && c.town() == town)
 
   /** Returns the engines of this company. */
-  def engines: HashSet[Engine] = vehicleUnits.flatMap {
+  def engines: ObservableBuffer[Engine] = vehicleUnits.flatMap {
     case e: Engine => Some(e)
     case _ => None
   }
@@ -85,24 +86,24 @@ class Company(var name: String, val fabricTown: Town) {
   /** Returns the available engines of this company.
     * An engine is available if not in a train.
     */
-  def enginesAvailable: HashSet[Engine] = engines.filter(!_.isUsed())
+  def enginesAvailable: ObservableBuffer[Engine] = engines.filter(!_.isUsed())
 
   /** Returns the engines of this company available in a town.
     *
     * @param town The town.
     */
-  def enginesStoredAt(town: Town): HashSet[Engine] =
+  def enginesStoredAt(town: Town): ObservableBuffer[Engine] =
     engines.filter(e => !e.isUsed() && e.town() == town)
 
 
   /** Returns the engines of this company. */
-  def trains: HashSet[Engine] = vehicles.flatMap {
+  def trains: ObservableBuffer[Engine] = vehicles.flatMap {
     case e: Engine => Some(e)
     case _ => None
   }
 
   /** Returns the available trains of this company. */
-  def trainsAvailable: HashSet[Engine] = trains.filter { _.isAvailable() }
+  def trainsAvailable: ObservableBuffer[Engine] = trains.filter { _.isAvailable() }
 
 
   def buy(vehicle: VehicleUnit): Unit = {
