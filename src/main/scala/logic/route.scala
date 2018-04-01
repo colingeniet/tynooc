@@ -22,6 +22,12 @@ class Airway(
   val length: Double)
 extends Route
 
+class Seaway(
+  val start: Town,
+  val end: Town,
+  val length: Double)
+extends Route
+
 class Rail(
   val start: Town,
   val end: Town,

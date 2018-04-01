@@ -55,7 +55,7 @@
         <Factory type="glass_works" size="4"/>
         <Factory type="aluminum_plant" size="2"/>
     </City>
-    <City name="Croqette" x="-75" y="131" population="22308">
+    <City name="Croquette" x="-75" y="131" population="22308">
         <Factory type="cattle_ranch" size="1"/>
         <Factory type="grain_farm" size="4"/>
         <Factory type="sand_pit" size="1"/>
