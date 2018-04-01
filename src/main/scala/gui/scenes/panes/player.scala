@@ -51,14 +51,13 @@ extends VBox(5) {
 
   children = List(nameField, money, sep1, menu, sep2)
 
-  private val vehicleList =
-    new VehicleList(company, world, detailVehicle)
+  private val vehicleList = new VehicleList(company, world, detailVehicle)
 
-  private val vehicleUnitList =
-    new VehicleUnitList(company, world, detailVehicleUnit)
+  private val vehicleUnitList = new VehicleUnitList(company, world, detailVehicleUnit)
 
-  private val catalog =
-    new Catalog(company)
+  private val catalog = new Catalog(company)
+
+  private val travels = new TravelManager(company)
 
   /** Displays vehicles panel. */
   private def displayVehicles(): Unit = {
@@ -94,5 +93,12 @@ extends VBox(5) {
   }
 
   private def displayTravels(): Unit = {
+    children = List(
+      nameField,
+      money,
+      sep1,
+      menu,
+      sep2,
+      travels)
   }
 }

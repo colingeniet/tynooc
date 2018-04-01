@@ -12,6 +12,7 @@ import logic.travel._
 import logic.vehicle._
 import logic.game._
 import logic.town._
+import logic.company._
 
 
 
@@ -46,4 +47,19 @@ class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox {
       _ => ())
 
   children = list
+}
+
+class TravelManager(company: Company) extends VBox {
+  val list = new SelectionListDynamic[Script](
+    company.travel_scripts,
+    _.vehicle.name,
+    displayScript(_))
+
+  val sep = new Separator()
+
+  children = List(list)
+
+  private def displayScript(script: Script): Unit = {
+    children = List(list, sep, new ScriptInfo(script, _ => ()))
+  }
 }

@@ -41,6 +41,9 @@ class Company(var name: String, val fabricTown: Town) {
   val vehicleUnits: ObservableBuffer[VehicleUnit] = ObservableBuffer()
   /** The company money. */
   val money: DoubleProperty = DoubleProperty(0)
+
+  val travel_scripts: ObservableBuffer[Script] = ObservableBuffer()
+
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
