@@ -16,7 +16,7 @@ import logic.company._
 
 
 
-class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox {
+class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox(3) {
   private val vehicle: Button = new Button {
     text <== script.vehicle.name
     onAction = (event: ActionEvent) => vehicleDetail(script.vehicle)
@@ -46,10 +46,44 @@ class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox {
       instructionText(_),
       _ => ())
 
-  children = list
+  private val travelToButton: Button = new Button("go to") {
+    onAction = (event: ActionEvent) => {
+      // when pressing the button, display the list of towns
+      val selectionList: SelectionList[Town] = new SelectionList[Town](
+        Game.world.towns.toList,
+        _.name,
+        town => {
+          script.instructions.add(new script.TravelTo(town))
+          children = List(vehicle, pause, repeat, list, travelToButton, timeField, waitButton, deleteButton, clearButton)
+        })
+      // display new selection list upon button pressed
+      children = List(vehicle, pause, repeat, list, travelToButton, waitButton, timeField, selectionList, deleteButton, clearButton)
+    }
+  }
+
+  private val waitButton: Button = new Button("wait") {
+    onAction = (event: ActionEvent) => {
+      script.instructions.add(new script.Wait(timeField.value()))
+    }
+  }
+
+  val timeField: Spinner[Double] = new Spinner[Double](0, 1000, 1, 0.5) {
+    editable = true
+  }
+
+  private val deleteButton: Button = new Button("delete") {
+    onAction = (event: ActionEvent) => script.instructions.remove(script.instructions.size - 1)
+  }
+
+  private val clearButton: Button = new Button("clear") {
+    onAction = (event: ActionEvent) => script.instructions.clear()
+  }
+
+  children = List(vehicle, pause, repeat, list, travelToButton, waitButton, timeField, deleteButton, clearButton)
 }
 
-class TravelManager(company: Company) extends VBox {
+
+class TravelManager(company: Company, vehicleDetail: Vehicle => Unit) extends VBox(3) {
   val list = new SelectionListDynamic[Script](
     company.travel_scripts,
     _.vehicle.name,
@@ -60,6 +94,6 @@ class TravelManager(company: Company) extends VBox {
   children = List(list)
 
   private def displayScript(script: Script): Unit = {
-    children = List(list, sep, new ScriptInfo(script, _ => ()))
+    children = List(list, sep, new ScriptInfo(script, vehicleDetail))
   }
 }

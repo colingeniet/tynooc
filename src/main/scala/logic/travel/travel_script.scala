@@ -37,6 +37,7 @@ class Script(val company: Company, val vehicle: Vehicle) {
 
   def next(stepCompleted: () => Unit, travelCompleted: () => Unit): Unit = {
     if(ip() >= instructions.length && repeat()) ip() = 0
+
     if(ip() < instructions.length) {
       instructions(ip()).execute(stepCompleted)
     } else {
@@ -48,7 +49,7 @@ class Script(val company: Company, val vehicle: Vehicle) {
 
   private def step(): Unit = {
     if(!paused()) {
-      next(() => step(), () => ())
+      next(() => {ip() = ip() + 1; step()}, () => ())
     }
   }
 

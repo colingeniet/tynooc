@@ -106,8 +106,8 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
     remaining
   }
 
-  def remainingTimeTo(to: Town): Double = remainingDistanceTo(to) / vehicle.speed 
-  
+  def remainingTimeTo(to: Town): Double = remainingDistanceTo(to) / vehicle.speed
+
   /** Time remaining until destination, without stop time. */
   val totalRemainingTime: NumberBinding = totalRemainingDistance / vehicle.speed
   /** Time remaining until next stop. */
@@ -196,7 +196,10 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
           landPassengers()
           remainingRoutes.remove(0)
           currentRouteDistanceDone() = 0
-          if(isDone()) vehicle.travel() = None
+          if(isDone()) {
+            vehicle.travel() = None
+            onCompleted()
+          }
         }
         case State.Waiting => {
           vehicle.town() = nextTown()
@@ -204,9 +207,6 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
           state() = State.OnRoute
         }
       }
-    } else {
-      onCompleted()
-      onCompleted = () => ()
     }
   }
 }

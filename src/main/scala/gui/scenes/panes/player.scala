@@ -47,7 +47,7 @@ extends VBox(5) {
   menu.addMenu("vehicles", displayVehicles())
   menu.addMenu("stock", displayVehicleUnits())
   menu.addMenu("catalog", displayCatalog())
-  menu.addMenu("trips", displayTravels())
+  menu.addMenu("travels", displayTravels())
 
   children = List(nameField, money, sep1, menu, sep2)
 
@@ -57,7 +57,7 @@ extends VBox(5) {
 
   private val catalog = new Catalog(company)
 
-  private val travels = new TravelManager(company)
+  private val travels = new TravelManager(company, detailVehicle)
 
   /** Displays vehicles panel. */
   private def displayVehicles(): Unit = {
