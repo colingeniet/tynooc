@@ -10,7 +10,6 @@ import scalafx.event._
 import gui.scenes.elements._
 import logic.company._
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.world._
 import formatter._
 
@@ -48,8 +47,17 @@ extends VBox(5) {
   menu.addMenu("vehicles", displayVehicles())
   menu.addMenu("stock", displayVehicleUnits())
   menu.addMenu("catalog", displayCatalog())
+  menu.addMenu("travels", displayTravels())
 
   children = List(nameField, money, sep1, menu, sep2)
+
+  private val vehicleList = new VehicleList(company, world, detailVehicle)
+
+  private val vehicleUnitList = new VehicleUnitList(company, world, detailVehicleUnit)
+
+  private val catalog = new Catalog(company)
+
+  private val travels = new TravelManager(company, detailVehicle)
 
   /** Displays vehicles panel. */
   private def displayVehicles(): Unit = {
@@ -59,7 +67,7 @@ extends VBox(5) {
       sep1,
       menu,
       sep2,
-      new VehicleList(company, world, detailVehicle))
+      vehicleList)
   }
 
   /** Displays stock panel. */
@@ -70,7 +78,7 @@ extends VBox(5) {
       sep1,
       menu,
       sep2,
-      new VehicleUnitList(company, world, detailVehicleUnit))
+      vehicleUnitList)
   }
 
   /** Displays catalog panel. */
@@ -81,6 +89,16 @@ extends VBox(5) {
       sep1,
       menu,
       sep2,
-      new Catalog(company))
+      catalog)
+  }
+
+  private def displayTravels(): Unit = {
+    children = List(
+      nameField,
+      money,
+      sep1,
+      menu,
+      sep2,
+      travels)
   }
 }

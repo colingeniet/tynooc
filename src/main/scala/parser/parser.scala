@@ -2,123 +2,139 @@ package parser
 
 import scala.util.{Try, Success, Failure}
 import scala.io.Source
+import collection.mutable.HashSet
 
 import logic.town._
 import logic.world._
 import logic.route._
+import logic.game._
 
 import java.util.{List => JList}
 import collection.JavaConverters._
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 
-class Factory(
+class JFactory(
   @JacksonXmlProperty(localName = "type") val _type: String,
   @JacksonXmlProperty(localName = "size") val size: Int)
 
-class Port(
+class JPort(
   @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int,
   @JacksonXmlProperty(localName = "size") val size: Int)
 
-class Airport(
+class JAirport(
   @JacksonXmlProperty(localName = "runway_length") val runway_length: Int,
   @JacksonXmlProperty(localName = "size") val size: Int)
 
-class City(
+class JCity(
   @JacksonXmlProperty(localName = "name") val name: String,
   @JacksonXmlProperty(localName = "x") val x : Int,
   @JacksonXmlProperty(localName = "y") val y : Int,
   @JacksonXmlProperty(localName = "population") val population : Int,
   @JacksonXmlProperty(localName = "Factory")
   @JacksonXmlElementWrapper(useWrapping = false)
-  val factories: JList[Factory],
-  @JacksonXmlProperty(localName = "Airport") val airport: Airport,
-  @JacksonXmlProperty(localName = "Port") val port: Port)
+  val factories: JList[JFactory],
+  @JacksonXmlProperty(localName = "Airport") val airport: JAirport,
+  @JacksonXmlProperty(localName = "Port") val port: JPort)
 
-class Rail(
+class JRail(
   @JacksonXmlProperty(localName = "length") val length: Int,
   @JacksonXmlProperty(localName = "maximum_speed") val maximum_speed: Int,
   @JacksonXmlProperty(localName = "tracks") val tracks: Int,
-  @JacksonXmlProperty(localName = "electrified") electrified: String)
+  @JacksonXmlProperty(localName = "electrified") val electrified: String)
 
-class Canal(
+class JSea
+
+class JCanal(
   @JacksonXmlProperty(localName = "length") val length: Int,
   @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int)
 
-class River(
+class JRiver(
   @JacksonXmlProperty(localName = "length") val length: Int,
   @JacksonXmlProperty(localName = "beam_clearance") val beam_clearance: Int)
 
-class Road(
+class JRoad(
   @JacksonXmlProperty(localName = "length") val length: Int,
   @JacksonXmlProperty(localName = "maximum_speed") val maximum_speed: Int,
   @JacksonXmlProperty(localName = "lanes") val lanes: Int)
 
-class Connection(
-  @JacksonXmlProperty(localName = "Sea") val sea: String,
-  @JacksonXmlProperty(localName = "River") val river: River,
-  @JacksonXmlProperty(localName = "Canal") val canal: Canal,
-  @JacksonXmlProperty(localName = "Road") val road: Road,
-  @JacksonXmlProperty(localName = "Rail") val rail: Rail,
+class JConnection(
+  @JacksonXmlProperty(localName = "Sea")
+  @JacksonXmlElementWrapper(useWrapping = false)
+  val sea: JList[JSea],
+  @JacksonXmlProperty(localName = "River") val river: JRiver,
+  @JacksonXmlProperty(localName = "Canal") val canal: JCanal,
+  @JacksonXmlProperty(localName = "Road") val road: JRoad,
+  @JacksonXmlProperty(localName = "Rail") val rail: JRail,
   @JacksonXmlProperty(localName = "upstream") val upstream: String,
   @JacksonXmlProperty(localName = "downstream") val downstream: String)
 
-class Map(
+class JMap(
   @JacksonXmlProperty(localName = "name") val name: String,
   @JacksonXmlProperty(localName = "width") val width : Int,
   @JacksonXmlProperty(localName = "height") val height : Int,
   @JacksonXmlProperty(localName = "City")
-  @JacksonXmlElementWrapper(useWrapping = false) val cities : JList[City],
+  @JacksonXmlElementWrapper(useWrapping = false) val cities : JList[JCity],
   @JacksonXmlProperty(localName = "Connection")
-  @JacksonXmlElementWrapper(useWrapping = false) val connections: JList[Connection])
+  @JacksonXmlElementWrapper(useWrapping = false) val connections: JList[JConnection])
 
 object Parser {
-  def buildTown(c: City, minX: Int, minY: Int): Town = {
-    var t = new Town(c.name, c.x - minX + 30, c.y - minY + 30, 1)
-    t.addResidents(c.population / 3, Status.Well)
-    t.addResidents(c.population / 3, Status.Poor)
-    t.addResidents(c.population - t.population(), Status.Rich)
+
+  def buildTown(c: JCity): Town = {
+    var t = new Town(c.name, c.x, c.y, 1)
+    Game.world.status.foreach { s => t.addResidents(c.population / 3, s) }
+    t.addResidents(c.population - t.population(), Game.world.status.head)
     t
   }
 
-  //def buildRoute(start: Town, end: Town, road: Road): Unit = {
-  def buildRoute(start: Town, end: Town, length: Double): Unit = {
-    start.addRoute(end, length)
-    end.addRoute(start, length)
-  }
-
-  /* Code to optimize. Note that it adds town1 -> town2 and town1 -> town2. */
-  def buildRoute(towns: List[Town], c: Connection): Unit = {
+  def buildRoute(towns: HashSet[Town], c: JConnection): Unit = {
     val start: Town = towns.find(_.name == c.upstream).get
     val end: Town = towns.find(_.name == c.downstream).get
-    if(c.rail != null) { buildRoute(start, end, c.rail.length) }
-    if(c.road != null) { buildRoute(start, end, c.road.length) }
-    if(c.canal != null) { buildRoute(start, end, c.canal.length) }
-    if(c.river != null) { buildRoute(start, end, c.river.length) }
+    if(c.road != null) {
+      start.addRoute(new Road(start, end, c.road.length, c.road.maximum_speed,
+                              c.road.lanes))
+      end.addRoute(new Road(end, start, c.road.length, c.road.maximum_speed,
+                             c.road.lanes))
+    }
+    if(c.rail != null) {
+      val electrified = c.rail.electrified == "yes"
+      start.addRoute((new Rail(start, end, c.rail.length, c.rail.maximum_speed,
+                              c.rail.tracks, electrified)))
+      end.addRoute((new Rail(end, start, c.rail.length, c.rail.maximum_speed,
+                             c.rail.tracks, electrified)))
+    }
+    if(c.canal != null) {
+      start.addRoute((new Canal(start, end, c.canal.length, c.canal.beam_clearance)))
+      end.addRoute((new Canal(end, start, c.canal.length, c.canal.beam_clearance)))
+    }
+    if(c.river != null) {
+      start.addRoute((new River(start, end, c.river.length, c.river.beam_clearance)))
+      end.addRoute((new River(end, start, c.river.length, c.river.beam_clearance)))
+    }
+    if(c.sea != null) {
+      val distX = start.x - end.x
+      val distY = start.y - end.y
+      val dist = math.hypot(distX, distY)
+      start.addRoute((new Seaway(start, end, dist)))
+      end.addRoute((new Seaway(end, start, dist)))
+    }
   }
 
-  def convertToWorld(world_map: Map): Try[World] = {
-    val world: World = new World(world_map.width, world_map.height)
-    val minX: Int = world_map.cities.asScala.minBy {_.x }.x
-    val minY: Int = world_map.cities.asScala.minBy {_.y }.y
+  def buildWorld(jMap: JMap): Try[World] = {
+    val world: World = new World()
     Try {
-      if(world_map.cities == null)
+      if(jMap.cities == null)
         throw new IllegalArgumentException("No cities in the world.")
-      if(world_map.connections == null)
+      if(jMap.connections == null)
         throw new IllegalArgumentException("No connections in the world.")
 
-      val towns = world_map.cities.asScala.toList.map {
-        c => buildTown(c, minX, minY)
-      }
-      towns.foreach { t => world.addTown(t) }
+      jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
 
-      world_map.connections.asScala.toList.filter { c =>
+      jMap.connections.asScala.filter { c =>
         c.upstream != null && c.downstream != null
-      }.foreach { c => buildRoute(towns.toList, c) }
-
+      }.foreach { buildRoute(world.towns, _) }
       world
     }
   }
@@ -132,7 +148,6 @@ object Parser {
     val yaml = file.getLines.mkString("\n")
     file.close()
     val mapper = new XmlMapper()
-    val world_map: Map = mapper.readValue(yaml, classOf[Map])
-    convertToWorld(world_map).get
+    buildWorld(mapper.readValue(yaml, classOf[JMap])).get
   }
 }

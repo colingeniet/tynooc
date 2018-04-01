@@ -1,11 +1,11 @@
 package logic.company
 
 import scalafx.beans.property._
+import scalafx.collections._
 
-import collection.mutable.HashSet
+import scala.collection.mutable.HashSet
 
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.travel._
 import logic.town._
 import logic.game._
@@ -39,13 +39,16 @@ extends Exception(message, cause)
   */
 class Company(var name: String, val fabricTown: Town) {
   /** The company trains. */
-  val vehicles: HashSet[Vehicle] = HashSet()
+  val vehicles: ObservableBuffer[Vehicle] = ObservableBuffer()
   /** The company carriages. */
-  val vehicleUnits: HashSet[VehicleUnit] = HashSet()
+  val vehicleUnits: ObservableBuffer[VehicleUnit] = ObservableBuffer()
   /** The company money. */
   val money: DoubleProperty = DoubleProperty(0)
+
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
+
+  val travel_scripts: ObservableBuffer[Script] = ObservableBuffer()
 
   /** Credits the player with <code>amount</code> euros.
     *
@@ -63,7 +66,7 @@ class Company(var name: String, val fabricTown: Town) {
   }
 
   /** Returns the carriages of this company. */
-  def carriages: HashSet[Carriage] = vehicleUnits.flatMap {
+  def carriages: ObservableBuffer[Carriage] = vehicleUnits.flatMap {
     case c: Carriage => Some(c)
     case _ => None
   }
@@ -71,17 +74,17 @@ class Company(var name: String, val fabricTown: Town) {
   /** Returns the available carriages of this company.
     * A carriage is available if not in a train.
     */
-  def carriagesAvailable: HashSet[Carriage] = carriages.filter(!_.isUsed())
+  def carriagesAvailable: ObservableBuffer[Carriage] = carriages.filter(!_.isUsed())
 
   /** Returns the carriages of this company available in a town.
     *
     * @param town The town.
     */
-  def carriagesStoredAt(town: Town): HashSet[Carriage] =
+  def carriagesStoredAt(town: Town): ObservableBuffer[Carriage] =
     carriages.filter(c => !c.isUsed() && c.town() == town)
 
   /** Returns the engines of this company. */
-  def engines: HashSet[Engine] = vehicleUnits.flatMap {
+  def engines: ObservableBuffer[Engine] = vehicleUnits.flatMap {
     case e: Engine => Some(e)
     case _ => None
   }
@@ -89,56 +92,35 @@ class Company(var name: String, val fabricTown: Town) {
   /** Returns the available engines of this company.
     * An engine is available if not in a train.
     */
-  def enginesAvailable: HashSet[Engine] = engines.filter(!_.isUsed())
+  def enginesAvailable: ObservableBuffer[Engine] = engines.filter(!_.isUsed())
 
   /** Returns the engines of this company available in a town.
     *
     * @param town The town.
     */
-  def enginesStoredAt(town: Town): HashSet[Engine] =
+  def enginesStoredAt(town: Town): ObservableBuffer[Engine] =
     engines.filter(e => !e.isUsed() && e.town() == town)
 
 
   /** Returns the engines of this company. */
-  def trains: HashSet[Engine] = vehicles.flatMap {
+  def trains: ObservableBuffer[Engine] = vehicles.flatMap {
     case e: Engine => Some(e)
     case _ => None
   }
 
   /** Returns the available trains of this company. */
-  def trainsAvailable: HashSet[Engine] = trains.filter { _.isAvailable() }
+  def trainsAvailable: ObservableBuffer[Engine] = trains.filter { _.isAvailable() }
 
 
-  def buyEngine(model: EngineModel): Unit = {
-    if (model.price <= money()) {
-      debit(model.price)
-      val engine = new Engine(model, fabricTown, this, List())
-      vehicleUnits.add(engine)
-      vehicles.add(engine)
+  def buy(vehicle: VehicleUnit): Unit = {
+    if (vehicle.model.price <= money()) {
+      debit(vehicle.model.price)
+      vehicle match {
+        case v: Vehicle => vehicles.add(v); travel_scripts.add(new Script(this, v))
+        case _ => ()
+      }
+      vehicleUnits.add(vehicle)
     }
-  }
-
-  /** Buy an engine and add it to the company's engines.
-    *
-    * @param name The name of the engine to buy.
-    */
-  def buyEngine(name: String): Unit = {
-    buyEngine(EngineModel(name))
-  }
-
-  /** Buy a carriage and add it to the company's carriages.
-    *
-    * @param name The name of the carriage to buy.
-    */
-  def buyCarriage(model: CarriageModel): Unit = {
-    if (model.price <= money()) {
-      debit(model.price)
-      vehicleUnits.add(new Carriage(model, fabricTown, this))
-    }
-  }
-
-  def buyCarriage(name: String): Unit = {
-    buyCarriage(CarriageModel(name))
   }
 
 

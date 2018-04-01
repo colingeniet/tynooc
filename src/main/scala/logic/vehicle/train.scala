@@ -1,4 +1,4 @@
-package logic.vehicle.train
+package logic.vehicle
 
 import scalafx.beans.property._
 import scalafx.beans.binding._
@@ -14,6 +14,7 @@ import logic.vehicle._
 import logic.world._
 import logic.game._
 import logic.good._
+import logic.room._
 
 import collection.mutable.HashMap
 
@@ -72,6 +73,16 @@ object CarriageModel extends ModelNameMap[CarriageModel] {
 }
 
 
+object Carriage {
+  def apply(model: CarriageModel, company: Company): Carriage = {
+    new Carriage(model, company.fabricTown, company)
+  }
+
+  def apply(name: String, company: Company): Carriage = {
+    apply(CarriageModel(name), company)
+  }
+}
+
 /** A carriage.
  *
  *  @param _model the carriage model.
@@ -87,12 +98,23 @@ extends VehicleUnitFromModel[CarriageModel](model, town, owner) {
       () => train().isDefined,
       train)
 
-  var placePrice: Double = 0.20
-
   def capacity: Int = model.capacity
   def comfort: Double = model.comfort
 
   def modelNameMap(name: String): CarriageModel = CarriageModel(name)
+}
+
+
+
+
+object Engine {
+  def apply(model: EngineModel, company: Company): Engine = {
+    new Engine(model, company.fabricTown, company)
+  }
+
+  def apply(name: String, company: Company): Engine = {
+    apply(EngineModel(name), company)
+  }
 }
 
 /** An engine.
@@ -107,6 +129,7 @@ class Engine(
 extends VehicleFromModel[EngineModel](model, _town, owner) {
 
   val contents = Good.any(0)
+  val name: StringProperty = StringProperty("train")
   val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
 
   val weight: DoubleProperty = DoubleProperty(0)
@@ -173,6 +196,9 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
     travel() = Some(newTravel)
     newTravel
   }
+
+  def createRooms(travel: Travel): List[Room] =
+    carriages.toList.map(new Room(travel, _))
 
   def modelNameMap(name: String): EngineModel = EngineModel(name)
 }

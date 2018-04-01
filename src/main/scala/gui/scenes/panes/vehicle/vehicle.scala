@@ -8,7 +8,6 @@ import scalafx.scene.layout._
 import gui.scenes.panes._
 import gui.scenes.panes.model._
 import logic.vehicle._
-import logic.vehicle.train._
 
 
 class VehicleModelStats(model: VehicleUnitModel)
@@ -45,9 +44,8 @@ extends VBox(3) {
     text <== vehicle.name
   }
   private val status: Label = new Label {
-    status.text <== createStringBinding(
-      () => (if (vehicle.onTravel()) "en route to " else "stored at ")
-        + vehicle.town().name,
+    text <== createStringBinding(
+      () => (if (vehicle.onTravel()) "en route to " else "stored at ") + vehicle.town().name,
       vehicle.onTravel,
       vehicle.town)
   }

@@ -6,7 +6,6 @@ import scalafx.collections._
 import scalafx.beans.binding.BindingIncludes._
 
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.world._
 import logic.town._
 import logic.room._
@@ -23,10 +22,10 @@ private object State {
 }
 
 /** A travel. */
-class Travel(val vehicle: Engine, private val routes: List[Route]) {
+class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
   val company = vehicle.owner
 
-  private val rooms: List[Room] = vehicle.carriages.toList.map { new Room(this, _) }
+  private val rooms: List[Room] = vehicle.createRooms(this)
 
   /** Total travel distance. */
   private val distance: Double = (routes.map { _.length }).sum
@@ -107,6 +106,8 @@ class Travel(val vehicle: Engine, private val routes: List[Route]) {
     remaining
   }
 
+  def remainingTimeTo(to: Town): Double = remainingDistanceTo(to) / vehicle.speed
+
   /** Time remaining until destination, without stop time. */
   val totalRemainingTime: NumberBinding = totalRemainingDistance / vehicle.speed
   /** Time remaining until next stop. */
@@ -145,6 +146,14 @@ class Travel(val vehicle: Engine, private val routes: List[Route]) {
       },
       currentRoute,
       currentRouteProportion))
+
+  val heading: NumberBinding =
+    jfxNumberBinding2sfx(createDoubleBinding(
+      () => currentRoute() match {
+        case Some(r) => math.atan2(r.end.x - r.start.x, r.start.y - r.end.y) * 180/3.14159
+        case None => 50
+      },
+      currentRoute))
 
 
   /** Number of passengers in the vehicle. */
@@ -187,7 +196,10 @@ class Travel(val vehicle: Engine, private val routes: List[Route]) {
           landPassengers()
           remainingRoutes.remove(0)
           currentRouteDistanceDone() = 0
-          if(isDone()) vehicle.travel() = None
+          if(isDone()) {
+            vehicle.travel() = None
+            onCompleted()
+          }
         }
         case State.Waiting => {
           vehicle.town() = nextTown()
@@ -195,9 +207,6 @@ class Travel(val vehicle: Engine, private val routes: List[Route]) {
           state() = State.OnRoute
         }
       }
-    } else {
-      onCompleted()
-      onCompleted = () => ()
     }
   }
 }

@@ -10,7 +10,6 @@ import gui.scenes.elements._
 import gui.scenes.panes._
 import gui.scenes.panes.vehicle._
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.travel._
 import logic.game._
 

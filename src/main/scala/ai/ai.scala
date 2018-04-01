@@ -2,7 +2,6 @@ package ai
 
 import logic.company._
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.world._
 import scala.util.Random
 import player._
@@ -40,9 +39,9 @@ extends Player(company) with AI {
       lastAction = 0
 
       if(company.money() > 3000 && company.engines.size < 10)
-        company.buyEngine("basic")
+        company.buy(Engine("basic", company))
       if(company.money() > 2000 && company.carriages.size < 50)
-        company.buyCarriage("basic")
+        company.buy(Carriage("basic", company))
       val engines = company.enginesAvailable
       if(!engines.isEmpty) {
         val train = engines.head

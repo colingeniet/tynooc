@@ -10,7 +10,6 @@ import scalafx.scene.input.MouseEvent
 import gui.scenes.elements._
 import logic.company._
 import logic.vehicle._
-import logic.vehicle.train._
 import logic.world._
 import logic.town._
 import formatter._
@@ -29,20 +28,15 @@ class VehicleUnitList(
   world: World,
   stats: VehicleUnit => Unit)
 extends VBox(3) {
-  private var list: Node = new Pane()
+  private var list: Node = new SelectionList[VehicleUnit](
+    company.vehicleUnits,
+    _.model.name,
+    detailVehicle(_))
 
   private val sep: Separator = new Separator()
 
-  updateList()
   children = List(list)
 
-
-  private def updateList(): Unit = {
-    list = new SelectionList[VehicleUnit](
-      company.vehicleUnits.toList,
-      _.model.name,
-      detailVehicle)
-  }
 
   /** Displays a specific engine. */
   private def detailVehicle(vehicle: VehicleUnit): Unit = {
@@ -59,7 +53,6 @@ extends VBox(3) {
           name => {
             // upgrade engine upon selection
             company.upgrade(vehicle, name)
-            updateList()
             detailVehicle(vehicle)
         })
 
@@ -90,23 +83,17 @@ class VehicleList(
   world: World,
   stats: Vehicle => Unit)
 extends VBox(3) {
-  private var list: Node = new Pane()
+  private var list: Node = new SelectionListDynamic[Vehicle](
+    company.vehicles,
+    _.name,
+    _ match {
+      case e: Engine => detailTrain(e)
+      case v: Vehicle => detailVehicle(v)
+    })
 
   private val sep: Separator = new Separator()
 
-  updateList()
   children = List(list)
-
-
-  private def updateList(): Unit = {
-    list = new SelectionListDynamic[Vehicle](
-      company.vehicles.toList,
-      _.name,
-      _ match {
-        case e: Engine => detailTrain(e)
-        case v: Vehicle => detailVehicle(v)
-      })
-  }
 
 
   /** Displays a specific vehicle. */
@@ -174,7 +161,7 @@ extends VBox(3) {
     addCarriage.onAction = (event: ActionEvent) => {
       // when pressing the button, display a new carriage list
       val selectionList: SelectionList[Carriage] =
-        new SelectionList(
+        new SelectionList[Carriage](
           company.carriagesStoredAt(train.town()).toList,
           _.model.name,
           carriage => {

@@ -13,6 +13,10 @@
     -fx-text-fill: #dddddd;
 }
 
+.text-field-highlight {
+    -fx-background-color: #555555;
+}
+
 .alert {
     -fx-font-size: 14px;
     -fx-text-fill: #ff0000;
