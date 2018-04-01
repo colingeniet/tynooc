@@ -109,6 +109,13 @@ object Parser {
       start.addRoute((new River(start, end, c.river.length, c.river.beam_clearance)))
       end.addRoute((new River(end, start, c.river.length, c.river.beam_clearance)))
     }
+    if(c.sea != null) {
+      val distX = start.x - end.x
+      val distY = start.y - end.y
+      val dist = math.hypot(distX, distY)
+      start.addRoute((new Seaway(start, end, dist)))
+      end.addRoute((new Seaway(end, start, dist)))
+    }
   }
 
   def buildWorld(jMap: JMap): Try[World] = {
@@ -119,8 +126,8 @@ object Parser {
       if(jMap.connections == null)
         throw new IllegalArgumentException("No connections in the world.")
 
-      jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) } 
-      
+      jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
+
       jMap.connections.asScala.filter { c =>
         c.upstream != null && c.downstream != null
       }.foreach { buildRoute(world.towns, _) }
