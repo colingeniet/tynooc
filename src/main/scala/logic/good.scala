@@ -8,17 +8,17 @@ import collection.mutable.HashMap
 
 trait GoodType {
 
-	def update(g: Good, owner: VehicleUnit, dt : Double) = {}
+  def update(g: Good, owner: VehicleUnit, dt : Double) = {}
 }
 
 class Solid extends GoodType
 
 class Liquid(val rate: Double) extends GoodType { //Evaporates
 
-	override def update(g: Good, owner: VehicleUnit, dt: Double) = {
+  override def update(g: Good, owner: VehicleUnit, dt: Double) = {
 
-		owner.contents(g) -= rate*dt
-	}
+    owner.contents(g) -= rate*dt
+  }
 }
 
 class Gazeous extends GoodType
@@ -32,43 +32,43 @@ class Satisfiable extends GoodType // Can be satisfied or dissatisfied  ...
 
 object Good {
 
-	def any(q: Double) : HashMap[Good, Double] = {
-		
-		val a: HashMap[Good, Double] = new HashMap()
-		a(Passengers) = q
-		a(Chocolate) = q
-		a(Water) = q
-		a(IronOre) = q
-		a(Iron) = q
-		a(Wood) = q
-		a(Food) = q
-		a(Gaz) = q
-		a(Coal) = q
-		a(Oil) = q
-		a(Uranium) = q
-		a(Stuff) = q
-		return a
-	}
+  def any(q: Double) : HashMap[Good, Double] = {
 
-	def none: HashMap[Good, Double] = {
+    val a: HashMap[Good, Double] = new HashMap()
+    a(Passengers) = q
+    a(Chocolate) = q
+    a(Water) = q
+    a(IronOre) = q
+    a(Iron) = q
+    a(Wood) = q
+    a(Food) = q
+    a(Gaz) = q
+    a(Coal) = q
+    a(Oil) = q
+    a(Uranium) = q
+    a(Stuff) = q
+    return a
+  }
 
-		val a: HashMap[Good, Double] = new HashMap()
-		return a
-	}
+  def none: HashMap[Good, Double] = {
+
+    val a: HashMap[Good, Double] = new HashMap()
+    return a
+  }
 }
 
 class Good(val properties: List[GoodType]) {
-	
-	def update(owner: VehicleUnit, dt: Double) : Unit = {
 
-		properties.foreach{ _.update(this, owner, dt) }
-	}
+  def update(owner: VehicleUnit, dt: Double) : Unit = {
 
-	/*
-	def hasProp[A <: GoodType] : Boolean = {
+    properties.foreach{ _.update(this, owner, dt) }
+  }
 
-		properties.foldLeft(false){(b,good) => if (good.isInstanceOf[A]) true else b}
-	}*/
+  /*
+  def hasProp[A <: GoodType] : Boolean = {
+
+  properties.foldLeft(false){(b,good) => if (good.isInstanceOf[A]) true else b}
+  }*/
 }
 
 object Passengers extends Good(List(new Satisfiable()))
@@ -83,4 +83,3 @@ object Coal extends Good(List(new Solid()))
 object Oil extends Good(List(new Liquid(0), new Flamable()))
 object Uranium extends Good(List(new Solid(), new Dangerous(), new Expensive()))
 object Stuff extends Good(List()) // A good for unknown factories
-
