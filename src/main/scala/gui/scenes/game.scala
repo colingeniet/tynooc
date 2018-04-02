@@ -40,7 +40,12 @@ extends MainStage.Scene(sceneModifier) {
   // empty by default
   private var right: VBox = new VBox()
   private var bottom: HBox = new HBox()
-  private var center: Map = new Map(world, player.company, displayTown, displayRoute, displayTravel)
+
+  private var map = new Map(world, player.company, displayTown, displayRoute, displayTravel)
+  private var messagesBox = new MessagesBox(5)
+  private var center: Node = new StackPane {
+    children = List(map, messagesBox)
+  }
 
   // set content
   private var pane: BorderPane = new BorderPane(
@@ -75,4 +80,6 @@ extends MainStage.Scene(sceneModifier) {
     right = VehicleUnitDetail(vehicle)
     pane.right = right
   }
+
+  private def printMessage(message: String): Unit = messagesBox.print(message)
 }
