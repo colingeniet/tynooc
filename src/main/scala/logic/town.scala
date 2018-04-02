@@ -93,13 +93,15 @@ class Town(
     * @param to The destination town.
     * @param dt The time passed since the last generation.
     */
-  def generatePassengers(to: Town, dt: Double): Int = {
-    val pop = population()
-    val pass = passengersNumber()
+  def generatePassengers(to: Town, dt: Double, s: Status.Val): Int = {
+    val pop = population.toDouble
+    if (pop == 0) return 0
+
+    val pass = passengersNumber.toDouble
     /* avoid accumulating too many passengers :
      * slow down passengers production when proportion increases,
      * and hard cap it at 1/4 of total population */
-    val coef = 0.008 * (1 - 4 * pass / pop)
+    val coef = 0.01 * (1 - 4 * pass / pop) * residents(s) / pop
     // mean for gaussian approximation
     val mean = (pop - pass) * (1 + to.note - note) * coef * dt
     // With this coef value, deviance is barely different from the mean
@@ -129,15 +131,10 @@ class Town(
     val p = population()
     val possibleDestinations = neighbours.sortBy { _.note }
     possibleDestinations.foreach { destination =>
-      val migrantNumber = generatePassengers(destination, dt)
-      passengersNumber() = passengersNumber() + migrantNumber
-      val byStatus: HashMap[Status.Val, Int] = new HashMap()
       Game.world.status.foreach { s =>
-          if(p == 0)
-            passengers(destination)(s) += residents(s)
-          else
-            passengers(destination)(s) += 
-            (migrantNumber * residents(s).toDouble / p).floor.toInt
+        val migrantNumber = generatePassengers(destination, dt, s)
+        passengersNumber() = passengersNumber() + migrantNumber
+        passengers(destination)(s) += migrantNumber
       }
       Game.world.tryTravel(this, destination, passengers(destination))
     }
