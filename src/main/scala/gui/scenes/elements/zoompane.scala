@@ -60,7 +60,7 @@ trait ZoomPane extends Node {
     // correct to take clamping in account
     val correctFactor: Double = scale / scaleX()
 
-    val bounds: Bounds = localToScene(boundsInLocal())
+    val bounds: Bounds = localToScene(layoutBounds())
     // point position relative to node center
     val dx: Double = (x - (bounds.getWidth() / 2 + bounds.getMinX()))
     val dy: Double = (y - (bounds.getHeight() / 2 + bounds.getMinY()))
