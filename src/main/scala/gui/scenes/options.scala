@@ -9,6 +9,8 @@ import scalafx.geometry._
 
 import gui.MainStage
 
+import logic.game._
+
 /** Option menu.
  *
  *  Currently unused.
@@ -23,12 +25,20 @@ extends MainStage.Scene(sceneModifier) {
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
   stylesheets += this.getClass.getResource("/css/menu.css").toExternalForm
 
+  private var mapField: TextField = new TextField {
+    text = "cachan.xml"
+    onAction = (event: ActionEvent) => {
+      Game.mapPath = "map/" + text()
+    }
+  }
+
   root = new VBox(10) {
     alignment = Pos.Center
     children = List(
       new Label("Options") {
         styleClass.add("big-label")
       },
-      menuBtn)
+      menuBtn,
+      mapField)
   }
 }
