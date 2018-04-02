@@ -20,8 +20,9 @@ class PlaneModel(
   val upgrades: List[String],
   val speed: Double,
   val consumption: Double,
-  val allowed: HashMap[Good, Double]),
-  val comfort: Double)
+  val capacity: Int,
+  val comfort: Double,
+  val allowed: HashMap[Good, Double])
 extends VehicleModel
 
 /** EngineModel companion object.
@@ -30,8 +31,8 @@ extends VehicleModel
  */
 object PlaneModel extends ModelNameMap[PlaneModel] {
   private var _models: HashMap[String, PlaneModel] = HashMap(
-    "basic" -> new PlaneModel("basic plane", 500, List("advanced"), 350, 20, Good.any(30), 15),
-    "advanced" -> new PlaneModel("advanced plane", 1000, List(), 500, 20, Good.any(40), 20))
+    "basic" -> new PlaneModel("basic plane", 500, List("advanced"), 350, 20, 30, 15, Good.any(30)),
+    "advanced" -> new PlaneModel("advanced plane", 1000, List(), 500, 20, 40, 20, Good.any(40)))
 
   override def models: HashMap[String, PlaneModel] = _models
 }
@@ -50,8 +51,7 @@ object Plane {
 class Plane(
   model: PlaneModel,
   _town: Town,
-  owner: Company,
-  contents: HashMap[Good, Double])
+  owner: Company)
 extends VehicleFromModel[PlaneModel](model, _town, owner) {
   val name: StringProperty = StringProperty("plane")
 
@@ -59,6 +59,8 @@ extends VehicleFromModel[PlaneModel](model, _town, owner) {
 
   def capacity: Int = model.capacity
   def comfort: Double = model.comfort
+
+  val contents: HashMap[Good, Double] = HashMap()
 
   def launchTravel(to: Town): Travel = {
     if (onTravel())

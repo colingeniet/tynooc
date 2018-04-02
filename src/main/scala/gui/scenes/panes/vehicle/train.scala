@@ -1,4 +1,4 @@
-package gui.scenes.panes
+package gui.scenes.panes.vehicle
 
 import scalafx.Includes._
 import scalafx.scene._
@@ -14,7 +14,6 @@ import scalafx.collections.ObservableBuffer._
 
 import gui.scenes.elements._
 import gui.scenes.panes._
-import gui.scenes.panes.vehicle._
 import logic.vehicle._
 
 /** Train display panel.
@@ -94,4 +93,50 @@ class TrainStats(train: Engine) extends VBox {
   }
 
   train.tooHeavy.onChange(updateChildren())
+}
+
+
+class TrainMenu(train: Engine) extends VehicleMenu(train) { menu =>
+  // create buttons for assemble/disassemble actions
+  val disassembleAll: Button = new Button("Disassemble all") {
+    onAction = (event: ActionEvent) => {
+      train.owner.disassembleTrain(train)
+    }
+
+    disable <== train.onTravel
+  }
+
+  val disassembleOne: Button = new Button("Disassemble last") {
+    onAction = (event: ActionEvent) => {
+      train.owner.removeCarriageFromTrain(train)
+    }
+
+    disable <== train.onTravel || train.isEmpty
+  }
+
+  val addCarriage: Button = new Button("Add carriage") {
+    onAction = (event: ActionEvent) => {
+      // when pressing the button, display a new carriage list
+      val selectionList: SelectionList[Carriage] =
+        new SelectionList[Carriage](
+          train.owner.carriagesStoredAt(train.town()).toList,
+          _.model.name,
+          carriage => {
+            // when selecting a carriage, add it to the train
+            train.owner.addCarriageToTrain(train, carriage)
+            // reset content
+            menu.setChildren()
+          })
+      // display new selection list upon button pressed
+      menu.setChildren()
+      children.add(selectionList)
+    }
+
+    disable <== train.onTravel
+  }
+
+  override def setChildren(): Unit = {
+    super.setChildren()
+    children.addAll(addCarriage, disassembleOne, disassembleAll)
+  }
 }
