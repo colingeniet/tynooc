@@ -12,7 +12,14 @@ class MessagesBox(size: Int) extends Pane {
 
   def print(message: String): Unit = {
     field.text = field.text() + message + "\n"
+    nMessages += 1
+    if(nMessages > size) {
+      val str = new StringBuilder(field.text())
+      field.text = str.drop(str.indexOf("\n") + 1).toString
+    }
   }
+
+  private var nMessages: Int = 0
 
   children = field
   mouseTransparent = true
