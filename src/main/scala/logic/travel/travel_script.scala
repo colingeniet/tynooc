@@ -17,7 +17,9 @@ class Script(val company: Company, val vehicle: Vehicle) {
   case class TravelTo(val town: Town)
   extends TravelInstruction {
     def execute(onCompleted: () => Unit): Unit = {
-      company.launchTravel(vehicle, town, onCompleted)
+      // class Travel does not work well with empty travels
+      if(town == vehicle.town()) onCompleted()
+      else company.launchTravel(vehicle, town, onCompleted)
     }
   }
 

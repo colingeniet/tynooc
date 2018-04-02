@@ -36,8 +36,7 @@ extends MainStage.Scene(sceneModifier) {
   private var left: VBox = new CompanyInfo(
     player.company,
     world,
-    displayVehicle,
-    displayVehicleUnit)
+    displayVehicle)
   // empty by default
   private var right: VBox = new VBox()
   private var bottom: HBox = new HBox()
@@ -72,12 +71,7 @@ extends MainStage.Scene(sceneModifier) {
     pane.right = right
   }
 
-  private def displayVehicle(vehicle: Vehicle): Unit = {
-    right = VehicleDetail(vehicle)
-    pane.right = right
-  }
-
-  private def displayVehicleUnit(vehicle: VehicleUnit): Unit = {
+  private def displayVehicle(vehicle: VehicleUnit): Unit = {
     right = VehicleUnitDetail(vehicle)
     pane.right = right
   }

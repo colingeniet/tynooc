@@ -15,10 +15,18 @@ import logic.company._
 
 
 class VehicleModelStats(model: VehicleUnitModel)
-extends BuyableModelStats(model)
+extends BuyableModelStats(model) {
+  override def filter(a: java.lang.reflect.Field): Boolean = {
+    a.getName() == "allowed" || super.filter(a)
+  }
+}
 
 class VehicleModelShortStats(model: VehicleUnitModel)
-extends BuyableModelShortStats(model)
+extends BuyableModelShortStats(model) {
+  override def filter(a: java.lang.reflect.Field): Boolean = {
+    a.getName() == "allowed" || super.filter(a)
+  }
+}
 
 
 
@@ -35,12 +43,6 @@ extends VBox(3) {
 
   children = List(name, model)
 }
-
-object VehicleUnitDetail {
-  def apply(vehicle: VehicleUnit): VBox =
-    new VehicleUnitDetail(vehicle)
-}
-
 
 class VehicleDetail(vehicle: Vehicle)
 extends VBox(3) {
@@ -59,12 +61,13 @@ extends VBox(3) {
   children = List(name, status, model)
 }
 
-object VehicleDetail {
-  def apply(vehicle: Vehicle): VBox = {
+object VehicleUnitDetail {
+  def apply(vehicle: VehicleUnit): VBox = {
     vehicle match {
       // trains are special and have special code
       case e: Engine => new TrainDetail(e)
-      case _ => new VehicleDetail(vehicle)
+      case v: Vehicle => new VehicleDetail(v)
+      case _ => new VehicleUnitDetail(vehicle)
     }
   }
 }
@@ -100,7 +103,7 @@ class VehicleUnitMenu(vehicle: VehicleUnit) extends VBox(3) { menu =>
 }
 
 class VehicleMenu(vehicle: Vehicle) extends VehicleUnitMenu(vehicle) {
-  val nameField: TextField = new TextField() {
+  private val nameField: TextField = new TextField() {
     text <==> vehicle.name
   }
 
@@ -112,11 +115,13 @@ class VehicleMenu(vehicle: Vehicle) extends VehicleUnitMenu(vehicle) {
 
 
 object VehicleUnitMenu {
-  def apply(vehicle: VehicleUnit): VehicleUnitMenu = {
-    vehicle match {
+  def apply(vehicle: VehicleUnit): VBox = {
+    val menu = vehicle match {
       case e: Engine => new TrainMenu(e)
       case v: Vehicle => new VehicleMenu(v)
       case _ => new VehicleUnitMenu(vehicle)
     }
+    menu.setChildren()
+    menu
   }
 }

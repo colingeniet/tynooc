@@ -98,7 +98,7 @@ class TrainStats(train: Engine) extends VBox {
 
 class TrainMenu(train: Engine) extends VehicleMenu(train) { menu =>
   // create buttons for assemble/disassemble actions
-  val disassembleAll: Button = new Button("Disassemble all") {
+  private val disassembleAll: Button = new Button("Disassemble all") {
     onAction = (event: ActionEvent) => {
       train.owner.disassembleTrain(train)
     }
@@ -106,7 +106,7 @@ class TrainMenu(train: Engine) extends VehicleMenu(train) { menu =>
     disable <== train.onTravel
   }
 
-  val disassembleOne: Button = new Button("Disassemble last") {
+  private val disassembleOne: Button = new Button("Disassemble last") {
     onAction = (event: ActionEvent) => {
       train.owner.removeCarriageFromTrain(train)
     }
@@ -114,7 +114,7 @@ class TrainMenu(train: Engine) extends VehicleMenu(train) { menu =>
     disable <== train.onTravel || train.isEmpty
   }
 
-  val addCarriage: Button = new Button("Add carriage") {
+  private val addCarriage: Button = new Button("Add carriage") {
     onAction = (event: ActionEvent) => {
       // when pressing the button, display a new carriage list
       val selectionList: SelectionList[Carriage] =

@@ -16,7 +16,7 @@ import logic.game._
 /** Information on a travel.
  */
 class TravelInfo(travel: Travel) extends VBox {
-  private val vehicleInfo: VBox = VehicleDetail(travel.vehicle)
+  private val vehicleInfo: VBox = VehicleUnitDetail(travel.vehicle)
 
   private val dest: Label = new Label("destination :")
   private val destName: Label = new Label(s" ${travel.destination.name}")

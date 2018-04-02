@@ -16,14 +16,7 @@ import logic.company._
 
 
 
-class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox(3) {
-  private val vehicle: Button = new Button {
-    text <== script.vehicle.name
-    onAction = (event: ActionEvent) => vehicleDetail(script.vehicle)
-    styleClass.remove("button")
-    styleClass.add("link")
-  }
-
+class ScriptInfo(script: Script) extends VBox(3) {
   private val pause: ToggleButton = new ToggleButton("pause") {
     selected <==> script.paused
   }
@@ -54,10 +47,10 @@ class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox(3)
         _.name,
         town => {
           script.instructions.add(new script.TravelTo(town))
-          children = List(vehicle, pause, repeat, list, travelToButton, timeField, waitButton, deleteButton, clearButton)
+          children = List(pause, repeat, list, travelToButton, timeField, waitButton, deleteButton, clearButton)
         })
       // display new selection list upon button pressed
-      children = List(vehicle, pause, repeat, list, travelToButton, waitButton, timeField, selectionList, deleteButton, clearButton)
+      children = List(pause, repeat, list, travelToButton, waitButton, timeField, selectionList, deleteButton, clearButton)
     }
   }
 
@@ -79,7 +72,7 @@ class ScriptInfo(script: Script, vehicleDetail: Vehicle => Unit) extends VBox(3)
     onAction = (event: ActionEvent) => script.instructions.clear()
   }
 
-  children = List(vehicle, pause, repeat, list, travelToButton, waitButton, timeField, deleteButton, clearButton)
+  children = List(pause, repeat, list, travelToButton, waitButton, timeField, deleteButton, clearButton)
 }
 
 
@@ -94,6 +87,7 @@ class TravelManager(company: Company, vehicleDetail: Vehicle => Unit) extends VB
   children = List(list)
 
   private def displayScript(script: Script): Unit = {
-    children = List(list, sep, new ScriptInfo(script, vehicleDetail))
+    vehicleDetail(script.vehicle)
+    children = List(list, sep, new ScriptInfo(script))
   }
 }

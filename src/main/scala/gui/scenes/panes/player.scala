@@ -25,8 +25,7 @@ import formatter._
 class CompanyInfo(
   company: Company,
   world: World,
-  detailVehicle: Vehicle => Unit,
-  detailVehicleUnit: VehicleUnit => Unit)
+  detailVehicle: VehicleUnit => Unit)
 extends VBox(5) {
   private val nameField: TextField = new TextField {
       text = company.name
@@ -45,15 +44,12 @@ extends VBox(5) {
   private val sep2: Separator = new Separator()
 
   menu.addMenu("vehicles", displayVehicles())
-  menu.addMenu("stock", displayVehicleUnits())
   menu.addMenu("catalog", displayCatalog())
   menu.addMenu("travels", displayTravels())
 
   children = List(nameField, money, sep1, menu, sep2)
 
-  private val vehicleList = new VehicleList(company, world, detailVehicle)
-
-  private val vehicleUnitList = new VehicleUnitList(company, world, detailVehicleUnit)
+  private val vehicleList = new VehicleList(company, detailVehicle)
 
   private val catalog = new Catalog(company)
 
@@ -68,17 +64,6 @@ extends VBox(5) {
       menu,
       sep2,
       vehicleList)
-  }
-
-  /** Displays stock panel. */
-  private def displayVehicleUnits(): Unit = {
-    children = List(
-      nameField,
-      money,
-      sep1,
-      menu,
-      sep2,
-      vehicleUnitList)
   }
 
   /** Displays catalog panel. */
