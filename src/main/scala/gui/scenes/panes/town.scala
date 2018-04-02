@@ -23,12 +23,12 @@ extends HBox(3) {
   // needs to be updated at redraw
   private val popLbl = new Label {
     text <== createStringBinding(
-      () => "Population : " + town.population(),
+      () => "Population : " + town.population.toInt,
       town.population)
   }
   private val pasLbl = new Label {
     text <== createStringBinding(
-      () => ", Passengers : " + town.passengersNumber(),
+      () => ", Passengers : " + town.passengersNumber.toInt,
       town.passengersNumber)
   }
 

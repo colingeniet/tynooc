@@ -148,14 +148,14 @@ class World {
   def tryTravel(
     start: Town,
     destination: Town,
-    migrantByStatus: HashMap[Status.Val, Int]): Unit = {
+    migrantByStatus: HashMap[Status.Val, Double]): Unit = {
     val availableTravels = travels.toList.filter {
       t => t.isWaitingAt(start) && t.stopsAt(destination)
     }
     var rooms = availableTravels.flatMap { _.availableRooms }
     status.foreach { status =>
       var takenPlacesNumber = 0
-      var p = migrantByStatus(status)
+      var p = migrantByStatus(status).floor.toInt
       rooms = rooms.sortWith { comparisons(status)(destination) }
       while(takenPlacesNumber < p && !rooms.isEmpty) {
         val room = rooms.head

@@ -26,8 +26,18 @@ class Town(
   val welcomingLevel: Double) {
   private var residents: HashMap[Status.Val, Int] = new HashMap()
   private var _routes: List[Route] = List()
-  private var passengers: HashMap[Town, HashMap[Status.Val, Int]] = new HashMap()
+  private var passengers: HashMap[Town, HashMap[Status.Val, Double]] =
+    new HashMap[Town, HashMap[Status.Val, Double]] {
+      override def default(t: Town): HashMap[Status.Val, Double] = {
+        // initialize empty entries
+        this(t) = new HashMap[Status.Val, Double]()
+        Game.world.status.foreach { s => this(t)(s) = 0 }
+        this(t)
+      }
+    }
+
   Game.world.status.foreach { s => residents(s) = 0 }
+
   // PRNG
   private var random: Random = new Random()
 
@@ -39,7 +49,7 @@ class Town(
   /** The town population. */
   val population: IntegerProperty = IntegerProperty(0)
   /** The passengers number of the town. */
-  val passengersNumber: IntegerProperty = IntegerProperty(0)
+  val passengersNumber: DoubleProperty = DoubleProperty(0)
 
   /** The note of the town. */
   def note: Double = {
@@ -93,7 +103,7 @@ class Town(
     * @param to The destination town.
     * @param dt The time passed since the last generation.
     */
-  def generatePassengers(to: Town, dt: Double, s: Status.Val): Int = {
+  def generatePassengers(to: Town, dt: Double, s: Status.Val): Double = {
     val pop = population.toDouble
     if (pop == 0) return 0
 
@@ -101,11 +111,11 @@ class Town(
     /* avoid accumulating too many passengers :
      * slow down passengers production when proportion increases,
      * and hard cap it at 1/4 of total population */
-    val coef = 0.01 * (1 - 4 * pass / pop) * residents(s) / pop
+    val coef = 0.0003 * (1 - 4 * pass / pop) * residents(s) / pop
     // mean for gaussian approximation
     val mean = (pop - pass) * (1 + to.note - note) * coef * dt
     // With this coef value, deviance is barely different from the mean
-    (((random.nextGaussian() * mean + mean) max 0) min pop).toInt
+    (((random.nextGaussian() * mean + mean) max 0) min pop)
   }
 
   /** Adds a new route.
@@ -116,11 +126,6 @@ class Town(
     if(route.start != this)
       throw new IllegalArgumentException("route should start from $name town")
     _routes = route :: _routes
-    // Add new entry to passengers map
-    if(!passengers.contains(route.end)) {
-      passengers(route.end) = new HashMap()
-      Game.world.status.foreach { s => passengers(route.end)(s) = 0 }
-    }
   }
 
   /** Update the population state.
@@ -129,7 +134,7 @@ class Town(
    */
   def update(dt: Double): Unit = {
     val p = population()
-    val possibleDestinations = neighbours.sortBy { _.note }
+    val possibleDestinations = Game.world.towns.toList.sortBy { _.note }
     possibleDestinations.foreach { destination =>
       Game.world.status.foreach { s =>
         val migrantNumber = generatePassengers(destination, dt, s)
