@@ -24,7 +24,9 @@ class Catalog(company: Company) extends VBox(3) {
   private val typeList: SelectionMenu = new SelectionMenu()
   typeList.addMenu("engines", listEngines)
   typeList.addMenu("carriages", listCarriages)
+  typeList.addMenu("trucks", listTrucks)
   typeList.addMenu("planes", listPlanes)
+  typeList.addMenu("ships", listShips)
 
   private val sep1: Separator = new Separator()
 
@@ -41,11 +43,23 @@ class Catalog(company: Company) extends VBox(3) {
       _.name,
       displayCarriage(_))
 
+  private val trucksList: SelectionList[TruckModel] =
+    new SelectionList[TruckModel](
+      TruckModel.models.values.toList,
+      _.name,
+      displayTruck(_))
+
   private val planesList: SelectionList[PlaneModel] =
     new SelectionList[PlaneModel](
       PlaneModel.models.values.toList,
       _.name,
       displayPlane(_))
+
+  private val shipsList: SelectionList[ShipModel] =
+    new SelectionList[ShipModel](
+      ShipModel.models.values.toList,
+      _.name,
+      displayShip(_))
 
 
   private val sep2: Separator = new Separator()
@@ -89,6 +103,22 @@ class Catalog(company: Company) extends VBox(3) {
       new VehicleModelStats(carriage))
   }
 
+  private def listTrucks(): Unit = {
+    trucksList.deselect()
+    children = List(typeList, sep1, trucksList, sep2)
+  }
+
+  /** Displays a specific engine model. */
+  private def displayTruck(truck: TruckModel): Unit = {
+    buy.text = "buy(" + MoneyFormatter.format(truck.price) + ")"
+    buy.onAction = (event: ActionEvent) => {
+      company.buy(Truck(truck, company))
+    }
+    children = List(
+      typeList, sep1, trucksList, sep2, buy,
+      new VehicleModelStats(truck))
+  }
+
   private def listPlanes(): Unit = {
     planesList.deselect()
     children = List(typeList, sep1, planesList, sep2)
@@ -103,5 +133,21 @@ class Catalog(company: Company) extends VBox(3) {
     children = List(
       typeList, sep1, planesList, sep2, buy,
       new VehicleModelStats(plane))
+  }
+
+  private def listShips(): Unit = {
+    shipsList.deselect()
+    children = List(typeList, sep1, shipsList, sep2)
+  }
+
+  /** Displays a specific engine model. */
+  private def displayShip(ship: ShipModel): Unit = {
+    buy.text = "buy(" + MoneyFormatter.format(ship.price) + ")"
+    buy.onAction = (event: ActionEvent) => {
+      company.buy(Ship(ship, company))
+    }
+    children = List(
+      typeList, sep1, shipsList, sep2, buy,
+      new VehicleModelStats(ship))
   }
 }
