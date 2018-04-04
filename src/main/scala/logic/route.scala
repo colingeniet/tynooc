@@ -2,10 +2,14 @@ package logic.route
 
 import logic.town._
 
+import logic.vehicle._
+
 trait Route {
   val start: Town
   val end: Town
   val length: Double
+
+  def accepts(vehicle: Vehicle): Boolean
 }
 
 class Road(
@@ -14,19 +18,40 @@ class Road(
   val length: Double,
   val maximum_speed: Int,
   val lanes: Int)
-extends Route
+extends Route {
+  def accepts(vehicle: Vehicle): Boolean = {
+    vehicle match {
+      case _: Truck => true
+      case _ => false
+    }
+  }
+}
 
 class Airway(
   val start: Town,
   val end: Town,
   val length: Double)
-extends Route
+extends Route {
+  def accepts(vehicle: Vehicle): Boolean = {
+    vehicle match {
+      case _: Plane => true
+      case _ => false
+    }
+  }
+}
 
 class Seaway(
   val start: Town,
   val end: Town,
   val length: Double)
-extends Route
+extends Route {
+  def accepts(vehicle: Vehicle): Boolean = {
+    vehicle match {
+      //case _: Ship => true
+      case _ => false
+    }
+  }
+}
 
 class Rail(
   val start: Town,
@@ -35,18 +60,39 @@ class Rail(
   val maximum_speed: Int,
   val tracks: Int,
   val electrified: Boolean)
-extends Route
+extends Route {
+  def accepts(vehicle: Vehicle): Boolean = {
+    vehicle match {
+      case _: Engine => true
+      case _ => false
+    }
+  }
+}
 
 class Canal(
   val start: Town,
   val end: Town,
   val length: Double,
   val beam_clearance: Int)
-extends Route
+extends Route {
+  def accepts(vehicle: Vehicle): Boolean = {
+    vehicle match {
+      //case _: Ship => true
+      case _ => false
+    }
+  }
+}
 
 class River(
   val start: Town,
   val end: Town,
   val length: Double,
   val beam_clearance: Int)
-extends Route
+extends Route {
+  def accepts(vehicle: Vehicle): Boolean = {
+    vehicle match {
+      //case _: Ship => true
+      case _ => false
+    }
+  }
+}

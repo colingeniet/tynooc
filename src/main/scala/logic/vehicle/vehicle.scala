@@ -8,20 +8,29 @@ import logic.model._
 import logic.company._
 import logic.town._
 import logic.travel._
-
+import logic.game._
 import logic.good._
 import logic.room._
 
 import collection.mutable.HashMap
+
 
 final case class IllegalActionException(
   private val message: String = "",
   private val cause: Throwable = None.orNull)
 extends Exception(message, cause)
 
+/** An exception which could be throwed if a player try to launchTravel
+  * a travel to an unattainable destination.
+  */
+final case class PathNotFoundException(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
+
+
 
 trait VehicleUnitModel extends BuyableModel {
-
   val allowed: HashMap[Good, Double]
 }
 
@@ -81,7 +90,16 @@ trait Vehicle extends VehicleUnit {
   def speed: Double
   def consumption(distance: Double): Double
 
-  def launchTravel(destination: Town): Travel
+  def launchTravel(to: Town): Travel = {
+    if (this.onTravel())
+      throw new IllegalActionException("Can't launch travel with used vehicle.")
+
+    val routes = Game.world.findPath(this.town(), to, this).getOrElse(throw new PathNotFoundException)
+    val newTravel = new Travel(this, routes)
+    this.travel() = Some(newTravel)
+    newTravel
+  }
+
   def createRooms(travel: Travel): List[Room]
 }
 

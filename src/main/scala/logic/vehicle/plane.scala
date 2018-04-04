@@ -31,8 +31,8 @@ extends VehicleModel
  */
 object PlaneModel extends ModelNameMap[PlaneModel] {
   private var _models: HashMap[String, PlaneModel] = HashMap(
-    "basic" -> new PlaneModel("basic plane", 500, List("advanced"), 350, 20, 30, 15, Good.any(30)),
-    "advanced" -> new PlaneModel("advanced plane", 1000, List(), 500, 20, 40, 20, Good.any(40)))
+    "basic" -> new PlaneModel("basic plane", 500, List("advanced"), 350, 6, 30, 15, Good.any(30)),
+    "advanced" -> new PlaneModel("advanced plane", 1000, List(), 500, 6, 40, 20, Good.any(40)))
 
   override def models: HashMap[String, PlaneModel] = _models
 }
@@ -62,9 +62,9 @@ extends VehicleFromModel[PlaneModel](model, _town, owner) {
 
   val contents: HashMap[Good, Double] = HashMap()
 
-  def launchTravel(to: Town): Travel = {
+  override def launchTravel(to: Town): Travel = {
     if (onTravel())
-      throw new IllegalActionException("Can't launch travel with used plane.")
+      throw new IllegalActionException("Can't launch travel with used vehicle.")
 
     val from = this.town()
     val distX = from.x - to.x

@@ -185,16 +185,11 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
     carriages.clear()
   }
 
-  def launchTravel(to: Town): Travel = {
-    if (onTravel())
-      throw new IllegalActionException("Can't launch travel with used train.")
-    if (tooHeavy())
+  override def launchTravel(to: Town): Travel = {
+    if (this.tooHeavy())
       throw new IllegalActionException("Can't launch travel with too heavy train.")
 
-    val routes = Game.world.findPath(this.town(), to).getOrElse(throw new PathNotFoundException)
-    val newTravel = new Travel(this, routes)
-    travel() = Some(newTravel)
-    newTravel
+    super.launchTravel(to)
   }
 
   def createRooms(travel: Travel): List[Room] =

@@ -5,6 +5,7 @@ import logic.travel._
 import logic.room._
 import logic.company._
 import logic.route._
+import logic.vehicle._
 
 import collection.mutable.HashMap
 import collection.mutable.HashSet
@@ -23,15 +24,6 @@ object Status {
 
   case object WellR extends Status.Val
 }
-
-
-/** An exception which could be throwed if a player try to launchTravel
-  * a travel to an unattainable destination.
-  */
-final case class PathNotFoundException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
 
 
 /** The game world representation.
@@ -186,19 +178,19 @@ class World {
    * @param to   end town.
    * @return The list of vertices in the path, in order.
    */
-  def findPath(from: Town, to: Town) : Option[List[Route]] = {
+  def findPath(from: Town, to: Town, vehicle: Vehicle) : Option[List[Route]] = {
     // Dijkstra
-    var closed: HashSet[Town] = new HashSet()
-    var open: HashSet[Town] = new HashSet()
-    var dist: HashMap[Town, Double] = new HashMap()
-    var path: HashMap[Town, List[Route]] = new HashMap()
+    val closed: HashSet[Town] = new HashSet()
+    val open: HashSet[Town] = new HashSet()
+    val dist: HashMap[Town, Double] = new HashMap()
+    val path: HashMap[Town, List[Route]] = new HashMap()
     dist(from) = 0
     open.add(from)
     path(from) = List()
 
     while(!open.isEmpty && !closed(to)) {
-      var town: Town = open.minBy[Double](dist(_))
-      town.routes.foreach { route =>
+      val town: Town = open.minBy[Double](dist(_))
+      town.routes.filter(_.accepts(vehicle)).foreach { route =>
         if(!open(route.end) && !closed(route.end)) {
           open.add(route.end)
           dist(route.end) = dist(town) + route.length
@@ -223,21 +215,22 @@ class World {
     *
     * @param from The town.
     */
-  def townsAccessibleFrom(from: Town): List[Town] = {
-    var closed: Set[Town] = Set()
-    var open: Set[Town] = Set(from)
-    var accessibles: Set[Town] = Set()
+  def townsAccessibleFrom(from: Town, vehicle: Vehicle): List[Town] = {
+    val closed: HashSet[Town] = new HashSet()
+    val open: HashSet[Town] = new HashSet()
+    open.add(from)
+
     while (!open.isEmpty) {
       val town = open.head
-      closed += town
-      open -= town
-      town.neighbours.foreach { n =>
-        if(!closed.contains(n)) {
-          open = open + n
-          accessibles += n;
+
+      town.routes.filter(_.accepts(vehicle)).foreach { route =>
+        if(!open(route.end) && !closed(route.end)) {
+          open += (route.end)
         }
       }
+      open.remove(town)
+      closed.add(town)
     }
-    accessibles.toList
+    closed.toList
   }
 }

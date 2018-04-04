@@ -45,7 +45,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   def capacity: Int = vehicle match {
     case c: Carriage => c.capacity
     case p: Plane => p.capacity
-    case v => 40
+    case _ => 0
   }
   /** Returns <code>true</code> if some places are available in the room. */
   def isAvailable: Boolean = passengerNumber < capacity
