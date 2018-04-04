@@ -25,7 +25,7 @@ class PlaneModel(
   val allowed: HashMap[Good, Double])
 extends VehicleModel
 
-/** EngineModel companion object.
+/** PlaneModel companion object.
  *
  *  Gets standard models from their names.
  */

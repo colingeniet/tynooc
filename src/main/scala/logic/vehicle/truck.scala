@@ -25,7 +25,7 @@ class TruckModel(
   val allowed: HashMap[Good, Double])
 extends VehicleModel
 
-/** EngineModel companion object.
+/** TruckModel companion object.
  *
  *  Gets standard models from their names.
  */

@@ -47,7 +47,7 @@ class Seaway(
 extends Route {
   def accepts(vehicle: Vehicle): Boolean = {
     vehicle match {
-      //case _: Ship => true
+      case _: Ship => true
       case _ => false
     }
   }
@@ -77,7 +77,7 @@ class Canal(
 extends Route {
   def accepts(vehicle: Vehicle): Boolean = {
     vehicle match {
-      //case _: Ship => true
+      case s: Ship => s.model.beamClearance <= beam_clearance
       case _ => false
     }
   }
@@ -91,7 +91,7 @@ class River(
 extends Route {
   def accepts(vehicle: Vehicle): Boolean = {
     vehicle match {
-      //case _: Ship => true
+      case s: Ship => s.model.beamClearance <= beam_clearance
       case _ => false
     }
   }

@@ -79,7 +79,8 @@ extends StackPane with ZoomPane {
       travel.vehicle match {
         case _: Engine => "/icons/train.png"
         case _: Plane => "/icons/plane.png"
-        case _ => "/icons/train.png"
+        case _: Truck => "/icons/truck.png"
+        case _: Ship => "/icons/ship.png"
       }
     }
   }
