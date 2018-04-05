@@ -36,12 +36,18 @@ extends MainStage.Scene(sceneModifier) {
   private var left: VBox = new CompanyInfo(
     player.company,
     world,
-    displayVehicle)
+    displayVehicle,
+    printMessage)
   // empty by default
   private var right: VBox = new VBox()
   private var bottom: HBox = new HBox()
 
-  private var map = new Map(world, player.company, displayTown, displayRoute, displayTravel)
+  private var map = new Map(
+    world,
+    player.company,
+    displayTown,
+    displayRoute,
+    displayTravel)
   private var messagesBox = new MessagesBox(5)
   private var center: Node = new StackPane {
     children = List(map, messagesBox)
@@ -81,5 +87,7 @@ extends MainStage.Scene(sceneModifier) {
     pane.right = right
   }
 
-  private def printMessage(message: String): Unit = messagesBox.print(message)
+  private def printMessage(message: String): Unit = {
+    messagesBox.print(message)
+  }
 }

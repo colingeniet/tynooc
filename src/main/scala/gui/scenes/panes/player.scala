@@ -25,7 +25,8 @@ import formatter._
 class CompanyInfo(
   company: Company,
   world: World,
-  detailVehicle: VehicleUnit => Unit)
+  detailVehicle: VehicleUnit => Unit,
+  print: String => Unit)
 extends VBox(5) {
   private val nameField: TextField = new TextField {
       text = company.name
@@ -53,7 +54,7 @@ extends VBox(5) {
 
   private val catalog = new Catalog(company)
 
-  private val travels = new TravelManager(company, detailVehicle)
+  private val travels = new TravelManager(company, detailVehicle, print)
 
   /** Displays vehicles panel. */
   private def displayVehicles(): Unit = {

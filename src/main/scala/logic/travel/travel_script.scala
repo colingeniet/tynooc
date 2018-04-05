@@ -10,22 +10,30 @@ import scalafx.beans.property._
 
 
 class Script(val company: Company, val vehicle: Vehicle) {
+  var printErr: String => Unit = (_ => ())
+
   sealed trait TravelInstruction {
-    def execute(onCompleted: () => Unit = () => ()): Unit
+    def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit
   }
 
   case class TravelTo(val town: Town)
   extends TravelInstruction {
-    def execute(onCompleted: () => Unit): Unit = {
+    def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit = {
       // class Travel does not work well with empty travels
       if(town == vehicle.town()) onCompleted()
-      else company.launchTravel(vehicle, town, onCompleted)
+      else {
+        try company.launchTravel(vehicle, town, onCompleted)
+        catch {
+          case IllegalActionException(msg, _) => onFailed(msg)
+          case PathNotFoundException(msg, _) => onFailed(msg)
+        }
+      }
     }
   }
 
   case class Wait(val delay: Double)
   extends TravelInstruction {
-    def execute(onCompleted: () => Unit): Unit = {
+    def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit = {
       Game.delayAction(delay, onCompleted)
     }
   }
@@ -37,11 +45,14 @@ class Script(val company: Company, val vehicle: Vehicle) {
 
   val ip: IntegerProperty = IntegerProperty(0)
 
-  def next(stepCompleted: () => Unit, travelCompleted: () => Unit): Unit = {
+  def next(
+    stepCompleted: () => Unit,
+    travelCompleted: () => Unit,
+    onFailed: String => Unit): Unit = {
     if(ip() >= instructions.length && repeat()) ip() = 0
 
     if(ip() < instructions.length) {
-      instructions(ip()).execute(stepCompleted)
+      instructions(ip()).execute(stepCompleted, onFailed)
     } else {
       paused() = true
       ip() = 0
@@ -51,7 +62,10 @@ class Script(val company: Company, val vehicle: Vehicle) {
 
   private def step(): Unit = {
     if(!paused()) {
-      next(() => {ip() = ip() + 1; step()}, () => ())
+      next(
+        () => {ip() = ip() + 1; step()},
+        () => (),
+        msg => {paused() = true; printErr(msg)})
     }
   }
 

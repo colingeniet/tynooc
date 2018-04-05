@@ -94,7 +94,8 @@ trait Vehicle extends VehicleUnit {
     if (this.onTravel())
       throw new IllegalActionException("Can't launch travel with used vehicle.")
 
-    val routes = Game.world.findPath(this.town(), to, this).getOrElse(throw new PathNotFoundException)
+    val routes = Game.world.findPath(this.town(), to, this).getOrElse(
+      throw new PathNotFoundException(s"No usable route to ${to.name}."))
     val newTravel = new Travel(this, routes)
     this.travel() = Some(newTravel)
     newTravel

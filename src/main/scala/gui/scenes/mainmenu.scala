@@ -17,7 +17,7 @@ class MainMenu(sceneModifier: MainStage.States.Val => Unit)
 extends MainStage.Scene(sceneModifier) {
   private var gameBtn = sceneSwitchButton("Play", MainStage.States.Game)
   private var mapField: TextField = new TextField {
-    text = "map/map.xml"
+    text = Game.mapPath
     text.onChange({ Game.mapPath = text() })
     maxWidth = 300
   }
