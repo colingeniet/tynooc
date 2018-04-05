@@ -9,12 +9,18 @@ import scalafx.geometry._
 
 import gui.MainStage
 
+import logic.game._
+
 /** Game main menu.
  */
 class MainMenu(sceneModifier: MainStage.States.Val => Unit)
 extends MainStage.Scene(sceneModifier) {
   private var gameBtn = sceneSwitchButton("Play", MainStage.States.Game)
-  private var optionsBtn = sceneSwitchButton("Options", MainStage.States.Options)
+  private var mapField: TextField = new TextField {
+    text = "map/map.xml"
+    text.onChange({ Game.mapPath = text() })
+    maxWidth = 300
+  }
   private var quitBtn = sceneSwitchButton("Quit", MainStage.States.Quit)
 
   private var title = new Label("Welcome to Tynooc") {
@@ -28,7 +34,11 @@ extends MainStage.Scene(sceneModifier) {
   root = new VBox(10.0) {
     alignment = Pos.Center
     padding = Insets(20.0)
-    children = List(title, gameBtn, optionsBtn, quitBtn)
+    children = List(
+      title,
+      gameBtn,
+      mapField,
+      quitBtn)
   }
 
   /** Creates a button to switch to another scene. */

@@ -20,7 +20,6 @@ extends JFXApp.PrimaryStage {
   /* Actual scenes displayed. */
   private var mainMenuScene: MainMenu = new MainMenu(changeScene)
   private var gameScene: Game = null
-  private var optionsScene: Options = new Options(changeScene)
 
   private var onNextChangeCallback: () => Unit = () => ()
 
@@ -63,7 +62,6 @@ extends JFXApp.PrimaryStage {
         // kill background thread when leaving
         onNextChangeCallback = () => mainLoopThread.stop()
       }
-      case MainStage.States.Options => scene = optionsScene
       case MainStage.States.Quit => Platform.exit()
     }
   }
@@ -83,7 +81,6 @@ object MainStage {
     sealed trait Val
     case object MainMenu extends Val
     case object Game     extends Val
-    case object Options  extends Val
     case object Quit     extends Val
   }
 
