@@ -60,7 +60,7 @@ class Script(val company: Company, val vehicle: Vehicle) {
     }
   }
 
-  private def step(): Unit = {
+  def step(): Unit = {
     if(!paused()) {
       next(
         () => {ip() = ip() + 1; step()},
@@ -68,9 +68,4 @@ class Script(val company: Company, val vehicle: Vehicle) {
         msg => {paused() = true; printErr(msg)})
     }
   }
-
-  paused.onChange({
-    // resume
-    if (!paused()) step()
-  })
 }
