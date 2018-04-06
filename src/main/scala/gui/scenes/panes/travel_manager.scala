@@ -16,9 +16,7 @@ import logic.company._
 
 
 
-class ScriptInfo(script: Script, print: String => Unit) extends VBox(3) {
-  script.printErr = print
-
+class ScriptInfo(script: Script) extends VBox(3) {
   private val pause: ToggleButton = new ToggleButton("pause") {
     selected <==> script.paused
     selected.onChange({if(!selected()) script.step()})
@@ -81,8 +79,7 @@ class ScriptInfo(script: Script, print: String => Unit) extends VBox(3) {
 
 class TravelManager(
   company: Company,
-  vehicleDetail: Vehicle => Unit,
-  print: String => Unit)
+  vehicleDetail: Vehicle => Unit)
 extends VBox(3) {
   val list = new SelectionListDynamic[Script](
     company.travel_scripts,
@@ -95,6 +92,6 @@ extends VBox(3) {
 
   private def displayScript(script: Script): Unit = {
     vehicleDetail(script.vehicle)
-    children = List(list, sep, new ScriptInfo(script, print))
+    children = List(list, sep, new ScriptInfo(script))
   }
 }

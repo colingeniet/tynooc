@@ -4,14 +4,13 @@ import logic.town._
 import logic.game._
 import logic.company._
 import logic.vehicle._
+import logic.game._
 
 import scalafx.collections._
 import scalafx.beans.property._
 
 
 class Script(val company: Company, val vehicle: Vehicle) {
-  var printErr: String => Unit = (_ => ())
-
   sealed trait TravelInstruction {
     def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit
   }
@@ -65,7 +64,7 @@ class Script(val company: Company, val vehicle: Vehicle) {
       next(
         () => {ip() = ip() + 1; step()},
         () => (),
-        msg => {paused() = true; printErr(msg)})
+        msg => {paused() = true; Game.printMessage(msg)})
     }
   }
 }

@@ -24,7 +24,10 @@ object Game {
   var paused: Boolean = false
   var timeAcceleration: Double = 1
   /** Path of the map file. */
-  var mapPath = "map/map.xml"
+  var mapPath: String = "map/map.xml"
+
+  var printMessage: String => Unit = (_ => ())
+
 
   private var actionQueue: PriorityQueue[(Double, () => Unit)] =
     new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))
@@ -44,7 +47,7 @@ object Game {
       val dt: Double = timeAcceleration * realToVirtualTime(a - last)
       time() = time() + dt
 
-      logic(dt)
+      world.update(dt)
       players.foreach {
         case ai: AI => ai.play(world, dt)
         case _      =>
@@ -56,14 +59,6 @@ object Game {
     last = a
   }
 
-  /** Game logic simulation step.
-    *
-    * @param dt in game time passed since last step.
-    */
-  def logic(dt: Double): Unit = {
-    //Update Cities
-    world.update(dt)
-  }
 
   /** Init game state. */
   def init(): Unit = {
