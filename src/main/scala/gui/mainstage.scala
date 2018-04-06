@@ -1,6 +1,9 @@
 package gui
 
 import scalafx.Includes._
+import scalafx.scene.control.Alert
+import scalafx.scene.control.Alert._
+import scalafx.stage.Modality
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
@@ -42,25 +45,44 @@ extends JFXApp.PrimaryStage {
     newScene match {
       case MainStage.States.MainMenu => scene = mainMenuScene
       case MainStage.States.Game => {
-        var mainPlayer: Player = gameInit()
-        gameScene = new Game(Game.world, mainPlayer, changeScene)
-        scene = gameScene
+        try {
+          var mainPlayer: Player = gameInit()
+          gameScene = new Game(Game.world, mainPlayer, changeScene)
+          scene = gameScene
 
-        // launch background game loop when the game scene is selected
-        val mainLoopThread: Thread = new Thread {
-          override def run {
-            while(true) {
-              Platform.runLater(() => {
-                Game.update()
-              })
-              Thread.sleep(33)
+          // launch background game loop when the game scene is selected
+          val mainLoopThread: Thread = new Thread {
+            override def run {
+              while(true) {
+                Platform.runLater(() => {
+                  Game.update()
+                })
+                Thread.sleep(33)
+              }
             }
           }
-        }
-        mainLoopThread.start()
+          mainLoopThread.start()
 
-        // kill background thread when leaving
-        onNextChangeCallback = () => mainLoopThread.stop()
+          // kill background thread when leaving
+          onNextChangeCallback = () => mainLoopThread.stop()
+        } catch {
+          case e: java.io.FileNotFoundException => {
+            new Alert(AlertType.Error) {
+              title = "file error"
+              headerText = "Map file not found"
+              contentText = e.getMessage()
+              initModality(Modality.None)
+            }.show()
+          }
+          case e: com.fasterxml.jackson.core.JsonParseException => {
+            new Alert(AlertType.Error) {
+              title = "file error"
+              headerText = "Invalid map file"
+              contentText = e.getMessage()
+              initModality(Modality.None)
+            }.show()
+          }
+        }
       }
       case MainStage.States.Quit => Platform.exit()
     }
