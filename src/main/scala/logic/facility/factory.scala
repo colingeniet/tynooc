@@ -5,6 +5,7 @@ import scala.collection.mutable.HashMap
 import logic.model._
 import logic.good._
 import logic.town._
+import logic.game._
 
 
 class FactoryModel(
@@ -25,4 +26,17 @@ object FactoryModel extends ModelNameMap[FactoryModel] {
 class Factory(model: FactoryModel, _town: Town)
 extends FacilityFromModel[FactoryModel](model, _town) {
   def modelNameMap(name: String): FactoryModel = FactoryModel(name)
+
+  def startCycle(): Unit = {
+    this.consume()
+    Game.delayAction(model.cycleTime, () => produce())
+  }
+
+  private def consume(): Unit = {
+
+  }
+
+  private def produce(): Unit = {
+
+  }
 }

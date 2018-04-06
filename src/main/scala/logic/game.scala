@@ -80,23 +80,4 @@ object Game {
   // 4 sec (real time) = 1 hours (game time)
   def realToVirtualTime(t: Double): Double = t / virtualToRealRatio
   def virtualToRealTime(t: Double): Double = t * virtualToRealRatio
-
-  /** Convert a time as a double to its string representation.
-    *
-    * Format : <Hours>h<Min>
-    *
-    *  @param t The <code>Double</code> value (is interpreted as hours).
-    */
-  def timeToHourString(t: Double): String =
-    f"${t.floor}%02.0fh${t * 60 % 60}%02.0f"
-
-  /** Convert a date as a double to its string representation.
-    *
-    *  Days numbering start from 1.
-    *  Format : <Day> : <Hours>h<Min>
-    *
-    * @param t the <code>Doble</code> value (is interpreted as hours)
-    */
-  def timeToDateString(t: Double): String =
-    f"day ${(t.toInt / 24 + 1)}%d : " + timeToHourString(t % 24)
 }

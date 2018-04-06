@@ -7,7 +7,7 @@ import scalafx.scene.control._
 import scalafx.event._
 
 import gui.scenes.elements._
-
+import formatter._
 import logic.travel._
 import logic.vehicle._
 import logic.game._
@@ -32,7 +32,7 @@ class ScriptInfo(script: Script, print: String => Unit) extends VBox(3) {
   def instructionText(instr: script.TravelInstruction): String = {
     instr match {
       case script.TravelTo(town) => "go to " + town.name
-      case script.Wait(delay) => "wait " + Game.timeToHourString(delay)
+      case script.Wait(delay) => "wait " + TimeFormatter.timeToHourString(delay)
     }
   }
 
