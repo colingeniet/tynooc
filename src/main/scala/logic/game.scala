@@ -26,6 +26,8 @@ object Game {
   /** Path of the map file. */
   var mapPath = "map/map.xml"
 
+  var printMessage: String => Unit = (_ => ())
+
   private var actionQueue: PriorityQueue[(Double, () => Unit)] =
     new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))
 
