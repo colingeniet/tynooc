@@ -3,7 +3,11 @@ package logic
 /** Provides world map definition. */
 package object world
 
+/** Provides generic model system. */
 package object model
+
+/** Provides various buildings and facilities definitions. */
+package object facility
 
 /** Provides vehicle definition. */
 package object vehicle

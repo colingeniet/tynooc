@@ -9,6 +9,7 @@ import scalafx.beans.binding._
 import gui.scenes.elements._
 import gui.scenes.panes._
 import gui.scenes.panes.vehicle._
+import formatter._
 import logic.vehicle._
 import logic.travel._
 import logic.game._
@@ -27,7 +28,7 @@ class TravelInfo(travel: Travel) extends VBox {
   }
   private val destETA: Label = new Label {
     text <== createStringBinding(
-      () => s" ETA : ${Game.timeToHourString(travel.totalRemainingTime.toDouble)}",
+      () => s" ETA : ${TimeFormatter.timeToHourString(travel.totalRemainingTime.toDouble)}",
       travel.totalRemainingTime)
   }
 
@@ -44,7 +45,7 @@ class TravelInfo(travel: Travel) extends VBox {
   }
   private val nextETA: Label = new Label {
     text <== createStringBinding(
-      () => s" ETA : ${Game.timeToHourString(travel.remainingTime.toDouble)}",
+      () => s" ETA : ${TimeFormatter.timeToHourString(travel.remainingTime.toDouble)}",
       travel.remainingTime)
   }
   private val passengers: Label = new Label {

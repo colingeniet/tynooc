@@ -88,7 +88,7 @@ extends JFXApp.PrimaryStage {
     }
   }
 
-  // run callback, event if exiting without `changeScene`
+  // run callback on exit
   def onExit(): Unit = {
     onNextChangeCallback()
   }

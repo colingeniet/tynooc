@@ -17,6 +17,7 @@ import logic.town._
 import logic.route._
 import logic.vehicle._
 import logic.travel._
+import logic.game._
 
 import player._
 
@@ -36,8 +37,7 @@ extends MainStage.Scene(sceneModifier) {
   private var left: VBox = new CompanyInfo(
     player.company,
     world,
-    displayVehicle,
-    printMessage)
+    displayVehicle)
   // empty by default
   private var right: VBox = new VBox()
   private var bottom: HBox = new HBox()
@@ -90,4 +90,6 @@ extends MainStage.Scene(sceneModifier) {
   private def printMessage(message: String): Unit = {
     messagesBox.print(message)
   }
+
+  Game.printMessage = this.printMessage
 }

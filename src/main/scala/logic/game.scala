@@ -24,7 +24,10 @@ object Game {
   var paused: Boolean = false
   var timeAcceleration: Double = 1
   /** Path of the map file. */
-  var mapPath = "map/map.xml"
+  var mapPath: String = "map/map.xml"
+
+  var printMessage: String => Unit = (_ => ())
+
 
   var printMessage: String => Unit = (_ => ())
 
@@ -46,7 +49,7 @@ object Game {
       val dt: Double = timeAcceleration * realToVirtualTime(a - last)
       time() = time() + dt
 
-      logic(dt)
+      world.update(dt)
       players.foreach {
         case ai: AI => ai.play(world, dt)
         case _      =>
@@ -58,14 +61,6 @@ object Game {
     last = a
   }
 
-  /** Game logic simulation step.
-    *
-    * @param dt in game time passed since last step.
-    */
-  def logic(dt: Double): Unit = {
-    //Update Cities
-    world.update(dt)
-  }
 
   /** Init game state. */
   def init(): Unit = {
@@ -82,23 +77,4 @@ object Game {
   // 4 sec (real time) = 1 hours (game time)
   def realToVirtualTime(t: Double): Double = t / virtualToRealRatio
   def virtualToRealTime(t: Double): Double = t * virtualToRealRatio
-
-  /** Convert a time as a double to its string representation.
-    *
-    * Format : <Hours>h<Min>
-    *
-    *  @param t The <code>Double</code> value (is interpreted as hours).
-    */
-  def timeToHourString(t: Double): String =
-    f"${t.floor}%02.0fh${t * 60 % 60}%02.0f"
-
-  /** Convert a date as a double to its string representation.
-    *
-    *  Days numbering start from 1.
-    *  Format : <Day> : <Hours>h<Min>
-    *
-    * @param t the <code>Doble</code> value (is interpreted as hours)
-    */
-  def timeToDateString(t: Double): String =
-    f"day ${(t.toInt / 24 + 1)}%d : " + timeToHourString(t % 24)
 }

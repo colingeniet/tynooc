@@ -4,13 +4,17 @@ import logic.town._
 
 import logic.vehicle._
 
+/** Generic route trait. */
 trait Route {
   val start: Town
   val end: Town
   val length: Double
 
+  /** Tests if a vehicle can use the route. */
   def accepts(vehicle: Vehicle): Boolean
 }
+
+/* Route types */
 
 class Road(
   val start: Town,

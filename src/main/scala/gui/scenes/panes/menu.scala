@@ -8,6 +8,7 @@ import scalafx.scene.image._
 import scalafx.event._
 
 import gui.MainStage
+import formatter._
 import logic.game._
 
 /** Game top menu bar. */
@@ -30,7 +31,7 @@ extends BorderPane {
   /** Current time. */
   val timeLabel = new Label {
     text <== createStringBinding(
-      () => Game.timeToDateString(Game.time()),
+      () => TimeFormatter.timeToDateString(Game.time()),
       Game.time)
   }
 
