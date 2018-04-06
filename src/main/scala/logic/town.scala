@@ -6,6 +6,7 @@ import scalafx.beans.property._
 import logic.route._
 import logic.game._
 import logic.world._
+import logic.good._
 
 import collection.mutable.HashMap
 import java.util.Random
@@ -38,8 +39,37 @@ class Town(
 
   Game.world.status.foreach { s => residents(s) = 0 }
 
+  //Gives the quantity of good inside the city
+  val goods: HashMap[Good, DoubleProperty] = HashMap()
+
+  //Gives the coefficients of consumation.
+  val consum_coeffs: HashMap[Good, Double] = HashMap()
+
   // PRNG
   private var random: Random = new Random()
+
+/** Calculates the consumation of a good by the city
+  * @param g the good to consume
+  * @param v the number of good currently in the city
+  */
+  def consumation_function(g: Good, v: Double) : Double = {
+
+    if (!g.hasProp[Consumable]) 0
+
+    val a = consum_coeffs(g)*v*population()
+    if (a > v) {
+      Game.printMessage("Good Lord! The people of " + name + " are severly lacking of " + g.getClass.getSimpleName.toLowerCase() + "!")
+      //Do something hapyness-related
+    }
+
+    a
+  }
+
+  /** Consume goods of every type every time it's called.
+  */
+  def consume: Unit = {
+      goods.foreach{ case (key, value) => goods(key)() = 0d.min(value() - consumation_function(key, value())) }
+  }
 
   /** The routes starting from this town. */
   def routes: List[Route] = _routes

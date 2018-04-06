@@ -23,7 +23,8 @@ class Liquid(val rate: Double) extends GoodType { //Evaporates
 
 class Gazeous extends GoodType
 
-class Consumable extends GoodType //Can rot
+class Consumable extends GoodType //Can be consumed
+class Perishable extends GoodType //Can rot
 class Dangerous extends GoodType //Passengers won't be happy with  a dangerous good on board
 class Expensive extends GoodType //Your vehicle can get attacked by bad people
 class Flamable extends GoodType
@@ -55,6 +56,7 @@ object Good {
     val a: HashMap[Good, Double] = new HashMap()
     return a
   }
+
 }
 
 class Good(val properties: List[GoodType]) {
@@ -64,20 +66,19 @@ class Good(val properties: List[GoodType]) {
     properties.foreach{ _.update(this, owner, dt) }
   }
 
-  /*
   def hasProp[A <: GoodType] : Boolean = {
+    properties.foldLeft(false){(b, gtype) => gtype match { case _: A => true case _ => b} }
+  }
 
-  properties.foldLeft(false){(b,good) => if (good.isInstanceOf[A]) true else b}
-  }*/
 }
 
 object Passengers extends Good(List(new Satisfiable()))
-object Chocolate extends Good(List(new Consumable()))
-object Water extends Good(List(new Liquid(0.001)))
+object Chocolate extends Good(List(new Consumable(), new Perishable()))
+object Water extends Good(List(new Liquid(0.001), new Consumable()))
 object IronOre extends Good(List(new Solid()))
 object Iron extends Good(List(new Solid(), new Expensive()))
 object Wood extends Good(List(new Solid(), new Flamable()))
-object Food extends Good(List(new Solid(), new Consumable()))
+object Food extends Good(List(new Solid(), new Consumable(), new Perishable()))
 object Gaz extends Good(List(new Gazeous(), new Dangerous()))
 object Coal extends Good(List(new Solid()))
 object Oil extends Good(List(new Liquid(0), new Flamable()))
