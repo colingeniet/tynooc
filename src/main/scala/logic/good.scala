@@ -5,6 +5,7 @@ import logic.vehicle._
 
 import collection.mutable.HashMap
 
+import scala.reflect.ClassTag
 
 trait GoodType {
 
@@ -16,7 +17,6 @@ class Solid extends GoodType
 class Liquid(val rate: Double) extends GoodType { //Evaporates
 
   override def update(g: Good, owner: VehicleUnit, dt: Double) = {
-
     owner.contents(g) -= rate*dt
   }
 }
@@ -66,13 +66,12 @@ class Good(val properties: List[GoodType]) {
     properties.foreach{ _.update(this, owner, dt) }
   }
 
-  def hasProp[A <: GoodType] : Boolean = {
+  def hasProp[A <: GoodType:ClassTag] : Boolean = {
     properties.foldLeft(false){(b, gtype) => gtype match {
       case _: A => true
       case _ => b
     }}
   }
-
 }
 
 object Passengers extends Good(List(new Satisfiable()))

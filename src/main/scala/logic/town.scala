@@ -67,8 +67,27 @@ class Town(
 
   /** Consume goods of every type every time it's called.
   */
-  def consume: Unit = {
+  def consume_daily: Unit = {
       goods.foreach{ case (key, value) => goods(key)() = 0d.min(value() - consumation_function(key, value())) }
+  }
+
+  /** Consume a certain quantity of good
+  * @param h The goods to consume associated with the quantities
+  */
+  def consume(h: HashMap[Good, Double]) : Boolean = {
+
+    if (!h.forall{ case (g, v) => goods(g)() > v }) false
+    else
+      h.foreach{ case (g, q) =>
+        var a = goods(g)()
+        if(a - q < 0)
+          goods(g)() = 0
+          else {
+            goods(g)() = a - q
+            a = q
+          }
+    }
+    true
   }
 
   /** The routes starting from this town. */
