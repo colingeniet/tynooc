@@ -28,14 +28,13 @@ extends FacilityFromModel[FactoryModel](model, _town) {
   def modelNameMap(name: String): FactoryModel = FactoryModel(name)
 
   def startCycle(): Unit = {
-    this.consume()
+    if(town.consume(model.consumes))
     Game.delayAction(model.cycleTime, () => produce())
   }
 
-  private def consume(): Unit = {
-    //town.consume(model.consumes)
-  }
-
   private def produce(): Unit = {
+    model.produces.foreach{ case (g,v) =>
+      town.addGoods(g, v)
+    }
   }
 }

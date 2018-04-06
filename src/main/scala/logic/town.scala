@@ -48,17 +48,22 @@ class Town(
   // PRNG
   private var random: Random = new Random()
 
-/** Calculates the consumation of a good by the city
-  * @param g the good to consume
-  * @param v the number of good currently in the city
-  */
+
+  def addGoods(g: Good, v: Double): Unit = {
+    goods(g)() = goods(g)() + v
+  }
+
+  /** Calculates the consumation of a good by the city
+    * @param g the good to consume
+    * @param v the number of good currently in the city
+    */
   def consumation_function(g: Good, v: Double) : Double = {
 
     if (!g.hasProp[Consumable]) 0
 
     val a = consum_coeffs(g)*v*population()
     if (a > v) {
-      Game.printMessage("Good Lord! The people of " + name + " are severly lacking of " + g.getClass.getSimpleName.toLowerCase() + "!")
+      Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.getClass.getSimpleName.toLowerCase()} !")
       //Do something hapyness-related
     }
 
@@ -76,18 +81,11 @@ class Town(
   */
   def consume(h: HashMap[Good, Double]) : Boolean = {
 
-    if (!h.forall{ case (g, v) => goods(g)() > v }) false
-    else
-      h.foreach{ case (g, q) =>
-        var a = goods(g)()
-        if(a - q < 0)
-          goods(g)() = 0
-          else {
-            goods(g)() = a - q
-            a = q
-          }
+    if (h.forall{ case (g, v) => goods(g)() > v }) {
+      h.foreach{ case (g, q) => goods(g)() = goods(g)() - q }
+      true
     }
-    true
+    else false
   }
 
   /** The routes starting from this town. */
