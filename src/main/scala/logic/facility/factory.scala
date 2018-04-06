@@ -33,10 +33,9 @@ extends FacilityFromModel[FactoryModel](model, _town) {
   }
 
   private def consume(): Unit = {
-
+    //town.consume(model.consumes)
   }
 
   private def produce(): Unit = {
-
   }
 }

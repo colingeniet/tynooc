@@ -67,7 +67,10 @@ class Good(val properties: List[GoodType]) {
   }
 
   def hasProp[A <: GoodType] : Boolean = {
-    properties.foldLeft(false){(b, gtype) => gtype match { case _: A => true case _ => b} }
+    properties.foldLeft(false){(b, gtype) => gtype match {
+      case _: A => true
+      case _ => b
+    }}
   }
 
 }
