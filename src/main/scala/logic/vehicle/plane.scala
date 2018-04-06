@@ -30,7 +30,7 @@ extends VehicleModel
  *  Gets standard models from their names.
  */
 object PlaneModel extends ModelNameMap[PlaneModel] {
-  private var _models: HashMap[String, PlaneModel] = HashMap(
+  private val _models: HashMap[String, PlaneModel] = HashMap(
     "basic" -> new PlaneModel("basic plane", 500, List("advanced"), 350, 6, 30, 15, Good.any(30)),
     "advanced" -> new PlaneModel("advanced plane", 1000, List(), 500, 6, 40, 20, Good.any(40)))
 

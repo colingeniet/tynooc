@@ -29,7 +29,10 @@ final case class PathNotFoundException(
 extends Exception(message, cause)
 
 
-
+/** Model for a vehicle unit.
+ *
+ *  A vehicle unit is 'any vehicle which can be bought' :
+ *  carriage, engine, truck, ship */
 trait VehicleUnitModel extends BuyableModel {
   val allowed: HashMap[Good, Double]
 }
@@ -69,6 +72,10 @@ extends FromBuyableModel[Model](model) with VehicleUnit {
 }
 
 
+/** Model for a vehicle.
+ *
+ *  A vehicle (by opposition to a vehicle unit) can move :
+ *  a carriage is not. */
 trait VehicleModel extends VehicleUnitModel {
   val speed: Double
   val consumption: Double
