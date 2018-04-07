@@ -74,32 +74,9 @@ object VehicleUnitDetail {
 
 
 
-class VehicleUnitMenu(vehicle: VehicleUnit) extends VBox(3) { menu =>
-  private val upgradeButton: Button = new Button("Upgrade") {
-    onAction = (event: ActionEvent) => {
-      // when pressing the button, display the list of upgrades
-      val selectionList: SelectionList[String] =
-        new SelectionList[String](
-          vehicle.model.upgrades,
-          name => s"${name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(vehicle, name))})",
-          name => {
-            // upgrade engine upon selection
-            vehicle.owner.upgrade(vehicle, name)
-            // reset content
-            menu.setChildren()
-        })
-
-      // display new selection list upon button pressed
-      menu.setChildren()
-      children.add(selectionList)
-    }
-
-    disable <== vehicle.isUsed
-  }
-
-  def setChildren(): Unit = {
-    children = List(upgradeButton)
-  }
+class VehicleUnitMenu(vehicle: VehicleUnit)
+extends UpgradeMenu[VehicleUnitModel](vehicle) {
+  upgradeButton.disable <== vehicle.isUsed
 }
 
 class VehicleMenu(vehicle: Vehicle) extends VehicleUnitMenu(vehicle) {

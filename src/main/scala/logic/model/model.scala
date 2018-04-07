@@ -2,6 +2,8 @@ package logic.model
 
 import collection.mutable.HashMap
 
+import logic.company._
+
 /** Generic model trait.
  *
  *  A model of something. */
@@ -34,6 +36,7 @@ trait BuyableModel extends Model{
 /* Corresponding implementations */
 
 trait Upgradable[+T <: BuyableModel] extends WithModel[T] {
+  var owner: Company
   def modelNameMap(name: String): T
   def upgradeTo(name: String): Unit
 }

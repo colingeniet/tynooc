@@ -26,11 +26,14 @@ object FacilityModelStats {
 }
 
 
-class FacilityDetail(facility: Facility)
-extends VBox(3) {
+class FacilityDetail(facility: Facility) extends VBox(3) {
   children = FacilityModelStats(facility.model)
 }
 
 object FacilityDetail {
   def apply(facility: Facility): VBox = new FacilityDetail(facility)
 }
+
+
+class FacilityMenu(facility: Facility)
+extends UpgradeMenu[FacilityModel](facility)

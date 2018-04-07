@@ -40,7 +40,6 @@ trait VehicleUnitModel extends BuyableModel {
 
 trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   val town: ObjectProperty[Town]
-  val owner: Company
   val isUsed: BooleanBinding
 
   val contents: HashMap[Good, Double]
@@ -62,7 +61,7 @@ trait VehicleUnit extends Upgradable[VehicleUnitModel] {
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
   model: Model,
   _town: Town,
-  val owner: Company)
+  var owner: Company)
 extends FromBuyableModel[Model](model) with VehicleUnit {
   val town: ObjectProperty[Town] = ObjectProperty(_town)
 

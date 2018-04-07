@@ -4,8 +4,11 @@ import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
+import scalafx.event._
 
+import gui.scenes.elements._
 import logic.model._
+import logic.company._
 import formatter._
 
 
@@ -49,5 +52,34 @@ class BuyableModelStats(m: BuyableModel) extends ModelStats(m) {
 class BuyableModelShortStats(m: BuyableModel) extends ModelStats(m) {
   override def filter(a: java.lang.reflect.Field): Boolean = {
     a.getName() == "price" || a.getName() == "upgrades" || super.filter(a)
+  }
+}
+
+
+
+class UpgradeMenu[Model <: BuyableModel](thing: Upgradable[Model])
+extends VBox(3) { menu =>
+  val upgradeButton: Button = new Button("Upgrade") {
+    onAction = (event: ActionEvent) => {
+      // when pressing the button, display the list of upgrades
+      val selectionList: SelectionList[String] =
+        new SelectionList[String](
+          thing.model.upgrades,
+          name => s"${name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(thing, name))})",
+          name => {
+            // upgrade engine upon selection
+            thing.owner.upgrade(thing, name)
+            // reset content
+            menu.setChildren()
+        })
+
+      // display new selection list upon button pressed
+      menu.setChildren()
+      children.add(selectionList)
+    }
+  }
+
+  def setChildren(): Unit = {
+    children = List(upgradeButton)
   }
 }
