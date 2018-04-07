@@ -1,6 +1,5 @@
 package parser
 
-import scala.util.{Try, Success, Failure}
 import scala.io.Source
 import collection.mutable.HashSet
 
