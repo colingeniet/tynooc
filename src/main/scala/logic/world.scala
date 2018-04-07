@@ -231,6 +231,7 @@ class World {
       open.remove(town)
       closed.add(town)
     }
+    closed.remove(from)
     closed.toList
   }
 }
