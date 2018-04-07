@@ -1,5 +1,7 @@
 package logic.facility
 
+import scalafx.beans.property._
+
 import logic.model._
 import logic.town._
 import logic.company._
@@ -9,11 +11,12 @@ trait FacilityModel extends BuyableModel
 
 trait Facility extends Upgradable[FacilityModel] {
   val town: Town
-  var owner: Company
 }
 
 abstract class FacilityFromModel[Model <: FacilityModel](
-  model: Model,
+  _model: Model,
   val town: Town,
-  var owner: Company)
-extends FromBuyableModel[Model](model) with Facility
+  _owner: Company)
+extends FromBuyableModel[Model](_model) with Facility {
+  val owner: ObjectProperty[Company] = ObjectProperty(_owner)
+}

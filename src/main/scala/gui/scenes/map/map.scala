@@ -19,6 +19,7 @@ import scalafx.beans.binding.BindingIncludes._
 import scalafx.collections._
 
 import gui.scenes.elements._
+import gui._
 import logic.game._
 import logic.world._
 import logic.town._
@@ -72,8 +73,7 @@ extends StackPane with ZoomPane {
       else 2 * hue
     }
   }
-
-
+    
   object MapTravel {
     def icon(travel: Travel): String = {
       travel.vehicle match {
@@ -106,6 +106,8 @@ extends StackPane with ZoomPane {
       if(travel.isDone()) {
         disable = true
         vehicleMap.children.remove(this)
+        if(travel.company == company)
+          Resources.Sound.get.play()
       }
     }
 

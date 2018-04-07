@@ -40,7 +40,6 @@ trait VehicleUnitModel extends BuyableModel {
 
 trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   val town: ObjectProperty[Town]
-  val owner: Company
   val isUsed: BooleanBinding
 
   val contents: HashMap[Good, DoubleProperty]
@@ -59,11 +58,12 @@ trait VehicleUnit extends Upgradable[VehicleUnitModel] {
 }
 
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
-  model: Model,
+  _model: Model,
   _town: Town,
-  val owner: Company)
-extends FromBuyableModel[Model](model) with VehicleUnit {
+  _owner: Company)
+extends FromBuyableModel[Model](_model) with VehicleUnit {
   val town: ObjectProperty[Town] = ObjectProperty(_town)
+  val owner: ObjectProperty[Company] = ObjectProperty(_owner)
 
   override def upgradeTo(newModel: Model): Unit = {
     if (this.isUsed()) throw new IllegalArgumentException("Vehicle is in use")
@@ -114,10 +114,10 @@ trait Vehicle extends VehicleUnit {
 }
 
 abstract class VehicleFromModel[Model <: VehicleModel](
-  model: Model,
-  town: Town,
-  owner: Company)
-extends VehicleUnitFromModel(model, town, owner) with Vehicle {
+  _model: Model,
+  _town: Town,
+  _owner: Company)
+extends VehicleUnitFromModel(_model, _town, _owner) with Vehicle {
   val name: StringProperty
 
   def speed: Double = model.speed

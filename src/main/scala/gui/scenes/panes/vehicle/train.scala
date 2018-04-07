@@ -15,6 +15,7 @@ import scalafx.collections.ObservableBuffer._
 import gui.scenes.elements._
 import gui.scenes.panes._
 import logic.vehicle._
+import logic.company._
 
 /** Train display panel.
  *
@@ -96,22 +97,23 @@ class TrainStats(train: Engine) extends VBox {
 }
 
 
-class TrainMenu(train: Engine) extends VehicleMenu(train) { menu =>
+class TrainMenu(train: Engine, company: Company)
+extends VehicleMenu(train, company) { menu =>
   // create buttons for assemble/disassemble actions
   private val disassembleAll: Button = new Button("Disassemble all") {
     onAction = (event: ActionEvent) => {
-      train.owner.disassembleTrain(train)
+      company.disassembleTrain(train)
     }
 
-    disable <== train.onTravel
+    disable <== train.onTravel || train.owner =!= company
   }
 
   private val disassembleOne: Button = new Button("Disassemble last") {
     onAction = (event: ActionEvent) => {
-      train.owner.removeCarriageFromTrain(train)
+      company.removeCarriageFromTrain(train)
     }
 
-    disable <== train.onTravel || train.isEmpty
+    disable <== train.onTravel || train.isEmpty || train.owner =!= company
   }
 
   private val addCarriage: Button = new Button("Add carriage") {
@@ -119,11 +121,11 @@ class TrainMenu(train: Engine) extends VehicleMenu(train) { menu =>
       // when pressing the button, display a new carriage list
       val selectionList: SelectionList[Carriage] =
         new SelectionList[Carriage](
-          train.owner.carriagesStoredAt(train.town()).toList,
+          company.carriagesStoredAt(train.town()).toList,
           _.model.name,
           carriage => {
             // when selecting a carriage, add it to the train
-            train.owner.addCarriageToTrain(train, carriage)
+            company.addCarriageToTrain(train, carriage)
             // reset content
             menu.setChildren()
           })
@@ -132,7 +134,7 @@ class TrainMenu(train: Engine) extends VehicleMenu(train) { menu =>
       children.add(selectionList)
     }
 
-    disable <== train.onTravel
+    disable <== train.onTravel || train.owner =!= company
   }
 
   override def setChildren(): Unit = {

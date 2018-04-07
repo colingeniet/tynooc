@@ -11,6 +11,8 @@ import logic.town._
 import logic.game._
 import logic.world._
 import logic.good._
+import logic.model._
+import logic.facility._
 
 import collection.mutable.HashMap
 
@@ -21,15 +23,10 @@ object PriceSimulation {
     * @param from The old model.
     * @param to The upgraded model.
     */
-  def upgradePrice(from: VehicleUnit, to: String): Double = {
+  def upgradePrice[Model <: BuyableModel](from: Upgradable[Model], to: String): Double = {
     (from.modelNameMap(to).price - from.model.price) * 1.2
   }
 }
-
-final case class IllegalOwnerException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
 
 
 /** A company.
@@ -123,6 +120,12 @@ class Company(var name: String, val fabricTown: Town) {
     }
   }
 
+  def buy(facility: Facility): Unit = {
+    if (facility.model.price <= money()) {
+      debit(facility.model.price)
+      facility.owner() = this
+    }
+  }
 
   /** Adds a carriage at the tail of an existing train.
     *
@@ -130,12 +133,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param carriage The carriage to add to <code>train</code>.
     */
   def addCarriageToTrain(train: Engine, carriage: Carriage): Unit = {
-    if (!ownsVehicle(train)) {
-      throw new IllegalOwnerException("Company doesn't own the train")
-    }
-    if (!ownsVehicle(carriage)) {
-      throw new IllegalOwnerException("Company doesn't own the carriage")
-    }
+    assert(owns(train) && owns(carriage))
     train.addCarriage(carriage)
   }
 
@@ -144,9 +142,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train.
     */
   def removeCarriageFromTrain(train: Engine): Unit = {
-    if (!ownsVehicle(train)) {
-      throw new IllegalOwnerException("Company doesn't own the train")
-    }
+    assert(owns(train))
     train.removeCarriage()
   }
 
@@ -155,9 +151,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train to disassemble.
     */
   def disassembleTrain(train: Engine): Unit = {
-    if (!ownsVehicle(train)) {
-      throw new IllegalOwnerException("Company doesn't own the train")
-    }
+    assert(owns(train))
     train.disassemble()
   }
 
@@ -167,9 +161,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param to The destination of the travel.
     */
   def launchTravel(vehicle: Vehicle, to: Town, _onCompleted: () => Unit = () => ()): Unit = {
-    if (!ownsVehicle(vehicle)) {
-      throw new IllegalOwnerException("Company doesn't own the train")
-    }
+    assert(owns(vehicle))
     val travel = vehicle.launchTravel(to)
     travel.onCompleted = _onCompleted
     Game.world.addTravel(travel)
@@ -180,10 +172,8 @@ class Company(var name: String, val fabricTown: Town) {
     * @param old The vehicle to upgrade.
     * @param model The upgraded model.
     */
-  def upgrade(old: VehicleUnit, model: String): Unit = {
-    if (!ownsVehicle(old)) {
-      throw new IllegalOwnerException("Company doesn't own the vehicle")
-    }
+  def upgrade[Model <: BuyableModel](old: Upgradable[Model], model: String): Unit = {
+    assert(owns(old))
     if (money() >= PriceSimulation.upgradePrice(old, model)) {
       debit(PriceSimulation.upgradePrice(old, model))
       old.upgradeTo(model)
@@ -191,5 +181,7 @@ class Company(var name: String, val fabricTown: Town) {
   }
 
   /** Returns true if this company owns <code>vehicle</code>. */
-  def ownsVehicle(vehicle: VehicleUnit): Boolean = vehicle.owner == this
+  def owns[Model <: BuyableModel](thing: Upgradable[Model]): Boolean = {
+    thing.owner() == this
+  }
 }

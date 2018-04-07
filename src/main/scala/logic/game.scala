@@ -5,6 +5,7 @@ import scalafx.beans.property._
 import scala.collection.mutable.PriorityQueue
 
 import logic.world._
+import logic.company._
 import ai._
 import player._
 import parser._
@@ -26,6 +27,8 @@ object Game {
   /** Path of the map file. */
   var mapPath: String = "map/map.xml"
 
+  var BigBrother = new Company("Big Brother", null)
+  
   var printMessage: String => Unit = (_ => ())
 
   private var actionQueue: PriorityQueue[(Double, () => Unit)] =
@@ -61,6 +64,7 @@ object Game {
 
   /** Init game state. */
   def init(): Unit = {
+    BigBrother = new Company("Big Brother", null)
     world = Parser.readWorldInformations(mapPath)
     time() = 0
     paused = false

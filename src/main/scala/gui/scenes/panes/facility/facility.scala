@@ -11,6 +11,7 @@ import gui.scenes.panes.model._
 import gui.scenes.elements._
 import formatter._
 import logic.facility._
+import logic.company._
 
 
 class FacilityModelStats(model: FacilityModel)
@@ -26,11 +27,33 @@ object FacilityModelStats {
 }
 
 
-class FacilityDetail(facility: Facility)
-extends VBox(3) {
+class FacilityDetail(facility: Facility) extends VBox(3) {
   children = FacilityModelStats(facility.model)
 }
 
 object FacilityDetail {
   def apply(facility: Facility): VBox = new FacilityDetail(facility)
+}
+
+
+class FacilityMenu(facility: Facility, company: Company)
+extends UpgradeMenu[FacilityModel](facility, company) { menu =>
+  private val buyButton: Button = new Button(s"buy(${facility.model.price})") {
+    onAction = (event: ActionEvent) => {
+      company.buy(facility)
+      menu.setChildren()
+    }
+
+    disable <== company.money < facility.model.price
+  }
+
+  override def setChildren(): Unit = {
+    super.setChildren()
+    if (facility.owner() != company) children.add(buyButton)
+  }
+}
+
+object FacilityMenu {
+  def apply(facility: Facility, company: Company): FacilityMenu =
+    new FacilityMenu(facility, company)
 }

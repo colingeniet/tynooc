@@ -23,7 +23,7 @@ private object State {
 
 /** A travel. */
 class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
-  val company = vehicle.owner
+  val company = vehicle.owner()
 
   private val rooms: List[Room] = vehicle.createRooms(this)
 

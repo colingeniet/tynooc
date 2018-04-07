@@ -43,6 +43,6 @@ extends VBox(3) {
     // display stats in a separate window via callback
     stats(vehicle)
 
-    children = List(list, sep, VehicleUnitMenu(vehicle))
+    children = List(list, sep, VehicleUnitMenu(vehicle, company))
   }
 }

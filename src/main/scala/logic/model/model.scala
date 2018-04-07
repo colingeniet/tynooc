@@ -1,6 +1,9 @@
 package logic.model
 
 import collection.mutable.HashMap
+import scalafx.beans.property._
+
+import logic.company._
 
 /** Generic model trait.
  *
@@ -13,7 +16,7 @@ trait Model {
 trait ModelNameMap[T <: Model] {
   def models: HashMap[String, T]
 
-  def apply(name: String): T = this.models.get(name).get
+  def apply(name: String): T = this.models(name)
 }
 
 /** Something with a model. */
@@ -34,6 +37,7 @@ trait BuyableModel extends Model{
 /* Corresponding implementations */
 
 trait Upgradable[+T <: BuyableModel] extends WithModel[T] {
+  val owner: ObjectProperty[Company]
   def modelNameMap(name: String): T
   def upgradeTo(name: String): Unit
 }

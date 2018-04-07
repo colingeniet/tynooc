@@ -7,12 +7,18 @@ import scalafx.stage.Modality
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
+import scalafx.scene.media._
 
 import gui.scenes._
 import logic.world._
 import logic.game._
 import ai._
 import player._
+import parser._
+
+import java.io.File
+import scala.util.Try
+
 
 /** Main window manager.
  *
@@ -74,7 +80,7 @@ extends JFXApp.PrimaryStage {
               initModality(Modality.None)
             }.show()
           }
-          case e: com.fasterxml.jackson.core.JsonParseException => {
+          case e: BadFileFormatException => {
             new Alert(AlertType.Error) {
               title = "file error"
               headerText = "Invalid map file"
@@ -113,4 +119,9 @@ object MainStage {
    */
   abstract class Scene(sceneModifier: States.Val=>Unit)
   extends scalafx.scene.Scene
+}
+
+object Resources {
+  val SoundPath: String = "src/main/resources/audio/clic.mp3"
+  val Sound = Try{ new AudioClip(new File(SoundPath).toURI().toString()) }.toOption
 }
