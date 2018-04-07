@@ -1,6 +1,5 @@
 package parser
 
-import scala.util.{Try, Success, Failure}
 import scala.io.Source
 import collection.mutable.HashSet
 
@@ -8,6 +7,7 @@ import logic.town._
 import logic.world._
 import logic.route._
 import logic.game._
+import logic.facility._
 
 import java.util.{List => JList}
 import collection.JavaConverters._
@@ -89,12 +89,16 @@ class JMap(
 object Parser {
 
   def buildTown(c: JCity): Town = {
-    var t = new Town(c.name, c.x, c.y, 1)
+    val t = new Town(c.name, c.x, c.y, 1)
     Game.world.status.foreach { s => t.addResidents(c.population / 3, s) }
     t.addResidents(c.population - t.population(), Game.world.status.head)
     t
   }
 
+  def buildFactory(town: Town, j: JFactory): Unit = {
+    town.addFacility(new Factory(FactoryModel(j._type), town, Game.BigBrother))
+  }
+  
   def buildRoute(towns: HashSet[Town], c: JConnection): Unit = {
     val start: Town = towns.find(_.name == c.upstream).get
     val end: Town = towns.find(_.name == c.downstream).get
@@ -137,6 +141,11 @@ object Parser {
     
     jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
 
+    jMap.cities.asScala.foreach { c => 
+      c.factories.asScala.foreach { f => 
+        buildFactory(world.towns.find(_.name == c.name).get, f) }
+    }
+    
     jMap.connections.asScala.filter { c =>
       c.upstream != null && c.downstream != null
     }.foreach { buildRoute(world.towns, _) }
