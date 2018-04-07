@@ -169,8 +169,8 @@ extends StackPane with ZoomPane {
     val Cx = (A.x + B.x) / 2
     val Cy = (A.y + B.y) / 2
 
-    val distX = (end.x - start.x)
-    val distY = (end.y - start.y)
+    val distX = (B.x - A.x)
+    val distY = (B.y - A.y)
     val dist = math.hypot(distX, distY)
     val L = Math.tan(alpha) * (dist / 2)
     val CDx = route match {
