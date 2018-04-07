@@ -13,6 +13,7 @@ import logic.world._
 import logic.game._
 import ai._
 import player._
+import parser._
 
 /** Main window manager.
  *
@@ -74,7 +75,7 @@ extends JFXApp.PrimaryStage {
               initModality(Modality.None)
             }.show()
           }
-          case e: com.fasterxml.jackson.core.JsonParseException => {
+          case e: BadFileFormatException => {
             new Alert(AlertType.Error) {
               title = "file error"
               headerText = "Invalid map file"
