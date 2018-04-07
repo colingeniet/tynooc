@@ -9,22 +9,6 @@ import logic.town._
 import collection.mutable.HashMap
 import collection.mutable.HashSet
 
-/** An exception which could be throwed if a places in a room
-    can’t be bought.
-  */
-final case class CantBuyException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
-
-/** An exception which could be throwed if a places in a room
-    can’t be released.
-  */
-final case class CantFreeException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
-
 /** A room in a train.
   *
   * @constructor Creates a room with a travel and a vehicle unit.
@@ -90,8 +74,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     * @param status The status of these passengers.
     */
   def freePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
-    if(number > passengers(destination)(status))
-      throw new CantFreeException
+    assert(number <= passengers(destination)(status))
     passengers(destination)(status) -= number
   }
 
@@ -115,8 +98,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     * @param status The status of these passengers.
     */
   def takePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
-    if(number > availablePlaces)
-      throw new CantBuyException
+    assert(number <= availablePlaces)
     passengers(destination)(status) += number
     travel.company.credit(price(destination) * number)
   }
