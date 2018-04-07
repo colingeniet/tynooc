@@ -1,4 +1,4 @@
-package gui.scene.panes.facility
+package gui.scenes.panes.facility
 
 import scalafx.Includes._
 import scalafx.scene._

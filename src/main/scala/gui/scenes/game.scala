@@ -11,6 +11,7 @@ import gui.MainStage
 import gui.scenes.map._
 import gui.scenes.panes._
 import gui.scenes.panes.vehicle._
+import gui.scenes.panes.facility._
 import gui.scenes.elements._
 import logic.world._
 import logic.town._
@@ -18,6 +19,7 @@ import logic.route._
 import logic.vehicle._
 import logic.travel._
 import logic.game._
+import logic.facility._
 
 import player._
 
@@ -57,7 +59,7 @@ extends MainStage.Scene(sceneModifier) {
   /* Content display methods */
 
   private def displayTown(town: Town): Unit = {
-    pane.right = new TownInfo(town, displayRoute)
+    pane.right = new TownInfo(town, displayRoute, displayFacility)
   }
 
   private def displayRoute(route: Route): Unit = {
@@ -70,6 +72,10 @@ extends MainStage.Scene(sceneModifier) {
 
   private def displayVehicle(vehicle: VehicleUnit): Unit = {
     pane.right = VehicleUnitDetail(vehicle)
+  }
+
+  private def displayFacility(facility: Facility): Unit = {
+    pane.right = FacilityDetail(facility)
   }
 
   private def printMessage(message: String): Unit = {

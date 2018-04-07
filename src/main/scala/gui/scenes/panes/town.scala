@@ -8,10 +8,12 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.geometry._
 
-import gui.scenes.elements.Link
+import gui.scenes.elements._
 import gui.scenes.panes.model._
+import gui.scenes.panes.facility._
 import logic.town._
 import logic.route._
+import logic.facility._
 
 
 /** Town display panel.
@@ -19,9 +21,11 @@ import logic.route._
  *  @param town the town to display.
  *  @param displayRoute callback used to display a route.
  */
-class TownInfo(town: Town, displayRoute: Route => Unit)
+class TownInfo(
+  town: Town,
+  displayRoute: Route => Unit,
+  displayFacility: Facility => Unit)
 extends VBox(3) {
-  // needs to be updated at redraw
   private val popLbl = new Label {
     text <== createStringBinding(
       () => s"Population : ${town.population.toInt}",
@@ -33,11 +37,17 @@ extends VBox(3) {
       town.passengersNumber)
   }
 
+  private val facilities = new SelectionList[Facility](
+    town.facilities,
+    _.model.name,
+    (_ => ()))
+
 
   children = List(
     new Label(town.name),
     popLbl,
     pasLbl,
+    facilities,
     new Label("Routes to : "))
 
   // add all clickable routes

@@ -2,11 +2,13 @@ package logic.town
 
 import scalafx.beans.binding._
 import scalafx.beans.property._
+import scalafx.collections._
 
 import logic.route._
 import logic.game._
 import logic.world._
 import logic.good._
+import logic.facility._
 
 import collection.mutable.HashMap
 import java.util.Random
@@ -47,6 +49,8 @@ class Town(
 
   // PRNG
   private var random: Random = new Random()
+
+  val facilities: ObservableBuffer[Facility] = ObservableBuffer()
 
 
   def addGoods(g: Good, v: Double): Unit = {
@@ -174,6 +178,14 @@ class Town(
       throw new IllegalArgumentException("route should start from $name town")
     _routes = route :: _routes
   }
+
+
+  def addFacility(f: Facility): Unit = {
+    if(f.town != this)
+      throw new IllegalArgumentException("incorrect facility town value")
+    facilities.add(f)
+  }
+
 
   /** Update the population state.
    *
