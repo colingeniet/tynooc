@@ -68,8 +68,12 @@ extends MainStage.Scene(sceneModifier) {
           onAction = (event: ActionEvent) => displayCompany
         },
         new Separator(),
-        new TownInfo(town, player.company, displayRoute, displayFacility))
+        new TownInfo(town, player.company, displayRoute, displayFacility, displayStock))
     }
+  }
+
+  private def displayStock(town: Town): Unit = {
+    pane.right = new TownStock(town)
   }
 
   private def displayRoute(route: Route): Unit = {

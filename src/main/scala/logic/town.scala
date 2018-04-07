@@ -95,8 +95,8 @@ class Town(
   /** Consume goods of every type every time it's called.
   */
   def consume_daily: Unit = {
-      val a = needs()
-      goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
+    val a = needs()
+    goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
   }
 
   /** Test if goods are available.
