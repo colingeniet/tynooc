@@ -68,6 +68,9 @@ class ScriptInfo(script: Script) extends VBox(3) {
 
   private val deleteButton: Button = new Button("delete") {
     onAction = (event: ActionEvent) => script.instructions.remove(script.instructions.size - 1)
+
+    disable = script.instructions.isEmpty
+    script.instructions.onChange({ disable = script.instructions.isEmpty })
   }
 
   private val clearButton: Button = new Button("clear") {
