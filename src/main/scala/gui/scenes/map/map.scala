@@ -61,8 +61,8 @@ extends StackPane with ZoomPane {
       }
     }
 
-    x <== travel.posX - image().getWidth()/2
-    y <== travel.posY - image().getHeight()/2
+    x <== travel.posX.toDouble
+    y <== travel.posY.toDouble
 
     travel.vehicle match {
       case _: Plane => rotate <== travel.heading
@@ -78,9 +78,57 @@ extends StackPane with ZoomPane {
       }
     }
 
+    private def changePosition(): Unit = {
+      travel.currentRoute() match {
+        case Some(r) => {
+          val p = travel.currentRouteProportion.toDouble
+          val A = if(r.start.x < r.end.x) r.start else r.end
+          val B = if(A == r.start) r.end else r.start
+          val mil = milRoute(A, B, angles(r), XRouteDirection(r))
+          x <== ({
+            val xMil = mil._1
+            if(p < 0.5)
+              r.start.x +  2 * p * (xMil - r.start.x)
+            else
+              xMil + (p - 0.5) * 2 * (r.end.x - xMil)
+            }) - image().getWidth()/2
+          y <== ({
+            val yMil = mil._2
+            if(p < 0.5)
+              r.start.y +  2 * p * (yMil - r.start.y)
+            else
+              yMil + (p - 0.5) * 2 * (r.end.y - yMil)
+            }) - image().getWidth()/2
+          }
+        case _ => ()
+      }
+    }
+
+
     travel.isDone.onChange(deleteIfDone())
+    travel.currentRouteProportion.onChange(changePosition())
   }
 
+  def angles(route: Route): Double = {
+    route match {
+      case r: Rail => Math.PI / 18
+      case c: Canal => Math.PI / 15
+      case r: River => Math.PI / 12
+      case s: Seaway => Math.PI / 9
+      case _         => 0
+    }
+  }
+
+  def routeColor(route: Route) = {
+    route match {
+      case r: Road => Black
+      case r: Rail => Gray
+      case c: Canal => Blue
+      case r: River => Blue
+      case s: Seaway => Blue
+      case a: Airway => White
+    }
+  }
 
   // the list of current travels
   private var travels: ObservableBuffer[MapTravel] = ObservableBuffer()
@@ -142,25 +190,26 @@ extends StackPane with ZoomPane {
     textMap.children.add(text)
   }
 
-  /** Display a route. */
-  private def addRoute(route: Route): Unit = {
-    val alpha = route match {
-      case r: Road => 0
-      case r: Rail => Math.PI / 18
-      case c: Canal => Math.PI / 15
-      case r: River => Math.PI / 12
-      case s: Seaway => Math.PI / 9
+  def XRouteDirection(route: Route): Int = {
+    route match {
+      case c: Canal  => -1
+      case s: Seaway => -1
+      case r         =>  1
     }
-    val color = route match {
-      case r: Road => Black
-      case r: Rail => Gray
-      case c: Canal => Blue
-      case r: River => Blue
-      case s: Seaway => Blue
-    }
+  }
 
-    val A = if(route.start.x < route.end.x) route.start else route.end
-    val B = if(A == route.start) route.end else route.start
+  def routeStrokeWidth(route: Route): Double = {
+    route match {
+      case r: Road => 5
+      case r: Rail => 4
+      case c: Canal => 4
+      case r: River => 4
+      case s: Seaway => 5
+      case a: Airway => 5
+    }
+  }
+
+  def milRoute(A: Town, B: Town, alpha: Double, XDirection: Int): (Double, Double) = {
     val Ax = A.x
     val Ay = A.y
     val Bx = B.x
@@ -173,51 +222,46 @@ extends StackPane with ZoomPane {
     val distY = (B.y - A.y)
     val dist = math.hypot(distX, distY)
     val L = Math.tan(alpha) * (dist / 2)
-    val CDx = route match {
-      case c: Canal  => -L * (B.y - A.y) / dist
-      case s: Seaway => -L * (B.y - A.y) / dist
-      case _         => L * (B.y - A.y) / dist
-    }
-    val CDy = route match {
-      case c: Canal  => L * (B.x - A.x) / dist
-      case s: Seaway => L * (B.x - A.x) / dist
-      case _         => -L * (B.x - A.x) / dist
-    }
-
+    val CDx = XDirection * L * (B.y - A.y) / dist
+    val CDy = - XDirection * L * (B.x - A.x) / dist
+    
     val ADx = Cx - Ax + CDx
     val ADy = Cy - Ay + CDy
 
     val Dx = ADx + Ax
     val Dy = ADy + Ay
+    (Dx, Dy)
+  }
+  /** Display a route. */
+  private def addRoute(route: Route): Unit = {
+    val A = if(route.start.x < route.end.x) route.start else route.end
+    val B = if(A == route.start) route.end else route.start
+    val Ax = A.x
+    val Ay = A.y
+    val Bx = B.x
+    val By = B.y
 
-    val line: Line = new Line() {
-      startX = A.x
-      startY = A.y
-      endX = Dx
-      endY = Dy
-      stroke = color
-      strokeWidth = 5
-      onMouseClicked = new EventHandler[MouseEvent] {
-        override def handle(event: MouseEvent) {
-          displayRoute(route)
-        }
-      }
-    }
-    val line1: Line = new Line() {
-      startX = Dx
-      startY = Dy
+    val mil = milRoute(A, B, angles(route), XRouteDirection(route))
+    val Dx = mil._1
+    val Dy = mil._2
+
+    val curve = new QuadCurve {
+      controlX = Dx
+      controlY = Dy
+      startX = Ax
+      startY = Ay
       endX = Bx
       endY = By
-      stroke = color
-      strokeWidth = 5
+      stroke = routeColor(route)
+      fill = null
+      strokeWidth = routeStrokeWidth(route)
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
           displayRoute(route)
         }
       }
     }
-    routesMap.children.add(line)
-    routesMap.children.add(line1)
+    routesMap.children.add(curve)
   }
 
   /** Add a new travel. */

@@ -216,22 +216,27 @@ class World {
     * @param from The town.
     */
   def townsAccessibleFrom(from: Town, vehicle: Vehicle): List[Town] = {
-    val closed: HashSet[Town] = new HashSet()
-    val open: HashSet[Town] = new HashSet()
-    open.add(from)
+    vehicle match {
+      case p: Plane => { towns.toList diff List(from) }
+      case _        => {
+        val closed: HashSet[Town] = new HashSet()
+        val open: HashSet[Town] = new HashSet()
+        open.add(from)
 
-    while (!open.isEmpty) {
-      val town = open.head
+        while (!open.isEmpty) {
+          val town = open.head
 
-      town.routes.filter(_.accepts(vehicle)).foreach { route =>
-        if(!open(route.end) && !closed(route.end)) {
-          open += (route.end)
+          town.routes.filter(_.accepts(vehicle)).foreach { route =>
+            if(!open(route.end) && !closed(route.end)) {
+              open += (route.end)
+            }
+          }
+          open.remove(town)
+          closed.add(town)
         }
+        closed.remove(from)
+        closed.toList
       }
-      open.remove(town)
-      closed.add(town)
     }
-    closed.remove(from)
-    closed.toList
   }
 }
