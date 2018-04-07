@@ -59,9 +59,11 @@ extends VBox(3) {
     new Label(route.name),
     new Link(route.start.name)(displayTown(route.start)),
     new Link(route.end.name)(displayTown(route.end)),
+    new Label(f"length: ${route.length}%.0f"),
     new Stats(route) {
       override def filter(a: java.lang.reflect.Field): Boolean = {
-        a.getName() == "start" || a.getName() == "end" || super.filter(a)
+        a.getName() == "start" || a.getName() == "end" ||
+          a.getName() == "length" || super.filter(a)
       }
     })
 }

@@ -6,6 +6,7 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 
 import logic.model._
+import formatter._
 
 
 /** Generic attributes display.
@@ -15,7 +16,7 @@ import logic.model._
 class Stats(m: Object) extends VBox(3) {
   def filter(a: java.lang.reflect.Field): Boolean = false
   def display(a: java.lang.reflect.Field): Node = {
-    new Label(a.getName() + ": " + a.get(m).toString)
+    new Label(s"${StringFormatter.casePrettyPrint(a.getName())}: ${a.get(m).toString}")
   }
 
   children = m.getClass().getDeclaredFields.toList.map {

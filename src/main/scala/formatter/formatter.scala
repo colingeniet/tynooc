@@ -35,3 +35,12 @@ object TimeFormatter {
   def timeToDateString(t: Double): String =
     f"day ${(t.toInt / 24 + 1)}%d : " + timeToHourString(t % 24)
 }
+
+object StringFormatter {
+  /** Splits camelCase and snake_case.
+   *
+   *  Usefull to pretty print attribute names. */
+  def casePrettyPrint(str: String): String = {
+    str.replaceAll("([a-z])([A-Z])", "$1 $2").replace('_', ' ').toLowerCase()
+  }
+}
