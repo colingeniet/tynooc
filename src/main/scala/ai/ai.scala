@@ -27,7 +27,7 @@ trait AI {
   * @param actionDelay The delay between the actions of the AI.
   * @param lastAction The time of the last action (it will play at <code>actionDelay</code> - <code>lastAction</code>).
   */
-class BasicAI(
+class BasicTrainAI(
   company: Company,
   val actionDelay: Double,
   var lastAction: Double)
@@ -38,9 +38,9 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 3000 && company.engines.size < 10)
+      if(company.money() > 3000)
         company.buy(Engine("basic", company))
-      if(company.money() > 2000 && company.carriages.size < 50)
+      if(company.money() > 2000)
         company.buy(Carriage("basic", company))
       val engines = company.enginesAvailable
       if(!engines.isEmpty) {
@@ -48,17 +48,41 @@ extends Player(company) with AI {
         val carriages = company.carriagesStoredAt(train.town()).filter { c =>
           train.weight() + c.model.weight < train.model.power
         }
-        if(!carriages.isEmpty) {
+        if(!carriages.isEmpty)
           company.addCarriageToTrain(train, carriages.head)
-          company.launchTravel(train, Random.shuffle(train.town().neighbours).head)
-        }
       }
-      val trains_1 = company.trainsAvailable.filter { !_.isEmpty() }
-      val trains = trains_1.filter { !_.town().neighbours.isEmpty }
+      val trains = company.trainsAvailable.filter { !_.isEmpty() }
       if(!trains.isEmpty) {
         val train = Random.shuffle(trains).head
-        company.launchTravel(train, Random.shuffle(train.town().neighbours).head)
+        val possibleDirections = world.townsAccessibleFrom(train.town(), train)
+        if(!possibleDirections.isEmpty)
+          company.launchTravel(train, Random.shuffle(possibleDirections).head)
       }
     }
   }
 }
+
+class BasicPlaneAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
+
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      if(company.money() > 1000)
+        company.buy(Plane("basic", company))
+      val planes = company.vehicles.toList.filter {!_.isUsed()}
+      if(!planes.isEmpty) {
+        val plane = Random.shuffle(planes).head
+        val towns = Random.shuffle(world.towns.toList.filter { _ != plane.town() })
+        val direction = towns.head
+        company.launchTravel(plane, direction)
+      }
+    }
+  }
+}
+
