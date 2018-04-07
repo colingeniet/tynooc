@@ -32,16 +32,6 @@ class Game(
   val player: Player,
   sceneModifier: MainStage.States.Val => Unit)
 extends MainStage.Scene(sceneModifier) {
-  // panes contents
-  private var top: TopMenu = new TopMenu(sceneModifier)
-  private var left: VBox = new CompanyInfo(
-    player.company,
-    world,
-    displayVehicle)
-  // empty by default
-  private var right: VBox = new VBox()
-  private var bottom: HBox = new HBox()
-
   private var map = new Map(
     world,
     player.company,
@@ -49,17 +39,16 @@ extends MainStage.Scene(sceneModifier) {
     displayRoute,
     displayTravel)
   private var messagesBox = new MessagesBox(5)
-  private var center: Node = new StackPane {
-    children = List(map, messagesBox)
-  }
 
   // set content
-  private var pane: BorderPane = new BorderPane(
-    center,
-    top,
-    right,
-    bottom,
-    left)
+  private var pane: BorderPane = new BorderPane {
+    center = new StackPane {
+      children = List(map, messagesBox)
+    }
+    left = new CompanyInfo(player.company, world, displayVehicle)
+    top = new TopMenu(sceneModifier)
+  }
+
   root = pane
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
@@ -68,23 +57,19 @@ extends MainStage.Scene(sceneModifier) {
   /* Content display methods */
 
   private def displayTown(town: Town): Unit = {
-    bottom = new TownInfo(town, displayRoute)
-    pane.bottom = bottom
+    pane.right = new TownInfo(town, displayRoute)
   }
 
   private def displayRoute(route: Route): Unit = {
-    bottom = new RouteInfo(route, displayTown)
-    pane.bottom = bottom
+    pane.right = new RouteInfo(route, displayTown)
   }
 
   private def displayTravel(travel: Travel): Unit = {
-    right = new TravelInfo(travel)
-    pane.right = right
+    pane.right = new TravelInfo(travel)
   }
 
   private def displayVehicle(vehicle: VehicleUnit): Unit = {
-    right = VehicleUnitDetail(vehicle)
-    pane.right = right
+    pane.right = VehicleUnitDetail(vehicle)
   }
 
   private def printMessage(message: String): Unit = {
