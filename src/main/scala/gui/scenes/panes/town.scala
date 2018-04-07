@@ -37,6 +37,13 @@ extends VBox(3) {
       town.passengersNumber)
   }
 
+  private val routes = new VBox {
+    children = new Label("Routes to:") :: town.routes.map{ route => new Link(
+        f"${route.end.name} - ${route.length}%.0f (${route.name})")(
+        displayRoute(route))
+    }
+  }
+
   private val facilities = new SelectionList[Facility](
     town.facilities,
     _.model.name,
@@ -47,15 +54,8 @@ extends VBox(3) {
     new Label(town.name),
     popLbl,
     pasLbl,
-    facilities,
-    new Label("Routes to : "))
-
-  // add all clickable routes
-  town.routes.foreach { route =>
-    val label: Link = new Link(f"${route.end.name} - ${route.length}%.0f (${route.name})")(
-      displayRoute(route))
-    children.add(label)
-  }
+    routes,
+    facilities)
 }
 
 /** Town display panel.

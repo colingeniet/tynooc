@@ -13,25 +13,27 @@ import formatter._
 import logic.facility._
 
 
+class ProductionDetail(prod: ProductionCycle)
+extends VBox(3) {
+  children = List (
+    new VBox {
+      children = new Label("consumes:") ::
+        prod.consumes.toList.map{case (g,v) => new Label(s" ${g}: ${v}")}
+    },
+    new VBox {
+      children = new Label("consumes:") ::
+        prod.produces.toList.map{case (g,v) => new Label(s" ${g}: ${v}")}
+    },
+    new Label(s"cycle length: ${TimeFormatter.timeToDateString(prod.cycleTime)}"))
+}
+
 class FactoryModelStats(model: FactoryModel)
 extends FacilityModelStats(model) {
   override def filter(a: java.lang.reflect.Field): Boolean = {
-    a.getName() == "consumes" ||
-    a.getName() == "produces" ||
-    a.getName() == "cycleTime" || super.filter(a)
+    a.getName() == "productions" || super.filter(a)
   }
 
   children.add(new VBox {
-    children = new Label("consumes:") ::
-      model.consumes.toList.map{case (g,v) => new Label(s" ${g}: ${v}")}
+    children = model.productions.map(new ProductionDetail(_))
   }.delegate)
-
-  children.add(new VBox {
-    children = new Label("produces:") ::
-      model.produces.toList.map{case (g,v) => new Label(s" ${g}: ${v}")}
-  }.delegate)
-
-  children.add(new Label(
-    s"cycle length: ${TimeFormatter.timeToDateString(model.cycleTime)}"
-  ).delegate)
 }
