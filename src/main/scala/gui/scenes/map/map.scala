@@ -144,12 +144,71 @@ extends StackPane with ZoomPane {
 
   /** Display a route. */
   private def addRoute(route: Route): Unit = {
+    val alpha = route match {
+      case r: Road => 0
+      case r: Rail => Math.PI / 18
+      case c: Canal => Math.PI / 15
+      case r: River => Math.PI / 12
+      case s: Seaway => Math.PI / 9
+    }
+    val color = route match {
+      case r: Road => Black
+      case r: Rail => Gray
+      case c: Canal => Blue
+      case r: River => Blue
+      case s: Seaway => Blue
+    }
+    
+    val A = if(route.start.x < route.end.x) route.start else route.end
+    val B = if(A == route.start) route.end else route.start
+    val Ax = A.x
+    val Ay = A.y
+    val Bx = B.x
+    val By = B.y
+    
+    val Cx = (A.x + B.x) / 2
+    val Cy = (A.y + B.y) / 2  
+    
+    val distX = (end.x - start.x)
+    val distY = (end.y - start.y)
+    val dist = math.hypot(distX, distY)
+    val L = Math.tan(alpha) * (dist / 2)
+    val CDx = route match {
+      case c: Canal  => -L * (B.y - A.y) / dist
+      case s: Seaway => -L * (B.y - A.y) / dist
+      case _         => L * (B.y - A.y) / dist
+    }
+    val CDy = route match {
+      case c: Canal  => L * (B.x - A.x) / dist
+      case s: Seaway => L * (B.x - A.x) / dist
+      case _         => -L * (B.x - A.x) / dist
+    }
+    
+    val ADx = Cx - Ax + CDx
+    val ADy = Cy - Ay + CDy
+    
+    val Dx = ADx + Ax
+    val Dy = ADy + Ay
+
     val line: Line = new Line() {
-      startX = route.start.x
-      startY = route.start.y
-      endX = route.end.x
-      endY = route.end.y
-      stroke = Black
+      startX = A.x
+      startY = A.y
+      endX = Dx
+      endY = Dy
+      stroke = color
+      strokeWidth = 5
+      onMouseClicked = new EventHandler[MouseEvent] {
+        override def handle(event: MouseEvent) {
+          displayRoute(route)
+        }
+      }
+    }
+    val line1: Line = new Line() {
+      startX = Dx
+      startY = Dy
+      endX = Bx
+      endY = By
+      stroke = color
       strokeWidth = 5
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
@@ -158,6 +217,7 @@ extends StackPane with ZoomPane {
       }
     }
     routesMap.children.add(line)
+    routesMap.children.add(line1)
   }
 
   /** Add a new travel. */
