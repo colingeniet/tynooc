@@ -9,6 +9,7 @@ import scalafx.scene.layout._
 import scalafx.geometry._
 
 import gui.scenes.elements.Link
+import gui.scenes.panes.model._
 import logic.town._
 import logic.route._
 
@@ -41,7 +42,7 @@ extends VBox(3) {
 
   // add all clickable routes
   town.routes.foreach { route =>
-    val label: Link = new Link(f"${route.end.name}(${route.length}%.0f)")(
+    val label: Link = new Link(f"${route.end.name} - ${route.length}%.0f (${route.name})")(
       displayRoute(route))
     children.add(label)
   }
@@ -55,7 +56,12 @@ extends VBox(3) {
 class RouteInfo(route: Route, displayTown: Town => Unit)
 extends VBox(3) {
   children = List(
+    new Label(route.name),
     new Link(route.start.name)(displayTown(route.start)),
     new Link(route.end.name)(displayTown(route.end)),
-    new Label("Distance : " + route.length))
+    new Stats(route) {
+      override def filter(a: java.lang.reflect.Field): Boolean = {
+        a.getName() == "start" || a.getName() == "end" || super.filter(a)
+      }
+    })
 }

@@ -12,6 +12,9 @@ trait Route {
 
   /** Tests if a vehicle can use the route. */
   def accepts(vehicle: Vehicle): Boolean
+
+  /** Route type name */
+  def name: String = this.getClass().getSimpleName().toLowerCase()
 }
 
 /* Route types */
