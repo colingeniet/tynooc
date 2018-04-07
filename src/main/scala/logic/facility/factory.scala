@@ -1,6 +1,7 @@
 package logic.facility
 
 import scala.collection.mutable.HashMap
+import scalafx.beans.property._
 
 import logic.model._
 import logic.good._
@@ -140,7 +141,23 @@ object FactoryModel extends ModelNameMap[FactoryModel] {
 
 class Factory(model: FactoryModel, _town: Town, _owner: Company)
 extends FacilityFromModel[FactoryModel](model, _town, _owner) {
+  val working: BooleanProperty = BooleanProperty(false)
+
   def modelNameMap(name: String): FactoryModel = FactoryModel(name)
 
-
+  def startCycle(): Unit = {
+    if (!working()) {
+      model.productions.find(p => town.available(p.consumes)) match {
+        case Some(prod) => {
+          working() = true
+          town.consume(prod.consumes)
+          Game.delayAction(prod.cycleTime, () => {
+            town.addGoods(prod.produces)
+            working() = false
+          })
+        }
+        case None => ()
+      }
+    }
+  }
 }

@@ -28,7 +28,7 @@ object Game {
   var mapPath: String = "map/map.xml"
 
   var BigBrother = new Company("Big Brother", null)
-  
+
   var printMessage: String => Unit = (_ => ())
 
   private var actionQueue: PriorityQueue[(Double, () => Unit)] =

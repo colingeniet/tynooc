@@ -30,12 +30,12 @@ class TownInfo(
 extends VBox(3) {
   private val popLbl = new Label {
     text <== createStringBinding(
-      () => s"Population : ${town.population.toInt}",
+      () => s"Population: ${town.population.toInt}",
       town.population)
   }
   private val pasLbl = new Label {
     text <== createStringBinding(
-      () => s"Passengers : ${town.passengersNumber.toInt}",
+      () => s"Passengers: ${town.passengersNumber.toInt}",
       town.passengersNumber)
   }
 

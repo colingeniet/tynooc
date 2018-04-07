@@ -42,7 +42,14 @@ class Town(
   Game.world.status.foreach { s => residents(s) = 0 }
 
   //Gives the quantity of good inside the city
-  val goods: HashMap[Good, DoubleProperty] = HashMap()
+  val goods: HashMap[Good, DoubleProperty] =
+    new HashMap[Good, DoubleProperty] {
+      override def default(g: Good): DoubleProperty = {
+        // initialize empty entries
+        this(g) = DoubleProperty(0)
+        this(g)
+      }
+    }
 
   //Coeff used for consumation
   val consume_coeffs: HashMap[Good, Double] = HashMap()
@@ -65,7 +72,7 @@ class Town(
           a(g) = population()*consume_coeffs(g)
         else {
           a(g) = goods(g)()
-          Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.name()} !")
+          Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.name} !")
           //Do something related to happiness
         }
       }
@@ -74,6 +81,10 @@ class Town(
 
   def addGoods(g: Good, v: Double): Unit = {
     goods(g)() = goods(g)() + v
+  }
+
+  def addGoods(h: HashMap[Good, Double]): Unit = {
+    h.foreach{ case (g, v) => goods(g)() = goods(g)() + v }
   }
 
   /** Calculates the prices of goods
@@ -88,17 +99,25 @@ class Town(
       goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
   }
 
-  /** Consume a certain quantity of good
-  * @param h The goods to consume associated with the quantities
-  */
-  def consume(h: HashMap[Good, Double]) : Boolean = {
+  /** Test if goods are available.
+   */
+  def available(h: HashMap[Good, Double]): Boolean = {
+    h.forall{ case (g, v) => goods(g)() > v }
+  }
 
-    if (h.forall{ case (g, v) => goods(g)() > v }) {
+  /** Consume a certain quantity of good, if available.
+   *
+   *  @param h The goods to consume associated with the quantities
+   *  @return true on success, false if goods are unavailable
+   */
+  def consume(h: HashMap[Good, Double]): Boolean = {
+    if (available(h)) {
       h.foreach{ case (g, q) => goods(g)() = goods(g)() - q }
       true
     }
     else false
   }
+
 
   /** The routes starting from this town. */
   def routes: List[Route] = _routes
@@ -210,5 +229,11 @@ class Town(
       }
       Game.world.tryTravel(this, destination, passengers(destination))
     }
+
+
+    facilities.foreach(_ match {
+      case f: Factory => if(!f.working()) f.startCycle()
+      case _ => ()
+    })
   }
 }

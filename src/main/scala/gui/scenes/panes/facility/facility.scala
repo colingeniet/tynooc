@@ -32,7 +32,12 @@ class FacilityDetail(facility: Facility) extends VBox(3) {
 }
 
 object FacilityDetail {
-  def apply(facility: Facility): VBox = new FacilityDetail(facility)
+  def apply(facility: Facility): VBox = {
+    facility match {
+      case f: Factory => new FactoryDetail(f)
+      case f => new FacilityDetail(f)
+    }
+  }
 }
 
 

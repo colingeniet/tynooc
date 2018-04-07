@@ -37,3 +37,19 @@ extends FacilityModelStats(model) {
     children = model.productions.map(new ProductionDetail(_))
   }.delegate)
 }
+
+
+class FactoryDetail(factory: Factory) extends VBox(3) {
+  private val status: Label = new Label {
+    text <== createStringBinding(
+      () => {
+        if (factory.working()) "working"
+        else "inactive"
+      },
+      factory.working)
+  }
+
+  private val model = new FactoryModelStats(factory.model)
+
+  children = List(status, model)
+}
