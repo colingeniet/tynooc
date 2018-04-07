@@ -28,11 +28,6 @@ object PriceSimulation {
   }
 }
 
-final case class IllegalOwnerException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
-
 
 /** A company.
   *
@@ -138,12 +133,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param carriage The carriage to add to <code>train</code>.
     */
   def addCarriageToTrain(train: Engine, carriage: Carriage): Unit = {
-    if (!owns(train)) {
-      throw new IllegalOwnerException("Company doesn't own the train")
-    }
-    if (!owns(carriage)) {
-      throw new IllegalOwnerException("Company doesn't own the carriage")
-    }
+    assert(owns(train) && owns(carriage))
     train.addCarriage(carriage)
   }
 
@@ -152,9 +142,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train.
     */
   def removeCarriageFromTrain(train: Engine): Unit = {
-    if (!owns(train)) {
-      throw new IllegalOwnerException("Company doesn't own the train")
-    }
+    assert(owns(train))
     train.removeCarriage()
   }
 
@@ -163,9 +151,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train to disassemble.
     */
   def disassembleTrain(train: Engine): Unit = {
-    if (!owns(train)) {
-      throw new IllegalOwnerException("Company doesn't own the train")
-    }
+    assert(owns(train))
     train.disassemble()
   }
 
@@ -175,9 +161,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param to The destination of the travel.
     */
   def launchTravel(vehicle: Vehicle, to: Town, _onCompleted: () => Unit = () => ()): Unit = {
-    if (!owns(vehicle)) {
-      throw new IllegalOwnerException("Company doesn't own the train")
-    }
+    assert(owns(vehicle))
     val travel = vehicle.launchTravel(to)
     travel.onCompleted = _onCompleted
     Game.world.addTravel(travel)
@@ -189,9 +173,7 @@ class Company(var name: String, val fabricTown: Town) {
     * @param model The upgraded model.
     */
   def upgrade[Model <: BuyableModel](old: Upgradable[Model], model: String): Unit = {
-    if (!owns(old)) {
-      throw new IllegalOwnerException("Company doesn't own the vehicle")
-    }
+    assert(owns(old))
     if (money() >= PriceSimulation.upgradePrice(old, model)) {
       debit(PriceSimulation.upgradePrice(old, model))
       old.upgradeTo(model)
