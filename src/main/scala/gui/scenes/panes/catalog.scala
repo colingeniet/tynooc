@@ -81,6 +81,7 @@ class Catalog(company: Company) extends VBox(3) {
     buy.onAction = (event: ActionEvent) => {
       company.buy(Engine(engine, company))
     }
+    buy.disable <== company.money < engine.price
     children = List(
       typeList, sep1, enginesList, sep2, buy,
       new VehicleModelStats(engine))
@@ -98,6 +99,7 @@ class Catalog(company: Company) extends VBox(3) {
     buy.onAction = (event: ActionEvent) => {
       company.buy(Carriage(carriage, company))
     }
+    buy.disable <== company.money < carriage.price
     children = List(
       typeList, sep1, carriagesList, sep2, buy,
       new VehicleModelStats(carriage))
@@ -114,6 +116,7 @@ class Catalog(company: Company) extends VBox(3) {
     buy.onAction = (event: ActionEvent) => {
       company.buy(Truck(truck, company))
     }
+    buy.disable <== company.money < truck.price
     children = List(
       typeList, sep1, trucksList, sep2, buy,
       new VehicleModelStats(truck))
@@ -130,6 +133,7 @@ class Catalog(company: Company) extends VBox(3) {
     buy.onAction = (event: ActionEvent) => {
       company.buy(Plane(plane, company))
     }
+    buy.disable <== company.money < plane.price
     children = List(
       typeList, sep1, planesList, sep2, buy,
       new VehicleModelStats(plane))
@@ -146,6 +150,7 @@ class Catalog(company: Company) extends VBox(3) {
     buy.onAction = (event: ActionEvent) => {
       company.buy(Ship(ship, company))
     }
+    buy.disable <== company.money < ship.price
     children = List(
       typeList, sep1, shipsList, sep2, buy,
       new VehicleModelStats(ship))

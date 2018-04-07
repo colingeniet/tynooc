@@ -16,7 +16,7 @@ trait Model {
 trait ModelNameMap[T <: Model] {
   def models: HashMap[String, T]
 
-  def apply(name: String): T = this.models.get(name).get
+  def apply(name: String): T = this.models(name)
 }
 
 /** Something with a model. */

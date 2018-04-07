@@ -37,4 +37,18 @@ object FacilityDetail {
 
 
 class FacilityMenu(facility: Facility, company: Company)
-extends UpgradeMenu[FacilityModel](facility, company)
+extends UpgradeMenu[FacilityModel](facility, company) { menu =>
+  private val buyButton: Button = new Button(s"buy(${facility.model.price})") {
+    onAction = (event: ActionEvent) => {
+      company.buy(facility)
+      menu.setChildren()
+    }
+
+    disable <== company.money < facility.model.price
+  }
+
+  override def setChildren(): Unit = {
+    super.setChildren()
+    if (facility.owner() != company) children.add(buyButton)
+  }
+}

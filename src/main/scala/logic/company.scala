@@ -12,6 +12,7 @@ import logic.game._
 import logic.world._
 import logic.good._
 import logic.model._
+import logic.facility._
 
 import collection.mutable.HashMap
 
@@ -124,6 +125,12 @@ class Company(var name: String, val fabricTown: Town) {
     }
   }
 
+  def buy(facility: Facility): Unit = {
+    if (facility.model.price <= money()) {
+      debit(facility.model.price)
+      facility.owner() = this
+    }
+  }
 
   /** Adds a carriage at the tail of an existing train.
     *
