@@ -14,6 +14,7 @@ import gui.scenes.panes.facility._
 import logic.town._
 import logic.route._
 import logic.facility._
+import logic.company._
 
 
 /** Town display panel.
@@ -23,6 +24,7 @@ import logic.facility._
  */
 class TownInfo(
   town: Town,
+  company: Company,
   displayRoute: Route => Unit,
   displayFacility: Facility => Unit)
 extends VBox(3) {
@@ -47,15 +49,23 @@ extends VBox(3) {
   private val facilities = new SelectionList[Facility](
     town.facilities,
     _.model.name,
-    (_ => ()))
+    facility => {
+      setChildren()
+      children.add(FacilityMenu(facility, company))
+      displayFacility(facility)
+    })
 
 
-  children = List(
-    new Label(town.name),
-    popLbl,
-    pasLbl,
-    routes,
-    facilities)
+  private def setChildren(): Unit = {
+    children = List(
+      new Label(town.name),
+      popLbl,
+      pasLbl,
+      routes,
+      facilities)
+  }
+
+  setChildren()
 }
 
 /** Town display panel.

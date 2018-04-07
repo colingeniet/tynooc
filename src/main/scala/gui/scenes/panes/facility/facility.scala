@@ -52,3 +52,8 @@ extends UpgradeMenu[FacilityModel](facility, company) { menu =>
     if (facility.owner() != company) children.add(buyButton)
   }
 }
+
+object FacilityMenu {
+  def apply(facility: Facility, company: Company): FacilityMenu =
+    new FacilityMenu(facility, company)
+}

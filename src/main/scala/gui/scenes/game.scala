@@ -68,7 +68,7 @@ extends MainStage.Scene(sceneModifier) {
           onAction = (event: ActionEvent) => displayCompany
         },
         new Separator(),
-        new TownInfo(town, displayRoute, displayFacility))
+        new TownInfo(town, player.company, displayRoute, displayFacility))
     }
   }
 
