@@ -16,6 +16,11 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 
+final case class BadFileFormatException(
+  private val message: String = "",
+  private val cause: Throwable = None.orNull)
+extends Exception(message, cause)
+
 class JFactory(
   @JacksonXmlProperty(localName = "type") val _type: String,
   @JacksonXmlProperty(localName = "size") val size: Int)
@@ -122,21 +127,19 @@ object Parser {
     }
   }
 
-  def buildWorld(jMap: JMap): Try[World] = {
+  def buildWorld(jMap: JMap): World = {
     val world: World = new World()
-    Try {
-      if(jMap.cities == null)
-        throw new IllegalArgumentException("No cities in the world.")
-      if(jMap.connections == null)
-        throw new IllegalArgumentException("No connections in the world.")
+    if(jMap.cities == null)
+      throw new IllegalArgumentException("No cities in the world.")
+    if(jMap.connections == null)
+      throw new IllegalArgumentException("No connections in the world.")
+    
+    jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
 
-      jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
-
-      jMap.connections.asScala.filter { c =>
-        c.upstream != null && c.downstream != null
-      }.foreach { buildRoute(world.towns, _) }
-      world
-    }
+    jMap.connections.asScala.filter { c =>
+      c.upstream != null && c.downstream != null
+    }.foreach { buildRoute(world.towns, _) }
+    world
   }
 
   /** Parse a world file.
@@ -148,6 +151,11 @@ object Parser {
     val yaml = file.getLines.mkString("\n")
     file.close()
     val mapper = new XmlMapper()
-    buildWorld(mapper.readValue(yaml, classOf[JMap])).get
+    try {
+      buildWorld(mapper.readValue(yaml, classOf[JMap]))
+    }
+    catch {
+      case e: Throwable => throw new BadFileFormatException("Invalid map file.")
+    }
   }
 }
