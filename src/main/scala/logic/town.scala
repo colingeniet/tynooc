@@ -44,40 +44,48 @@ class Town(
   //Gives the quantity of good inside the city
   val goods: HashMap[Good, DoubleProperty] = HashMap()
 
-  //Gives the coefficients of consumation.
-  val consum_coeffs: HashMap[Good, Double] = HashMap()
+  //Coeff used for consumation
+  val consume_coeffs: HashMap[Good, Double] = HashMap()
+
+  //Gives the prices of goods in this city
+  val goods_prices: HashMap[Good, DoubleProperty] = HashMap()
 
   // PRNG
   private var random: Random = new Random()
 
+
   val facilities: ObservableBuffer[Facility] = ObservableBuffer()
 
+  /** Returns a hashmap containing the needs of the population
+  */
+  def needs() : HashMap[Good, Double] = {
+      val a: HashMap[Good, Double] = HashMap()
+      Good.all.foreach{ g =>
+        if(population()*consume_coeffs(g) < goods(g)())
+          a(g) = population()*consume_coeffs(g)
+        else {
+          a(g) = goods(g)()
+          Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.name()} !")
+          //Do something related to happiness
+        }
+      }
+      a
+  }
 
   def addGoods(g: Good, v: Double): Unit = {
     goods(g)() = goods(g)() + v
   }
 
-  /** Calculates the consumation of a good by the city
-    * @param g the good to consume
-    * @param v the number of good currently in the city
-    */
-  def consumation_function(g: Good, v: Double) : Double = {
-
-    if (!g.hasProp[Consumable]) 0
-
-    val a = consum_coeffs(g)*v*population()
-    if (a > v) {
-      Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.getClass.getSimpleName.toLowerCase()} !")
-      //Do something hapyness-related
-    }
-
-    a
+  /** Calculates the prices of goods
+  */
+  def price_update() : Unit = {
   }
 
   /** Consume goods of every type every time it's called.
   */
   def consume_daily: Unit = {
-      goods.foreach{ case (key, value) => goods(key)() = 0d.min(value() - consumation_function(key, value())) }
+      val a = needs()
+      goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
   }
 
   /** Consume a certain quantity of good
