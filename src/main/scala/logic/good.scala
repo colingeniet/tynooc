@@ -1,11 +1,16 @@
 
 package logic.good
 
+import scalafx.beans.property._
+import scalafx.beans.binding._
+import scalafx.beans.binding.BindingIncludes._
+
 import logic.vehicle._
 
 import collection.mutable.HashMap
 
 import scala.reflect.ClassTag
+
 
 trait GoodType {
 
@@ -17,7 +22,7 @@ class Solid extends GoodType
 class Liquid(val rate: Double) extends GoodType { //Evaporates
 
   override def update(g: Good, owner: VehicleUnit, dt: Double) = {
-    owner.contents(g) -= rate*dt
+    owner.contents(g)() -= rate*dt
   }
 }
 
@@ -25,7 +30,17 @@ class Gazeous extends GoodType
 
 class CityNeeded extends GoodType // Is used by cities
 class Consumable extends GoodType //Can be consumed
-class Perishable extends GoodType //Can rot
+class Perishable() extends GoodType { //Can rot
+  /*
+  override def update(g: Good, owner: VehicleUnit, dt: Double) = {
+    if (owner._owner.trip.time > time) {
+      owner.contents(g)() = 0
+      Game.printMessage(s"Yuck! Something from ${owner.owner.name} has rotten! It's all gone to waste!")
+    }
+  }
+  */
+}
+
 class Dangerous extends GoodType //Passengers won't be happy with  a dangerous good on board
 class Expensive extends GoodType //Your vehicle can get attacked by bad people
 class Flamable extends GoodType // Can burn
@@ -49,6 +64,11 @@ object Good {
 
     val a: HashMap[Good, Double] = new HashMap()
     all.foreach{ g => a(g) = q }
+    a
+  }
+
+  def empty: HashMap[Good, DoubleProperty] = {
+    val a: HashMap[Good, DoubleProperty] = new HashMap()
     a
   }
 

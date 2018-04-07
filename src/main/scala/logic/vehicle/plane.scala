@@ -61,7 +61,7 @@ extends VehicleFromModel[PlaneModel](model, _town, owner) {
   def capacity: Int = model.capacity
   def comfort: Double = model.comfort
 
-  val contents: HashMap[Good, Double] = HashMap()
+  val contents: HashMap[Good, DoubleProperty] = HashMap()
 
   override def launchTravel(to: Town): Travel = {
     if (onTravel())

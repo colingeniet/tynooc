@@ -91,7 +91,7 @@ class Carriage(model: CarriageModel, town: Town, owner: Company)
 extends VehicleUnitFromModel[CarriageModel](model, town, owner) {
   val train: ObjectProperty[Option[Engine]] = ObjectProperty(None)
 
-  val contents = Good.any(0)
+  val contents = Good.empty
 
   val isUsed: BooleanBinding =
     Bindings.createBooleanBinding(
@@ -128,7 +128,7 @@ class Engine(
   _carriages: List[Carriage] = List())
 extends VehicleFromModel[EngineModel](model, _town, owner) {
 
-  val contents = Good.any(0)
+  val contents = Good.empty
   val name: StringProperty = StringProperty("train")
   val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
 

@@ -57,7 +57,7 @@ extends VehicleFromModel[TruckModel](model, _town, owner) {
 
   def modelNameMap(modelName: String): TruckModel = TruckModel(modelName)
 
-  val contents: HashMap[Good, Double] = HashMap()
+  val contents: HashMap[Good, DoubleProperty] = HashMap()
 
   def createRooms(travel: Travel): List[Room] = List()
 
