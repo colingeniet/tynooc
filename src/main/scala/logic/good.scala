@@ -33,26 +33,17 @@ class Satisfiable extends GoodType // Can be satisfied or dissatisfied  ...
 
 object Good {
 
+  //Is it possible to store those "dynamically", ie avoid adding Goods here when you add a Good down there...
+  val all: List[Good] = List(Passengers, Chocolate, Water, IronOre, Iron, Wood, Food, Gaz, Coal, Oil, Uranium, Stuff)
+
   def any(q: Double) : HashMap[Good, Double] = {
 
     val a: HashMap[Good, Double] = new HashMap()
-    a(Passengers) = q
-    a(Chocolate) = q
-    a(Water) = q
-    a(IronOre) = q
-    a(Iron) = q
-    a(Wood) = q
-    a(Food) = q
-    a(Gaz) = q
-    a(Coal) = q
-    a(Oil) = q
-    a(Uranium) = q
-    a(Stuff) = q
+    all.foreach{ g => a(g) = q }
     return a
   }
 
   def none: HashMap[Good, Double] = {
-
     val a: HashMap[Good, Double] = new HashMap()
     return a
   }
@@ -69,6 +60,8 @@ class Good(val properties: List[GoodType]) {
   def hasProp[A <: GoodType:ClassTag] : Boolean = {
     properties.foldLeft(false){(b, gtype) => gtype match { case _: A => true case _ => b} }
   }
+
+  def name(): String = getClass.getSimpleName.toLowerCase()
 
 }
 
