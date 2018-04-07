@@ -5,6 +5,7 @@ import scala.collection.mutable.HashMap
 import logic.model._
 import logic.town._
 import logic.vehicle._
+import logic.company._
 
 
 trait StationModel extends FacilityModel {
@@ -17,9 +18,37 @@ trait Station extends Facility {
 
 abstract class StationFromModel[Model <: StationModel] (
   model: Model,
-  town: Town)
-extends FacilityFromModel[Model](model, town) with Station
+  town: Town,
+  _owner: Company)
+extends FacilityFromModel[Model](model, town, _owner) with Station
 
+
+
+
+class TrainStationModel(
+  val name: String,
+  val price: Double,
+  val upgrades: List[String],
+  val size: Int)
+extends StationModel
+
+object TrainStationModel extends ModelNameMap[TrainStationModel] {
+ private val _models: HashMap[String, TrainStationModel] = HashMap()
+
+ override def models: HashMap[String, TrainStationModel] = _models
+}
+
+class TrainStation(model: TrainStationModel, town: Town, _owner: Company)
+extends StationFromModel[TrainStationModel](model, town, _owner) {
+  def accepts(vehicle: Vehicle): Boolean = {
+    vehicle match {
+      case e: Engine => true
+      case _ => false
+    }
+  }
+
+  def modelNameMap(name: String): TrainStationModel = TrainStationModel(name)
+}
 
 
 class AirportModel(
@@ -36,8 +65,8 @@ object AirportModel extends ModelNameMap[AirportModel] {
  override def models: HashMap[String, AirportModel] = _models
 }
 
-class Airport(model: AirportModel, town: Town)
-extends StationFromModel[AirportModel](model, town) {
+class Airport(model: AirportModel, town: Town, _owner: Company)
+extends StationFromModel[AirportModel](model, town, _owner) {
   def accepts(vehicle: Vehicle): Boolean = {
     vehicle match {
       case p: Plane => p.model.requiredRunway <= model.runwayLength
@@ -47,6 +76,7 @@ extends StationFromModel[AirportModel](model, town) {
 
   def modelNameMap(name: String): AirportModel = AirportModel(name)
 }
+
 
 class PortModel(
   val name: String,
@@ -62,8 +92,8 @@ object PortModel extends ModelNameMap[PortModel] {
  override def models: HashMap[String, PortModel] = _models
 }
 
-class Port(model: PortModel, town: Town)
-extends StationFromModel[PortModel](model, town) {
+class Port(model: PortModel, town: Town, _owner: Company)
+extends StationFromModel[PortModel](model, town, _owner) {
   def accepts(vehicle: Vehicle): Boolean = {
     vehicle match {
       case s: Ship => s.model.beamClearance <= model.beamClearance

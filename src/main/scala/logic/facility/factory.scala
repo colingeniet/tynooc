@@ -6,6 +6,7 @@ import logic.model._
 import logic.good._
 import logic.town._
 import logic.game._
+import logic.company._
 
 
 class FactoryModel(
@@ -23,8 +24,8 @@ object FactoryModel extends ModelNameMap[FactoryModel] {
  override def models: HashMap[String, FactoryModel] = _models
 }
 
-class Factory(model: FactoryModel, _town: Town)
-extends FacilityFromModel[FactoryModel](model, _town) {
+class Factory(model: FactoryModel, _town: Town, _owner: Company)
+extends FacilityFromModel[FactoryModel](model, _town, _owner) {
   def modelNameMap(name: String): FactoryModel = FactoryModel(name)
 
   def startCycle(): Unit = {
