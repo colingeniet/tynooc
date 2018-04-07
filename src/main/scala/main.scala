@@ -12,8 +12,9 @@ object MainJFXApp extends JFXApp {
   def gameInit(): Player = {
     Game.init()
     Game.players = List(new Player(company("Company name")),
-                        new BasicAI(company("AI 1 company"), 1.7, 0.5),
-                        new BasicAI(company("AI 2 company"), 2, 0.6))
+                        new BasicTrainAI(company("AI 1 company"), 1.7, 0.5),
+                        new BasicPlaneAI(company("AI 2 company"), 2, 0.6),
+                        new BasicPlaneAI(company("AI 3 company"), 1.9, 0.6))
     Game.players.foreach { p => Game.world.addCompany(p.company) }
     Game.mainPlayer = Some(Game.players(0))
     Game.mainPlayer.get
