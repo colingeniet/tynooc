@@ -122,12 +122,11 @@ object Engine {
  *  @param _model the engine model.
  */
 class Engine(
-  model: EngineModel,
+  _model: EngineModel,
   _town: Town,
-  owner: Company,
+  _owner: Company,
   _carriages: List[Carriage] = List())
-extends VehicleFromModel[EngineModel](model, _town, owner) {
-
+extends VehicleFromModel[EngineModel](_model, _town, _owner) {
   val contents = Good.any(0)
   val name: StringProperty = StringProperty("train")
   val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
@@ -137,7 +136,7 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
       () => carriages.foldLeft[Double](model.weight)(_ + _.model.weight),
       carriages)
 
-  val tooHeavy: BooleanBinding =
+  var tooHeavy: BooleanBinding =
     jfxBooleanBinding2sfx(weight > model.power)
 
   override val isAvailable: BooleanBinding =
@@ -203,4 +202,15 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
     carriages.toList.map(new Room(travel, _))
 
   def modelNameMap(name: String): EngineModel = EngineModel(name)
+
+
+  override def upgradeTo(newModel: EngineModel): Unit = {
+    super.upgradeTo(newModel)
+
+    weight <== Bindings.createDoubleBinding(
+        () => carriages.foldLeft[Double](model.weight)(_ + _.model.weight),
+        carriages)
+
+    tooHeavy = jfxBooleanBinding2sfx(weight > model.power)
+  }
 }
