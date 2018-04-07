@@ -15,6 +15,7 @@ import collection.JavaConverters._
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.core._
 
 final case class BadFileFormatException(
   private val message: String = "",
@@ -130,9 +131,9 @@ object Parser {
   def buildWorld(jMap: JMap): World = {
     val world: World = new World()
     if(jMap.cities == null)
-      throw new IllegalArgumentException("No cities in the world.")
+      throw new BadFileFormatException("Invalid map file : no cities in the world.")
     if(jMap.connections == null)
-      throw new IllegalArgumentException("No connections in the world.")
+      throw new BadFileFormatException("Invalid map file : no connections in the world.")
     
     jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
 
@@ -151,11 +152,12 @@ object Parser {
     val yaml = file.getLines.mkString("\n")
     file.close()
     val mapper = new XmlMapper()
-    try {
-      buildWorld(mapper.readValue(yaml, classOf[JMap]))
+    val jMap = try {
+      mapper.readValue(yaml, classOf[JMap]) 
     }
     catch {
-      case e: Throwable => throw new BadFileFormatException("Invalid map file.")
+      case e: JsonParseException => throw new BadFileFormatException("Invalid map file.")
     }
+    buildWorld(jMap)
   }
 }
