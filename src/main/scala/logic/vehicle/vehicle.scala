@@ -66,7 +66,7 @@ extends FromBuyableModel[Model](_model) with VehicleUnit {
   val owner: ObjectProperty[Company] = ObjectProperty(_owner)
 
   override def upgradeTo(newModel: Model): Unit = {
-    if (this.isUsed()) throw new IllegalArgumentException("Vehicle is in use")
+    assert(!this.isUsed())
     super.upgradeTo(newModel)
   }
 }
@@ -100,9 +100,7 @@ trait Vehicle extends VehicleUnit {
   def consumption(distance: Double): Double
 
   def launchTravel(to: Town): Travel = {
-    if (this.onTravel())
-      throw new IllegalActionException("Can't launch travel with used vehicle.")
-
+    assert(!this.onTravel())
     val routes = Game.world.findPath(this.town(), to, this).getOrElse(
       throw new PathNotFoundException(s"No usable route to ${to.name}."))
     val newTravel = new Travel(this, routes)
