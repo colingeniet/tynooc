@@ -137,8 +137,7 @@ class Town(
     *
     */
   def deleteResidents(number: Int, status: Status.Val): Unit = {
-    if(number > residents(status))
-      throw new IllegalArgumentException("population should stay positive")
+    assert(number <= residents(status))
     residents(status) -= number
     population() = population() - number
   }
@@ -150,8 +149,7 @@ class Town(
     * @param status The status of these passengers.
     */
   def deletePassengers(number: Int, status: Status.Val, destination: Town): Unit = {
-    if(number > passengers(destination)(status))
-      throw new IllegalArgumentException("population should stay positive")
+    assert(number <= passengers(destination)(status))
     passengers(destination)(status) -= number
     passengersNumber() = passengersNumber() - number
     deleteResidents(number, status)
@@ -182,15 +180,13 @@ class Town(
     * @param route The route to add to the town.
     */
   def addRoute(route: Route): Unit = {
-    if(route.start != this)
-      throw new IllegalArgumentException("route should start from $name town")
+    assert(route.start == this)
     _routes = route :: _routes
   }
 
 
   def addFacility(f: Facility): Unit = {
-    if(f.town != this)
-      throw new IllegalArgumentException("incorrect facility town value")
+    assert(f.town == this)
     facilities.add(f)
   }
 
