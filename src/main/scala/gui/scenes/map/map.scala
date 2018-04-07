@@ -158,17 +158,17 @@ extends StackPane with ZoomPane {
       case r: River => Blue
       case s: Seaway => Blue
     }
-    
+
     val A = if(route.start.x < route.end.x) route.start else route.end
     val B = if(A == route.start) route.end else route.start
     val Ax = A.x
     val Ay = A.y
     val Bx = B.x
     val By = B.y
-    
+
     val Cx = (A.x + B.x) / 2
-    val Cy = (A.y + B.y) / 2  
-    
+    val Cy = (A.y + B.y) / 2
+
     val distX = (B.x - A.x)
     val distY = (B.y - A.y)
     val dist = math.hypot(distX, distY)
@@ -183,10 +183,10 @@ extends StackPane with ZoomPane {
       case s: Seaway => L * (B.x - A.x) / dist
       case _         => -L * (B.x - A.x) / dist
     }
-    
+
     val ADx = Cx - Ax + CDx
     val ADy = Cy - Ay + CDy
-    
+
     val Dx = ADx + Ax
     val Dy = ADy + Ay
 
