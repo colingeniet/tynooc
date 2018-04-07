@@ -103,8 +103,7 @@ class Good(val properties: List[GoodType]) {
     }}
   }
 
-  def name(): String = getClass.getSimpleName.toLowerCase()
-
+  def name(): String = getClass.getSimpleName.toLowerCase().replace("$", "")
 }
 
 //My objects

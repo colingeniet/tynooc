@@ -73,7 +73,7 @@ extends StackPane with ZoomPane {
       else 2 * hue
     }
   }
-    
+
   object MapTravel {
     def icon(travel: Travel): String = {
       travel.vehicle match {

@@ -18,13 +18,13 @@ extends VBox(3) {
   children = List (
     new VBox {
       children = new Label("consumes:") ::
-        prod.consumes.toList.map{case (g,v) => new Label(s" ${g}: ${v}")}
+        prod.consumes.toList.map{case (g,v) => new Label(s" ${g.name}: ${v}")}
     },
     new VBox {
-      children = new Label("consumes:") ::
-        prod.produces.toList.map{case (g,v) => new Label(s" ${g}: ${v}")}
+      children = new Label("produces:") ::
+        prod.produces.toList.map{case (g,v) => new Label(s" ${g.name}: ${v}")}
     },
-    new Label(s"cycle length: ${TimeFormatter.timeToDateString(prod.cycleTime)}"))
+    new Label(s"cycle length: ${TimeFormatter.timeToHourString(prod.cycleTime)}"))
 }
 
 class FactoryModelStats(model: FactoryModel)
