@@ -19,6 +19,7 @@ import scalafx.beans.binding.BindingIncludes._
 import scalafx.collections._
 
 import gui.scenes.elements._
+import gui.scenes.color._
 import gui._
 import logic.game._
 import logic.world._
@@ -40,40 +41,6 @@ class MapContent(
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
 extends StackPane with ZoomPane {
-  /** Player colors generator */
-  object Colors {
-    private var level: Int = 0
-    private var pos: Int = 0
-
-    /** Get next color.
-     *
-     * @return the hue to use with scalafx. */
-    def nextColor(): Double = {
-      // compute next hue between 0 and 1
-      var hue: Double = 0.0
-      if (level == 0) {
-        // special initial comportment
-        hue = pos.toDouble / 3
-        pos += 1
-        if (pos >= 3) {
-          level = 3
-          pos = 0
-        }
-      } else {
-        hue = (pos + 0.5) / level
-        pos += 1
-        if (pos >= level) {
-          level *= 2
-          pos = 0
-        }
-      }
-
-      // scalafx expect it between -1 and 1 (0 is no change)
-      if (hue > 0.5) 2 * hue - 2
-      else 2 * hue
-    }
-  }
-
   object MapTravel {
     def icon(travel: Travel): String = {
       travel.vehicle match {
@@ -118,11 +85,6 @@ extends StackPane with ZoomPane {
   // the list of current travels
   private var travels: ObservableBuffer[MapTravel] = ObservableBuffer()
 
-  private var colors: HashMap[Company, Double] = new HashMap()
-  colors(company) = Colors.nextColor()
-  world.companies.filter(_ != company).map {
-    colors(_) = Colors.nextColor()
-  }
 
   /* The map is organized as several superposed layers. */
   // map layers, from bottom to top :
@@ -200,7 +162,12 @@ extends StackPane with ZoomPane {
 
   /** Add a new travel. */
   private def addTravel(travel: Travel): Unit = {
-    vehicleMap.children.add(new MapTravel(travel, colors(travel.company)))
+    var hue = Colors(travel.company).hue / 360.0
+    // scalafx expect shift between -1 and 1 (0 is no change)
+    if (hue > 0.5) hue = 2 * hue - 2
+    else hue = 2 * hue
+
+    vehicleMap.children.add(new MapTravel(travel, hue))
   }
 
   world.onAddTravel = addTravel

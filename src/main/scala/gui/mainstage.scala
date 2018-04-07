@@ -8,8 +8,10 @@ import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
 import scalafx.scene.media._
+import scalafx.scene.paint.Color
 
 import gui.scenes._
+import gui.scenes.color._
 import logic.world._
 import logic.game._
 import ai._
@@ -55,6 +57,8 @@ extends JFXApp.PrimaryStage {
           var mainPlayer: Player = gameInit()
           gameScene = new Game(Game.world, mainPlayer, changeScene)
           scene = gameScene
+          Colors.init(mainPlayer.company)
+          Colors(Game.bigBrother) = Color.Black
 
           // launch background game loop when the game scene is selected
           val mainLoopThread: Thread = new Thread {

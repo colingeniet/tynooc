@@ -27,7 +27,7 @@ object Game {
   /** Path of the map file. */
   var mapPath: String = "map/map.xml"
 
-  var BigBrother = new Company("Big Brother", null)
+  var bigBrother = new Company("Big Brother", null)
 
   var printMessage: String => Unit = (_ => ())
 
@@ -64,7 +64,7 @@ object Game {
 
   /** Init game state. */
   def init(): Unit = {
-    BigBrother = new Company("Big Brother", null)
+    bigBrother = new Company("Big Brother", null)
     world = Parser.readWorldInformations(mapPath)
     time() = 0
     paused = false

@@ -5,10 +5,12 @@ import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.beans.binding._
+import scalafx.scene.paint.Color
 
 import gui.scenes.elements._
 import gui.scenes.panes._
 import gui.scenes.panes.vehicle._
+import gui.scenes.color._
 import formatter._
 import logic.vehicle._
 import logic.travel._
@@ -53,7 +55,10 @@ class TravelInfo(travel: Travel) extends VBox {
       () => s"pass. : ${travel.passengerNumber.toInt}",
       travel.passengerNumber)
   }
-  private val company: Label = new Label(travel.company.name)
+  private val company: Label = new Label(travel.company.name) {
+    styleClass.remove("label")
+    textFill = Colors(travel.company)
+  }
 
   private val arrivedLbl: Label = new Label(s"arrived at ${travel.destination.name}")
 

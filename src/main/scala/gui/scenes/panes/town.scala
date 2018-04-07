@@ -49,11 +49,7 @@ extends VBox(3) {
   private val facilities = new SelectionList[Facility](
     town.facilities,
     _.model.name,
-    facility => {
-      setChildren()
-      children.add(FacilityMenu(facility, company))
-      displayFacility(facility)
-    })
+    detailFacility(_))
 
 
   private def setChildren(): Unit = {
@@ -63,6 +59,12 @@ extends VBox(3) {
       pasLbl,
       routes,
       facilities)
+  }
+
+  private def detailFacility(facility: Facility): Unit = {
+    setChildren()
+    children.add(FacilityMenu(facility, company))
+    displayFacility(facility)
   }
 
   setChildren()

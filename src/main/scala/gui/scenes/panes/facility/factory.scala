@@ -4,11 +4,13 @@ import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
+import scalafx.scene.paint._
 import scalafx.event._
 
 import gui.scenes.panes._
 import gui.scenes.panes.model._
 import gui.scenes.elements._
+import gui.scenes.color._
 import formatter._
 import logic.facility._
 
@@ -40,6 +42,18 @@ extends FacilityModelStats(model) {
 
 
 class FactoryDetail(factory: Factory) extends VBox(3) {
+  private val company: Label = new Label {
+    styleClass.remove("label")
+
+    text <== createStringBinding(
+      () => factory.owner().name,
+      factory.owner)
+
+    textFill <== createObjectBinding[javafx.scene.paint.Paint](
+      () => Colors(factory.owner()).delegate,
+      factory.owner)
+  }
+
   private val status: Label = new Label {
     text <== createStringBinding(
       () => {
@@ -51,5 +65,5 @@ class FactoryDetail(factory: Factory) extends VBox(3) {
 
   private val model = new FactoryModelStats(factory.model)
 
-  children = List(status, model)
+  children = List(company, status, model)
 }

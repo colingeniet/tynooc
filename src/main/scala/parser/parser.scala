@@ -96,9 +96,9 @@ object Parser {
   }
 
   def buildFactory(town: Town, j: JFactory): Unit = {
-    town.addFacility(new Factory(FactoryModel(j._type), town, Game.BigBrother))
+    town.addFacility(new Factory(FactoryModel(j._type), town, Game.bigBrother))
   }
-  
+
   def buildRoute(towns: HashSet[Town], c: JConnection): Unit = {
     val start: Town = towns.find(_.name == c.upstream).get
     val end: Town = towns.find(_.name == c.downstream).get
@@ -138,14 +138,14 @@ object Parser {
       throw new BadFileFormatException("Invalid map file : no cities in the world.")
     if(jMap.connections == null)
       throw new BadFileFormatException("Invalid map file : no connections in the world.")
-    
+
     jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
 
-    jMap.cities.asScala.foreach { c => 
-      c.factories.asScala.foreach { f => 
+    jMap.cities.asScala.foreach { c =>
+      c.factories.asScala.foreach { f =>
         buildFactory(world.towns.find(_.name == c.name).get, f) }
     }
-    
+
     jMap.connections.asScala.filter { c =>
       c.upstream != null && c.downstream != null
     }.foreach { buildRoute(world.towns, _) }
@@ -162,7 +162,7 @@ object Parser {
     file.close()
     val mapper = new XmlMapper()
     val jMap = try {
-      mapper.readValue(yaml, classOf[JMap]) 
+      mapper.readValue(yaml, classOf[JMap])
     }
     catch {
       case e: JsonParseException => throw new BadFileFormatException("Invalid map file.")

@@ -5,10 +5,12 @@ import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
+import scalafx.scene.paint._
 
 import gui.scenes.panes._
 import gui.scenes.panes.model._
 import gui.scenes.elements._
+import gui.scenes.color._
 import formatter._
 import logic.facility._
 import logic.company._
@@ -28,7 +30,21 @@ object FacilityModelStats {
 
 
 class FacilityDetail(facility: Facility) extends VBox(3) {
-  children = FacilityModelStats(facility.model)
+  private val company: Label = new Label {
+    styleClass.remove("label")
+
+    text <== createStringBinding(
+      () => facility.owner().name,
+      facility.owner)
+
+    textFill <== createObjectBinding[javafx.scene.paint.Paint](
+      () => Colors(facility.owner()).delegate,
+      facility.owner)
+  }
+
+  children = List(
+    company,
+    FacilityModelStats(facility.model))
 }
 
 object FacilityDetail {
@@ -59,6 +75,9 @@ extends UpgradeMenu[FacilityModel](facility, company) { menu =>
 }
 
 object FacilityMenu {
-  def apply(facility: Facility, company: Company): FacilityMenu =
-    new FacilityMenu(facility, company)
+  def apply(facility: Facility, company: Company): FacilityMenu = {
+    val menu = new FacilityMenu(facility, company)
+    menu.setChildren()
+    menu
+  }
 }
