@@ -45,7 +45,6 @@ trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   val contents: HashMap[Good, Double]
 
   def load(g: Good, i: Int) : Unit = {
-
     if (model.allowed(g) < contents(g) + i)
       throw new IllegalActionException("Can't load that much on your unit !")
 
@@ -53,17 +52,17 @@ trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   }
 
   def handleGoods(dt: Double) : Unit = {
-
     contents.foreach{ case (key, value) => if (value > 0) key.update(this, dt) }
   }
 }
 
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
-  model: Model,
+  _model: Model,
   _town: Town,
-  var owner: Company)
-extends FromBuyableModel[Model](model) with VehicleUnit {
+  _owner: Company)
+extends FromBuyableModel[Model](_model) with VehicleUnit {
   val town: ObjectProperty[Town] = ObjectProperty(_town)
+  val owner: ObjectProperty[Company] = ObjectProperty(_owner)
 
   override def upgradeTo(newModel: Model): Unit = {
     if (this.isUsed()) throw new IllegalArgumentException("Vehicle is in use")
@@ -114,10 +113,10 @@ trait Vehicle extends VehicleUnit {
 }
 
 abstract class VehicleFromModel[Model <: VehicleModel](
-  model: Model,
-  town: Town,
-  owner: Company)
-extends VehicleUnitFromModel(model, town, owner) with Vehicle {
+  _model: Model,
+  _town: Town,
+  _owner: Company)
+extends VehicleUnitFromModel(_model, _town, _owner) with Vehicle {
   val name: StringProperty
 
   def speed: Double = model.speed

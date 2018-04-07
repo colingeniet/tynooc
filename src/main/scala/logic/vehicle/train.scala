@@ -34,7 +34,6 @@ class EngineModel(
   val consumption: Double,
   val power: Double)
 extends RailVehicleUnitModel with VehicleModel {
-
   val allowed: HashMap[Good, Double] = Good.none
 }
 
@@ -87,8 +86,8 @@ object Carriage {
  *
  *  @param _model the carriage model.
  */
-class Carriage(model: CarriageModel, town: Town, owner: Company)
-extends VehicleUnitFromModel[CarriageModel](model, town, owner) {
+class Carriage(_model: CarriageModel, _town: Town, _owner: Company)
+extends VehicleUnitFromModel[CarriageModel](_model, _town, _owner) {
   val train: ObjectProperty[Option[Engine]] = ObjectProperty(None)
 
   val contents = Good.any(0)

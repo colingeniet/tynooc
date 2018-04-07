@@ -193,6 +193,6 @@ class Company(var name: String, val fabricTown: Town) {
 
   /** Returns true if this company owns <code>vehicle</code>. */
   def owns[Model <: BuyableModel](thing: Upgradable[Model]): Boolean = {
-    thing.owner == this
+    thing.owner() == this
   }
 }

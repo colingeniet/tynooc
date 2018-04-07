@@ -11,6 +11,7 @@ import gui.scenes.panes.model._
 import gui.scenes.elements._
 import formatter._
 import logic.facility._
+import logic.company._
 
 
 class FacilityModelStats(model: FacilityModel)
@@ -35,5 +36,5 @@ object FacilityDetail {
 }
 
 
-class FacilityMenu(facility: Facility)
-extends UpgradeMenu[FacilityModel](facility)
+class FacilityMenu(facility: Facility, company: Company)
+extends UpgradeMenu[FacilityModel](facility, company)

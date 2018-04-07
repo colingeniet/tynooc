@@ -47,9 +47,9 @@ extends MainStage.Scene(sceneModifier) {
     center = new StackPane {
       children = List(map, messagesBox)
     }
-    left = new CompanyInfo(player.company, world, displayVehicle)
     top = new TopMenu(sceneModifier)
   }
+  displayCompany()
 
   root = pane
 
@@ -57,9 +57,19 @@ extends MainStage.Scene(sceneModifier) {
   stylesheets += this.getClass.getResource("/css/game.css").toExternalForm
 
   /* Content display methods */
+  private def displayCompany(): Unit = {
+    pane.left = new CompanyInfo(player.company, world, displayVehicle)
+  }
 
   private def displayTown(town: Town): Unit = {
-    pane.right = new TownInfo(town, displayRoute, displayFacility)
+    pane.left = new VBox {
+      children = List(
+        new Button("Company") {
+          onAction = (event: ActionEvent) => displayCompany
+        },
+        new Separator(),
+        new TownInfo(town, displayRoute, displayFacility))
+    }
   }
 
   private def displayRoute(route: Route): Unit = {

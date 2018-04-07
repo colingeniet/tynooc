@@ -57,7 +57,9 @@ class BuyableModelShortStats(m: BuyableModel) extends ModelStats(m) {
 
 
 
-class UpgradeMenu[Model <: BuyableModel](thing: Upgradable[Model])
+class UpgradeMenu[Model <: BuyableModel](
+  thing: Upgradable[Model],
+  company: Company)
 extends VBox(3) { menu =>
   val upgradeButton: Button = new Button("Upgrade") {
     onAction = (event: ActionEvent) => {
@@ -68,7 +70,7 @@ extends VBox(3) { menu =>
           name => s"${name}(${MoneyFormatter.format(PriceSimulation.upgradePrice(thing, name))})",
           name => {
             // upgrade engine upon selection
-            thing.owner.upgrade(thing, name)
+            company.upgrade(thing, name)
             // reset content
             menu.setChildren()
         })
@@ -77,6 +79,8 @@ extends VBox(3) { menu =>
       menu.setChildren()
       children.add(selectionList)
     }
+
+    disable <== thing.owner =!= company
   }
 
   def setChildren(): Unit = {

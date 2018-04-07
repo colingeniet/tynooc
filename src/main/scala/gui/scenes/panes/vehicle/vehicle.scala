@@ -74,12 +74,13 @@ object VehicleUnitDetail {
 
 
 
-class VehicleUnitMenu(vehicle: VehicleUnit)
-extends UpgradeMenu[VehicleUnitModel](vehicle) {
-  upgradeButton.disable <== vehicle.isUsed
+class VehicleUnitMenu(vehicle: VehicleUnit, company: Company)
+extends UpgradeMenu[VehicleUnitModel](vehicle, company) {
+  upgradeButton.disable <== vehicle.isUsed || vehicle.owner =!= company
 }
 
-class VehicleMenu(vehicle: Vehicle) extends VehicleUnitMenu(vehicle) {
+class VehicleMenu(vehicle: Vehicle, company: Company)
+extends VehicleUnitMenu(vehicle, company) {
   private val nameField: TextField = new TextField() {
     text <==> vehicle.name
   }
@@ -92,11 +93,11 @@ class VehicleMenu(vehicle: Vehicle) extends VehicleUnitMenu(vehicle) {
 
 
 object VehicleUnitMenu {
-  def apply(vehicle: VehicleUnit): VBox = {
+  def apply(vehicle: VehicleUnit, company: Company): VBox = {
     val menu = vehicle match {
-      case e: Engine => new TrainMenu(e)
-      case v: Vehicle => new VehicleMenu(v)
-      case _ => new VehicleUnitMenu(vehicle)
+      case e: Engine => new TrainMenu(e, company)
+      case v: Vehicle => new VehicleMenu(v, company)
+      case _ => new VehicleUnitMenu(vehicle, company)
     }
     menu.setChildren()
     menu

@@ -1,6 +1,7 @@
 package logic.model
 
 import collection.mutable.HashMap
+import scalafx.beans.property._
 
 import logic.company._
 
@@ -36,7 +37,7 @@ trait BuyableModel extends Model{
 /* Corresponding implementations */
 
 trait Upgradable[+T <: BuyableModel] extends WithModel[T] {
-  var owner: Company
+  val owner: ObjectProperty[Company]
   def modelNameMap(name: String): T
   def upgradeTo(name: String): Unit
 }
