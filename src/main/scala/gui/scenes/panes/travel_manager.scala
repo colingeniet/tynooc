@@ -42,9 +42,10 @@ class ScriptInfo(script: Script) extends VBox(3) {
 
   private val travelToButton: Button = new Button("go to") {
     onAction = (event: ActionEvent) => {
+      val v = script.vehicle
       // when pressing the button, display the list of towns
       val selectionList: SelectionList[Town] = new SelectionList[Town](
-        Game.world.towns.toList,
+        (v.town() :: Game.world.townsAccessibleFrom(v.town(), v)),
         _.name,
         town => {
           script.instructions.add(new script.TravelTo(town))
