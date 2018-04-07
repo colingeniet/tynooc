@@ -185,7 +185,7 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
       state() match {
         case State.Launched => state() = State.Waiting
         case State.OnRoute => {
-          currentRouteDistanceDone() += dt * vehicle.speed
+          currentRouteDistanceDone() += dt * vehicle.speed(currentRoute().get)
           if(currentRouteDistanceDone() >= currentRoute().get.length) {
             state() = State.Arrived
           }

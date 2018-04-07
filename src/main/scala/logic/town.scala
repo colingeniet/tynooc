@@ -60,24 +60,27 @@ class Town(
           a(g) = population()*consume_coeffs(g)
         else {
           a(g) = goods(g)()
-          Game.printMessage("Good Lord! The people of " + name + " are severly lacking of " + g.name() + "!")
+          Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.name()} !")
           //Do something related to happiness
         }
       }
       a
   }
 
+  def addGoods(g: Good, v: Double): Unit = {
+    goods(g)() = goods(g)() + v
+  }
+
   /** Calculates the prices of goods
   */
   def price_update() : Unit = {
-
   }
 
   /** Consume goods of every type every time it's called.
   */
   def consume_daily: Unit = {
       val a = needs()
-      goods.foreach{ case (key, value) => goods(key)() = value() - needs()(key) }
+      goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
   }
 
   /** Consume a certain quantity of good
@@ -85,18 +88,11 @@ class Town(
   */
   def consume(h: HashMap[Good, Double]) : Boolean = {
 
-    if (!h.forall{ case (g, v) => goods(g)() > v }) false
-    else
-      h.foreach{ case (g, q) =>
-        var a = goods(g)()
-        if(a - q < 0)
-          goods(g)() = 0
-          else {
-            goods(g)() = a - q
-            a = q
-          }
+    if (h.forall{ case (g, v) => goods(g)() > v }) {
+      h.foreach{ case (g, q) => goods(g)() = goods(g)() - q }
+      true
     }
-    true
+    else false
   }
 
   /** The routes starting from this town. */

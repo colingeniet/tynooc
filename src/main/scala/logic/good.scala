@@ -77,7 +77,10 @@ class Good(val properties: List[GoodType]) {
   }
 
   def hasProp[A <: GoodType:ClassTag] : Boolean = {
-    properties.foldLeft(false){(b, gtype) => gtype match { case _: A => true case _ => b} }
+    properties.foldLeft(false){(b, gtype) => gtype match {
+      case _: A => true
+      case _ => b
+    }}
   }
 
   def name(): String = getClass.getSimpleName.toLowerCase()

@@ -11,6 +11,7 @@ import logic.travel._
 import logic.game._
 import logic.good._
 import logic.room._
+import logic.route._
 
 import collection.mutable.HashMap
 
@@ -95,6 +96,8 @@ trait Vehicle extends VehicleUnit {
   val isAvailable: BooleanBinding = jfxBooleanBinding2sfx(!onTravel)
 
   def speed: Double
+  def speed(route: Route): Double
+
   def consumption(distance: Double): Double
 
   def launchTravel(to: Town): Travel = {
@@ -117,6 +120,9 @@ abstract class VehicleFromModel[Model <: VehicleModel](
   owner: Company)
 extends VehicleUnitFromModel(model, town, owner) with Vehicle {
   val name: StringProperty
+
   def speed: Double = model.speed
+  def speed(route: Route): Double = speed
+
   def consumption(distance: Double): Double = model.consumption * distance
 }

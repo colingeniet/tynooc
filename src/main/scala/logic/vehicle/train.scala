@@ -192,6 +192,13 @@ extends VehicleFromModel[EngineModel](model, _town, owner) {
     super.launchTravel(to)
   }
 
+  override def speed(route: Route): Double = {
+    route match {
+      case r: Rail => r.maximum_speed min super.speed(route)
+      case _ => super.speed(route)
+    }
+  }
+
   def createRooms(travel: Travel): List[Room] =
     carriages.toList.map(new Room(travel, _))
 

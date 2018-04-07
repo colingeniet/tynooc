@@ -9,6 +9,7 @@ import scalafx.scene.layout._
 import scalafx.geometry._
 
 import gui.scenes.elements.Link
+import gui.scenes.panes.model._
 import logic.town._
 import logic.route._
 
@@ -19,31 +20,29 @@ import logic.route._
  *  @param displayRoute callback used to display a route.
  */
 class TownInfo(town: Town, displayRoute: Route => Unit)
-extends HBox(3) {
+extends VBox(3) {
   // needs to be updated at redraw
   private val popLbl = new Label {
     text <== createStringBinding(
-      () => "Population : " + town.population.toInt,
+      () => s"Population : ${town.population.toInt}",
       town.population)
   }
   private val pasLbl = new Label {
     text <== createStringBinding(
-      () => ", Passengers : " + town.passengersNumber.toInt,
+      () => s"Passengers : ${town.passengersNumber.toInt}",
       town.passengersNumber)
   }
 
 
   children = List(
     new Label(town.name),
-    new Separator{ orientation = Orientation.Vertical },
     popLbl,
     pasLbl,
-    new Separator{ orientation = Orientation.Vertical },
     new Label("Routes to : "))
 
   // add all clickable routes
   town.routes.foreach { route =>
-    val label: Link = new Link(route.end.name + "(" + route.length + "), ")(
+    val label: Link = new Link(f"${route.end.name} - ${route.length}%.0f (${route.name})")(
       displayRoute(route))
     children.add(label)
   }
@@ -55,11 +54,14 @@ extends HBox(3) {
  *  @param displayTown callback used to display a town.
  */
 class RouteInfo(route: Route, displayTown: Town => Unit)
-extends HBox(3) {
+extends VBox(3) {
   children = List(
+    new Label(route.name),
     new Link(route.start.name)(displayTown(route.start)),
-    new Label("-"),
     new Link(route.end.name)(displayTown(route.end)),
-    new Separator{ orientation = Orientation.Vertical },
-    new Label("Distance : " + route.length))
+    new Stats(route) {
+      override def filter(a: java.lang.reflect.Field): Boolean = {
+        a.getName() == "start" || a.getName() == "end" || super.filter(a)
+      }
+    })
 }

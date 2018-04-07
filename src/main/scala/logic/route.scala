@@ -12,6 +12,9 @@ trait Route {
 
   /** Tests if a vehicle can use the route. */
   def accepts(vehicle: Vehicle): Boolean
+
+  /** Route type name */
+  def name: String = this.getClass().getSimpleName().toLowerCase()
 }
 
 /* Route types */
@@ -20,7 +23,7 @@ class Road(
   val start: Town,
   val end: Town,
   val length: Double,
-  val maximum_speed: Int,
+  val maximum_speed: Double,
   val lanes: Int)
 extends Route {
   def accepts(vehicle: Vehicle): Boolean = {
@@ -61,7 +64,7 @@ class Rail(
   val start: Town,
   val end: Town,
   val length: Double,
-  val maximum_speed: Int,
+  val maximum_speed: Double,
   val tracks: Int,
   val electrified: Boolean)
 extends Route {
