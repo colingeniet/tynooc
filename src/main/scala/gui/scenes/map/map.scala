@@ -123,8 +123,8 @@ extends StackPane with ZoomPane {
     route match {
       case r: Road => Black
       case r: Rail => Gray
-      case c: Canal => Blue
-      case r: River => Blue
+      case c: Canal => RoyalBlue
+      case r: River => Aquamarine
       case s: Seaway => Blue
       case a: Airway => White
     }
@@ -224,7 +224,7 @@ extends StackPane with ZoomPane {
     val L = Math.tan(alpha) * (dist / 2)
     val CDx = XDirection * L * (B.y - A.y) / dist
     val CDy = - XDirection * L * (B.x - A.x) / dist
-    
+
     val ADx = Cx - Ax + CDx
     val ADy = Cy - Ay + CDy
 
