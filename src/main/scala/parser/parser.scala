@@ -34,6 +34,9 @@ class JAirport(
   @JacksonXmlProperty(localName = "runway_length") val runway_length: Int,
   @JacksonXmlProperty(localName = "size") val size: Int)
 
+class JTrainStation(
+  @JacksonXmlProperty(localName = "size") val size: Int)
+
 class JCity(
   @JacksonXmlProperty(localName = "name") val name: String,
   @JacksonXmlProperty(localName = "x") val x : Int,
@@ -43,7 +46,8 @@ class JCity(
   @JacksonXmlElementWrapper(useWrapping = false)
   val factories: JList[JFactory],
   @JacksonXmlProperty(localName = "Airport") val airport: JAirport,
-  @JacksonXmlProperty(localName = "Port") val port: JPort)
+  @JacksonXmlProperty(localName = "Port") val port: JPort,
+  @JacksonXmlProperty(localName = "TrainStation") val trainStation: JTrainStation)
 
 class JRail(
   @JacksonXmlProperty(localName = "length") val length: Int,
