@@ -101,9 +101,9 @@ trait Vehicle extends VehicleUnit {
 
   def launchTravel(to: Town): Travel = {
     assert(!this.onTravel())
-    val routes = Game.world.findPath(this.town(), to, this).getOrElse(
-      throw new PathNotFoundException(s"No usable route to ${to.name}."))
-    val newTravel = new Travel(this, routes)
+    val routes = Game.world.findPath(this.town(), to, this)
+    assert(routes != None)
+    val newTravel = new Travel(this, routes.get)
     this.travel() = Some(newTravel)
     newTravel
   }
