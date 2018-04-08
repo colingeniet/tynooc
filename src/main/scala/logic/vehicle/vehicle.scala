@@ -36,36 +36,9 @@ trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   val town: ObjectProperty[Town]
   val isUsed: BooleanBinding
 
-  val contents: HashMap[Good, DoubleProperty] = new HashMap[Good, DoubleProperty] {
-    override def default(g: Good): DoubleProperty = {
-      this(g) = DoubleProperty(0)
-      this(g)
-    }
-  }
-  private var filled: Double = 0
-
   def capacity: Int = model.capacity
   def comfort: Double = model.comfort
-
-  def load(g: Good, v: Double): Unit = {
-    if (filled + v/model.allowed(g) > 1 || contents(g)() + v > model.allowed(g))
-      throw new IllegalActionException("Can't load that much on your unit !")
-
-    contents(g)() += v
-    filled += v/model.allowed(g)
-  }
-
-  def unload(g: Good, v: Double): Unit = {
-    if (v/model.allowed(g) > filled || v > contents(g)())
-      throw new IllegalActionException("Can't load that much on your unit !")
-
-    contents(g)() -= v
-    filled -= v/model.allowed(g)
-  }
-
-  def handleGoods(dt: Double) : Unit = {
-    contents.foreach{ case (key, value) => if (value() > 0) key.update(this, dt) }
-  }
+  def allowed: HashMap[Good, Double] = model.allowed
 }
 
 abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](

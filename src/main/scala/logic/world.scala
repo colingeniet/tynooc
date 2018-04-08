@@ -146,6 +146,7 @@ class World {
       t => t.isWaitingAt(start) && t.stopsAt(destination)
     }
     var rooms = availableTravels.flatMap { _.availableRooms }
+
     status.foreach { status =>
       var takenPlacesNumber = 0
       var p = migrantByStatus(status).floor.toInt
@@ -168,7 +169,10 @@ class World {
     destination: Town,
     good: Good,
     quatity: Double): Unit = {
-
+    val availableTravels = travels.toList.filter {
+      t => t.isWaitingAt(start) && t.stopsAt(destination)
+    }
+    var rooms = availableTravels.flatMap { _.availableRooms }
   }
 
   /** Update the state of all travels and towns.

@@ -6,6 +6,7 @@ import scalafx.beans.binding._
 import scalafx.beans.binding.BindingIncludes._
 
 import logic.vehicle._
+import logic.room._
 
 import collection.mutable.HashMap
 
@@ -14,15 +15,15 @@ import scala.reflect.ClassTag
 
 trait GoodType {
 
-  def update(g: Good, owner: VehicleUnit, dt : Double) = {}
+  def update(g: Good, owner: Room, dt : Double) = {}
 }
 
 class Solid extends GoodType
 
 class Liquid(val rate: Double) extends GoodType { //Evaporates
 
-  override def update(g: Good, owner: VehicleUnit, dt: Double) = {
-    owner.contents(g)() -= rate*dt
+  override def update(g: Good, room: Room, dt: Double) = {
+    room.contents.values.foreach(h => {h(g) -= rate*dt*h(g)})
   }
 }
 
@@ -52,7 +53,7 @@ class Satisfiable extends GoodType // Can be satisfied or dissatisfied  ...
 object Good {
 
   //Is it possible to store those "dynamically", ie avoid adding Goods here when you add a Good down there...
-  val all: List[Good] = List(Passengers, Chocolate, Water, IronOre, Iron, Food, Gaz, Uranium, Stuff,
+  val all: List[Good] = List(/*Passengers,*/ Chocolate, Water, IronOre, Iron, Food, Gaz, Uranium, Stuff,
   Aluminium, AluminiumWires, BakedGoods, Bauxite, Beer, Bricks, CannedFood, Cattle, Cement, Chemicals, Clay,
   Coal, Copper, CopperWires, Cotton, Electronics, Fish,
   Fruit, Fuel, Furniture, Glass, Grain, Iron, Leather, Limestone,
@@ -97,9 +98,8 @@ class Good(val properties: List[GoodType]) {
 
   def basePrice: Double = 1
 
-  def update(owner: VehicleUnit, dt: Double) : Unit = {
-
-    properties.foreach{ _.update(this, owner, dt) }
+  def update(room: Room, dt: Double) : Unit = {
+    properties.foreach{ _.update(this, room, dt) }
   }
 
   def hasProp[A <: GoodType:ClassTag] : Boolean = {
@@ -115,7 +115,7 @@ class Good(val properties: List[GoodType]) {
 //My objects
 
 // Necessary
-object Passengers extends Good(List(new Satisfiable(), new Alive()))
+//object Passengers extends Good(List(new Satisfiable(), new Alive()))
 object Stuff extends Good(List()) // A good for unknown factories
 
 //For fun

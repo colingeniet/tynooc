@@ -1,10 +1,13 @@
 package logic.room
 
+import scalafx.beans.property._
+
 import logic.vehicle._
 import logic.travel._
 import logic.game._
 import logic.world._
 import logic.town._
+import logic.good._
 
 import collection.mutable.HashMap
 import collection.mutable.HashSet
@@ -23,17 +26,32 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
       passengers(t)(s) = 0
     }
   }
-  /** Number of passengers in the room. */
-  def passengerNumber: Int = passengers.values.flatMap(_.values).sum
+  val contents: HashMap[Town, HashMap[Good, Double]] = new HashMap()
+  Game.world.towns.foreach { t =>
+    contents(t) = new HashMap[Good, Double] {
+      override def default(g: Good): Double = {
+        this(g) = 0
+        this(g)
+      }
+    }
+  }
+  private var filled: Double = 0
+
   /** Maximum number of passengers in the room. */
   def capacity: Int = vehicle.capacity
+  /** The comfort note of the room (between 0 and 1). */
+  def comfort: Double = vehicle.comfort
+  /** Goods capacity. */
+  def allowed: HashMap[Good, Double] = vehicle.allowed
+
+
+  /** Number of passengers in the room. */
+  def passengerNumber: Int = passengers.values.flatMap(_.values).sum
 
   /** Returns <code>true</code> if some places are available in the room. */
   def isAvailable: Boolean = passengerNumber < capacity
   /** Number of available places in the room. */
   def availablePlaces: Int = capacity - passengerNumber
-  /** The comfort note of the room (betwween 0 and 1). */
-  def comfort: Double = vehicle.comfort
 
   /** The price of a place for <code>destination</code>.
     *
@@ -78,9 +96,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     * @param status The status of these passengers.
     */
   def freePlaces(destination: Town, status: Status.Val): Unit = {
-    Game.world.status.foreach { status =>
-      freePlaces(passengerNumber(status, destination), destination, status)
-    }
+    freePlaces(passengerNumber(status, destination), destination, status)
   }
 
   /** Take <code>number</code> places for passengers of status <code>status</code>
@@ -94,5 +110,30 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     assert(number <= availablePlaces)
     passengers(destination)(status) += number
     travel.company.credit(price(destination) * number)
+  }
+
+
+  def load(g: Good, destination: Town, v: Double): Unit = {
+    if (filled + v/allowed(g) > 1)
+      throw new IllegalActionException("Can't load that much on your unit !")
+
+    contents(destination)(g) += v
+    filled += v/allowed(g)
+  }
+
+  def unload(g: Good, destination: Town, v: Double): Unit = {
+    if (v/allowed(g) > filled || v > contents(destination)(g))
+      throw new IllegalActionException("Can't load that much on your unit !")
+
+    contents(destination)(g) -= v
+    filled -= v/allowed(g)
+  }
+
+  def unload(g: Good, destination: Town): Unit = {
+    unload(g, destination, contents(destination)(g))
+  }
+
+  def handleGoods(dt: Double) : Unit = {
+    //contents.foreach{ case (key, value) => if (value() > 0) key.update(this, dt) }
   }
 }
