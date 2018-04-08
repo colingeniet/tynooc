@@ -24,11 +24,7 @@ class Script(val company: Company, val vehicle: Vehicle) {
         // this will delay until the next tick
         Game.delayAction(0, () => onCompleted())
       } else {
-        try company.launchTravel(vehicle, town, onCompleted)
-        catch {
-          case IllegalActionException(msg, _) => onFailed(msg)
-          case PathNotFoundException(msg, _) => onFailed(msg)
-        }
+        company.launchTravel(vehicle, town, onCompleted)
       }
     }
   }
