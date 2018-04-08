@@ -89,3 +89,29 @@ extends Player(company) with AI {
     }
   }
 }
+
+class BasicTruckAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
+
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      if(company.money() > 1000)
+        company.buy(Truck("basic", company))
+      val trucks = company.vehicles.toList.filter {!_.isUsed()}
+      if(!trucks.isEmpty) {
+        val truck = Random.shuffle(trucks).head
+        val towns = world.townsAccessibleFrom(truck.town(), truck).filter(_ != truck.town())
+        if (!towns.isEmpty) {
+          val direction = Random.shuffle(towns).head
+          company.launchTravel(truck, direction)
+        }
+      }
+    }
+  }
+}
