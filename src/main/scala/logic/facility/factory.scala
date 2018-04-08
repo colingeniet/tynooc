@@ -14,7 +14,7 @@ import logic.company._
 class ProductionCycle(
   val consumes: HashMap[Good, Double],
   val produces: HashMap[Good, Double],
-  val cycleTime: Double) //In days ?
+  val cycleTime: Double)
 
 class FactoryModel(
   val name: String,
@@ -139,8 +139,8 @@ object FactoryModel extends ModelNameMap[FactoryModel] {
  override def models: HashMap[String, FactoryModel] = _models
 }
 
-class Factory(model: FactoryModel, _town: Town, _owner: Company)
-extends FacilityFromModel[FactoryModel](model, _town, _owner) {
+class Factory(_model: FactoryModel, _town: Town, _owner: Company)
+extends FacilityFromModel[FactoryModel](_model, _town, _owner) {
   val working: BooleanProperty = BooleanProperty(false)
 
   def modelNameMap(name: String): FactoryModel = FactoryModel(name)

@@ -3,6 +3,7 @@ package logic.game
 import scalafx.beans.property._
 
 import scala.collection.mutable.PriorityQueue
+import scala.math.Ordering.Implicits._
 
 import logic.world._
 import logic.company._
@@ -32,15 +33,20 @@ object Game {
 
   var printMessage: String => Unit = (_ => ())
 
-  private var actionQueue: PriorityQueue[(Double, () => Unit)] =
-    new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))
+
+  private val queueOrdering = Ordering.by[(Double, () => Unit), Double](_._1).reverse
+
+  private val actionQueue: PriorityQueue[(Double, () => Unit)] =
+    new PriorityQueue[(Double, () => Unit)]()(queueOrdering)
 
   /** Execute an action at a given in game time. */
-  def addAction(actionTime: Double, action: () => Unit) =
+  def addAction(actionTime: Double, action: () => Unit) = {
     actionQueue.enqueue((actionTime, action))
+  }
 
-  def delayAction(delay: Double, action: () => Unit) =
+  def delayAction(delay: Double, action: () => Unit) = {
     addAction(time() + delay, action)
+  }
 
   /** Advance simulation. */
   def update(): Unit = {
@@ -79,7 +85,7 @@ object Game {
     nextDay = 0
     paused = false
     timeAcceleration = 1
-    actionQueue = new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))
+    actionQueue.clear()
     last = System.currentTimeMillis()
   }
 
