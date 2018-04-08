@@ -33,7 +33,8 @@ class TrainStationModel(
 extends StationModel
 
 object TrainStationModel extends ModelNameMap[TrainStationModel] {
- private val _models: HashMap[String, TrainStationModel] = HashMap()
+ private val _models: HashMap[String, TrainStationModel] = HashMap(
+   "train station" -> new TrainStationModel("train station", 5000, List(), 4))
 
  override def models: HashMap[String, TrainStationModel] = _models
 }
@@ -60,7 +61,8 @@ class AirportModel(
 extends StationModel
 
 object AirportModel extends ModelNameMap[AirportModel] {
- private val _models: HashMap[String, AirportModel] = HashMap()
+ private val _models: HashMap[String, AirportModel] = HashMap(
+   "airport" -> new AirportModel("airport", 5000, List(), 2, 3000))
 
  override def models: HashMap[String, AirportModel] = _models
 }
@@ -87,7 +89,8 @@ class PortModel(
 extends StationModel
 
 object PortModel extends ModelNameMap[PortModel] {
- private val _models: HashMap[String, PortModel] = HashMap()
+ private val _models: HashMap[String, PortModel] = HashMap(
+   "port" -> new PortModel("port", 10000, List(), 4, 15))
 
  override def models: HashMap[String, PortModel] = _models
 }

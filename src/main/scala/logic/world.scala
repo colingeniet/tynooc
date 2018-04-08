@@ -221,7 +221,7 @@ class World {
     */
   def townsAccessibleFrom(from: Town, vehicle: Vehicle): List[Town] = {
     vehicle match {
-      case p: Plane => { towns.toList diff List(from) }
+      case p: Plane => { towns.toList.filter(_.accepts(vehicle)) }
       case _        => {
         val closed: HashSet[Town] = new HashSet()
         val open: HashSet[Town] = new HashSet()
@@ -238,8 +238,7 @@ class World {
           open.remove(town)
           closed.add(town)
         }
-        closed.remove(from)
-        closed.toList
+        closed.toList.filter(_.accepts(vehicle))
       }
     }
   }

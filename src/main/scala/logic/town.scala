@@ -9,6 +9,7 @@ import logic.game._
 import logic.world._
 import logic.good._
 import logic.facility._
+import logic.vehicle._
 import logic.company._
 
 import collection.mutable.HashMap
@@ -271,6 +272,17 @@ class Town(
   def addFacility(f: Facility): Unit = {
     assert(f.town == this)
     facilities.add(f)
+  }
+
+
+  def accepts(v: Vehicle): Boolean = {
+    v match {
+      case _: Truck => true
+      case _ => facilities.exists( _ match {
+        case s: Station => s.accepts(v)
+        case _ => false
+      })
+    }
   }
 
 

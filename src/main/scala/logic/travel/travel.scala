@@ -69,7 +69,9 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
   /** Tests if the travel will stop at a specific town.
    *
    *  Does not take past stops into account. */
-  def stopsAt(t: Town): Boolean = (remainingRoutes.map { _.end}).contains(t)
+  def stopsAt(t: Town): Boolean = {
+    t.accepts(vehicle) && remainingRoutes.map(_.end).contains(t)
+  }
 
   /** Distance remaining until destination. */
   /* bindings are calculated lazily */
@@ -163,7 +165,10 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
   val isLaunched: BooleanBinding = jfxBooleanBinding2sfx(state === State.Launched)
   val isOnRoute: BooleanBinding = jfxBooleanBinding2sfx(state === State.OnRoute)
   val isArrived: BooleanBinding = jfxBooleanBinding2sfx(state === State.Arrived)
-  def isWaitingAt(town: Town): Boolean = (isWaiting() || isLaunched()) && currentTown() == town
+
+  def isWaitingAt(town: Town): Boolean = {
+    (isWaiting() || isLaunched()) && currentTown() == town && town.accepts(vehicle)
+  }
 
   def availableRooms: List[Room] = rooms.filter { _.isAvailable }
 
@@ -193,7 +198,9 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
         case State.Arrived => {
           company.debit(vehicle.consumption(currentRoute().get.length) * Game.world.fuelPrice)
           state() = State.Waiting
-          landPassengers()
+          if(currentTown().accepts(vehicle)) {
+            landPassengers()
+          }
           remainingRoutes.remove(0)
           currentRouteDistanceDone() = 0
           if(isDone()) {
