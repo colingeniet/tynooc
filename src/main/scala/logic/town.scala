@@ -75,18 +75,17 @@ class Town(
 
   // Coeff used for consumation
   val consume_coeffs: HashMap[Good, Double] = {
-
-      val a = new HashMap[Good, Double] {
-        override def default(g: Good): Double = {
-              // initialize empty entries
-              this(g) = 0
-              this(g)
-            }
-          }
-      Good.setAnyWith[CityNeeded](a, 0.7d/1000)
-      Good.setAnyWith[Consumable](a, 1d/1000)
-      a
-}
+    val a = new HashMap[Good, Double] {
+      override def default(g: Good): Double = {
+        // initialize empty entries
+        this(g) = 0
+        this(g)
+      }
+    }
+    Good.setAnyWith[CityNeeded](a, 0.7d/1000)
+    Good.setAnyWith[Consumable](a, 1d/1000)
+    a
+  }
 
   // PRNG
   private var random: Random = new Random()
@@ -99,8 +98,8 @@ class Town(
   def needs() : HashMap[Good, Double] = {
     val a: HashMap[Good, Double] = HashMap()
     Good.all.foreach{ g =>
-      if(population()*consume_coeffs(g) < goods(g)())
-        a(g) = population()*consume_coeffs(g)
+      if(population()*consume_coeffs(g) <= goods(g)())
+        a(g) = population.toDouble * consume_coeffs(g)
       else {
         a(g) = goods(g)()
         Game.printMessage(s"Good Lord! The people of ${name} are severly lacking ${g.name}!")
@@ -121,7 +120,7 @@ class Town(
 
   /** Consume goods of every type every time it's called.
   */
-  def consume_daily: Unit = {
+  def consume_daily(): Unit = {
     val a = needs()
     goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
   }
@@ -157,11 +156,6 @@ class Town(
     } else false
   }
 
-  def update_economy() : Unit = {
-    consume_daily
-    update_prices()
-  }
-
   /** Calculates the prices of goods
   */
   def update_prices() : Unit = {
@@ -170,17 +164,22 @@ class Town(
       val total = Game.world.towns.map(_.goods(g)()).sum
       val avg = total / Game.world.towns.size
 
-      val world_coef = (((avg + 1) / (local + 1)) max 0.2) min 4
+      val world_coef = (((avg + 1.0) / (local + 1.0)) max 0.2) min 4.0
 
-      val pop_required = population() * consume_coeffs(g)
-      val pop_needs_coef = (1 / ((((local + 1) / (pop_required + 1)) - 1) max 0.1)) min 1
+      val pop_required = population.toDouble * consume_coeffs(g)
+      val pop_needs_coef = (1.0 / ((((local + 2.0) / (pop_required + 1.0)) - 1.0) max 0.1)) max 1.0
 
       val consumed = goods_last(g) - local
-      val needs_coef = 1 / ((((local + 1) / (consumed + 1)) - 1) max 0.2)
+      val needs_coef = 1.0 / ((((local + 2.0) / (consumed + 1.0)) - 1.0) max 0.2)
 
       goods_prices(g)() = g.basePrice * world_coef * needs_coef * pop_needs_coef
       goods_last(g) = local
     }
+  }
+
+  def update_economy() : Unit = {
+    consume_daily()
+    update_prices()
   }
 
 
