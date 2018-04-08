@@ -96,11 +96,22 @@ object Parser {
     val t = new Town(c.name, c.x, c.y, 1)
     Game.world.status.foreach { s => t.addResidents(c.population / 3, s) }
     t.addResidents(c.population - t.population(), Game.world.status.head)
+    if(c.factories != null) {
+      c.factories.asScala.foreach { f =>
+        t.addFacility(new Factory(FactoryModel(f._type), t, Game.bigBrother))
+      }
+    }
+   
+    if(c.airport != null) {
+      t.addFacility(new Airport(AirportModel("airport"), t, Game.bigBrother))
+    }
+    if(c.port != null) {
+      t.addFacility(new Port(PortModel("port"), t, Game.bigBrother))
+    }
+    if(c.airport != null) {
+      t.addFacility(new TrainStation(TrainStationModel("train station"), t, Game.bigBrother))
+    }
     t
-  }
-
-  def buildFactory(town: Town, j: JFactory): Unit = {
-    town.addFacility(new Factory(FactoryModel(j._type), town, Game.bigBrother))
   }
 
   def buildRoute(towns: HashSet[Town], c: JConnection): Unit = {
@@ -144,13 +155,6 @@ object Parser {
       throw new BadFileFormatException("Invalid map file : no connections in the world.")
 
     jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
-
-    jMap.cities.asScala.foreach { c =>
-      if(c.factories != null) {
-        c.factories.asScala.foreach { f =>
-          buildFactory(world.towns.find(_.name == c.name).get, f) }
-      }
-    }
 
     jMap.connections.asScala.filter { c =>
       c.upstream != null && c.downstream != null
