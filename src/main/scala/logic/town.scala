@@ -74,14 +74,19 @@ class Town(
 
 
   // Coeff used for consumation
-  val consume_coeffs: HashMap[Good, Double] =
-    new HashMap[Good, Double] {
-      override def default(g: Good): Double = {
-        // initialize empty entries
-        this(g) = 0
-        this(g)
-      }
-    }
+  val consume_coeffs: HashMap[Good, Double] = {
+
+      val a = new HashMap[Good, Double] {
+        override def default(g: Good): Double = {
+              // initialize empty entries
+              this(g) = 0
+              this(g)
+            }
+          }
+      Good.setAnyWith[CityNeeded](a, 0.7d/1000)
+      Good.setAnyWith[Consumable](a, 1d/1000)
+      a
+}
 
   // PRNG
   private var random: Random = new Random()
@@ -98,7 +103,7 @@ class Town(
         a(g) = population()*consume_coeffs(g)
       else {
         a(g) = goods(g)()
-        Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.name} !")
+        Game.printMessage(s"Good Lord! The people of ${name} are severly lacking ${g.name}!")
         //Do something related to happiness
       }
     }
@@ -120,7 +125,6 @@ class Town(
     val a = needs()
     goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
   }
-
 
   def available(g: Good, v: Double): Boolean = {
     goods(g)() >= v
@@ -151,6 +155,11 @@ class Town(
       h.foreach{ case (g, v) => buyGoods(company, g, v) }
       true
     } else false
+  }
+
+  def update_economy() : Unit = {
+    consume_daily
+    update_prices()
   }
 
   /** Calculates the prices of goods

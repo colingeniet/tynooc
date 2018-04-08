@@ -87,10 +87,18 @@ object Good {
     a
   }
 
+  def setAnyWith[A <: GoodType:ClassTag](a: HashMap[Good, Double], q: Double): Unit = {
+    filter[A].foreach{ g => a(g) = q }
+  }
+
 }
 
 class Good(val properties: List[GoodType]) {
+
+  def basePrice: Double = 1
+
   def update(owner: VehicleUnit, dt: Double) : Unit = {
+
     properties.foreach{ _.update(this, owner, dt) }
   }
 
@@ -102,8 +110,6 @@ class Good(val properties: List[GoodType]) {
   }
 
   def name: String = getClass.getSimpleName.toLowerCase().replace("$", "")
-
-  def basePrice: Double = 1
 }
 
 //My objects

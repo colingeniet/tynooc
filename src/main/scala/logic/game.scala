@@ -51,7 +51,7 @@ object Game {
       time() = time() + dt
 
       if (time() >= nextDay) {
-        world.update_prices()
+        world.update_towns()
         nextDay += 6
       }
 

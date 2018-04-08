@@ -172,8 +172,8 @@ class World {
     towns.foreach(_.update(dt))
   }
 
-  def update_prices(): Unit = {
-    towns.foreach(_.update_prices())
+  def update_towns(): Unit = {
+    towns.foreach(_.update_economy())
   }
 
   /** Find the shortest path between two towns.
