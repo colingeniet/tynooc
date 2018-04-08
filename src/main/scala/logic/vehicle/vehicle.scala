@@ -47,11 +47,20 @@ trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   def capacity: Int = model.capacity
   def comfort: Double = model.comfort
 
-  def load(g: Good, i: Int) : Unit = {
-    if (model.allowed(g) < contents(g)() + i)
+  def load(g: Good, v: Double): Unit = {
+    if (filled + v/model.allowed(g) > 1 || contents(g)() + v > model.allowed(g))
       throw new IllegalActionException("Can't load that much on your unit !")
 
-    contents(g)() += i
+    contents(g)() += v
+    filled += v/model.allowed(g)
+  }
+
+  def unload(g: Good, v: Double): Unit = {
+    if (v/model.allowed(g) > filled || v > contents(g)())
+      throw new IllegalActionException("Can't load that much on your unit !")
+
+    contents(g)() -= v
+    filled -= v/model.allowed(g)
   }
 
   def handleGoods(dt: Double) : Unit = {
