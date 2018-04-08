@@ -19,7 +19,7 @@ import logic.company._
 class ScriptInfo(script: Script) extends VBox(3) {
   private val pause: ToggleButton = new ToggleButton("pause") {
     selected <==> script.paused
-    selected.onChange({if(!selected()) script.step()})
+    selected.onChange({if(!selected()) script.start()})
   }
 
   private val repeat: ToggleButton = new ToggleButton("repeat") {

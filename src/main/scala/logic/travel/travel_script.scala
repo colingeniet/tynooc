@@ -41,10 +41,11 @@ class Script(val company: Company, val vehicle: Vehicle) {
   val instructions: ObservableBuffer[TravelInstruction] = ObservableBuffer()
   val repeat: BooleanProperty = BooleanProperty(false)
   val paused: BooleanProperty = BooleanProperty(true)
+  private var onTravel = false
 
   val ip: IntegerProperty = IntegerProperty(0)
 
-  def next(
+  private def next(
     stepCompleted: () => Unit,
     travelCompleted: () => Unit,
     onFailed: String => Unit): Unit = {
@@ -54,17 +55,27 @@ class Script(val company: Company, val vehicle: Vehicle) {
       instructions(ip()).execute(stepCompleted, onFailed)
     } else {
       paused() = true
+      onTravel = false
       ip() = 0
       travelCompleted()
     }
   }
 
-  def step(): Unit = {
+  private def step(): Unit = {
     if(!paused()) {
       next(
         () => {ip() = ip() + 1; step()},
         () => (),
         msg => {paused() = true; Game.printMessage(msg)})
+    } else {
+      onTravel = false
+    }
+  }
+
+  def start(): Unit = {
+    if(!onTravel) {
+      onTravel = true
+      step()
     }
   }
 }
