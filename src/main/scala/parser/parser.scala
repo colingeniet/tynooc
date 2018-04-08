@@ -142,8 +142,10 @@ object Parser {
     jMap.cities.asScala.map { buildTown(_) }.foreach { world.addTown(_) }
 
     jMap.cities.asScala.foreach { c =>
-      c.factories.asScala.foreach { f =>
-        buildFactory(world.towns.find(_.name == c.name).get, f) }
+      if(c.factories != null) {
+        c.factories.asScala.foreach { f =>
+          buildFactory(world.towns.find(_.name == c.name).get, f) }
+      }
     }
 
     jMap.connections.asScala.filter { c =>

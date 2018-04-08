@@ -61,10 +61,10 @@ extends VehicleFromModel[TruckModel](model, _town, owner) {
 
   def createRooms(travel: Travel): List[Room] = List()
 
-  override def speed(route: Route): Double = {
-    route match {
-      case r: Rail => r.maximum_speed min super.speed(route)
-      case _ => super.speed(route)
+  override def speed(road: Route): Double = {
+    road match {
+      case r: Road => r.maximum_speed min super.speed(road)
+      case _ => super.speed(road)
     }
   }
 }

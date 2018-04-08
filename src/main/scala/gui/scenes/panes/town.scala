@@ -15,6 +15,7 @@ import logic.town._
 import logic.route._
 import logic.facility._
 import logic.company._
+import logic.good._
 
 
 /** Town display panel.
@@ -26,7 +27,8 @@ class TownInfo(
   town: Town,
   company: Company,
   displayRoute: Route => Unit,
-  displayFacility: Facility => Unit)
+  displayFacility: Facility => Unit,
+  displayStock: Town => Unit)
 extends VBox(3) {
   private val popLbl = new Label {
     text <== createStringBinding(
@@ -39,10 +41,12 @@ extends VBox(3) {
       town.passengersNumber)
   }
 
+  private var goods = new Link("goods stock", () => displayStock(town))
+
   private val routes = new VBox {
     children = new Label("Routes to:") :: town.routes.map{ route => new Link(
-        f"${route.end.name} - ${route.length}%.0f (${route.name})")(
-        displayRoute(route))
+        f"${route.end.name} - ${route.length}%.0f (${route.name})",
+        () => displayRoute(route))
     }
   }
 
@@ -57,6 +61,7 @@ extends VBox(3) {
       new Label(town.name),
       popLbl,
       pasLbl,
+      goods,
       routes,
       facilities)
   }
@@ -79,8 +84,8 @@ class RouteInfo(route: Route, displayTown: Town => Unit)
 extends VBox(3) {
   children = List(
     new Label(route.name),
-    new Link(route.start.name)(displayTown(route.start)),
-    new Link(route.end.name)(displayTown(route.end)),
+    new Link(route.start.name, () => displayTown(route.start)),
+    new Link(route.end.name, () => displayTown(route.end)),
     new Label(f"length: ${route.length}%.0f"),
     new Stats(route) {
       override def filter(a: java.lang.reflect.Field): Boolean = {
@@ -88,4 +93,17 @@ extends VBox(3) {
           a.getName() == "length" || super.filter(a)
       }
     })
+}
+
+
+class TownStock(town: Town) extends ScrollPane {
+  content = new VBox {
+    children = Good.all.map(g => {
+      new Label {
+        text <== createStringBinding(
+          () => f"${g.name}: ${town.goods(g)()}%.1f",
+          town.goods(g))
+      }
+    })
+  }
 }

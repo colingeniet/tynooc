@@ -64,8 +64,7 @@ extends VehicleFromModel[PlaneModel](model, _town, owner) {
   val contents: HashMap[Good, DoubleProperty] = HashMap()
 
   override def launchTravel(to: Town): Travel = {
-    if (onTravel())
-      throw new IllegalActionException("Can't launch travel with used vehicle.")
+    assert(!onTravel())
 
     val from = this.town()
     val distX = from.x - to.x

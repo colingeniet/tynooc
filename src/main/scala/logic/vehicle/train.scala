@@ -151,20 +151,14 @@ extends VehicleFromModel[EngineModel](_model, _town, _owner) {
 
   /** Adds a carriage at the end of the train. */
   def addCarriage(c: Carriage): Unit = {
-    if(c.isUsed())
-      throw new IllegalActionException("Can't add used carriage to a train.")
-    if(onTravel())
-      throw new IllegalActionException("Can't add carriage to on road train.")
-    if (town() != c.town())
-      throw new IllegalActionException(s"Can't add ${c.town} stocked carriage to a ${town} stocked train.")
+    assert(!c.isUsed() && !onTravel() && town() == c.town())
     c.train() = Some(this)
     carriages += c
   }
 
   /** Remove the last carriage of the train and returns it. */
   def removeCarriage(): Carriage = {
-    if(onTravel())
-      throw IllegalActionException("Can't remove carriage to on road train.")
+    assert(!onTravel())
     val last = carriages.last
     carriages.remove(carriages.size - 1)
     last.train() = None
@@ -174,8 +168,7 @@ extends VehicleFromModel[EngineModel](_model, _town, _owner) {
 
   /** Disassemble a train. */
   def disassemble(): Unit = {
-    if (onTravel())
-      throw new IllegalActionException("Can't disassemble used train.")
+    assert(!onTravel())
 
     carriages.foreach{ c =>
       c.town() = town()
@@ -185,9 +178,7 @@ extends VehicleFromModel[EngineModel](_model, _town, _owner) {
   }
 
   override def launchTravel(to: Town): Travel = {
-    if (this.tooHeavy())
-      throw new IllegalActionException("Can't launch travel with too heavy train.")
-
+    assert(!this.tooHeavy())
     super.launchTravel(to)
   }
 
