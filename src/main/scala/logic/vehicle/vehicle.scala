@@ -21,14 +21,6 @@ final case class IllegalActionException(
   private val cause: Throwable = None.orNull)
 extends Exception(message, cause)
 
-/** An exception which could be throwed if a player try to launchTravel
-  * a travel to an unattainable destination.
-  */
-final case class PathNotFoundException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
-
 
 /** Model for a vehicle unit.
  *
