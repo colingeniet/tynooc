@@ -67,7 +67,7 @@ extends JFXApp.PrimaryStage {
                 Platform.runLater(() => {
                   Game.update()
                 })
-                Thread.sleep(33)
+                Thread.sleep(12)
               }
             }
           }

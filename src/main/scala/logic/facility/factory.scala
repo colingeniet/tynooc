@@ -150,9 +150,9 @@ extends FacilityFromModel[FactoryModel](model, _town, _owner) {
       model.productions.find(p => town.available(p.consumes)) match {
         case Some(prod) => {
           working() = true
-          town.consume(prod.consumes)
+          town.buyGoods(owner(), prod.consumes)
           Game.delayAction(prod.cycleTime, () => {
-            town.addGoods(prod.produces)
+            town.sellGoods(owner(), prod.produces)
             working() = false
           })
         }

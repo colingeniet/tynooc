@@ -172,6 +172,10 @@ class World {
     towns.foreach(_.update(dt))
   }
 
+  def update_prices(): Unit = {
+    towns.foreach(_.update_prices())
+  }
+
   /** Find the shortest path between two towns.
    *
    * @param from start town.

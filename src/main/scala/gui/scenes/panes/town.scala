@@ -11,6 +11,7 @@ import scalafx.geometry._
 import gui.scenes.elements._
 import gui.scenes.panes.model._
 import gui.scenes.panes.facility._
+import formatter._
 import logic.town._
 import logic.route._
 import logic.facility._
@@ -101,8 +102,9 @@ class TownStock(town: Town) extends ScrollPane {
     children = Good.all.map(g => {
       new Label {
         text <== createStringBinding(
-          () => f"${g.name}: ${town.goods(g)()}%.1f",
-          town.goods(g))
+          () => f"${g.name}: ${town.goods(g)()}%.1f (${MoneyFormatter.format(town.goods_prices(g)())})",
+          town.goods(g),
+          town.goods_prices(g))
       }
     })
   }

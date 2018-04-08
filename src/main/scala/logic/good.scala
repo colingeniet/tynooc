@@ -90,9 +90,7 @@ object Good {
 }
 
 class Good(val properties: List[GoodType]) {
-
   def update(owner: VehicleUnit, dt: Double) : Unit = {
-
     properties.foreach{ _.update(this, owner, dt) }
   }
 
@@ -104,6 +102,8 @@ class Good(val properties: List[GoodType]) {
   }
 
   def name: String = getClass.getSimpleName.toLowerCase().replace("$", "")
+
+  def basePrice: Double = 1
 }
 
 //My objects

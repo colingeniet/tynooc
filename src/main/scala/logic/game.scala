@@ -17,6 +17,7 @@ object Game {
 
   var world: World = new World()
   var time: DoubleProperty = DoubleProperty(0)
+  private var nextDay: Double = 0
   /** List of the players */
   var players: List[Player] = List()
   /** Main player of the game. */
@@ -49,6 +50,11 @@ object Game {
       val dt: Double = timeAcceleration * realToVirtualTime(a - last)
       time() = time() + dt
 
+      if (time() >= nextDay) {
+        world.update_prices()
+        nextDay += 6
+      }
+
       world.update(dt)
       players.foreach {
         case ai: AI => ai.play(world, dt)
@@ -67,15 +73,16 @@ object Game {
     bigBrother = new Company("Big Brother", null)
     world = Parser.readWorldInformations(mapPath)
     time() = 0
+    nextDay = 0
     paused = false
     timeAcceleration = 1
     actionQueue = new PriorityQueue[(Double, () => Unit)]()(Ordering.by(_._1))
     last = System.currentTimeMillis()
   }
 
-  val virtualToRealRatio: Double = 4000
+  // 2 sec (real time) = 1 hours (game time)
+  val virtualToRealRatio: Double = 2000
 
-  // 4 sec (real time) = 1 hours (game time)
   def realToVirtualTime(t: Double): Double = t / virtualToRealRatio
   def virtualToRealTime(t: Double): Double = t * virtualToRealRatio
 }

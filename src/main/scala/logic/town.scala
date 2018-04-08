@@ -9,6 +9,7 @@ import logic.game._
 import logic.world._
 import logic.good._
 import logic.facility._
+import logic.company._
 
 import collection.mutable.HashMap
 import java.util.Random
@@ -51,11 +52,36 @@ class Town(
       }
     }
 
-  //Coeff used for consumation
-  val consume_coeffs: HashMap[Good, Double] = HashMap()
+  // Gives the prices of goods in this city
+  val goods_prices: HashMap[Good, DoubleProperty] =
+    new HashMap[Good, DoubleProperty] {
+      override def default(g: Good): DoubleProperty = {
+        // initialize empty entries
+        this(g) = DoubleProperty(g.basePrice)
+        this(g)
+      }
+    }
 
-  //Gives the prices of goods in this city
-  val goods_prices: HashMap[Good, DoubleProperty] = HashMap()
+  // Stocks at last tick. Used to estimate consumption
+  private val goods_last: HashMap[Good, Double] =
+    new HashMap[Good, Double] {
+      override def default(g: Good): Double = {
+        // initialize empty entries
+        this(g) = 0
+        this(g)
+      }
+    }
+
+
+  // Coeff used for consumation
+  val consume_coeffs: HashMap[Good, Double] =
+    new HashMap[Good, Double] {
+      override def default(g: Good): Double = {
+        // initialize empty entries
+        this(g) = 0
+        this(g)
+      }
+    }
 
   // PRNG
   private var random: Random = new Random()
@@ -66,30 +92,26 @@ class Town(
   /** Returns a hashmap containing the needs of the population
   */
   def needs() : HashMap[Good, Double] = {
-      val a: HashMap[Good, Double] = HashMap()
-      Good.all.foreach{ g =>
-        if(population()*consume_coeffs(g) < goods(g)())
-          a(g) = population()*consume_coeffs(g)
-        else {
-          a(g) = goods(g)()
-          Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.name} !")
-          //Do something related to happiness
-        }
+    val a: HashMap[Good, Double] = HashMap()
+    Good.all.foreach{ g =>
+      if(population()*consume_coeffs(g) < goods(g)())
+        a(g) = population()*consume_coeffs(g)
+      else {
+        a(g) = goods(g)()
+        Game.printMessage(s"Good Lord! The people of ${name} are severly lacking of ${g.name} !")
+        //Do something related to happiness
       }
-      a
+    }
+    a
   }
 
-  def addGoods(g: Good, v: Double): Unit = {
+  def sellGoods(company: Company, g: Good, v: Double): Unit = {
+    company.credit(goods_prices(g)() * v)
     goods(g)() = goods(g)() + v
   }
 
-  def addGoods(h: HashMap[Good, Double]): Unit = {
-    h.foreach{ case (g, v) => goods(g)() = goods(g)() + v }
-  }
-
-  /** Calculates the prices of goods
-  */
-  def price_update() : Unit = {
+  def sellGoods(company: Company, h: HashMap[Good, Double]): Unit = {
+    h.foreach{ case (g, v) => sellGoods(company, g, v) }
   }
 
   /** Consume goods of every type every time it's called.
@@ -99,10 +121,24 @@ class Town(
     goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
   }
 
+
+  def available(g: Good, v: Double): Boolean = {
+    goods(g)() >= v
+  }
+
   /** Test if goods are available.
    */
   def available(h: HashMap[Good, Double]): Boolean = {
-    h.forall{ case (g, v) => goods(g)() > v }
+    h.forall{ case (g, v) => available(g, v) }
+  }
+
+
+  def buyGoods(company: Company, g: Good, v: Double): Boolean = {
+    if (available(g, v) && company.money() >= goods_prices(g)() * v) {
+      company.debit(goods_prices(g)() * v)
+      goods(g)() = goods(g)() - v
+      true
+    } else false
   }
 
   /** Consume a certain quantity of good, if available.
@@ -110,12 +146,32 @@ class Town(
    *  @param h The goods to consume associated with the quantities
    *  @return true on success, false if goods are unavailable
    */
-  def consume(h: HashMap[Good, Double]): Boolean = {
+  def buyGoods(company: Company, h: HashMap[Good, Double]): Boolean = {
     if (available(h)) {
-      h.foreach{ case (g, q) => goods(g)() = goods(g)() - q }
+      h.foreach{ case (g, v) => buyGoods(company, g, v) }
       true
+    } else false
+  }
+
+  /** Calculates the prices of goods
+  */
+  def update_prices() : Unit = {
+    Good.all.foreach{ g =>
+      val local = goods(g)()
+      val total = Game.world.towns.map(_.goods(g)()).sum
+      val avg = total / Game.world.towns.size
+
+      val world_coef = (((avg + 1) / (local + 1)) max 0.2) min 4
+
+      val pop_required = population() * consume_coeffs(g)
+      val pop_needs_coef = (1 / ((((local + 1) / (pop_required + 1)) - 1) max 0.1)) min 1
+
+      val consumed = goods_last(g) - local
+      val needs_coef = 1 / ((((local + 1) / (consumed + 1)) - 1) max 0.2)
+
+      goods_prices(g)() = g.basePrice * world_coef * needs_coef * pop_needs_coef
+      goods_last(g) = local
     }
-    else false
   }
 
 
