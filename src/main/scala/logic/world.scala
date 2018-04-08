@@ -164,15 +164,33 @@ class World {
     }
   }
 
+  /** Try to send some goods from <code>start</code> to
+    * <code>destination</code>.
+    *
+    * @param start The start town.
+    * @param destination The destination town.
+    * @param good The goods to send.
+    * @param quantity The quantity of goods to send.
+    */
   def tryExport(
     start: Town,
     destination: Town,
     good: Good,
-    quatity: Double): Unit = {
+    quantity: Double): Unit = {
     val availableTravels = travels.toList.filter {
       t => t.isWaitingAt(start) && t.stopsAt(destination)
     }
     var rooms = availableTravels.flatMap { _.availableRooms }
+    var remaining = quantity
+
+    while(remaining > 0 && !rooms.isEmpty) {
+      val room = rooms.head
+      val q: Double = remaining min room.availableLoad(good)
+      room.load(good, destination, q)
+      start.buyGoods(room.travel.company, good, q)
+      remaining -= q
+      rooms = rooms.tail
+    }
   }
 
   /** Update the state of all travels and towns.
