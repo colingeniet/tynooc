@@ -60,9 +60,12 @@ object Game {
         case ai: AI => ai.play(world, dt)
         case _      =>
       }
+
+      var actions: List[() => Unit] = List()
       while (!actionQueue.isEmpty && actionQueue.head._1 <= time()) {
-        actionQueue.dequeue()._2()
+        actions = actionQueue.dequeue()._2 :: actions
       }
+      actions.foreach(_())
     }
     last = a
   }
