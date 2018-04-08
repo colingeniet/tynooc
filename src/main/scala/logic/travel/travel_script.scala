@@ -19,8 +19,11 @@ class Script(val company: Company, val vehicle: Vehicle) {
   extends TravelInstruction {
     def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit = {
       // class Travel does not work well with empty travels
-      if(town == vehicle.town()) onCompleted()
-      else {
+      if(town == vehicle.town()) {
+        // avoid infinite recursion by delaying of 0
+        // this will delay until the next tick
+        Game.delayAction(0, () => onCompleted())
+      } else {
         try company.launchTravel(vehicle, town, onCompleted)
         catch {
           case IllegalActionException(msg, _) => onFailed(msg)
