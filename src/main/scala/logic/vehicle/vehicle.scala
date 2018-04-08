@@ -27,6 +27,8 @@ extends Exception(message, cause)
  *  A vehicle unit is 'any vehicle which can be bought' :
  *  carriage, engine, truck, ship */
 trait VehicleUnitModel extends BuyableModel {
+  val capacity: Int
+  val comfort: Double
   val allowed: HashMap[Good, Double]
 }
 
@@ -34,10 +36,18 @@ trait VehicleUnit extends Upgradable[VehicleUnitModel] {
   val town: ObjectProperty[Town]
   val isUsed: BooleanBinding
 
-  val contents: HashMap[Good, DoubleProperty]
+  val contents: HashMap[Good, DoubleProperty] = new HashMap[Good, DoubleProperty] {
+    override def default(g: Good): DoubleProperty = {
+      this(g) = DoubleProperty(0)
+      this(g)
+    }
+  }
+  private var filled: Double = 0
+
+  def capacity: Int = model.capacity
+  def comfort: Double = model.comfort
 
   def load(g: Good, i: Int) : Unit = {
-
     if (model.allowed(g) < contents(g)() + i)
       throw new IllegalActionException("Can't load that much on your unit !")
 

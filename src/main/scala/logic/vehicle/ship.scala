@@ -50,15 +50,13 @@ object Ship {
 }
 
 class Ship(
-  model: ShipModel,
+  _model: ShipModel,
   _town: Town,
-  owner: Company)
-extends VehicleFromModel[ShipModel](model, _town, owner) {
+  _owner: Company)
+extends VehicleFromModel[ShipModel](_model, _town, _owner) {
   val name: StringProperty = StringProperty("ship")
 
   def modelNameMap(modelName: String): ShipModel = ShipModel(modelName)
 
-  val contents: HashMap[Good, DoubleProperty] = HashMap()
-
-  def createRooms(travel: Travel): List[Room] = List()
+  def createRooms(travel: Travel): List[Room] = List(new Room(travel, this))
 }

@@ -6,6 +6,7 @@ import logic.room._
 import logic.company._
 import logic.route._
 import logic.vehicle._
+import logic.good._
 
 import collection.mutable.HashMap
 import collection.mutable.HashSet
@@ -160,6 +161,14 @@ class World {
       }
       start.deletePassengers(takenPlacesNumber, status, destination)
     }
+  }
+
+  def tryExport(
+    start: Town,
+    destination: Town,
+    good: Good,
+    quatity: Double): Unit = {
+
   }
 
   /** Update the state of all travels and towns.

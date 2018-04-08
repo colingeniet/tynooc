@@ -49,15 +49,13 @@ object Truck {
 }
 
 class Truck(
-  model: TruckModel,
+  _model: TruckModel,
   _town: Town,
-  owner: Company)
-extends VehicleFromModel[TruckModel](model, _town, owner) {
+  _owner: Company)
+extends VehicleFromModel[TruckModel](_model, _town, _owner) {
   val name: StringProperty = StringProperty("truck")
 
   def modelNameMap(modelName: String): TruckModel = TruckModel(modelName)
-
-  val contents: HashMap[Good, DoubleProperty] = HashMap()
 
   def createRooms(travel: Travel): List[Room] = List()
 

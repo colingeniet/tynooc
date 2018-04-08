@@ -101,14 +101,14 @@ object Parser {
         t.addFacility(new Factory(FactoryModel(f._type), t, Game.bigBrother))
       }
     }
-   
+
     if(c.airport != null) {
       t.addFacility(new Airport(AirportModel("airport"), t, Game.bigBrother))
     }
     if(c.port != null) {
       t.addFacility(new Port(PortModel("port"), t, Game.bigBrother))
     }
-    if(c.airport != null) {
+    if(c.trainStation != null) {
       t.addFacility(new TrainStation(TrainStationModel("train station"), t, Game.bigBrother))
     }
     t

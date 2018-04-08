@@ -26,21 +26,14 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   /** Number of passengers in the room. */
   def passengerNumber: Int = passengers.values.flatMap(_.values).sum
   /** Maximum number of passengers in the room. */
-  def capacity: Int = vehicle match {
-    case c: Carriage => c.capacity
-    case p: Plane => p.capacity
-    case _ => 0
-  }
+  def capacity: Int = vehicle.capacity
+
   /** Returns <code>true</code> if some places are available in the room. */
   def isAvailable: Boolean = passengerNumber < capacity
   /** Number of available places in the room. */
   def availablePlaces: Int = capacity - passengerNumber
   /** The comfort note of the room (betwween 0 and 1). */
-  def comfort: Double = vehicle match {
-    case c: Carriage => c.comfort
-    case p: Plane => p.comfort
-    case v => 1
-  }
+  def comfort: Double = vehicle.comfort
 
   /** The price of a place for <code>destination</code>.
     *

@@ -50,18 +50,13 @@ object Plane {
 }
 
 class Plane(
-  model: PlaneModel,
+  _model: PlaneModel,
   _town: Town,
-  owner: Company)
-extends VehicleFromModel[PlaneModel](model, _town, owner) {
+  _owner: Company)
+extends VehicleFromModel[PlaneModel](_model, _town, _owner) {
   val name: StringProperty = StringProperty("plane")
 
   def modelNameMap(modelName: String): PlaneModel = PlaneModel(modelName)
-
-  def capacity: Int = model.capacity
-  def comfort: Double = model.comfort
-
-  val contents: HashMap[Good, DoubleProperty] = HashMap()
 
   override def launchTravel(to: Town): Travel = {
     assert(!onTravel())

@@ -34,6 +34,8 @@ class EngineModel(
   val consumption: Double,
   val power: Double)
 extends RailVehicleUnitModel with VehicleModel {
+  val capacity: Int = 0
+  val comfort: Double = 0
   val allowed: HashMap[Good, Double] = Good.none
 }
 
@@ -90,15 +92,10 @@ class Carriage(_model: CarriageModel, _town: Town, _owner: Company)
 extends VehicleUnitFromModel[CarriageModel](_model, _town, _owner) {
   val train: ObjectProperty[Option[Engine]] = ObjectProperty(None)
 
-  val contents = Good.empty
-
   val isUsed: BooleanBinding =
     Bindings.createBooleanBinding(
       () => train().isDefined,
       train)
-
-  def capacity: Int = model.capacity
-  def comfort: Double = model.comfort
 
   def modelNameMap(name: String): CarriageModel = CarriageModel(name)
 }
@@ -126,8 +123,6 @@ class Engine(
   _owner: Company,
   _carriages: List[Carriage] = List())
 extends VehicleFromModel[EngineModel](_model, _town, _owner) {
-
-  val contents = Good.empty
   val name: StringProperty = StringProperty("train")
   val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
 
