@@ -29,8 +29,8 @@ class ScriptInfo(script: Script) extends VBox(3) {
 
   def instructionText(instr: script.TravelInstruction): String = {
     instr match {
-      case script.TravelTo(town) => "go to " + town.name
-      case script.Wait(delay) => "wait " + TimeFormatter.timeToHourString(delay)
+      case script.TravelTo(town) => s"go to ${town.name}"
+      case script.Wait(delay) => s"wait ${TimeFormatter.timeToHourString(delay)}"
     }
   }
 
