@@ -59,8 +59,20 @@ extends VBox(3) {
 
   private val buyFacility = new Button("new factory") {
     onAction = (event: ActionEvent) => {
+      val selectionList = new SelectionList[FactoryModel](
+        FactoryModel.models.values.toList,
+        _.name,
+        model => {
+          if (company.money() >= model.price) {
+            val f: Factory = new Factory(model, town, company)
+            company.buy(f)
+            town.facilities.add(f)
+            setChildren()
+          }
+        })
+
       setChildren()
-      //val selectionList = new SelectionList(
+      children.add(selectionList)
     }
   }
 
