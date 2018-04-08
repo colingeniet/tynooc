@@ -61,7 +61,7 @@ extends VBox(3) {
     onAction = (event: ActionEvent) => {
       val selectionList = new SelectionList[FactoryModel](
         FactoryModel.models.values.toList,
-        _.name,
+        m => s"${m.name}(${MoneyFormatter.format(m.price)})",
         model => {
           if (company.money() >= model.price) {
             val f: Factory = new Factory(model, town, company)
@@ -82,7 +82,7 @@ extends VBox(3) {
         TrainStationModel.models.values.toList :::
         PortModel.models.values.toList :::
         AirportModel.models.values.toList,
-        _.name,
+        m => s"${m.name}(${MoneyFormatter.format(m.price)})",
         model => {
           if (company.money() >= model.price) {
             val s: Station = model match {
