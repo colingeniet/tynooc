@@ -114,16 +114,14 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
 
 
   def load(g: Good, destination: Town, v: Double): Unit = {
-    if (filled + v/allowed(g) > 1)
-      throw new IllegalActionException("Can't load that much on your unit !")
+    assert(filled + v/allowed(g) <= 1)
 
     contents(destination)(g) += v
     filled += v/allowed(g)
   }
 
   def unload(g: Good, destination: Town, v: Double): Unit = {
-    if (v/allowed(g) > filled || v > contents(destination)(g))
-      throw new IllegalActionException("Can't load that much on your unit !")
+    assert(v/allowed(g) <= filled && v <= contents(destination)(g))
 
     contents(destination)(g) -= v
     filled -= v/allowed(g)
