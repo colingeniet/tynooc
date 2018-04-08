@@ -147,7 +147,7 @@ extends FacilityFromModel[FactoryModel](model, _town, _owner) {
 
   def startCycle(): Unit = {
     if (!working()) {
-      model.productions.find(p => town.available(p.consumes)) match {
+      optimized_find() match {
         case Some(prod) => {
           working() = true
           town.buyGoods(owner(), prod.consumes)
@@ -160,4 +160,32 @@ extends FacilityFromModel[FactoryModel](model, _town, _owner) {
       }
     }
   }
+
+  /** Returns the gain of a production cycle
+  * @param p the production cycle whose gain you want to calculate
+  */
+  def gain(p: ProductionCycle) : Double = {
+    val prices = _town.goods_prices //Hashmap -> DoubleProperty !
+    (p.produces.foldLeft(0d){case (a,(good,quantity)) => a + prices(good)()*quantity} - p.consumes.foldLeft(0d){case (a,(good,quantity)) => a + prices(good)()*quantity})/p.cycleTime
+  }
+
+  /** Return the best production cycle available. (that will produce more money)
+  * It's important to note that :
+  * 1) It's locally the best, ie it might not be the best when the production will end
+  * 2) It will return None if there is not enough goods to do anything or if all the productions are at loss.
+  * 3) It's the best money/time !
+  */
+  def optimized_find() : Option[ProductionCycle] = {
+
+    val candidates = model.productions.filter(p => town.available(p.consumes))
+
+    candidates match {
+      case a::q => {
+        val (r, b) = candidates.foldLeft((0d, a)){ case ((r,b), cand) => val r2 = gain(cand); if (r2 > r) (r2, cand) else (r, b) }
+        if (r == 0d) None else Some(b)
+      }
+      case _ => None
+    }
+  }
+
 }
