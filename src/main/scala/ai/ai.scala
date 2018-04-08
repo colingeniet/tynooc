@@ -80,9 +80,11 @@ extends Player(company) with AI {
       val planes = company.vehicles.toList.filter {!_.isUsed()}
       if(!planes.isEmpty) {
         val plane = Random.shuffle(planes).head
-        val towns = Random.shuffle(world.towns.toList.filter { _ != plane.town() })
-        val direction = towns.head
-        company.launchTravel(plane, direction)
+        val towns = world.townsAccessibleFrom(plane.town(), plane).filter(_ != plane.town())
+        if (!towns.isEmpty) {
+          val direction = Random.shuffle(towns).head
+          company.launchTravel(plane, direction)
+        }
       }
     }
   }

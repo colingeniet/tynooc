@@ -76,6 +76,31 @@ extends VBox(3) {
     }
   }
 
+  private val buyStation = new Button("new station") {
+    onAction = (event: ActionEvent) => {
+      val selectionList = new SelectionList[StationModel](
+        TrainStationModel.models.values.toList :::
+        PortModel.models.values.toList :::
+        AirportModel.models.values.toList,
+        _.name,
+        model => {
+          if (company.money() >= model.price) {
+            val s: Station = model match {
+              case m: TrainStationModel => new TrainStation(m, town, company)
+              case m: PortModel => new Port(m, town, company)
+              case m: AirportModel => new Airport(m, town, company)
+            }
+            company.buy(s)
+            town.facilities.add(s)
+            setChildren()
+          }
+        })
+
+      setChildren()
+      children.add(selectionList)
+    }
+  }
+
 
   private def setChildren(): Unit = {
     children = List(
@@ -85,7 +110,8 @@ extends VBox(3) {
       goods,
       routes,
       facilities,
-      buyFacility)
+      buyFacility,
+      buyStation)
   }
 
   private def detailFacility(facility: Facility): Unit = {
