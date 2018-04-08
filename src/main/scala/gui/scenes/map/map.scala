@@ -123,9 +123,9 @@ extends StackPane with ZoomPane {
     route match {
       case r: Road => Black
       case r: Rail => Gray
-      case c: Canal => Blue
-      case r: River => AliceBlue
-      case s: Seaway => Aquamarine
+      case c: Canal => RoyalBlue
+      case r: River => Aquamarine
+      case s: Seaway => Blue
       case a: Airway => White
     }
   }
