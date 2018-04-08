@@ -55,7 +55,8 @@ class TravelInfo(travel: Travel) extends VBox {
       () => s"pass. : ${travel.passengerNumber.toInt}",
       travel.passengerNumber)
   }
-  private val company: Label = new Label(travel.company.name) {
+  private val company: Label = new Label {
+    text <== travel.company.name
     styleClass.remove("label")
     textFill = Colors(travel.company)
   }

@@ -57,9 +57,10 @@ extends VBox(3) {
     _.model.name,
     detailFacility(_))
 
-  private val buyFacility = new Button("build") {
+  private val buyFacility = new Button("new factory") {
     onAction = (event: ActionEvent) => {
       setChildren()
+      //val selectionList = new SelectionList(
     }
   }
 

@@ -33,9 +33,8 @@ class FacilityDetail(facility: Facility) extends VBox(3) {
   private val company: Label = new Label {
     styleClass.remove("label")
 
-    text <== createStringBinding(
-      () => facility.owner().name,
-      facility.owner)
+    text <== facility.owner().name
+    facility.owner.onChange({ text <== facility.owner().name })
 
     textFill <== createObjectBinding[javafx.scene.paint.Paint](
       () => Colors(facility.owner()).delegate,

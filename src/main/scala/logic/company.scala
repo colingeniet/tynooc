@@ -34,7 +34,9 @@ object PriceSimulation {
   * @param name The name of the company.
   * @param fabricTown The town in which the company rolling stock is produced.
   */
-class Company(var name: String, val fabricTown: Town) {
+class Company(var _name: String, val fabricTown: Town) {
+  val name: StringProperty = StringProperty(_name)
+
   /** The company trains. */
   val vehicles: ObservableBuffer[Vehicle] = ObservableBuffer()
   /** The company carriages. */

@@ -28,9 +28,9 @@ class CompanyInfo(
   detailVehicle: VehicleUnit => Unit)
 extends VBox(5) {
   private val nameField: TextField = new TextField {
-      text = company.name
+      text <== company.name
       onAction = (event: ActionEvent) => {
-        company.name = text()
+        company.name() = text()
         parent.value.requestFocus()
       }
     }
@@ -86,4 +86,21 @@ extends VBox(5) {
       sep2,
       travels)
   }
+}
+
+
+class CompanySummary(company: Company, detail: () => Unit) extends VBox(3) {
+  private val name: Label = new Label {
+    text <== company.name
+  }
+  private val money: Label = new Label {
+    text <== createStringBinding(
+      () => MoneyFormatter.format(company.money()),
+      company.money)
+  }
+  private val detailButton: Button = new Button("detail") {
+    onAction = (event: ActionEvent) => detail()
+  }
+
+  children = List(name, money, detailButton)
 }

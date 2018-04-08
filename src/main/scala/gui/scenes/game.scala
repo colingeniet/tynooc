@@ -62,11 +62,9 @@ extends MainStage.Scene(sceneModifier) {
   }
 
   private def displayTown(town: Town): Unit = {
-    pane.left = new VBox {
+    pane.left = new VBox(3) {
       children = List(
-        new Button("Company") {
-          onAction = (event: ActionEvent) => displayCompany
-        },
+        new CompanySummary(player.company, () => displayCompany()),
         new Separator(),
         new TownInfo(town, player.company, displayRoute, displayFacility, displayStock))
     }
