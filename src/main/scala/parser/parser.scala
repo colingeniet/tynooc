@@ -180,7 +180,7 @@ object Parser {
     catch {
       case e: JsonParseException => throw new BadFileFormatException("Invalid map file.")
       case e: InvalidFormatException => throw new BadFileFormatException("Invalid map file.")
-      case e: UnrecognizedPropertyException => throw new BadFileFormatException("Invalid map file.")
+      case e: UnrecognizedPropertyException => throw new BadFileFormatException(s"Invalid property `${e.getPropertyName}`.")
     }
     buildWorld(jMap)
   }
