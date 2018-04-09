@@ -16,7 +16,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.core.JsonParseException
-import com.fasterxml.jackson.databind.exc.InvalidFormatException
+import com.fasterxml.jackson.databind.exc.{InvalidFormatException, UnrecognizedPropertyException}
 
 final case class BadFileFormatException(
   private val message: String = "",
@@ -179,7 +179,8 @@ object Parser {
     }
     catch {
       case e: JsonParseException => throw new BadFileFormatException("Invalid map file.")
-      case e: InvalidFormatException => throw new BadFileFormatException("Invalid map file")
+      case e: InvalidFormatException => throw new BadFileFormatException("Invalid map file.")
+      case e: UnrecognizedPropertyException => throw new BadFileFormatException("Invalid map file.")
     }
     buildWorld(jMap)
   }
