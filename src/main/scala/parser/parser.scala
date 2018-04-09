@@ -95,8 +95,8 @@ object Parser {
 
   def buildTown(c: JCity): Town = {
     val t = new Town(c.name, c.x, c.y, 1)
-    Game.world.status.foreach { s => t.addResidents(c.population / 3, s) }
-    t.addResidents(c.population - t.population(), Game.world.status.head)
+    t.addResidents(c.population)
+    
     if(c.factories != null) {
       c.factories.asScala.foreach { f =>
         t.addFacility(new Factory(FactoryModel(f._type), t, Game.bigBrother))

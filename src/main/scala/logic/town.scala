@@ -29,19 +29,21 @@ class Town(
   val x: Double,
   val y: Double,
   val welcomingLevel: Double) {
-  private var residents: HashMap[Status.Val, Int] = new HashMap()
   private var _routes: List[Route] = List()
-  private var passengers: HashMap[Town, HashMap[Status.Val, Double]] =
-    new HashMap[Town, HashMap[Status.Val, Double]] {
-      override def default(t: Town): HashMap[Status.Val, Double] = {
-        // initialize empty entries
-        this(t) = new HashMap[Status.Val, Double]()
-        Game.world.status.foreach { s => this(t)(s) = 0 }
+
+  /** The town population. */
+  val population: IntegerProperty = IntegerProperty(0)
+  /** The passengers number of the town. */
+  private var passengers: HashMap[Town, Double] =
+    new HashMap[Town, Double] {
+      override def default(t: Town): Double = {
+        this(t) = 0
         this(t)
       }
     }
 
-  Game.world.status.foreach { s => residents(s) = 0 }
+  val passengersNumber: DoubleProperty = DoubleProperty(0)
+
 
   //Gives the quantity of good inside the city
   val goods: HashMap[Good, DoubleProperty] =
@@ -88,11 +90,9 @@ class Town(
     a
   }
 
-  // PRNG
-  private var random: Random = new Random()
-
 
   val facilities: ObservableBuffer[Facility] = ObservableBuffer()
+
 
   /** Returns a hashmap containing the needs of the population
   */
@@ -178,31 +178,12 @@ class Town(
     }
   }
 
-  def update_economy(totals: HashMap[Good, Double]) : Unit = {
-    val p = population()
-    Game.world.towns.foreach { destination =>
-      Game.world.status.foreach { s =>
-        val migrantNumber = generatePassengers(destination, Game.economyTick, s)
-        passengersNumber() = passengersNumber() + migrantNumber
-        passengers(destination)(s) += migrantNumber
-      }
-      //Game.world.tryTravel(this, destination, passengers(destination))
-    }
-
-    consume_daily()
-    update_prices(totals: HashMap[Good, Double])
-  }
-
 
   /** The routes starting from this town. */
   def routes: List[Route] = _routes
   /** The neighbours towns. */
 
   def neighbours: List[Town] = routes.map { _.end }
-  /** The town population. */
-  val population: IntegerProperty = IntegerProperty(0)
-  /** The passengers number of the town. */
-  val passengersNumber: DoubleProperty = DoubleProperty(0)
 
   /** The note of the town. */
   def note: Double = {
@@ -216,39 +197,34 @@ class Town(
     * to the town.
     *
     * @param number The number of residents to add.
-    * @param status The status of these residents.
     */
-  def addResidents(number: Int, status: Status.Val): Unit = {
-    residents(status) += number
-    Game.world.population += number
+  def addResidents(number: Int): Unit = {
     population() = population() + number
+    Game.world.population += number
   }
 
   /** Deletes <code>number</code residents of status <code>status</code>
     * to the town.
     *
     * @param number The number of residents to delete.
-    * @param status The status of these residents.
     *
     */
-  def deleteResidents(number: Int, status: Status.Val): Unit = {
-    assert(number <= residents(status))
-    residents(status) -= number
-    Game.world.population -= number
+  def deleteResidents(number: Int): Unit = {
+    assert(number <= population())
     population() = population() - number
+    Game.world.population -= number
   }
 
   /** Deletes <code>number</code passengers of status <code>status</code>
     * to the town.
     *
     * @param number The number of passengers to delete.
-    * @param status The status of these passengers.
     */
-  def deletePassengers(number: Int, status: Status.Val, destination: Town): Unit = {
-    assert(number <= passengers(destination)(status))
-    passengers(destination)(status) -= number
+  def deletePassengers(destination: Town, number: Int): Unit = {
+    assert(number <= passengers(destination))
+    passengers(destination) -= number
     passengersNumber() = passengersNumber() - number
-    deleteResidents(number, status)
+    deleteResidents(number)
   }
 
   /** Generate passengers to a town.
@@ -256,7 +232,7 @@ class Town(
     * @param to The destination town.
     * @param dt The time passed since the last generation.
     */
-  def generatePassengers(to: Town, dt: Double, s: Status.Val): Double = {
+  def generatePassengers(to: Town, dt: Double): Double = {
     val pop = population.toDouble
     if (pop == 0) return 0
 
@@ -264,7 +240,7 @@ class Town(
     /* avoid accumulating too many passengers :
      * slow down passengers production when proportion increases,
      * and hard cap it at 1/4 of total population */
-    val coef = 0.0001 * (1 - 4 * pass / pop) * residents(s) / pop
+    val coef = 0.0001 * (1 - 4 * pass / pop)
 
     (pop - pass) * (1 + to.note - note) * coef * dt
   }
@@ -295,6 +271,19 @@ class Town(
     }
   }
 
+
+  def update_economy(totals: HashMap[Good, Double]) : Unit = {
+    val p = population()
+    Game.world.towns.foreach { destination =>
+      val migrantNumber = generatePassengers(destination, Game.economyTick)
+      passengersNumber() = passengersNumber() + migrantNumber
+      passengers(destination) += migrantNumber
+      //Game.world.tryTravel(this, destination, passengers(destination))
+    }
+
+    consume_daily()
+    update_prices(totals: HashMap[Good, Double])
+  }
 
   /** Update the population state.
    *

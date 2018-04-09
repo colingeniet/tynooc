@@ -19,22 +19,26 @@ import collection.mutable.HashSet
   * @param vehicle The vehicle unit associated to the room.
  */
 class Room(val travel: Travel, val vehicle: VehicleUnit) {
-  private var passengers: HashMap[Town, HashMap[Status.Val, Int]] = new HashMap()
-  Game.world.towns.foreach { t =>
-    passengers(t) = new HashMap()
-    Game.world.status.foreach { s =>
-      passengers(t)(s) = 0
+  val passengers: HashMap[Town, Int] = new HashMap[Town, Int] {
+    override def default(t: Town): Int = {
+      this(t) = 0
+      this(t)
     }
   }
-  val contents: HashMap[Town, HashMap[Good, Double]] = new HashMap()
-  Game.world.towns.foreach { t =>
-    contents(t) = new HashMap[Good, Double] {
-      override def default(g: Good): Double = {
-        this(g) = 0
-        this(g)
+
+  val contents: HashMap[Town, HashMap[Good, Double]] =
+    new HashMap[Town, HashMap[Good, Double]] {
+      override def default(t: Town): HashMap[Good, Double] = {
+        this(t) = new HashMap[Good, Double] {
+          override def default(g: Good): Double = {
+            this(g) = 0
+            this(g)
+          }
+        }
+        this(t)
       }
     }
-  }
+
   private var filled: Double = 0
 
   /** Maximum number of passengers in the room. */
@@ -46,7 +50,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
 
 
   /** Number of passengers in the room. */
-  def passengerNumber: Int = passengers.values.flatMap(_.values).sum
+  def passengerNumber: Int = passengers.values.sum
 
   /** Returns <code>true</code> if some places are available in the room. */
   def isAvailable: Boolean = passengerNumber < capacity
@@ -61,42 +65,24 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     0.20 * travel.remainingDistanceTo(destination)
   }
 
-  /** Number of passengers which status <code>status</code> going to
-    * <code>destination</code>.
-    *
-    * @param status The status of the counted passengers.
-    * @param destination The destination of the counted passengers.
-    */
-  def passengerNumber(status: Status.Val, destination: Town): Int = {
-    passengers(destination)(status)
-  }
-
-  /** Number of passengers in the room going to <code>destination</code>.
-    *
-    * @param destination The destination of the counted passengers.
-    */
-  def passengerNumber(destination: Town): Int = passengers(destination).values.sum
-
   /** Free the places of <code>number</code> passengers of status </status>
     * going to <code>destination</code>
     *
     * @param number The number of passenger who free their places.
     * @param destination The destination of these passengers.
-    * @param status The status of these passengers.
     */
-  def freePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
-    assert(number <= passengers(destination)(status))
-    passengers(destination)(status) -= number
+  def freePlaces(destination: Town, number: Int): Unit = {
+    assert(number <= passengers(destination))
+    passengers(destination) -= number
   }
 
   /** Free the places of all passengers of status `status` going to
     * <code>destination</code>
     *
     * @param destination The destination of these passengers.
-    * @param status The status of these passengers.
     */
-  def freePlaces(destination: Town, status: Status.Val): Unit = {
-    freePlaces(passengerNumber(status, destination), destination, status)
+  def freePlaces(destination: Town): Unit = {
+    freePlaces(destination, passengers(destination))
   }
 
   /** Take <code>number</code> places for passengers of status <code>status</code>
@@ -106,9 +92,9 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     * @param destination The destination of these passengers.
     * @param status The status of these passengers.
     */
-  def takePlaces(number: Int, destination: Town, status: Status.Val): Unit = {
+  def takePlaces(destination: Town, number: Int): Unit = {
     assert(number <= availablePlaces)
-    passengers(destination)(status) += number
+    passengers(destination) += number
     travel.company.credit(price(destination) * number)
   }
 
@@ -138,7 +124,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   }
 
   def loadAll(town: Town): Unit = {
-    
+
   }
 
   def handleGoods(dt: Double) : Unit = {

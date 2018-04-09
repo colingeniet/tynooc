@@ -13,18 +13,6 @@ import collection.mutable.HashSet
 
 import scala.math.Ordering.Implicits._
 
-/** An object enumeration for people status. */
-object Status {
-  sealed trait Val
-  /** Represents rich people. */
-  case object Rich extends Status.Val
-  /** Represents poor people. */
-  case object Poor extends Status.Val
-  /** Represents well-off people. */
-  case object WellP extends Status.Val
-
-  case object WellR extends Status.Val
-}
 
 
 /** The game world representation.
@@ -35,34 +23,6 @@ object Status {
  * @constructor Creates an empty world with its height and its width.
  */
 class World {
-  /** List of the status available in the world. */
-  val status = Array(Status.Rich, Status.Poor, Status.WellP, Status.WellR)
-
-  /** Criteria used to choose a room. */
-  val comparisons: HashMap[Status.Val, Town => (Room, Room) => Boolean] = new HashMap()
-
-  comparisons(Status.Rich) = d => (r1, r2) =>
-    (-r1.comfort, r1.price(d), r1.travel.remainingTimeTo(d)) <=
-    (-r2.comfort, r2.price(d), r2.travel.remainingTimeTo(d))
-
-  comparisons(Status.Poor) = d => (r1, r2) =>
-    (r1.price(d), -r1.comfort, r1.travel.remainingTimeTo(d)) <=
-    (r2.price(d), -r2.comfort, r2.travel.remainingTimeTo(d))
-
-  comparisons(Status.WellP) = d => (r1, r2) =>
-    (-r1.comfort / (r1.price(d)+1), r1.price(d), r1.travel.remainingTimeTo(d)) <=
-    (-r2.comfort / (r2.price(d)+1), r2.price(d), r2.travel.remainingTimeTo(d))
-
-  comparisons(Status.WellR) = d => (r1, r2) =>
-    (-r1.comfort / (r1.price(d)+1), -r1.comfort, r1.travel.remainingTimeTo(d)) <=
-    (-r2.comfort / (r2.price(d)+1), -r2.comfort, r2.travel.remainingTimeTo(d))
-
-  val proportion: HashMap[Status.Val, Double] = new HashMap()
-  proportion(Status.Rich) = 0.2
-  proportion(Status.Poor) = 0.3
-  proportion(Status.WellP) = 0.3
-  proportion(Status.WellR) = 0.2
-
   /** The fuel price in the world. */
   var fuelPrice = 1
 
@@ -144,26 +104,19 @@ class World {
   def tryTravel(
     start: Town,
     destination: Town,
-    migrantByStatus: HashMap[Status.Val, Double]): Unit = {
+    migrants: Double): Unit = {
     val availableTravels = travels.toList.filter {
       t => t.isWaitingAt(start) && t.stopsAt(destination)
     }
     var rooms = availableTravels.flatMap { _.availableRooms }
 
-    status.foreach { status =>
-      var takenPlacesNumber = 0
-      var p = migrantByStatus(status).floor.toInt
-      rooms = rooms.sortWith { comparisons(status)(destination) }
-      while(takenPlacesNumber < p && !rooms.isEmpty) {
-        val room = rooms.head
-        val nb = Math.min(p, room.availablePlaces)
-        room.takePlaces(nb, destination, status)
-        takenPlacesNumber += nb
-        p -= nb
-        if(!room.isAvailable)
-          rooms = rooms.tail
-      }
-      start.deletePassengers(takenPlacesNumber, status, destination)
+    var n = migrants.floor.toInt
+    while(n > 0  && !rooms.isEmpty) {
+      val room = rooms.head
+      val nb = n min room.availablePlaces
+      room.takePlaces(destination, nb)
+      start.deletePassengers(destination, nb)
+      n -= nb
     }
   }
 
