@@ -99,7 +99,11 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   }
 
   def embarkAll(town: Town): Unit = {
-
+    travel.remainingStops.foreach(dest => {
+      val n = availablePlaces min (town.passengers(dest).floor.toInt)
+      takePlaces(dest, n)
+      town.deletePassengers(dest, n)
+    })
   }
 
 

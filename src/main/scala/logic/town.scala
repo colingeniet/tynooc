@@ -34,7 +34,7 @@ class Town(
   /** The town population. */
   val population: IntegerProperty = IntegerProperty(0)
   /** The passengers number of the town. */
-  private var passengers: HashMap[Town, Double] =
+  val passengers: HashMap[Town, Double] =
     new HashMap[Town, Double] {
       override def default(t: Town): Double = {
         this(t) = 0
@@ -275,10 +275,12 @@ class Town(
   def update_economy(totals: HashMap[Good, Double]) : Unit = {
     val p = population()
     Game.world.towns.foreach { destination =>
-      val migrantNumber = generatePassengers(destination, Game.economyTick)
-      passengersNumber() = passengersNumber() + migrantNumber
-      passengers(destination) += migrantNumber
-      //Game.world.tryTravel(this, destination, passengers(destination))
+      if(destination != this) {
+        val migrantNumber = generatePassengers(destination, Game.economyTick)
+        passengersNumber() = passengersNumber() + migrantNumber
+        passengers(destination) += migrantNumber
+        //Game.world.tryTravel(this, destination, passengers(destination))
+      }
     }
 
     consume_daily()

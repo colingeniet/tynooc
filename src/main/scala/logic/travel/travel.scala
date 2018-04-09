@@ -66,11 +66,16 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
     () => remainingRoutes.isEmpty,
     remainingRoutes)
 
+
+  def remainingStops: List[Town] = {
+    remainingRoutes.map(_.end).filter(_.accepts(vehicle)).toList
+  }
+
   /** Tests if the travel will stop at a specific town.
    *
    *  Does not take past stops into account. */
   def stopsAt(t: Town): Boolean = {
-    t.accepts(vehicle) && remainingRoutes.map(_.end).contains(t)
+    remainingStops.contains(t)
   }
 
   /** Distance remaining until destination. */

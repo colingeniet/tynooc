@@ -94,31 +94,6 @@ class World {
   def travelsOf(company: Company): HashSet[Travel] =
     travels.filter { _.company == company }
 
-  /** Try to send some passengers from <code>start</code> to
-    * <code>destination</code>.
-    *
-    * @param start The start town.
-    * @param destination The destination town.
-    * @param migrantByStatus The number of passengers by status.
-    */
-  def tryTravel(
-    start: Town,
-    destination: Town,
-    migrants: Double): Unit = {
-    val availableTravels = travels.toList.filter {
-      t => t.isWaitingAt(start) && t.stopsAt(destination)
-    }
-    var rooms = availableTravels.flatMap { _.availableRooms }
-
-    var n = migrants.floor.toInt
-    while(n > 0  && !rooms.isEmpty) {
-      val room = rooms.head
-      val nb = n min room.availablePlaces
-      room.takePlaces(destination, nb)
-      start.deletePassengers(destination, nb)
-      n -= nb
-    }
-  }
 
   /** Try to send some goods from <code>start</code> to
     * <code>destination</code>.
