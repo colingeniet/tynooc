@@ -159,10 +159,10 @@ class Town(
 
   /** Calculates the prices of goods
   */
-  def update_prices() : Unit = {
+  def update_prices(totals: HashMap[Good, Double]) : Unit = {
     Good.all.foreach{ g =>
       val local = goods(g)()
-      val total = Game.world.towns.map(_.goods(g)()).sum
+      val total = totals(g)
       val avg = total / Game.world.towns.size
 
       val world_coef = (((avg + 1.0) / (local + 1.0)) max 0.2) min 4.0
@@ -178,9 +178,19 @@ class Town(
     }
   }
 
-  def update_economy() : Unit = {
+  def update_economy(totals: HashMap[Good, Double]) : Unit = {
+    val p = population()
+    Game.world.towns.foreach { destination =>
+      Game.world.status.foreach { s =>
+        val migrantNumber = generatePassengers(destination, Game.economyTick, s)
+        passengersNumber() = passengersNumber() + migrantNumber
+        passengers(destination)(s) += migrantNumber
+      }
+      //Game.world.tryTravel(this, destination, passengers(destination))
+    }
+
     consume_daily()
-    update_prices()
+    update_prices(totals: HashMap[Good, Double])
   }
 
 
@@ -210,6 +220,7 @@ class Town(
     */
   def addResidents(number: Int, status: Status.Val): Unit = {
     residents(status) += number
+    Game.world.population += number
     population() = population() + number
   }
 
@@ -223,6 +234,7 @@ class Town(
   def deleteResidents(number: Int, status: Status.Val): Unit = {
     assert(number <= residents(status))
     residents(status) -= number
+    Game.world.population -= number
     population() = population() - number
   }
 
@@ -253,10 +265,8 @@ class Town(
      * slow down passengers production when proportion increases,
      * and hard cap it at 1/4 of total population */
     val coef = 0.0001 * (1 - 4 * pass / pop) * residents(s) / pop
-    // mean for gaussian approximation
-    val mean = (pop - pass) * (1 + to.note - note) * coef * dt
-    // With this coef value, deviance is barely different from the mean
-    (((random.nextGaussian() * mean + mean) max 0) min pop)
+
+    (pop - pass) * (1 + to.note - note) * coef * dt
   }
 
   /** Adds a new route.
@@ -291,18 +301,6 @@ class Town(
    *  @param dt The time passed since the last update step.
    */
   def update(dt: Double): Unit = {
-    val p = population()
-    val possibleDestinations = Game.world.towns.toList.sortBy { _.note }
-    possibleDestinations.foreach { destination =>
-      Game.world.status.foreach { s =>
-        val migrantNumber = generatePassengers(destination, dt, s)
-        passengersNumber() = passengersNumber() + migrantNumber
-        passengers(destination)(s) += migrantNumber
-      }
-      Game.world.tryTravel(this, destination, passengers(destination))
-    }
-
-
     facilities.foreach(_ match {
       case f: Factory => if(!f.working()) f.startCycle()
       case _ => ()

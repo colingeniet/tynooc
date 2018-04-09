@@ -112,6 +112,10 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     travel.company.credit(price(destination) * number)
   }
 
+  def embarkAll(town: Town): Unit = {
+
+  }
+
 
   def availableLoad(g: Good): Double = (1 - filled) * allowed(g)
 
@@ -131,6 +135,10 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
 
   def unload(g: Good, destination: Town): Unit = {
     unload(g, destination, contents(destination)(g))
+  }
+
+  def loadAll(town: Town): Unit = {
+    
   }
 
   def handleGoods(dt: Double) : Unit = {

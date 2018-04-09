@@ -87,13 +87,16 @@ class World {
   def companies: HashSet[Company] = _companies
 
   /** Total world population. */
-  def population: Int = towns.foldLeft[Int](0) { _ + _.population() }
+  var population: Int = 0
 
   /** Adds a new town.
     *
     * @param town The town to add.
     */
-  def addTown(town: Town): Unit = _towns.add(town)
+  def addTown(town: Town): Unit = {
+    _towns.add(town)
+    population += town.population()
+  }
 
   /** Creates and add a new town.
     *
@@ -204,7 +207,12 @@ class World {
   }
 
   def update_towns(): Unit = {
-    towns.foreach(_.update_economy())
+    val totalGoods: HashMap[Good, Double] = HashMap()
+    Good.all.foreach { g =>
+      totalGoods(g) = towns.map(_.goods(g)()).sum
+    }
+
+    towns.foreach(_.update_economy(totalGoods))
   }
 
   /** Find the shortest path between two towns.

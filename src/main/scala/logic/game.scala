@@ -26,6 +26,7 @@ object Game {
   /** Simulation rate control. */
   var paused: Boolean = false
   var timeAcceleration: Double = 1
+  val economyTick: Double = 3
   /** Path of the map file. */
   var mapPath: String = "map/map.xml"
 
@@ -58,7 +59,7 @@ object Game {
 
       if (time() >= nextDay) {
         world.update_towns()
-        nextDay += 6
+        nextDay += economyTick
       }
 
       world.update(dt)

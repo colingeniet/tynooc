@@ -209,6 +209,10 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
           }
         }
         case State.Waiting => {
+          rooms.foreach(r => {
+            r.embarkAll(currentTown())
+            r.loadAll(currentTown())
+          })
           vehicle.town() = nextTown()
           passengerNumber() = (rooms.map { _.passengerNumber}).sum
           state() = State.OnRoute
