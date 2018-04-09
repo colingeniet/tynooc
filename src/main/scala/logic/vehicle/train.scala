@@ -67,8 +67,8 @@ extends RailVehicleUnitModel
  */
 object CarriageModel extends ModelNameMap[CarriageModel] {
   private var _models: HashMap[String, CarriageModel] = HashMap(
-    "basic" -> new CarriageModel("basic carriage", 500, List("advanced"), 80, 40, 10, HashMap(Food -> 1000)),
-    "advanced" -> new CarriageModel("advanced carriage", 1000, List(), 80, 50, 15, HashMap(Food -> 1000)))
+    "basic" -> new CarriageModel("basic carriage", 500, List("advanced"), 80, 40, 10, Good.any(40)),
+    "advanced" -> new CarriageModel("advanced carriage", 1000, List(), 80, 50, 15, Good.any(80)))
 
   override def models: HashMap[String, CarriageModel] = _models
 }

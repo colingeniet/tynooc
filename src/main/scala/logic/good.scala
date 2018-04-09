@@ -53,7 +53,7 @@ class Satisfiable extends GoodType // Can be satisfied or dissatisfied  ...
 object Good {
 
   //Is it possible to store those "dynamically", ie avoid adding Goods here when you add a Good down there...
-  val all: List[Good] = List(/*Passengers,*/ Chocolate, Water, IronOre, Iron, Food, Gaz, Uranium, Stuff,
+  val all: List[Good] = List(/*Passengers,*/ Chocolate, Water, Gaz, Uranium, Stuff,
   Aluminium, AluminiumWires, BakedGoods, Bauxite, Beer, Bricks, CannedFood, Cattle, Cement, Chemicals, Clay,
   Coal, Copper, CopperWires, Cotton, Electronics, Fish,
   Fruit, Fuel, Furniture, Glass, Grain, Iron, Leather, Limestone,
@@ -119,12 +119,12 @@ class Good(val properties: List[GoodType]) {
 object Stuff extends Good(List()) // A good for unknown factories
 
 //For fun
-object Chocolate extends Good(List(new Consumable(), new Perishable()))
-object Water extends Good(List(new Liquid(0.001), new Consumable()))
-object IronOre extends Good(List(new Solid()))
+object Chocolate extends Good(List(new Consumable(), new Perishable(), new CityNeeded()))
+object Water extends Good(List(new Liquid(0.001), new Consumable(), new CityNeeded()))
+//object IronOre extends Good(List(new Solid()))
 //object Wood extends Good(List(new Solid(), new Flamable()))
-object Food extends Good(List(new Solid(), new Consumable(), new Perishable()))
-object Gaz extends Good(List(new Gazeous(), new Dangerous()))
+//object Food extends Good(List(new Solid(), new Consumable(), new Perishable()))
+object Gaz extends Good(List(new Gazeous(), new Dangerous(), new CityNeeded()))
 //object Coal extends Good(List(new Solid()))
 //object Oil extends Good(List(new Liquid(0), new Flamable()))
 object Uranium extends Good(List(new Solid(), new Dangerous(), new Expensive()))

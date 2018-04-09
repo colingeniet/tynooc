@@ -46,6 +46,8 @@ class Town(
   //Gives the quantity of good inside the city
   val goods: HashMap[Good, DoubleProperty] =
     new HashMap[Good, DoubleProperty] {
+
+      Good.filter[CityNeeded].foreach {g => this(g) = DoubleProperty(1000)}
       override def default(g: Good): DoubleProperty = {
         // initialize empty entries
         this(g) = DoubleProperty(0)
