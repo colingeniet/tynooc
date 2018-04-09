@@ -71,10 +71,10 @@ extends JFXApp.PrimaryStage {
               }
             }
           }
-          mainLoopThread.start()
-
           // kill background thread when leaving
           onNextChangeCallback = () => mainLoopThread.stop()
+          mainLoopThread.start()
+
         } catch {
           case e: java.io.FileNotFoundException => {
             new Alert(AlertType.Error) {

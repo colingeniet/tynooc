@@ -1036,7 +1036,7 @@
     <Road length="29" maximum_speed="97" lanes="1"/>
   </Connection>
   <Connection upstream="Motherwell" downstream="Edinburgh">
-    <Road length="l62" maximum_speed="113" lanes="2"/>
+    <Road length="62" maximum_speed="113" lanes="2"/>
   </Connection>
   <Connection upstream="East Kilbride" downstream="Ayr">
     <Road length="76" maximum_speed="97" lanes="1"/>
@@ -1507,7 +1507,7 @@
     <Road length="26" maximum_speed="113" lanes="2"/>
   </Connection>
   <Connection upstream="Harrogate" downstream="Darlington">
-    <Road length="'72" maximum_speed="113" lanes="3"/>
+    <Road length="72" maximum_speed="113" lanes="3"/>
   </Connection>
   <Connection upstream="Darlington" downstream="Lancaster">
     <Road length="135" maximum_speed="113" lanes="2"/>

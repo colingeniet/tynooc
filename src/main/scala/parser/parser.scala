@@ -52,7 +52,8 @@ class JCity(
 class JRail(
   @JacksonXmlProperty(localName = "length") val length: Int,
   @JacksonXmlProperty(localName = "maximum_speed") val maximum_speed: Int,
-  @JacksonXmlProperty(localName = "tracks") val tracks: Int,
+  @JacksonXmlProperty(localName = "tracks") val tracks: Int = 0,
+  @JacksonXmlProperty(localName = "lanes") val lanes: Int = 0,
   @JacksonXmlProperty(localName = "electrified") val electrified: String)
 
 class JSea
@@ -125,10 +126,11 @@ object Parser {
     }
     if(c.rail != null) {
       val electrified = c.rail.electrified == "yes"
+      val tracks = c.rail.tracks max c.rail.lanes
       start.addRoute((new Rail(start, end, c.rail.length, c.rail.maximum_speed,
-                              c.rail.tracks, electrified)))
+                               tracks, electrified)))
       end.addRoute((new Rail(end, start, c.rail.length, c.rail.maximum_speed,
-                             c.rail.tracks, electrified)))
+                             tracks, electrified)))
     }
     if(c.canal != null) {
       start.addRoute((new Canal(start, end, c.canal.length, c.canal.beam_clearance)))
