@@ -1,5 +1,7 @@
 package logic.travel
 
+import scala.collection.mutable.HashMap
+
 import scalafx.beans.property._
 import scalafx.beans.binding._
 import scalafx.collections._
@@ -12,6 +14,8 @@ import logic.room._
 import logic.route._
 import logic.company._
 import logic.game._
+import logic.good._
+import utils._
 
 private object State {
   sealed trait Val
@@ -165,6 +169,8 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
 
   /** Number of passengers in the vehicle. */
   val passengerNumber: IntegerProperty = IntegerProperty(0)
+  val contents: HashMap[Good, DoubleProperty] =
+    InitHashMap[Good, DoubleProperty](_ => DoubleProperty(0))
 
   val isWaiting: BooleanBinding = jfxBooleanBinding2sfx(state === State.Waiting)
   val isLaunched: BooleanBinding = jfxBooleanBinding2sfx(state === State.Launched)
@@ -223,6 +229,7 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
           })
           vehicle.town() = nextTown()
           passengerNumber() = (rooms.map { _.passengerNumber}).sum
+          Good.all.foreach(g => { contents(g)() = rooms.map(_.goods(g)).sum })
           state() = State.OnRoute
         }
       }

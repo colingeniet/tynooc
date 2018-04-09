@@ -15,6 +15,7 @@ import formatter._
 import logic.vehicle._
 import logic.travel._
 import logic.game._
+import logic.good._
 
 /** Information on a travel.
  */
@@ -61,9 +62,22 @@ class TravelInfo(travel: Travel) extends VBox {
     textFill = Colors(travel.company)
   }
 
+  private val contents: ScrollPane = new ScrollPane {
+    content = new VBox {
+      children = Good.all.map(g => {
+        new Label {
+          text <== createStringBinding(
+            () => f"${g.name}: ${travel.contents(g)()}%.1f",
+            travel.contents(g))
+        }
+      })
+    }
+  }
+
   private val arrivedLbl: Label = new Label(s"arrived at ${travel.destination.name}")
 
-  private val sep: Separator = new Separator()
+  private val sep1: Separator = new Separator()
+  private val sep2: Separator = new Separator()
 
   children = List(
     company,
@@ -76,12 +90,14 @@ class TravelInfo(travel: Travel) extends VBox {
     nextDist,
     nextETA,
     passengers,
-    sep,
-    vehicleInfo)
+    sep1,
+    vehicleInfo,
+    sep2,
+    contents)
   spacing = 3
 
   private def onArrival(): Unit = {
-    children = List(arrivedLbl, sep, vehicleInfo)
+    children = List(arrivedLbl, sep1, vehicleInfo)
   }
 
   travel.isDone.onChange(onArrival())

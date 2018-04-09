@@ -52,6 +52,8 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   /** Number of passengers in the room. */
   def passengerNumber: Int = passengers.values.sum
 
+  def goods(g: Good): Double = contents.values.map(_(g)).sum
+
   /** Returns <code>true</code> if some places are available in the room. */
   def isAvailable: Boolean = passengerNumber < capacity
   /** Number of available places in the room. */
