@@ -31,15 +31,11 @@ class Gazeous extends GoodType
 
 class CityNeeded extends GoodType // Is used by cities
 class Consumable extends GoodType //Can be consumed
-class Perishable() extends GoodType { //Can rot
-  /*
-  override def update(g: Good, owner: VehicleUnit, dt: Double) = {
-    if (owner._owner.trip.time > time) {
-      owner.contents(g)() = 0
-      Game.printMessage(s"Yuck! Something from ${owner.owner.name} has rotten! It's all gone to waste!")
-    }
+class Perishable(val rate: Double) extends GoodType { //Can rot, same as Liquid for now
+
+  override def update(g: Good, room: Room, dt: Double) = {
+    room.contents.values.foreach(h => {h(g) -= rate*dt*h(g)})
   }
-  */
 }
 
 /*
@@ -123,7 +119,7 @@ class Good(val properties: List[GoodType]) {
 object Stuff extends Good(List()) // A good for unknown factories
 
 //For fun
-object Chocolate extends Good(List(new Consumable(), new Perishable(), new CityNeeded()))
+object Chocolate extends Good(List(new Consumable(), new Perishable(0.01), new CityNeeded()))
 object Water extends Good(List(new Liquid(0.001), new Consumable(), new CityNeeded()))
 //object IronOre extends Good(List(new Solid()))
 //object Wood extends Good(List(new Solid(), new Flamable()))
@@ -138,11 +134,11 @@ object PhilosophalStone extends Good(List(new Solid(), new Expensive()))
 //Juraj's
 object Aluminium extends Good(List(new Solid(), new CityNeeded()))
 object AluminiumWires extends Good(List(new Solid()))
-object BakedGoods extends Good(List(new Perishable(), new Consumable(), new CityNeeded()))
+object BakedGoods extends Good(List(new Perishable(0.01), new Consumable(), new CityNeeded()))
 object Bauxite extends Good(List(new Solid()))
-object Beer extends Good(List(new Liquid(0.001), new Consumable(), new Perishable(), new CityNeeded()))
+object Beer extends Good(List(new Liquid(0.001), new Consumable(), new Perishable(0.01), new CityNeeded()))
 object Bricks extends Good(List(new Solid()))
-object CannedFood extends Good(List(new Consumable(), new Perishable(), new CityNeeded()))
+object CannedFood extends Good(List(new Consumable(), new Perishable(0.01), new CityNeeded()))
 object Cattle extends Good(List(new Alive()))
 object Cement extends Good(List(new Liquid(0), new CityNeeded()))
 object Chemicals extends Good(List(new Liquid(0), new Dangerous(), new CityNeeded()))
@@ -152,8 +148,8 @@ object Copper extends Good(List(new Solid()))
 object CopperWires extends Good(List(new Solid()))
 object Cotton extends Good(List(new Flamable()))
 object Electronics extends Good(List(new Solid(), new CityNeeded()))
-object Fish extends Good(List(new Consumable(), new Perishable(), new CityNeeded()))
-object Fruit extends Good(List(new Consumable(), new Perishable(), new CityNeeded()))
+object Fish extends Good(List(new Consumable(), new Perishable(0.01), new CityNeeded()))
+object Fruit extends Good(List(new Consumable(), new Perishable(0.01), new CityNeeded()))
 object Fuel extends Good(List(new CityNeeded(), new Expensive(), new Liquid(0)))
 object Furniture extends Good(List(new Solid(), new CityNeeded()))
 object Glass extends Good(List(new Solid(), new Fragile(), new CityNeeded()))
@@ -164,8 +160,8 @@ object Limestone extends Good(List(new Solid()))
 object Liquor extends Good(List(new Liquid(0.001), new CityNeeded()))
 object Lumber extends Good(List(new Solid(), new Flamable()))
 object Marble extends Good(List(new Solid(), new CityNeeded(), new Expensive()))
-object Meat extends Good(List(new Solid(), new Consumable(), new Perishable(), new CityNeeded()))
-object Milk extends Good(List(new Liquid(0.001), new Consumable(), new Perishable(), new CityNeeded()))
+object Meat extends Good(List(new Solid(), new Consumable(), new Perishable(0.01), new CityNeeded()))
+object Milk extends Good(List(new Liquid(0.001), new Consumable(), new Perishable(0.01), new CityNeeded()))
 object Oil extends Good(List(new Liquid(0), new Flamable(), new Expensive()))
 object Paper extends Good(List(new Solid(), new Flamable(), new CityNeeded()))
 object PetroleumProduct extends Good(List(new Liquid(0), new Flamable(), new Expensive()))
@@ -180,8 +176,8 @@ object SteelWires extends Good(List(new Solid()))
 object Textiles extends Good(List(new Flamable(), new CityNeeded()))
 object Timber extends Good(List(new Flamable(), new CityNeeded()))
 object Tyres extends Good(List(new Solid(), new CityNeeded()))
-object Vegetables extends Good(List(new CityNeeded(), new Perishable(), new Consumable()))
+object Vegetables extends Good(List(new CityNeeded(), new Perishable(0.01), new Consumable()))
 object Vehicles extends Good(List(new Solid(), new CityNeeded()))
-object Wine extends Good(List(new Liquid(0), new Perishable(), new CityNeeded()))
+object Wine extends Good(List(new Liquid(0), new Perishable(0.0001), new CityNeeded()))
 object Woodchips extends Good(List(new Flamable(), new Solid()))
 object Wool extends Good(List(new Flamable()))
