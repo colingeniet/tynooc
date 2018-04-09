@@ -164,8 +164,8 @@ extends StackPane with ZoomPane {
     }
   }
 
-  minScale = 0.01
-  maxScale = 5
+  minScale = 0.05
+  maxScale = 10
 
   /** Display a town. */
   private def addTown(town: Town): Unit = {
