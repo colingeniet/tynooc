@@ -26,7 +26,7 @@ import scala.math.Ordering.Implicits._
  */
 class World {
   /** The fuel price in the world. */
-  var fuelPrice = 1
+  var fuelPrice = 0.05
 
   private var _towns: HashSet[Town] = HashSet()
 

@@ -13,7 +13,15 @@ trait StationModel extends FacilityModel {
 }
 
 trait Station extends Facility {
+
+  val fee : Double = 5
+
   def accepts(vehicle: Vehicle): Boolean
+
+  def onEnter(vehicle: Vehicle): Unit = {
+    owner().credit(fee)
+    vehicle.owner().debit(fee)
+  }
 }
 
 abstract class StationFromModel[Model <: StationModel] (
