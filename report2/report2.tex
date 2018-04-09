@@ -1,0 +1,40 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{enumitem}
+
+\begin{document}
+\title{Tynooc --- A Tycoon clone \\ \large{Project report --- part 2}}
+\author{Valentin Maestracci \and Yoan Geran \and Colin Geniet}
+\maketitle
+
+\tableofcontents
+
+\section{Modifications to part 1}
+Some changes were made to the first part of the project to allow better introduction of new features for part 2.
+
+\subsection{Use of Properties}
+The first modification we made was to rewrite the GUI using scalaFX property system,
+replacing the use of \verb|draw| functions.
+Thus, the tick by tick update system is now limited to the game logic, with the GUI automatically updating.
+
+The main goal of this change was to simplify the GUI code, and remove some bugs due to the GUI
+not correctly updating. While it took some time to apply this change, it made developing the interface
+for the second part much easier.
+
+\subsection{Optimizations}
+Other major changes were all related to optimization, and were required in order to be able to use
+bigger maps (such as the U.K. one). Those changes include
+\begin{itemize}
+\item Optimization of stupid code: removal of redundant calculations, active waiting\dots
+\item Reduced rate of economics calculations: the calculations used to be made at every game tick (i.e. at 60 Hz),
+which is way more than needed, and way too much on a big map.
+Now, only vehicle positions are updated at that rate, and the generation of passengers is done at a much slower rate.
+\end{itemize}
+
+
+\section{Introduction of new features}
+
+\end{document}
