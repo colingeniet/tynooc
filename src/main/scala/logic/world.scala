@@ -1,5 +1,7 @@
 package logic.world
 
+import scalafx.application.Platform
+
 import logic.town._
 import logic.travel._
 import logic.room._
@@ -95,35 +97,6 @@ class World {
     travels.filter { _.company == company }
 
 
-  /** Try to send some goods from <code>start</code> to
-    * <code>destination</code>.
-    *
-    * @param start The start town.
-    * @param destination The destination town.
-    * @param good The goods to send.
-    * @param quantity The quantity of goods to send.
-    */
-  def tryExport(
-    start: Town,
-    destination: Town,
-    good: Good,
-    quantity: Double): Unit = {
-    val availableTravels = travels.toList.filter {
-      t => t.isWaitingAt(start) && t.stopsAt(destination)
-    }
-    var rooms = availableTravels.flatMap { _.availableRooms }
-    var remaining = quantity
-
-    while(remaining > 0 && !rooms.isEmpty) {
-      val room = rooms.head
-      val q: Double = remaining min room.availableLoad(good)
-      room.load(good, destination, q)
-      start.buyGoods(room.travel.company, good, q)
-      remaining -= q
-      rooms = rooms.tail
-    }
-  }
-
   /** Update the state of all travels and towns.
    *
    *  @param dt the time passed since last update step.
@@ -141,7 +114,14 @@ class World {
     }
 
     towns.foreach(_.update_prices(totalGoods))
-    towns.foreach(_.update_economy())
+
+    // only export to the most demanding towns for each good.
+    val mostDemanding: HashMap[Good, List[Town]] = HashMap()
+    Good.all.foreach { g =>
+      mostDemanding(g) = towns.toList.sortWith((t1, t2) => t1.goods_prices(g)() > t2.goods_prices(g)()).slice(0,5)
+    }
+
+    towns.foreach(_.update_economy(mostDemanding))
   }
 
   /** Find the shortest path between two towns.

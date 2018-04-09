@@ -224,7 +224,7 @@ class Town(
   }
 
   def generateExports(to: Town, g: Good, dt: Double): Double = {
-    100
+    goods(g)() * 0.2 * ((((to.goods_prices(g)() / goods_prices(g)()) - 1) max 0) min 2)
   }
 
   /** Adds a new route.
@@ -254,15 +254,18 @@ class Town(
   }
 
 
-  def update_economy() : Unit = {
+  def update_economy(mostDemanding: HashMap[Good, List[Town]]) : Unit = {
     val p = population()
     Game.world.towns.foreach { destination =>
       if(destination != this) {
         val migrantNumber = generatePassengers(destination, Game.economyTick)
         passengersNumber() = passengersNumber() + migrantNumber
         passengers(destination) += migrantNumber
-
-        Good.all.foreach { g =>
+      }
+    }
+    Good.all.foreach { g =>
+      mostDemanding(g).foreach { destination =>
+        if(destination != this) {
           val quantity = generateExports(destination, g, Game.economyTick)
           toExport(destination)(g) += quantity
         }

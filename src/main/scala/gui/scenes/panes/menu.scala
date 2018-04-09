@@ -51,13 +51,13 @@ extends BorderPane {
   }
   val buttonX2 = new ToggleButton {
     graphic = new ImageView {image = new Image(this, "/icons/time2.png")}
-    onAction = (event: ActionEvent) => Game.timeAcceleration = 3
+    onAction = (event: ActionEvent) => Game.timeAcceleration = 2.5
     styleClass.remove("radio-button")
     styleClass.add("toggle-button")
   }
   val buttonX3 = new ToggleButton {
     graphic = new ImageView {image = new Image(this, "/icons/time3.png")}
-    onAction = (event: ActionEvent) => Game.timeAcceleration = 10
+    onAction = (event: ActionEvent) => Game.timeAcceleration = 8
     styleClass.remove("radio-button")
     styleClass.add("toggle-button")
   }

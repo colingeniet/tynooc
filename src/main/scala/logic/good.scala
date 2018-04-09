@@ -14,14 +14,12 @@ import scala.reflect.ClassTag
 
 
 trait GoodType {
-
   def update(g: Good, owner: Room, dt : Double) = {}
 }
 
 class Solid extends GoodType
 
 class Liquid(val rate: Double) extends GoodType { //Evaporates
-
   override def update(g: Good, room: Room, dt: Double) = {
     room.contents.values.foreach(h => {h(g) -= rate*dt*h(g)})
   }
@@ -53,7 +51,7 @@ class Satisfiable extends GoodType // Can be satisfied or dissatisfied  ...
 object Good {
 
   //Is it possible to store those "dynamically", ie avoid adding Goods here when you add a Good down there...
-  val all: List[Good] = List(/*Passengers,*/ Chocolate, Water, IronOre, Iron, Food, Gaz, Uranium, Stuff,
+  val all: List[Good] = List(Chocolate, Water, IronOre, Food, Gaz, Uranium, Stuff,
   Aluminium, AluminiumWires, BakedGoods, Bauxite, Beer, Bricks, CannedFood, Cattle, Cement, Chemicals, Clay,
   Coal, Copper, CopperWires, Cotton, Electronics, Fish,
   Fruit, Fuel, Furniture, Glass, Grain, Iron, Leather, Limestone,
@@ -115,7 +113,6 @@ class Good(val properties: List[GoodType]) {
 //My objects
 
 // Necessary
-//object Passengers extends Good(List(new Satisfiable(), new Alive()))
 object Stuff extends Good(List()) // A good for unknown factories
 
 //For fun
