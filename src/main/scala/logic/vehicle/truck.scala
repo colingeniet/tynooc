@@ -31,8 +31,10 @@ extends VehicleModel
  */
 object TruckModel extends ModelNameMap[TruckModel] {
   private var _models: HashMap[String, TruckModel] = HashMap(
-    "basic" -> new TruckModel("basic truck", 200, List("advanced"), 80, 0, 0, 0, Good.any(30)),
-    "advanced" -> new TruckModel("advanced truck", 400, List(), 100, 0, 0, 0, Good.any(40)))
+    "basic" -> new TruckModel("basic truck", 200, List("advanced"), 80, 3, 0, 0, Good.any(30)),
+    "advanced" -> new TruckModel("advanced truck", 400, List(), 100, 3, 0, 0, Good.any(40)),
+    "jeep" -> new TruckModel("jeep", 250, List(), 750, 3, 0, 0, Good.any(10)),
+    "cheap truck" -> new TruckModel("cheap truck", 50, List(), 180, 3, 0, 0, Good.any(5)))
 
   override def models: HashMap[String, TruckModel] = _models
 }

@@ -8,6 +8,7 @@ import logic.world._
 import logic.route._
 import logic.game._
 import logic.facility._
+import logic.good._
 
 import java.util.{List => JList}
 import collection.JavaConverters._
@@ -100,6 +101,7 @@ object Parser {
     // Game y axis is towards the bottom
     val t = new Town(c.name, c.x, -c.y, 1)
     t.addResidents(c.population)
+    Good.filter[CityNeeded].foreach {g => t.addGood(g, c.population * (56d/1000)) }
 
     if(c.factories != null) {
       c.factories.asScala.foreach { f =>

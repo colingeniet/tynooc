@@ -33,7 +33,9 @@ extends VehicleModel
 object ShipModel extends ModelNameMap[ShipModel] {
   private var _models: HashMap[String, ShipModel] = HashMap(
     "basic" -> new ShipModel("basic ship", 1000, List("advanced"), 50, 10, 8, 0, 0, Good.any(200)),
-    "advanced" -> new ShipModel("advanced ship", 2000, List(), 60, 15, 10, 0, 0, Good.any(350)))
+    "advanced" -> new ShipModel("advanced ship", 2000, List(), 60, 15, 10, 0, 0, Good.any(350)),
+    "cargo" -> new ShipModel("cargo", 2000, List("huge_cargo"), 10, 15, 10, 0, 0, Good.any(750)),
+    "huge_cargo" -> new ShipModel("huge cargo", 5000, List(), 12, 15, 10, 0, 0, Good.any(1200)))
 
   override def models: HashMap[String, ShipModel] = _models
 }
