@@ -28,9 +28,8 @@ class CompanyInfo(
   detailVehicle: VehicleUnit => Unit)
 extends VBox(5) {
   private val nameField: TextField = new TextField {
-      text <== company.name
+      text <==> company.name
       onAction = (event: ActionEvent) => {
-        company.name() = text()
         parent.value.requestFocus()
       }
     }

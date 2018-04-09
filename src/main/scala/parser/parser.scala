@@ -95,9 +95,10 @@ class JMap(
 object Parser {
 
   def buildTown(c: JCity): Town = {
-    val t = new Town(c.name, c.x, c.y, 1)
+    // Game y axis is towards the bottom
+    val t = new Town(c.name, c.x, -c.y, 1)
     t.addResidents(c.population)
-    
+
     if(c.factories != null) {
       c.factories.asScala.foreach { f =>
         t.addFacility(new Factory(FactoryModel(f._type), t, Game.bigBrother))

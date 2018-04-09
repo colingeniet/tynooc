@@ -5,6 +5,7 @@ import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
+import scalafx.beans.property._
 import javafx.scene.input.ScrollEvent
 import javafx.scene.input.MouseEvent
 import javafx.scene.input.DragEvent
@@ -14,6 +15,8 @@ import scalafx.geometry._
 /** Zoomable and dragable pane.
  */
 trait ZoomPane extends Node {
+  val scale: DoubleProperty = DoubleProperty(1)
+
   /** Minimum scale factor. */
   var minScale: Double = 0
   /** Maximum scale factor. */
@@ -25,7 +28,7 @@ trait ZoomPane extends Node {
       // zoom out
       zoomFactor = 1 / zoomFactor
     }
-    zoom(zoomFactor, event.getSceneX(), event.getSceneY())
+    this.zoom(zoomFactor, event.getSceneX(), event.getSceneY())
     event.consume()
   }
 
@@ -53,23 +56,27 @@ trait ZoomPane extends Node {
    *  @param x the point x coordonate relative to the scene.
    *  @param y the point y coordonate relative to the scene.
    */
-  def zoom(factor: Double, x: Double, y: Double): Unit = {
-    var scale: Double = scaleX() * factor
-    if (scale < minScale) scale = minScale
-    if (scale > maxScale) scale = maxScale
-    // correct to take clamping in account
-    val correctFactor: Double = scale / scaleX()
+   def zoom(factor: Double, x: Double, y: Double): Unit = {
+     var newScale: Double = scale() * factor
+     if (newScale < minScale) newScale = minScale
+     if (newScale > maxScale) newScale = maxScale
+     // correct to take clamping in account
+     val correctFactor: Double = newScale / scale()
 
-    val bounds: Bounds = localToScene(layoutBounds())
-    // point position relative to node center
-    val dx: Double = (x - (bounds.getWidth() / 2 + bounds.getMinX()))
-    val dy: Double = (y - (bounds.getHeight() / 2 + bounds.getMinY()))
+     val bounds: Bounds = localToScene(layoutBounds())
+     // point position relative to node center
+     val dx: Double = (x - bounds.getMinX())
+     val dy: Double = (y - bounds.getMinY())
 
-    // rescale and translate
-    translateX = translateX() - (correctFactor - 1) * dx
-    translateY = translateY() - (correctFactor - 1) * dy
-    scaleX = scale
-    scaleY = scale
+     // rescale and translate
+     translateX = translateX() - (correctFactor - 1) * dx
+     translateY = translateY() - (correctFactor - 1) * dy
+     scale() = newScale
+   }
+
+  def focus(x: Double, y: Double): Unit = {
+    translateX = -x
+    translateY = -y
   }
 }
 

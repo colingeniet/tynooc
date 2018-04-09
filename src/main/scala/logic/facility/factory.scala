@@ -32,6 +32,10 @@ object FactoryModel extends ModelNameMap[FactoryModel] {
    override def default(name: String) = default_model
  }
 
+ /**
+Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
+ **/
+
  _models += (
   "aluminum_plant" -> new FactoryModel("Aluminium Plant", 1000, List("super_bakery"),
      List(new ProductionCycle(HashMap(Bauxite -> 2, Coal -> 3), HashMap(Aluminium -> 10),5))),

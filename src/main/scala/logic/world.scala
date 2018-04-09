@@ -33,6 +33,11 @@ class World {
   private var _travels: HashSet[Travel] = HashSet()
   private var _companies: HashSet[Company] = HashSet()
 
+  var minX: Double = 0
+  var minY: Double = 0
+  var maxX: Double = 0
+  var maxY: Double = 0
+
   /** Callback called any time a new travel is added.
     *
     *  This is used to signal the new travel to the gui.
@@ -58,6 +63,10 @@ class World {
   def addTown(town: Town): Unit = {
     _towns.add(town)
     population += town.population()
+    minX = minX min town.x
+    maxX = maxX max town.x
+    minY = minY min town.y
+    maxY = maxY max town.y
   }
 
   /** Creates and add a new town.

@@ -2,6 +2,7 @@ package gui.scenes.map
 
 import collection.mutable.HashMap
 
+import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.shape._
@@ -10,10 +11,10 @@ import scalafx.scene.layout._
 import scalafx.scene.image._
 import scalafx.scene.effect._
 import scalafx.event._
+import scalafx.geometry._
 import javafx.scene.input.MouseEvent
 import javafx.event.EventHandler
 import scalafx.scene.paint.Color._
-
 import scalafx.beans.binding._
 import scalafx.beans.binding.BindingIncludes._
 import scalafx.collections._
@@ -61,8 +62,8 @@ extends StackPane with ZoomPane {
       }
     }
 
-    x <== travel.posX.toDouble
-    y <== travel.posY.toDouble
+    x <== scale * travel.posX - image().getWidth()/2
+    y <== scale * travel.posY - image().getHeight()/2
 
     travel.vehicle match {
       case _: Plane => rotate <== travel.heading
@@ -85,20 +86,20 @@ extends StackPane with ZoomPane {
           val A = if(r.start.x < r.end.x) r.start else r.end
           val B = if(A == r.start) r.end else r.start
           val mil = milRoute(A, B, angles(r), XRouteDirection(r))
-          x <== ({
+          x <== scale * ({
             val xMil = mil._1
             if(p < 0.5)
               r.start.x +  2 * p * (xMil - r.start.x)
             else
               xMil + (p - 0.5) * 2 * (r.end.x - xMil)
             }) - image().getWidth()/2
-          y <== ({
+          y <== scale * ({
             val yMil = mil._2
             if(p < 0.5)
               r.start.y +  2 * p * (yMil - r.start.y)
             else
               yMil + (p - 0.5) * 2 * (r.end.y - yMil)
-            }) - image().getWidth()/2
+            }) - image().getHeight()/2
           }
         case _ => ()
       }
@@ -163,16 +164,16 @@ extends StackPane with ZoomPane {
     }
   }
 
-  minScale = 0.2
-  maxScale = 4
+  minScale = 0.01
+  maxScale = 5
 
   /** Display a town. */
   private def addTown(town: Town): Unit = {
     // town is displayed as a point
     val point: Circle = new Circle() {
-      centerX = town.x
-      centerY = town.y
-      radius = 12
+      centerX <== scale * town.x
+      centerY <== scale * town.y
+      radius = 8
       fill = Black
       onMouseClicked = new EventHandler[MouseEvent] {
         override def handle(event: MouseEvent) {
@@ -183,7 +184,9 @@ extends StackPane with ZoomPane {
     townsMap.children.add(point)
 
     // text field for town name
-    val text: Text = new Text(town.x + 9, town.y - 9, town.name) {
+    val text: Text = new Text(town.name) {
+      x <== (scale * town.x) + 6
+      y <== (scale * town.y) - 6
       mouseTransparent = true
       styleClass.add("town-name")
     }
@@ -200,12 +203,12 @@ extends StackPane with ZoomPane {
 
   def routeStrokeWidth(route: Route): Double = {
     route match {
-      case r: Road => 5
-      case r: Rail => 4
-      case c: Canal => 4
-      case r: River => 4
-      case s: Seaway => 5
-      case a: Airway => 5
+      case r: Road => 4
+      case s: Seaway => 4
+      case r: Rail => 3
+      case c: Canal => 3
+      case r: River => 3
+      case a: Airway => 3
     }
   }
 
@@ -246,12 +249,12 @@ extends StackPane with ZoomPane {
     val Dy = mil._2
 
     val curve = new QuadCurve {
-      controlX = Dx
-      controlY = Dy
-      startX = Ax
-      startY = Ay
-      endX = Bx
-      endY = By
+      controlX <== scale * Dx
+      controlY <== scale * Dy
+      startX <== scale * Ax
+      startY <== scale * Ay
+      endX <== scale * Bx
+      endY <== scale * By
       stroke = routeColor(route)
       fill = null
       strokeWidth = routeStrokeWidth(route)
@@ -275,6 +278,9 @@ extends StackPane with ZoomPane {
   }
 
   world.onAddTravel = addTravel
+
+  // focus more on less on the map
+  focus(world.minX, world.minY)
 }
 
 
