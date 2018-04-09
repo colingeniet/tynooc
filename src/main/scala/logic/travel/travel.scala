@@ -184,6 +184,10 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
     }
   }
 
+  def unload(): Unit = {
+    rooms.foreach(_.unloadAll(currentTown()))
+  }
+
   /** Updates travel state.
    *
    *  @param dt the time passed since last update step.
@@ -203,6 +207,7 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
           state() = State.Waiting
           if(currentTown().accepts(vehicle)) {
             landPassengers()
+            unload()
           }
           remainingRoutes.remove(0)
           currentRouteDistanceDone() = 0

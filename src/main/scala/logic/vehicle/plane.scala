@@ -72,7 +72,5 @@ extends VehicleFromModel[PlaneModel](_model, _town, _owner) {
     newTravel
   }
 
-  def createRooms(travel: Travel): List[Room] = {
-    List(new Room(travel, this))
-  }
+  def createRooms(travel: Travel): List[Room] = List(new Room(travel, this))
 }

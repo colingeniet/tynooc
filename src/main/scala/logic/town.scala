@@ -11,6 +11,7 @@ import logic.good._
 import logic.facility._
 import logic.vehicle._
 import logic.company._
+import utils.InitHashMap
 
 import collection.mutable.HashMap
 import java.util.Random
@@ -34,57 +35,33 @@ class Town(
   /** The town population. */
   val population: IntegerProperty = IntegerProperty(0)
   /** The passengers number of the town. */
-  val passengers: HashMap[Town, Double] =
-    new HashMap[Town, Double] {
-      override def default(t: Town): Double = {
-        this(t) = 0
-        this(t)
-      }
-    }
+  val passengers: HashMap[Town, Double] = InitHashMap[Town, Double](_ => 0)
 
   val passengersNumber: DoubleProperty = DoubleProperty(0)
 
 
   //Gives the quantity of good inside the city
   val goods: HashMap[Good, DoubleProperty] =
-    new HashMap[Good, DoubleProperty] {
-      override def default(g: Good): DoubleProperty = {
-        // initialize empty entries
-        this(g) = DoubleProperty(0)
-        this(g)
-      }
-    }
+    InitHashMap[Good, DoubleProperty](_ => DoubleProperty(0))
 
   // Gives the prices of goods in this city
   val goods_prices: HashMap[Good, DoubleProperty] =
-    new HashMap[Good, DoubleProperty] {
-      override def default(g: Good): DoubleProperty = {
-        // initialize empty entries
-        this(g) = DoubleProperty(g.basePrice)
-        this(g)
-      }
-    }
+    InitHashMap[Good, DoubleProperty](g => DoubleProperty(g.basePrice))
 
   // Stocks at last tick. Used to estimate consumption
   private val goods_last: HashMap[Good, Double] =
-    new HashMap[Good, Double] {
-      override def default(g: Good): Double = {
-        // initialize empty entries
-        this(g) = 0
-        this(g)
-      }
-    }
+    InitHashMap[Good, Double](_ => 0)
+
+
+  val toExport: HashMap[Town, HashMap[Good, Double]] =
+    InitHashMap[Town, HashMap[Good, Double]](_ => {
+      InitHashMap[Good, Double](_ => 0)
+    })
 
 
   // Coeff used for consumation
   val consume_coeffs: HashMap[Good, Double] = {
-    val a = new HashMap[Good, Double] {
-      override def default(g: Good): Double = {
-        // initialize empty entries
-        this(g) = 0
-        this(g)
-      }
-    }
+    val a = InitHashMap[Good, Double](_ => 0)
     Good.setAnyWith[CityNeeded](a, 0.7d/1000)
     Good.setAnyWith[Consumable](a, 1d/1000)
     a
@@ -156,6 +133,7 @@ class Town(
       true
     } else false
   }
+
 
   /** Calculates the prices of goods
   */
@@ -245,6 +223,10 @@ class Town(
     (pop - pass) * (1 + to.note - note) * coef * dt
   }
 
+  def generateExports(to: Town, g: Good, dt: Double): Double = {
+    100
+  }
+
   /** Adds a new route.
     *
     * @param route The route to add to the town.
@@ -272,19 +254,22 @@ class Town(
   }
 
 
-  def update_economy(totals: HashMap[Good, Double]) : Unit = {
+  def update_economy() : Unit = {
     val p = population()
     Game.world.towns.foreach { destination =>
       if(destination != this) {
         val migrantNumber = generatePassengers(destination, Game.economyTick)
         passengersNumber() = passengersNumber() + migrantNumber
         passengers(destination) += migrantNumber
-        //Game.world.tryTravel(this, destination, passengers(destination))
+
+        Good.all.foreach { g =>
+          val quantity = generateExports(destination, g, Game.economyTick)
+          toExport(destination)(g) += quantity
+        }
       }
     }
 
     consume_daily()
-    update_prices(totals: HashMap[Good, Double])
   }
 
   /** Update the population state.

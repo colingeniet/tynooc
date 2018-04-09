@@ -140,7 +140,8 @@ class World {
       totalGoods(g) = towns.map(_.goods(g)()).sum
     }
 
-    towns.foreach(_.update_economy(totalGoods))
+    towns.foreach(_.update_prices(totalGoods))
+    towns.foreach(_.update_economy())
   }
 
   /** Find the shortest path between two towns.
