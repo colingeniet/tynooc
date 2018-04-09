@@ -86,7 +86,7 @@ class TravelManager(
   vehicleDetail: Vehicle => Unit)
 extends VBox(3) {
   val list = new SelectionListDynamic[Script](
-    company.travel_scripts,
+    company.travelScripts,
     _.vehicle.name,
     displayScript(_))
 

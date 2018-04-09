@@ -47,7 +47,7 @@ class Company(var _name: String, val fabricTown: Town) {
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
-  val travel_scripts: ObservableBuffer[Script] = ObservableBuffer()
+  val travelScripts: ObservableBuffer[Script] = ObservableBuffer()
 
   /** Credits the player with <code>amount</code> euros.
     *
@@ -115,7 +115,7 @@ class Company(var _name: String, val fabricTown: Town) {
     if (vehicle.model.price <= money()) {
       debit(vehicle.model.price)
       vehicle match {
-        case v: Vehicle => vehicles.add(v); travel_scripts.add(new Script(this, v))
+        case v: Vehicle => vehicles.add(v); travelScripts.add(new Script(this, v))
         case _ => ()
       }
       vehicleUnits.add(vehicle)
