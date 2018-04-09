@@ -110,7 +110,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   def availableLoad(g: Good): Double = (1 - filled) * allowed(g)
 
   def load(g: Good, destination: Town, v: Double): Unit = {
-    assert(filled + v/allowed(g) <= 1)
+    assert(v <= (1 - filled) * allowed(g))
 
     contents(destination)(g) += v
     filled += v/allowed(g)
