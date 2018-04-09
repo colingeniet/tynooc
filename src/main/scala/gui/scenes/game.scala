@@ -66,11 +66,9 @@ extends MainStage.Scene(sceneModifier) {
       children = List(
         new CompanySummary(player.company, () => displayCompany()),
         new Separator(),
-        new TownInfo(town, player.company, displayRoute, displayFacility, displayStock))
+        new TownInfo(town, player.company, displayRoute, displayFacility))
     }
-  }
 
-  private def displayStock(town: Town): Unit = {
     pane.right = new TownStock(town)
   }
 

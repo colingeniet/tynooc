@@ -29,8 +29,7 @@ class TownInfo(
   town: Town,
   company: Company,
   displayRoute: Route => Unit,
-  displayFacility: Facility => Unit,
-  displayStock: Town => Unit)
+  displayFacility: Facility => Unit)
 extends VBox(3) {
   private val popLbl = new Label {
     text <== createStringBinding(
@@ -42,8 +41,6 @@ extends VBox(3) {
       () => s"Passengers: ${town.passengersNumber.toInt}",
       town.passengersNumber)
   }
-
-  private var goods = new Link("goods stock", () => displayStock(town))
 
   private val routes = new VBox {
     children = new Label("Routes to:") :: town.routes.map{ route => new Link(
@@ -107,7 +104,6 @@ extends VBox(3) {
       new Label(town.name),
       popLbl,
       pasLbl,
-      goods,
       routes,
       facilities,
       buyFacility,
