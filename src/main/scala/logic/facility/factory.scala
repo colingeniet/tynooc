@@ -37,9 +37,13 @@ Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
  **/
 
  _models += (
-  "aluminum_plant" -> new FactoryModel("Aluminium Plant", 1000, List("super_bakery"),
+  "water_well" -> new FactoryModel("Water Well", 20, List(),
+      List(new ProductionCycle(HashMap(), HashMap(Water -> 4), 1))),
+  "gaz_well" -> new FactoryModel("Gaz Well", 30, List(),
+    List(new ProductionCycle(HashMap(), HashMap(Gaz -> 4), 1.5))),
+  "aluminum_plant" -> new FactoryModel("Aluminium Plant", 1000, List(),
      List(new ProductionCycle(HashMap(Bauxite -> 2, Coal -> 3), HashMap(Aluminium -> 10),5))),
-  "bakery" -> new FactoryModel("Bakery", 500, List(),
+  "bakery" -> new FactoryModel("Bakery", 500, List("super_bakery"),
     List(new ProductionCycle(HashMap(Grain -> 2), HashMap(BakedGoods -> 2), 1))),
   "super_bakery" -> new FactoryModel("Super Bakery", 1200, List(),
     List(new ProductionCycle(HashMap(Grain -> 2), HashMap(BakedGoods -> 2, Chocolate -> 10), 1.2))),
@@ -47,8 +51,16 @@ Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
     List(new ProductionCycle(HashMap(), HashMap(Bauxite -> 8), 2))),
   "brewery" -> new FactoryModel("Brewery", 500, List(),
     List(new ProductionCycle(HashMap(Grain -> 2, Glass -> 2), HashMap(Beer-> 3), 2))),
-  "brick_works" -> new FactoryModel("Brickworks", 400, List(),
+  "brick_works" -> new FactoryModel("Brickworks", 400, List("advanced_brick_works", "nuclear-brick_works"),
     List(new ProductionCycle(HashMap(Clay -> 4), HashMap(Bricks -> 4), 1))),
+  "advanced_brick_works" -> new FactoryModel("Advanced Brick Works", 1200, List(),
+    List(new ProductionCycle(HashMap(Clay -> 8), HashMap(Bricks -> 10), 1))),
+  "nuclear_brick_works" -> new FactoryModel("Nuclear Brick Works", 1500, List(),
+    List(new ProductionCycle(HashMap(Clay -> 8), HashMap(Bricks -> 4, Uranium -> 1), 1))),
+  "nuclear_power_plant" -> new FactoryModel("Nuclear Power Plant", 5000, List(),
+    List(new ProductionCycle(HashMap(Uranium -> 1), HashMap(Electricity -> 20), 0.9))),
+  "electricity_furnisher" -> new FactoryModel("Electricity Furnisher", 750, List(),
+    List(new ProductionCycle(HashMap(Gaz -> 1), HashMap(Electricity -> 3), 1.1))),
   "cannery" -> new FactoryModel("Cannery", 500, List(),
     List(new ProductionCycle(HashMap(Steel -> 2, Fish -> 2), HashMap(CannedFood -> 2), 1),
         new ProductionCycle(HashMap(Steel -> 2, Fruit -> 2), HashMap(CannedFood -> 2), 1),
@@ -65,6 +77,8 @@ Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
     List(new ProductionCycle(HashMap(), HashMap(Clay -> 5), 3))),
   "coal_mine" -> new FactoryModel("Coal Mine", 400, List(),
     List(new ProductionCycle(HashMap(), HashMap(Coal-> 8), 4))),
+  "uranium_mine" -> new FactoryModel("Uranium Mine", 8000, List(),
+    List(new ProductionCycle(HashMap(), HashMap(Uranium -> 1), 5))),
   "copper_mine" -> new FactoryModel("Copper Mine", 700, List(),
     List(new ProductionCycle(HashMap(), HashMap(Copper -> 3), 2))),
   "cotton_plantation" -> new FactoryModel("Cotton Plantation", 500, List(),
@@ -76,8 +90,12 @@ Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
     List(new ProductionCycle(HashMap(), HashMap(Fish -> 2), 1))),
   "forestry" -> new FactoryModel("Forestry", 500, List(),
     List(new ProductionCycle(HashMap(), HashMap(Timber -> 1), 0.5))),
+  "alchemist_house" -> new FactoryModel("Alchemist House", 40, List(),
+    List(new ProductionCycle(HashMap(), HashMap(PhilosophalStone -> 1), 30))),
   "fruit_orchard" -> new FactoryModel("Fruit Orchard", 1500, List(),
     List(new ProductionCycle(HashMap(), HashMap(Fruit -> 20), 7))),
+  "eden_garden" -> new FactoryModel("Eden Garden", 15000, List(),
+    List(new ProductionCycle(HashMap(Water -> 5), HashMap(Fruit -> 80, Uranium -> 2), 14))),
   "furniture_factory" -> new FactoryModel("Furniture Factory", 3000, List(),
     List(new ProductionCycle(HashMap(Lumber -> 4, Glass -> 4), HashMap(Furniture -> 4), 2),
         new ProductionCycle(HashMap(Lumber -> 4, Leather -> 4), HashMap(Furniture -> 4), 2),
@@ -137,8 +155,12 @@ Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
   "wire_mill" -> new FactoryModel("Wire Mill", 1280, List(),
     List(new ProductionCycle(HashMap(Aluminium -> 2), HashMap(AluminiumWires -> 3), 3),
         new ProductionCycle(HashMap(Copper -> 2), HashMap(CopperWires -> 2), 2),
-        new ProductionCycle(HashMap(Steel -> 2), HashMap(SteelWires -> 1), 0.5)))
+        new ProductionCycle(HashMap(Steel -> 2), HashMap(SteelWires -> 1), 0.5))),
+  "metaphysical_factory" -> new FactoryModel("???", 42000, List(),
+    Good.all.map{ g => new ProductionCycle(HashMap(PhilosophalStone -> 1), HashMap(g -> 1), 1) })      
   )
+
+
 
  override def models: HashMap[String, FactoryModel] = _models
 }
@@ -149,14 +171,20 @@ extends FacilityFromModel[FactoryModel](_model, _town, _owner) {
 
   def modelNameMap(name: String): FactoryModel = FactoryModel(name)
 
+  def production_factor(h: HashMap[Good, Double]) : HashMap[Good, Double] = {
+    val r = HashMap[Good, Double]()
+    h.foreach {case (g,v) => r(g) = 4.2*v} //The value is experimental
+    r
+  }
+
   def startCycle(): Unit = {
     if (!working()) {
       optimized_find() match {
         case Some(prod) => {
           working() = true
-          town.buyGoods(owner(), prod.consumes)
+          town.buyGoods(owner(), production_factor(prod.consumes))
           Game.delayAction(prod.cycleTime, () => {
-            town.sellGoods(owner(), prod.produces)
+            town.sellGoods(owner(), production_factor(prod.produces))
             working() = false
           })
         }

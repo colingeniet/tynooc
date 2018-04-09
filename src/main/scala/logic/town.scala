@@ -47,7 +47,6 @@ class Town(
   val goods: HashMap[Good, DoubleProperty] =
     new HashMap[Good, DoubleProperty] {
 
-      Good.filter[CityNeeded].foreach {g => this(g) = DoubleProperty(1000)}
       override def default(g: Good): DoubleProperty = {
         // initialize empty entries
         this(g) = DoubleProperty(0)
@@ -85,8 +84,9 @@ class Town(
         this(g)
       }
     }
-    Good.setAnyWith[CityNeeded](a, 0.7d/1000)
-    Good.setAnyWith[Consumable](a, 1d/1000)
+    Good.setAnyWith[CityNeeded](a, 0.7d/1050)
+    Good.setAnyWith[Consumable](a, 1d/1050)
+    Good.setAnyWith[Elec](a, 1d/840)
     a
   }
 
@@ -110,6 +110,10 @@ class Town(
       }
     }
     a
+  }
+
+  def addGood(g: Good, q: Double) = {
+    goods(g)() += q
   }
 
   def sellGoods(company: Company, g: Good, v: Double): Unit = {

@@ -42,21 +42,25 @@ class Perishable() extends GoodType { //Can rot
   */
 }
 
+/*
+The description are for future purposes, they are not used this way now !
+*/
 class Dangerous extends GoodType //Passengers won't be happy with  a dangerous good on board
 class Expensive extends GoodType //Your vehicle can get attacked by bad people
 class Flamable extends GoodType // Can burn
 class Alive extends GoodType // Is alive ...
 class Fragile extends GoodType // Can easily break if not in an appropriate mean of transport.
+class Elec extends GoodType
 
 class Satisfiable extends GoodType // Can be satisfied or dissatisfied  ...
 
 object Good {
 
   //Is it possible to store those "dynamically", ie avoid adding Goods here when you add a Good down there...
-  val all: List[Good] = List(/*Passengers,*/ Chocolate, Water, Gaz, Uranium, Stuff,
+  val all: List[Good] = List(/*Passengers,*/ Electricity, Chocolate, Water, Gaz, Uranium, Stuff,
   Aluminium, AluminiumWires, BakedGoods, Bauxite, Beer, Bricks, CannedFood, Cattle, Cement, Chemicals, Clay,
   Coal, Copper, CopperWires, Cotton, Electronics, Fish,
-  Fruit, Fuel, Furniture, Glass, Grain, Iron, Leather, Limestone,
+  Fruit, Fuel, Furniture, Glass, PhilosophalStone, Grain, Iron, Leather, Limestone,
   Liquor, Lumber, Marble , Meat , Milk, Oil, Paper, PetroleumProduct, Pigs, Plastics, Press,
   Rubber, Sand, Sheep, Steel, SteelWires, Textiles, Timber, Tyres, Vegetables,
   Vehicles, Wine, Woodchips, Wool)
@@ -128,7 +132,8 @@ object Gaz extends Good(List(new Gazeous(), new Dangerous(), new CityNeeded()))
 //object Coal extends Good(List(new Solid()))
 //object Oil extends Good(List(new Liquid(0), new Flamable()))
 object Uranium extends Good(List(new Solid(), new Dangerous(), new Expensive()))
-
+object Electricity extends Good(List(new CityNeeded(), new Elec()))
+object PhilosophalStone extends Good(List(new Solid(), new Expensive()))
 
 //Juraj's
 object Aluminium extends Good(List(new Solid(), new CityNeeded()))
