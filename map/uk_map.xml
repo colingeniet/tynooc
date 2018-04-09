@@ -1,0 +1,1698 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Map name="Great Britain" width="640" height="1110">
+  <City name="London" x="183" y="-276" population="10482465">
+    <Port beam_clearance="75" size="50"/>
+    <Airport runway_length="3902" size="475"/>
+    <Factory type="bakery" size="80"/>
+    <Factory type="brewery" size="25"/>
+    <Factory type="brickworks" size="10"/>
+    <Factory type="electronics_factory" size="15"/>
+    <Factory type="furniture_factory" size="45"/>
+    <Factory type="glass_factory" size="60"/>
+    <Factory type="liquor_distillery" size="60"/>
+    <Factory type="printing_press" size="45"/>
+    <Factory type="tyre_factory" size="50"/>
+  </City>
+  <City name="Manchester" x="48" y="-57" population="2651901">
+    <Airport runway_length="3050" size="192"/>
+    <Factory type="bakery" size="20"/>
+    <Factory type="brewery" size="60"/>
+    <Factory type="cement_factory" size="40"/>
+    <Factory type="coal_mine" size="40"/>
+    <Factory type="copper_mine" size="28"/>
+    <Factory type="electronics_factory" size="20"/>
+    <Factory type="furniture_factory" size="10"/>
+    <Factory type="textile_mill" size="150"/>
+    <Factory type="wire_factory" size="35"/>
+  </City>
+  <City name="Birmingham" x="70" y="-168" population="2533814">
+    <Airport runway_length="3052" size="113"/>
+    <Factory type="bakery" size="30"/>
+    <Factory type="brewery" size="25"/>
+    <Factory type="brickworks" size="50"/>
+    <Factory type="cannery" size="35"/>
+    <Factory type="coal_mine" size="45"/>
+    <Factory type="glass_factory" size="30"/>
+    <Factory type="tannery" size="10"/>
+    <Factory type="vehicle_factory" size="24"/>
+  </City>
+  <City name="Leeds" x="92" y="-22" population="1839866">
+    <Airport runway_length="2250" size="44"/>
+    <Factory type="bakery" size="55"/>
+    <Factory type="brewery" size="20"/>
+    <Factory type="chemical_plant" size="75"/>
+    <Factory type="coal_mine" size="80"/>
+    <Factory type="electronics_factory" size="40"/>
+    <Factory type="glass_factory" size="5"/>
+    <Factory type="stockyard" size="5"/>
+    <Factory type="textile_mill" size="40"/>
+    <Factory type="vineyard" size="10"/>
+  </City>
+  <City name="Glasgow" x="-80" y="206" population="1001590">
+    <Airport runway_length="2665" size="98"/>
+    <Factory type="bakery" size="30"/>
+    <Factory type="brewery" size="20"/>
+    <Factory type="cannery" size="25"/>
+    <Factory type="printing_press" size="35"/>
+  </City>
+  <City name="Southampton" x="102" y="-344" population="895930">
+    <Port beam_clearance="75" size="25"/>
+    <Airport runway_length="1723" size="42"/>
+    <Factory type="cotton_plantation" size="75"/>
+    <Factory type="fishery" size="30"/>
+    <Factory type="sheep_farm" size="2"/>
+    <Factory type="liquor_distillery" size="20"/>
+    <Factory type="lumber_mill" size="15"/>
+    <Factory type="oil_refinery" size="10"/>
+    <Factory type="oil_wells" size="10"/>
+    <Factory type="printing_press" size="5"/>
+    <Factory type="sand_pit" size="25"/>
+  </City>
+  <City name="Liverpool" x="1" y="-66" population="884941">
+    <Port beam_clearance="75" size="25"/>
+    <Airport runway_length="2285" size="62"/>
+    <Factory type="bakery" size="10"/>
+    <Factory type="brewery" size="15"/>
+  </City>
+  <City name="Newcastle upon Tyne" x="89" y="107" population="794062">
+    <Airport runway_length="2329" size="56"/>
+    <Factory type="bakery" size="25"/>
+    <Factory type="cattle_ranch" size="15"/>
+    <Factory type="coal_mine" size="70"/>
+    <Factory type="forestry" size="30"/>
+    <Factory type="liquor_distillery" size="40"/>
+  </City>
+  <City name="Nottingham" x="118" y="-116" population="762128">
+    <Airport runway_length="2893" size="74"/>
+    <Factory type="bakery" size="10"/>
+    <Factory type="brewery" size="10"/>
+  </City>
+  <City name="Sheffield" x="98" y="-68" population="710333">
+    <Factory type="brewery" size="35"/>
+    <Factory type="brickworks" size="20"/>
+    <Factory type="coal_mine" size="35"/>
+  </City>
+  <City name="Bristol" x="26" y="-283" population="655677">
+    <Port beam_clearance="50" size="10"/>
+    <Airport runway_length="2011" size="74"/>
+    <Factory type="coal_mine" size="8"/>
+    <Factory type="fruit_orchard" size="10"/>
+    <Factory type="quarry" size="7"/>
+    <Factory type="stockyard" size="35"/>
+  </City>
+  <City name="Belfast" x="-187" y="66" population="607480">
+    <Port beam_clearance="75" size="15"/>
+    <Airport runway_length="2780" size="55"/>
+    <Factory type="aluminum_plant" size="20"/>
+    <Factory type="bakery" size="20"/>
+    <Factory type="cement_factory" size="20"/>
+    <Factory type="coal_mine" size="2"/>
+    <Factory type="electronics_factory" size="15"/>
+    <Factory type="fishery" size="10"/>
+    <Factory type="forestry" size="15"/>
+    <Factory type="liquor_distillery" size="30"/>
+    <Factory type="lumber_mill" size="25"/>
+    <Factory type="printing_press" size="6"/>
+  </City>
+  <City name="Leicester" x="119" y="-151" population="533049">
+    <Factory type="cotton_plantation" size="40"/>
+    <Factory type="sand_pit" size="15"/>
+  </City>
+  <City name="Edinburgh" x="-12" y="216" population="512510">
+    <Port beam_clearance="75" size="20"/>
+    <Airport runway_length="2556" size="122"/>
+    <Factory type="bakery" size="35"/>
+    <Factory type="brewery" size="25"/>
+    <Factory type="cement_factory" size="40"/>
+    <Factory type="coal_mine" size="60"/>
+    <Factory type="forestry" size="10"/>
+    <Factory type="furniture_factory" size="20"/>
+    <Factory type="glass_factory" size="10"/>
+    <Factory type="vegetable_farm" size="10"/>
+    <Factory type="liquor_distillery" size="50"/>
+    <Factory type="lumber_mill" size="40"/>
+    <Factory type="oil_refinery" size="5"/>
+  </City>
+  <City name="Brighton and Hove" x="182" y="-352" population="496291">
+    <Factory type="cotton_plantation" size="75"/>
+    <Factory type="vegetable_farm" size="20"/>
+    <Factory type="oil_wells" size="30"/>
+    <Factory type="printing_press" size="1"/>
+  </City>
+  <City name="Bournemouth" x="71" y="-364" population="488257">
+    <Airport runway_length="2271" size="36"/>
+    <Factory type="brewery" size="10"/>
+    <Factory type="cattle_ranch" size="20"/>
+    <Factory type="oil_wells" size="40"/>
+    <Factory type="rubber_plantation" size="5"/>
+    <Factory type="sand_pit" size="20"/>
+  </City>
+  <City name="Cardiff" x="-11" y="-279" population="464201">
+    <Factory type="brewery" size="10"/>
+    <Factory type="cement_factory" size="15"/>
+    <Factory type="coal_mine" size="54"/>
+    <Factory type="glass_factory" size="20"/>
+  </City>
+  <City name="Coventry" x="95" y="-176" population="396189">
+    <Factory type="coal_mine" size="5"/>
+    <Factory type="vehicle_factory" size="2"/>
+  </City>
+  <City name="Middlesbrough" x="112" y="64" population="382410">
+    <Factory type="bakery" size="20"/>
+    <Factory type="cement_factory" size="50"/>
+    <Factory type="chemical_plant" size="60"/>
+    <Factory type="fishery" size="10"/>
+    <Factory type="wire_factory" size="10"/>
+  </City>
+  <City name="Stoke-on-Trent" x="52" y="-111" population="380066">
+    <Factory type="bakery" size="15"/>
+    <Factory type="cement_factory" size="20"/>
+    <Factory type="coal_mine" size="25"/>
+    <Factory type="copper_mine" size="10"/>
+    <Factory type="wire_factory" size="20"/>
+  </City>
+  <City name="Sunderland" x="103" y="100" population="338575">
+    <Factory type="bakery" size="10"/>
+    <Factory type="coal_mine" size="42"/>
+    <Factory type="fishery" size="25"/>
+    <Factory type="wire_factory" size="25"/>
+    <Factory type="vehicle_factory" size="25"/>
+  </City>
+  <City name="Reading" x="129" y="-282" population="331458">
+    <Factory type="fruit_orchard" size="15"/>
+    <Factory type="sand_pit" size="10"/>
+    <Factory type="vineyard" size="8"/>
+  </City>
+  <City name="Birkenhead" x="0" y="-67" population="327188">
+    <Factory type="oil_refinery" size="12"/>
+  </City>
+  <City name="Preston" x="19" y="-26" population="321561">
+    <Factory type="chemical_plant" size="30"/>
+    <Factory type="textile_mill" size="15"/>
+    <Factory type="vehicle_factory" size="1"/>
+  </City>
+  <City name="Kingston upon Hull" x="170" y="-28" population="317684">
+    <Factory type="bakery" size="30"/>
+    <Factory type="cattle_ranch" size="5"/>
+    <Factory type="electronics_factory" size="15"/>
+    <Factory type="pig_farm" size="15"/>
+    <Factory type="textile_mill" size="20"/>
+  </City>
+  <City name="Newport" x="0" y="-268" population="312067">
+    <Factory type="bakery" size="25"/>
+    <Factory type="coal_mine" size="40"/>
+    <Factory type="vegetable_farm" size="10"/>
+    <Factory type="iron_mine" size="20"/>
+    <Factory type="lumber_mill" size="10"/>
+    <Factory type="quarry" size="22"/>
+    <Factory type="steel_mill" size="12"/>
+  </City>
+  <City name="Swansea" x="-60" y="-264" population="306449">
+    <Factory type="brewery" size="5"/>
+    <Factory type="cement_factory" size="25"/>
+    <Factory type="coal_mine" size="20"/>
+    <Factory type="oil_refinery" size="10"/>
+    <Factory type="quarry" size="25"/>
+    <Factory type="steel_mill" size="25"/>
+  </City>
+  <City name="Southend-on-Sea" x="237" y="-273" population="304783">
+    <Factory type="brewery" size="15"/>
+    <Factory type="oil_refinery" size="25"/>
+  </City>
+  <City name="Derby" x="97" y="-119" population="278200">
+    <Factory type="brewery" size="5"/>
+    <Factory type="brickworks" size="15"/>
+    <Factory type="furniture_factory" size="25"/>
+    <Factory type="textile_mill" size="5"/>
+    <Factory type="vehicle_factory" size="8"/>
+  </City>
+  <City name="Luton" x="165" y="-235" population="275662">
+    <Airport runway_length="2162" size="128"/>
+    <Factory type="bakery" size="15"/>
+    <Factory type="brickworks" size="20"/>
+    <Factory type="vehicle_factory" size="4"/>
+  </City>
+  <City name="Plymouth" x="-73" y="-402" population="267918">
+    <Factory type="bakery" size="10"/>
+    <Factory type="bauxite_mine" size="80"/>
+    <Factory type="clay_pit" size="15"/>
+    <Factory type="copper_mine" size="35"/>
+    <Factory type="fishery" size="20"/>
+    <Factory type="fruit_orchard" size="10"/>
+    <Factory type="glass_factory" size="50"/>
+    <Factory type="lumber_mill" size="25"/>
+    <Factory type="printing_press" size="3"/>
+    <Factory type="stockyard" size="50"/>
+  </City>
+  <City name="Farnborough" x="144" y="-306" population="258468">
+    <Factory type="bakery" size="15"/>
+    <Factory type="stockyard" size="20"/>
+    <Factory type="vehicle_factory" size="2"/>
+  </City>
+  <City name="Gillingham" x="227" y="-290" population="256649">
+    <Factory type="grain_farm" size="30"/>
+    <Factory type="oil_refinery" size="20"/>
+    <Factory type="paper_mill" size="25"/>
+  </City>
+  <City name="Milton Keynes" x="143" y="-217" population="242679">
+    <Factory type="rubber_plantation" size="5"/>
+  </City>
+  <City name="Blackpool" x="-3" y="-20" population="239002">
+    <Factory type="bakery" size="15"/>
+    <Factory type="clay_pit" size="10"/>
+    <Factory type="glass_factory" size="20"/>
+    <Factory type="iron_mine" size="40"/>
+  </City>
+  <City name="Barnsley" x="97" y="-49" population="233580">
+    <Factory type="coal_mine" size="25"/>
+    <Factory type="quarry" size="65"/>
+  </City>
+  <City name="Northampton" x="134" y="-196" population="229854">
+    <Factory type="electronics_factory" size="10"/>
+    <Factory type="grain_farm" size="10"/>
+    <Factory type="wire_factory" size="80"/>
+  </City>
+  <City name="Norwich" x="275" y="-155" population="225831">
+    <Airport runway_length="1841" size="37"/>
+    <Factory type="cattle_ranch" size="5"/>
+    <Factory type="cotton_plantation" size="60"/>
+    <Factory type="grain_farm" size="80"/>
+    <Factory type="stockyard" size="30"/>
+    <Factory type="vehicle_factory" size="1"/>
+  </City>
+  <City name="Aberdeen" x="56" y="349" population="213810">
+    <Airport runway_length="1953" size="96"/>
+    <Factory type="brewery" size="10"/>
+    <Factory type="fishery" size="20"/>
+    <Factory type="forestry" size="5"/>
+    <Factory type="liquor_distillery" size="40"/>
+  </City>
+  <City name="Swindon" x="78" y="-270" population="192888">
+    <Factory type="glass_factory" size="15"/>
+    <Factory type="grain_farm" size="5"/>
+    <Factory type="sand_pit" size="20"/>
+    <Factory type="vehicle_factory" size="10"/>
+  </City>
+  <City name="Crawley" x="180" y="-320" population="189749">
+    <Airport runway_length="3375" size="280"/>
+    <Factory type="vegetable_farm" size="20"/>
+    <Factory type="rubber_plantation" size="10"/>
+    <Factory type="sand_pit" size="5"/>
+  </City>
+  <City name="Ipswich" x="265" y="-215" population="181949">
+    <Factory type="cannery" size="25"/>
+    <Factory type="cattle_ranch" size="4"/>
+    <Factory type="fruit_orchard" size="15"/>
+    <Factory type="glass_factory" size="40"/>
+    <Factory type="vineyard" size="15"/>
+  </City>
+  <City name="Oxford" x="111" y="-249" population="181854">
+    <Factory type="brewery" size="20"/>
+    <Factory type="grain_farm" size="30"/>
+    <Factory type="vehicle_factory" size="15"/>
+  </City>
+  <City name="Wigan" x="23" y="-50" population="179022">
+    <Factory type="bakery" size="40"/>
+    <Factory type="coal_mine" size="20"/>
+    <Factory type="glass_factory" size="15"/>
+    <Factory type="textile_mill" size="20"/>
+  </City>
+  <City name="Mansfield" x="115" y="-95" population="178359">
+    <Factory type="oil_wells" size="40"/>
+    <Factory type="textile_mill" size="15"/>
+  </City>
+  <City name="Peterborough" x="176" y="-157" population="175722">
+    <Factory type="cannery" size="100"/>
+    <Factory type="cement_factory" size="6"/>
+    <Factory type="vegetable_farm" size="10"/>
+    <Factory type="grain_farm" size="50"/>
+    <Factory type="paper_mill" size="35"/>
+  </City>
+  <City name="Slough" x="154" y="-276" population="171368">
+    <Factory type="sand_pit" size="35"/>
+  </City>
+  <City name="Warrington" x="25" y="-67" population="171058">
+    <Factory type="clay_pit" size="80"/>
+    <Factory type="coal_mine" size="15"/>
+    <Factory type="sand_pit" size="10"/>
+  </City>
+  <City name="Cambridge" x="199" y="-199" population="168973">
+    <Factory type="brickworks" size="30"/>
+    <Factory type="fruit_orchard" size="20"/>
+    <Factory type="furniture_factory" size="15"/>
+    <Factory type="grain_farm" size="30"/>
+    <Factory type="pig_farm" size="20"/>
+  </City>
+  <City name="York" x="122" y="-4" population="162810">
+    <Factory type="bakery" size="5"/>
+    <Factory type="brewery" size="50"/>
+    <Factory type="cattle_ranch" size="5"/>
+    <Factory type="liquor_distillery" size="40"/>
+    <Factory type="textile_mill" size="15"/>
+  </City>
+  <City name="Doncaster" x="119" y="-53" population="161225">
+    <Factory type="glass_factory" size="20"/>
+    <Factory type="vegetable_farm" size="10"/>
+    <Factory type="oil_wells" size="10"/>
+    <Factory type="printing_press" size="15"/>
+  </City>
+  <City name="Gloucester" x="48" y="-236" population="159843">
+    <Factory type="bakery" size="10"/>
+    <Factory type="coal_mine" size="12"/>
+    <Factory type="fruit_orchard" size="10"/>
+    <Factory type="paper_mill" size="15"/>
+    <Factory type="quarry" size="30"/>
+    <Factory type="tannery" size="30"/>
+  </City>
+  <City name="Dundee" x="1" y="273" population="158250">
+    <Factory type="cattle_ranch" size="8"/>
+    <Factory type="liquor_distillery" size="40"/>
+  </City>
+  <City name="Basildon" x="223" y="-269" population="153300"/>
+  <City name="Telford" x="35" y="-146" population="152350">
+    <Factory type="bakery" size="5"/>
+    <Factory type="fruit_orchard" size="35"/>
+    <Factory type="liquor_distillery" size="20"/>
+    <Factory type="pig_farm" size="15"/>
+    <Factory type="quarry" size="12"/>
+    <Factory type="stockyard" size="20"/>
+  </City>
+  <City name="Burnley" x="48" y="-23" population="151278">
+    <Factory type="cement_factory" size="30"/>
+    <Factory type="coal_mine" size="10"/>
+  </City>
+  <City name="Blackburn" x="33" y="-28" population="145997">
+    <Factory type="coal_mine" size="15"/>
+  </City>
+  <City name="High Wycombe" x="144" y="-263" population="138130">
+    <Factory type="bakery" size="25"/>
+    <Factory type="electronics_factory" size="25"/>
+  </City>
+  <City name="Hastings" x="229" y="-349" population="136620">
+    <Factory type="cattle_ranch" size="10"/>
+    <Factory type="rubber_plantation" size="8"/>
+    <Factory type="sand_pit" size="5"/>
+  </City>
+  <City name="Colchester" x="249" y="-233" population="133813">
+    <Factory type="brickworks" size="10"/>
+    <Factory type="cannery" size="10"/>
+    <Factory type="fruit_orchard" size="15"/>
+  </City>
+  <City name="Grimsby" x="187" y="-48" population="133534">
+    <Port beam_clearance="75" size="55"/>
+    <Factory type="fishery" size="50"/>
+    <Factory type="grain_farm" size="10"/>
+  </City>
+  <City name="Margate" x="280" y="-290" population="131358">
+    <Factory type="rubber_plantation" size="18"/>
+  </City>
+  <City name="Exeter" x="-34" y="-364" population="128838">
+    <Airport runway_length="2076" size="40"/>
+    <Factory type="cattle_ranch" size="5"/>
+    <Factory type="cotton_plantation" size="60"/>
+    <Factory type="fruit_orchard" size="25"/>
+    <Factory type="vegetable_farm" size="40"/>
+    <Factory type="iron_mine" size="50"/>
+    <Factory type="paper_mill" size="10"/>
+    <Factory type="sand_pit" size="15"/>
+    <Factory type="vineyard" size="10"/>
+  </City>
+  <City name="Burton upon Trent" x="87" y="-133" population="128355">
+    <Factory type="bakery" size="10"/>
+    <Factory type="brewery" size="5"/>
+    <Factory type="coal_mine" size="25"/>
+  </City>
+  <City name="Accrington" x="40" y="-27" population="126627">
+    <Factory type="coal_mine" size="20"/>
+  </City>
+  <City name="Motherwell" x="-63" y="198" population="124910">
+    <Factory type="coal_mine" size="20"/>
+    <Factory type="stockyard" size="10"/>
+    <Factory type="steel_mill" size="15"/>
+  </City>
+  <City name="Eastbourne" x="211" y="-358" population="123455">
+    <Factory type="fishery" size="15"/>
+    <Factory type="oil_wells" size="20"/>
+  </City>
+  <City name="Lincoln" x="157" y="-85" population="120893">
+    <Factory type="grain_farm" size="80"/>
+  </City>
+  <City name="Paignton" x="-35" y="-395" population="118323">
+    <Factory type="fishery" size="15"/>
+    <Factory type="fruit_orchard" size="15"/>
+    <Factory type="iron_mine" size="90"/>
+    <Factory type="quarry" size="13"/>
+    <Factory type="tannery" size="20"/>
+  </City>
+  <City name="Cheltenham" x="59" y="-235" population="118298">
+    <Factory type="grain_farm" size="15"/>
+    <Factory type="liquor_distillery" size="50"/>
+  </City>
+  <City name="Chelmsford" x="222" y="-251" population="116377">
+    <Factory type="bakery" size="5"/>
+    <Factory type="brickworks" size="40"/>
+    <Factory type="glass_factory" size="15"/>
+    <Factory type="sand_pit" size="25"/>
+  </City>
+  <City name="Maidstone" x="225" y="-302" population="116316">
+    <Factory type="cotton_plantation" size="50"/>
+    <Factory type="fruit_orchard" size="25"/>
+    <Factory type="grain_farm" size="20"/>
+    <Factory type="printing_press" size="16"/>
+    <Factory type="sand_pit" size="10"/>
+  </City>
+  <City name="Basingstoke" x="122" y="-303" population="114080">
+    <Factory type="fruit_orchard" size="10"/>
+    <Factory type="printing_press" size="8"/>
+    <Factory type="rubber_plantation" size="15"/>
+    <Factory type="vineyard" size="4"/>
+  </City>
+  <City name="Chesterfield" x="100" y="-84" population="113741">
+    <Factory type="brickworks" size="40"/>
+    <Factory type="clay_pit" size="20"/>
+    <Factory type="coal_mine" size="30"/>
+    <Factory type="tannery" size="40"/>
+  </City>
+  <City name="Bedford" x="162" y="-207" population="113378">
+    <Factory type="brickworks" size="15"/>
+    <Factory type="grain_farm" size="40"/>
+  </City>
+  <City name="Worcester" x="49" y="-200" population="105408">
+    <Factory type="cannery" size="75"/>
+    <Factory type="electronics_factory" size="10"/>
+    <Factory type="vegetable_farm" size="25"/>
+    <Factory type="vehicle_factory" size="1"/>
+  </City>
+  <City name="Falkirk" x="-50" y="222" population="102510">
+    <Factory type="brewery" size="3"/>
+    <Factory type="coal_mine" size="50"/>
+    <Factory type="fruit_orchard" size="15"/>
+    <Factory type="oil_refinery" size="15"/>
+    <Factory type="quarry" size="8"/>
+  </City>
+  <City name="Lancaster" x="12" y="5" population="102060">
+    <Factory type="fruit_orchard" size="10"/>
+    <Factory type="paper_mill" size="20"/>
+    <Factory type="tannery" size="5"/>
+    <Factory type="textile_mill" size="25"/>
+  </City>
+  <City name="Bath" x="40" y="-290" population="100575">
+    <Factory type="brewery" size="15"/>
+    <Factory type="coal_mine" size="20"/>
+    <Factory type="fruit_orchard" size="15"/>
+    <Factory type="vegetable_farm" size="20"/>
+    <Factory type="printing_press" size="25"/>
+    <Factory type="stockyard" size="10"/>
+  </City>
+  <City name="Royal Leamington Spa" x="93" y="-189" population="98144">
+    <Factory type="furniture_factory" size="35"/>
+  </City>
+  <City name="Grays" x="212" y="-280" population="96384">
+    <Factory type="cement_factory" size="65"/>
+    <Factory type="grain_farm" size="20"/>
+    <Factory type="wire_factory" size="30"/>
+  </City>
+  <City name="Nuneaton" x="98" y="-164" population="93933">
+    <Factory type="stockyard" size="8"/>
+  </City>
+  <City name="Stevenage" x="179" y="-233" population="93756">
+    <Factory type="vegetable_farm" size="30"/>
+  </City>
+  <City name="Southport" x="0" y="-39" population="93199"/>
+  <City name="Chester" x="6" y="-89" population="92919">
+    <Factory type="cement_factory" size="20"/>
+    <Factory type="sheep_farm" size="3"/>
+    <Factory type="vegetable_farm" size="20"/>
+    <Factory type="paper_mill" size="35"/>
+    <Factory type="tannery" size="5"/>
+    <Factory type="vehicle_factory" size="10"/>
+  </City>
+  <City name="Darlington" x="92" y="58" population="92392">
+    <Factory type="bakery" size="15"/>
+    <Factory type="sheep_farm" size="10"/>
+    <Factory type="quarry" size="25"/>
+  </City>
+  <City name="Hartlepool" x="114" y="76" population="89608">
+    <Factory type="brewery" size="10"/>
+    <Factory type="oil_refinery" size="15"/>
+    <Factory type="oil_wells" size="10"/>
+    <Factory type="steel_mill" size="115"/>
+  </City>
+  <City name="Weston-super-Mare" x="1" y="-294" population="88485">
+    <Factory type="brewery" size="5"/>
+    <Factory type="cotton_plantation" size="40"/>
+    <Factory type="fruit_orchard" size="15"/>
+    <Factory type="glass_factory" size="10"/>
+    <Factory type="paper_mill" size="20"/>
+    <Factory type="quarry" size="18"/>
+  </City>
+  <City name="Harrogate" x="93" y="-1" population="87994">
+    <Factory type="printing_press" size="20"/>
+    <Factory type="quarry" size="15"/>
+  </City>
+  <City name="Cannock" x="62" y="-145" population="87416"/>
+  <City name="Aylesbury" x="140" y="-242" population="86126">
+    <Factory type="grain_farm" size="40"/>
+  </City>
+  <City name="Redditch" x="68" y="-186" population="83151">
+    <Factory type="sand_pit" size="25"/>
+  </City>
+  <City name="Scunthorpe" x="150" y="-46" population="82334">
+    <Factory type="cattle_ranch" size="6"/>
+    <Factory type="cement_factory" size="35"/>
+    <Factory type="chemical_plant" size="15"/>
+    <Factory type="grain_farm" size="15"/>
+    <Factory type="oil_wells" size="20"/>
+    <Factory type="steel_mill" size="40"/>
+  </City>
+  <City name="Tamworth" x="83" y="-151" population="82228"/>
+  <City name="Ashford" x="247" y="-316" population="81015">
+    <Factory type="fruit_orchard" size="25"/>
+    <Factory type="vegetable_farm" size="50"/>
+    <Factory type="vineyard" size="20"/>
+  </City>
+  <City name="Carlisle" x="3" y="98" population="78920">
+    <Factory type="bauxite_mine" size="20"/>
+    <Factory type="brewery" size="15"/>
+    <Factory type="cattle_ranch" size="25"/>
+    <Factory type="copper_mine" size="12"/>
+    <Factory type="forestry" size="40"/>
+    <Factory type="sheep_farm" size="15"/>
+    <Factory type="sand_pit" size="10"/>
+    <Factory type="tyre_factory" size="40"/>
+  </City>
+  <City name="Crewe" x="35" y="-99" population="77113">
+    <Factory type="bauxite_mine" size="30"/>
+    <Factory type="sand_pit" size="10"/>
+    <Factory type="vehicle_factory" size="1"/>
+  </City>
+  <City name="Rugby" x="111" y="-180" population="76112">
+    <Factory type="cement_factory" size="20"/>
+  </City>
+  <City name="Colwyn Bay" x="-44" y="-78" population="33088">
+    <Factory type="forestry" size="15"/>
+    <Factory type="quarry" size="8"/>
+  </City>
+  <City name="Bangor" x="-72" y="-85" population="18439">
+    <Factory type="coal_mine" size="4"/>
+    <Factory type="sheep_farm" size="5"/>
+    <Factory type="quarry" size="5"/>
+    <Factory type="stockyard" size="5"/>
+  </City>
+  <City name="Aberystwyth" x="-69" y="-175" population="17899">
+    <Factory type="sheep_farm" size="10"/>
+    <Factory type="liquor_distillery" size="30"/>
+  </City>
+  <City name="Haverfordwest" x="-126" y="-244" population="14908">
+    <Factory type="fishery" size="10"/>
+    <Factory type="vegetable_farm" size="5"/>
+    <Factory type="oil_refinery" size="40"/>
+  </City>
+  <City name="Coatbridge" x="-65" y="206" population="90310">
+    <Factory type="fruit_orchard" size="10"/>
+    <Factory type="vegetable_farm" size="30"/>
+    <Factory type="quarry" size="5"/>
+  </City>
+  <City name="Hamilton" x="-67" y="197" population="83680">
+    <Factory type="bakery" size="10"/>
+    <Factory type="coal_mine" size="10"/>
+  </City>
+  <City name="East Kilbride" x="-75" y="195" population="83680">
+    <Factory type="coal_mine" size="45"/>
+    <Factory type="forestry" size="10"/>
+  </City>
+  <City name="Perth" x="-28" y="266" population="47270">
+    <Factory type="aluminum_plant" size="50"/>
+    <Factory type="brewery" size="2"/>
+    <Factory type="chemical_plant" size="25"/>
+    <Factory type="forestry" size="15"/>
+    <Factory type="sheep_farm" size="6"/>
+    <Factory type="lumber_mill" size="25"/>
+  </City>
+  <City name="Inverness" x="-78" y="385" population="47260">
+    <Airport runway_length="1887" size="30"/>
+    <Factory type="aluminum_plant" size="20"/>
+    <Factory type="forestry" size="15"/>
+    <Factory type="sheep_farm" size="18"/>
+    <Factory type="lumber_mill" size="20"/>
+  </City>
+  <City name="Ayr" x="-104" y="161" population="62370">
+    <Factory type="brewery" size="5"/>
+    <Factory type="cattle_ranch" size="20"/>
+    <Factory type="forestry" size="20"/>
+    <Factory type="lumber_mill" size="15"/>
+  </City>
+  <City name="Greenock" x="-112" y="216" population="67710">
+    <Port beam_clearance="50" size="10"/>
+    <Factory type="aluminum_plant" size="10"/>
+    <Factory type="coal_mine" size="10"/>
+    <Factory type="fishery" size="10"/>
+    <Factory type="sheep_farm" size="10"/>
+  </City>
+  <City name="Dumfries" x="-38" y="118" population="32950">
+    <Factory type="cattle_ranch" size="10"/>
+    <Factory type="forestry" size="40"/>
+    <Factory type="sheep_farm" size="10"/>
+    <Factory type="stockyard" size="15"/>
+  </City>
+  <City name="Peterhead" x="77" y="389" population="18730">
+    <Factory type="fishery" size="30"/>
+    <Factory type="fruit_orchard" size="5"/>
+  </City>
+  <City name="Kirkwall" x="2" y="552" population="6990">
+    <Factory type="brewery" size="2"/>
+    <Factory type="fishery" size="30"/>
+  </City>
+  <City name="Stornoway" x="-216" y="467" population="5040">
+    <Factory type="brewery" size="1"/>
+    <Factory type="fishery" size="10"/>
+    <Factory type="sheep_farm" size="8"/>
+  </City>
+  <City name="Dublin" x="-208" y="-72" population="1173179">
+    <Factory type="brewery" size="150"/>
+  </City>
+  <City name="Waterford" x="-264" y="-193" population="53504">
+    <Factory type="coal_mine" size="6"/>
+    <Factory type="forestry" size="10"/>
+    <Factory type="sheep_farm" size="10"/>
+  </City>
+  <City name="Drogheda" x="-214" y="-31" population="40956">
+    <Factory type="bauxite_mine" size="20"/>
+    <Factory type="sheep_farm" size="5"/>
+  </City>
+  <City name="Dundalk" x="-217" y="1" population="39004">
+    <Factory type="cattle_ranch" size="30"/>
+    <Factory type="sheep_farm" size="10"/>
+  </City>
+  <City name="Douglas" x="-94" y="16" population="83314">
+    <Factory type="cattle_ranch" size="2"/>
+  </City>
+  <City name="St. Helier" x="57" y="-534" population="97857">
+    <Airport runway_length="1706" size="47"/>
+    <Factory type="vineyard" size="25"/>
+  </City>
+  <City name="St. Peter Port" x="29" y="-504" population="64540">
+    <Airport runway_length="1583" size="39"/>
+  </City>
+  <City name="Lowestoft" x="304" y="-168" population="72130">
+    <Factory type="fruit_orchard" size="15"/>
+    <Factory type="grain_farm" size="50"/>
+    <Factory type="lumber_mill" size="25"/>
+    <Factory type="oil_wells" size="20"/>
+    <Factory type="sand_pit" size="15"/>
+  </City>
+  <City name="Penzance" x="-162" y="-430" population="19817">
+    <Factory type="bakery" size="5"/>
+    <Factory type="clay_pit" size="75"/>
+    <Factory type="copper_mine" size="45"/>
+    <Factory type="fishery" size="15"/>
+    <Factory type="fruit_orchard" size="25"/>
+    <Factory type="vineyard" size="15"/>
+  </City>
+  <Connection upstream="Inverness" downstream="Kirkwall">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Inverness" downstream="Peterhead">
+    <Sea/>
+    <Road length="171" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Peterhead" downstream="Kirkwall">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Aberdeen" downstream="Peterhead">
+    <Sea/>
+    <Road length="52" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Dundee" downstream="Aberdeen">
+    <Sea/>
+    <Road length="106" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Edinburgh" downstream="Dundee">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Falkirk" downstream="Edinburgh">
+    <Sea/>
+    <Road length="44" maximum_speed="113" lanes="2"/>
+    <Rail length="41" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Newcastle upon Tyne" downstream="Edinburgh">
+    <Sea/>
+    <Road length="167" maximum_speed="113" lanes="2"/>
+    <Rail length="200" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Newcastle upon Tyne" downstream="Dundee">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Hartlepool" downstream="Newcastle upon Tyne">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Grimsby" downstream="Hartlepool">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Lowestoft" downstream="Grimsby">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Lowestoft" downstream="Southend-on-Sea">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Gillingham" downstream="Southend-on-Sea">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Grays" downstream="Southend-on-Sea">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Grays" downstream="Gillingham">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Margate" downstream="Gillingham">
+    <Sea/>
+    <Road length="69" maximum_speed="113" lanes="2"/>
+    <Rail length="61" maximum_speed="145" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Margate" downstream="Southend-on-Sea">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Margate" downstream="Lowestoft">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Hastings" downstream="Margate">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Brighton and Hove" downstream="Eastbourne">
+    <Sea/>
+    <Road length="35" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Eastbourne" downstream="Hastings">
+    <Sea/>
+    <Road length="28" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Brighton and Hove" downstream="Southampton">
+    <Sea/>
+    <Road length="109" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Bournemouth" downstream="Southampton">
+    <Sea/>
+    <Road length="54" maximum_speed="113" lanes="2"/>
+    <Rail length="47" maximum_speed="160" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Bournemouth" downstream="Paignton">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Plymouth" downstream="Paignton">
+    <Sea/>
+    <Road length="47" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Penzance" downstream="Plymouth">
+    <Sea/>
+    <Road length="125" maximum_speed="113" lanes="2"/>
+    <Rail length="128" maximum_speed="121" lanes="1" electrified="no"/>
+  </Connection>
+  <Connection upstream="Penzance" downstream="Weston-super-Mare">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Weston-super-Mare" downstream="Bristol">
+    <Sea/>
+    <Road length="39" maximum_speed="113" lanes="3"/>
+    <Rail length="31" maximum_speed="177" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Weston-super-Mare" downstream="Cardiff">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Penzance" downstream="Cardiff">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Bristol" downstream="Cardiff">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Cardiff" downstream="Swansea">
+    <Sea/>
+    <Road length="69" maximum_speed="113" lanes="3"/>
+    <Rail length="74" maximum_speed="145" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Swansea" downstream="Penzance">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Swansea" downstream="Haverfordwest">
+    <Sea/>
+    <Road length="92" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Haverfordwest" downstream="Penzance">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Haverfordwest" downstream="Waterford">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Haverfordwest" downstream="Aberystwyth">
+    <Sea/>
+    <Road length="105" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Penzance" downstream="Waterford">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Aberystwyth" downstream="Bangor">
+    <Sea/>
+    <Road length="164" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Bangor" downstream="Colwyn Bay">
+    <Sea/>
+    <Road length="36" maximum_speed="113" lanes="2"/>
+    <Rail length="31" maximum_speed="140" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Colwyn Bay" downstream="Liverpool">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Liverpool" downstream="Southport">
+    <Sea/>
+    <Road length="31" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Southport" downstream="Blackpool">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Blackpool" downstream="Lancaster">
+    <Sea/>
+    <Road length="40" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Lancaster" downstream="Douglas">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Douglas" downstream="Blackpool">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Douglas" downstream="Southport">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Douglas" downstream="Liverpool">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Douglas" downstream="Colwyn Bay">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Douglas" downstream="Bangor">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Bangor" downstream="Dublin">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Dublin" downstream="Waterford">
+    <Sea/>
+    <Road length="170" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Dublin" downstream="Drogheda">
+    <Sea/>
+    <Road length="55" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Drogheda" downstream="Dundalk">
+    <Sea/>
+    <Road length="34" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Dundalk" downstream="Douglas">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Dublin" downstream="Douglas">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Drogheda" downstream="Douglas">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Belfast" downstream="Douglas">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Dundalk" downstream="Belfast">
+    <Sea/>
+    <Road length="84" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Ayr" downstream="Belfast">
+    <Sea/>
+  </Connection>
+  <Connection upstream="Ayr" downstream="Greenock">
+    <Sea/>
+    <Road length="78" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Bath" downstream="Bristol">
+    <River length="32" beam_clearance="5"/>
+    <Road length="23" maximum_speed="113" lanes="2"/>
+    <Rail length="19" maximum_speed="201" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Middlesbrough" downstream="Hartlepool">
+    <River length="16" beam_clearance="40"/>
+    <Road length="25" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Kingston upon Hull" downstream="Grimsby">
+    <River length="15" beam_clearance="100"/>
+  </Connection>
+  <Connection upstream="York" downstream="Kingston upon Hull">
+    <River length="82" beam_clearance="10"/>
+    <Road length="62" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Gloucester" downstream="Bristol">
+    <River length="72" beam_clearance="15"/>
+    <Road length="63" maximum_speed="113" lanes="3"/>
+    <Rail length="82" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Worcester" downstream="Gloucester">
+    <River length="56" beam_clearance="10"/>
+  </Connection>
+  <Connection upstream="London" downstream="Grays">
+    <River length="56" beam_clearance="80"/>
+    <Road length="37" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Slough" downstream="London">
+    <River length="62" beam_clearance="10"/>
+    <Road length="35" maximum_speed="113" lanes="4"/>
+    <Rail length="30" maximum_speed="201" lanes="4" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Reading" downstream="Slough">
+    <River length="60" beam_clearance="10"/>
+    <Road length="33" maximum_speed="113" lanes="4"/>
+    <Rail length="30" maximum_speed="201" lanes="4" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Oxford" downstream="Reading">
+    <River length="68" beam_clearance="10"/>
+    <Road length="42" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Stoke-on-Trent" downstream="Nottingham">
+    <River length="156" beam_clearance="5"/>
+  </Connection>
+  <Connection upstream="Nottingham" downstream="Kingston upon Hull">
+    <River length="164" beam_clearance="10"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Warrington">
+    <Canal length="30" beam_clearance="20"/>
+    <Road length="32" maximum_speed="113" lanes="4"/>
+    <Rail length="27" maximum_speed="137" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Warrington" downstream="Liverpool">
+    <Canal length="38" beam_clearance="20"/>
+    <Road length="31" maximum_speed="113" lanes="3"/>
+    <Rail length="30" maximum_speed="137" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Falkirk" downstream="Glasgow">
+    <Canal length="48" beam_clearance="10"/>
+    <Road length="38" maximum_speed="113" lanes="2"/>
+    <Rail length="37" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Glasgow" downstream="Greenock">
+    <Canal length="45" beam_clearance="10"/>
+    <Road length="41" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Inverness" downstream="Perth">
+    <Road length="180" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Inverness" downstream="Aberdeen">
+    <Road length="168" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Dundee" downstream="Perth">
+    <Road length="37" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Perth" downstream="Falkirk">
+    <Road length="66" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Perth" downstream="Edinburgh">
+    <Road length="74" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Glasgow" downstream="Motherwell">
+    <Road length="26" maximum_speed="113" lanes="2"/>
+    <Rail length="21" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Glasgow" downstream="Hamilton">
+    <Road length="23" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Glasgow" downstream="East Kilbride">
+    <Road length="18" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Glasgow" downstream="Coatbridge">
+    <Road length="18" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Coatbridge" downstream="Motherwell">
+    <Road length="14" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Motherwell" downstream="Hamilton">
+    <Road length="7" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Hamilton" downstream="East Kilbride">
+    <Road length="10" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Falkirk" downstream="Coatbridge">
+    <Road length="29" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Motherwell" downstream="Edinburgh">
+    <Road length="l62" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="East Kilbride" downstream="Ayr">
+    <Road length="76" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Ayr" downstream="Glasgow">
+    <Road length="60" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Ayr" downstream="Dumfries">
+    <Road length="97" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Hamilton" downstream="Dumfries">
+    <Road length="104" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Edinburgh" downstream="Dumfries">
+    <Road length="116" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Dumfries" downstream="Carlisle">
+    <Road length="53" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Carlisle" downstream="Lancaster">
+    <Road length="110" maximum_speed="113" lanes="3"/>
+    <Rail length="111" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Lancaster" downstream="Preston">
+    <Road length="35" maximum_speed="113" lanes="3"/>
+    <Rail length="34" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Preston" downstream="Wigan">
+    <Road length="26" maximum_speed="113" lanes="3"/>
+    <Rail length="25" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Wigan" downstream="Warrington">
+    <Road length="11" maximum_speed="113" lanes="3"/>
+    <Rail length="19" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Warrington" downstream="Crewe">
+    <Road length="49" maximum_speed="113" lanes="3"/>
+    <Rail length="39" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Crewe" downstream="Stoke-on-Trent">
+    <Road length="25" maximum_speed="113" lanes="3"/>
+    <Rail length="24" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Stoke-on-Trent" downstream="Cannock">
+    <Road length="45" maximum_speed="113" lanes="3"/>
+    <Rail length="53" maximum_speed="97" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Cannock" downstream="Birmingham">
+    <Road length="35" maximum_speed="113" lanes="3"/>
+    <Rail length="31" maximum_speed="97" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Birmingham" downstream="Coventry">
+    <Road length="35" maximum_speed="113" lanes="3"/>
+    <Rail length="31" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Coventry" downstream="Rugby">
+    <Road length="22" maximum_speed="113" lanes="3"/>
+    <Rail length="19" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Preston" downstream="Blackpool">
+    <Road length="26" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="London" downstream="Stevenage">
+    <Road length="52" maximum_speed="113" lanes="3"/>
+    <Rail length="45" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="London" downstream="Luton">
+    <Road length="55" maximum_speed="113" lanes="4"/>
+    <Rail length="48" maximum_speed="201" lanes="4" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Luton" downstream="Bedford">
+    <Road length="36" maximum_speed="113" lanes="2"/>
+    <Rail length="32" maximum_speed="201" lanes="4" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Luton" downstream="Milton Keynes">
+    <Road length="35" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Luton" downstream="Stevenage">
+    <Road length="24" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Stevenage" downstream="Bedford">
+    <Road length="38" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Stevenage" downstream="Cambridge">
+    <Road length="52" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Cambridge" downstream="Bedford">
+    <Road length="48" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Bedford" downstream="Milton Keynes">
+    <Road length="28" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Bedford" downstream="Northampton">
+    <Road length="36" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Northampton" downstream="Milton Keynes">
+    <Road length="33" maximum_speed="113" lanes="3"/>
+    <Rail length="21" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Northampton" downstream="Peterborough">
+    <Road length="71" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Peterborough" downstream="Bedford">
+    <Road length="67" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Peterborough" downstream="Cambridge">
+    <Road length="63" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Peterborough" downstream="Stevenage">
+    <Road length="88" maximum_speed="113" lanes="3"/>
+    <Rail length="79" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Cambridge" downstream="London">
+    <Road length="100" maximum_speed="113" lanes="3"/>
+    <Rail length="90" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Cambridge" downstream="Chelmsford">
+    <Road length="72" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Chelmsford" downstream="London">
+    <Road length="66" maximum_speed="113" lanes="2"/>
+    <Rail length="48" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Chelmsford" downstream="Basildon">
+    <Road length="24" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Chelmsford" downstream="Southend-on-Sea">
+    <Road length="32" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Southend-on-Sea" downstream="Basildon">
+    <Road length="19" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Basildon" downstream="Grays">
+    <Road length="20" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Chelmsford" downstream="Colchester">
+    <Road length="39" maximum_speed="113" lanes="2"/>
+    <Rail length="35" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Colchester" downstream="Cambridge">
+    <Road length="78" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Colchester" downstream="Ipswich">
+    <Road length="29" maximum_speed="113" lanes="2"/>
+    <Rail length="27" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Ipswich" downstream="Cambridge">
+    <Road length="88" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Ipswich" downstream="Norwich">
+    <Road length="73" maximum_speed="113" lanes="2"/>
+    <Rail length="74" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Ipswich" downstream="Lowestoft">
+    <Road length="72" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Lowestoft" downstream="Norwich">
+    <Road length="46" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Norwich" downstream="Cambridge">
+    <Road length="103" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Norwich" downstream="Peterborough">
+    <Road length="122" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="London" downstream="High Wycombe">
+    <Road length="52" maximum_speed="113" lanes="3"/>
+    <Rail length="47" maximum_speed="160" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="London" downstream="Aylesbury">
+    <Road length="73" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Aylesbury" downstream="Luton">
+    <Road length="45" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Aylesbury" downstream="Milton Keynes">
+    <Road length="33" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Aylesbury" downstream="High Wycombe">
+    <Road length="24" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="High Wycombe" downstream="Slough">
+    <Road length="25" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Reading" downstream="Basingstoke">
+    <Road length="28" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Oxford" downstream="High Wycombe">
+    <Road length="43" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Oxford" downstream="Aylesbury">
+    <Road length="37" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Oxford" downstream="Northampton">
+    <Road length="77" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="London" downstream="Gillingham">
+    <Road length="59" maximum_speed="113" lanes="2"/>
+    <Rail length="60" maximum_speed="145" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="London" downstream="Maidstone">
+    <Road length="63" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Maidstone" downstream="Gillingham">
+    <Road length="16" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Ashford" downstream="Margate">
+    <Road length="59" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Ashford" downstream="Maidstone">
+    <Road length="32" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Ashford" downstream="Hastings">
+    <Road length="47" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Maidstone" downstream="Hastings">
+    <Road length="52" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="London" downstream="Hastings">
+    <Road length="113" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="London" downstream="Eastbourne">
+    <Road length="125" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Crawley" downstream="Eastbourne">
+    <Road length="66" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Crawley" downstream="Brighton and Hove">
+    <Road length="35" maximum_speed="113" lanes="2"/>
+    <Rail length="35" maximum_speed="140" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="London" downstream="Crawley">
+    <Road length="53" maximum_speed="113" lanes="3"/>
+    <Rail length="48" maximum_speed="140" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Crawley" downstream="Maidstone">
+    <Road length="70" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Crawley" downstream="Southampton">
+    <Road length="121" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Crawley" downstream="Slough">
+    <Road length="75" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Southampton" downstream="Basingstoke">
+    <Road length="51" maximum_speed="113" lanes="3"/>
+    <Rail length="51" maximum_speed="160" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Southampton" downstream="Swindon">
+    <Road length="107" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Swindon" downstream="Basingstoke">
+    <Road length="71" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Swindon" downstream="Reading">
+    <Road length="70" maximum_speed="113" lanes="3"/>
+    <Rail length="66" maximum_speed="201" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Swindon" downstream="Oxford">
+    <Road length="53" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Cheltenham" downstream="Oxford">
+    <Road length="70" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Cheltenham" downstream="Gloucester">
+    <Road length="13" maximum_speed="113" lanes="3"/>
+    <Rail length="11" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Swindon" downstream="Gloucester">
+    <Road length="56" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Bristol" downstream="Swindon">
+    <Road length="64" maximum_speed="113" lanes="3"/>
+    <Rail length="65" maximum_speed="145" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Weston-super-Mare" downstream="Bath">
+    <Road length="53" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Bath" downstream="Bournemouth">
+    <Road length="105" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Bath" downstream="Southampton">
+    <Road length="102" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Bath" downstream="Swindon">
+    <Road length="55" maximum_speed="113" lanes="2"/>
+    <Rail length="106" maximum_speed="201" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Weston-super-Mare" downstream="Exeter">
+    <Road length="98" maximum_speed="113" lanes="3"/>
+    <Rail length="91" maximum_speed="177" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Exeter" downstream="Bournemouth">
+    <Road length="135" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Exeter" downstream="Paignton">
+    <Road length="39" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Cheltenham" downstream="Worcester">
+    <Road length="40" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Worcester" downstream="Birmingham">
+    <Road length="65" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Worcester" downstream="Redditch">
+    <Road length="30" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Redditch" downstream="Birmingham">
+    <Road length="24" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Redditch" downstream="Royal Leamington Spa">
+    <Road length="42" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Royal Leamington Spa" downstream="Birmingham">
+    <Road length="47" maximum_speed="113" lanes="3"/>
+    <Rail length="38" maximum_speed="160" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Royal Leamington Spa" downstream="Oxford">
+    <Road length="81" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Royal Leamington Spa" downstream="Coventry">
+    <Road length="15" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Rugby" downstream="Northampton">
+    <Road length="35" maximum_speed="113" lanes="3"/>
+    <Rail length="26" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Tamworth" downstream="Birmingham">
+    <Road length="28" maximum_speed="113" lanes="3"/>
+    <Rail length="28" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Tamworth" downstream="Cannock">
+    <Road length="30" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Tamworth" downstream="Stoke-on-Trent">
+    <Road length="66" maximum_speed="113" lanes="2"/>
+    <Rail length="64" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Stoke-on-Trent" downstream="Telford">
+    <Road length="49" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Telford" downstream="Cannock">
+    <Road length="32" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Stoke-on-Trent" downstream="Burton upon Trent">
+    <Road length="47" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Stoke-on-Trent" downstream="Derby">
+    <Road length="56" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Derby" downstream="Burton upon Trent">
+    <Road length="19" maximum_speed="113" lanes="2"/>
+    <Rail length="18" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Burton upon Trent" downstream="Cannock">
+    <Road length="37" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Tamworth" downstream="Nottingham">
+    <Road length="58" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Nottingham" downstream="Derby">
+    <Road length="24" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Nottingham" downstream="Leicester">
+    <Road length="48" maximum_speed="113" lanes="3"/>
+    <Rail length="44" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Nottingham" downstream="Peterborough">
+    <Road length="94" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Peterborough" downstream="Leicester">
+    <Road length="67" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Leicester" downstream="Rugby">
+    <Road length="37" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Nottingham" downstream="Mansfield">
+    <Road length="25" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Derby" downstream="Mansfield">
+    <Road length="37" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Derby" downstream="Chesterfield">
+    <Road length="39" maximum_speed="113" lanes="2"/>
+    <Rail length="39" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Chesterfield" downstream="Mansfield">
+    <Road length="19" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Chesterfield" downstream="Sheffield">
+    <Road length="22" maximum_speed="113" lanes="2"/>
+    <Rail length="20" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Sheffield" downstream="Mansfield">
+    <Road length="49" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Mansfield" downstream="Doncaster">
+    <Road length="55" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Doncaster" downstream="Sheffield">
+    <Road length="37" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Sheffield" downstream="Barnsley">
+    <Road length="26" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Barnsley" downstream="Doncaster">
+    <Road length="27" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Doncaster" downstream="Lincoln">
+    <Road length="61" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Lincoln" downstream="Nottingham">
+    <Road length="64" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Lincoln" downstream="Peterborough">
+    <Road length="83" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Lincoln" downstream="Grimsby">
+    <Road length="59" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Scunthorpe" downstream="Grimsby">
+    <Road length="48" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Scunthorpe" downstream="Lincoln">
+    <Road length="45" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Doncaster" downstream="Scunthorpe">
+    <Road length="41" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Scunthorpe" downstream="Kingston upon Hull">
+    <Road length="40" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Leeds" downstream="Kingston upon Hull">
+    <Road length="98" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Leeds" downstream="Barnsley">
+    <Road length="35" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Leeds" downstream="Doncaster">
+    <Road length="53" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Leeds" downstream="Harrogate">
+    <Road length="26" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Leeds" downstream="York">
+    <Road length="40" maximum_speed="113" lanes="2"/>
+    <Rail length="42" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Harrogate" downstream="York">
+    <Road length="35" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Kingston upon Hull" downstream="Middlesbrough">
+    <Road length="158" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="York" downstream="Middlesbrough">
+    <Road length="78" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Hartlepool" downstream="Sunderland">
+    <Road length="35" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Sunderland" downstream="Newcastle upon Tyne">
+    <Road length="23" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Darlington" downstream="Sunderland">
+    <Road length="51" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Darlington" downstream="Middlesbrough">
+    <Road length="26" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Harrogate" downstream="Darlington">
+    <Road length="'72" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Darlington" downstream="Lancaster">
+    <Road length="135" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Newcastle upon Tyne" downstream="Carlisle">
+    <Road length="94" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Harrogate" downstream="Burnley">
+    <Road length="65" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Leeds" downstream="Burnley">
+    <Road length="63" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Burnley" downstream="Accrington">
+    <Road length="12" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Accrington" downstream="Blackburn">
+    <Road length="8" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Blackburn" downstream="Preston">
+    <Road length="16" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Crewe" downstream="Chester">
+    <Road length="39" maximum_speed="113" lanes="2"/>
+    <Rail length="34" maximum_speed="140" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Warrington" downstream="Chester">
+    <Road length="35" maximum_speed="113" lanes="3"/>
+    <Rail length="29" maximum_speed="121" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Crewe">
+    <Road length="58" maximum_speed="113" lanes="2"/>
+    <Rail length="50" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Stoke-on-Trent">
+    <Road length="66" maximum_speed="113" lanes="2"/>
+    <Rail length="61" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Chesterfield">
+    <Road length="76" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Barnsley">
+    <Road length="57" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Leeds">
+    <Road length="67" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Burnley">
+    <Road length="48" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Accrington">
+    <Road length="38" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Blackburn">
+    <Road length="42" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Preston">
+    <Road length="53" maximum_speed="113" lanes="3"/>
+    <Rail length="51" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Manchester" downstream="Wigan">
+    <Road length="34" maximum_speed="113" lanes="2"/>
+    <Rail length="30" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Wigan" downstream="Southport">
+    <Road length="37" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Preston" downstream="Southport">
+    <Road length="31" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Wigan" downstream="Liverpool">
+    <Road length="33" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Liverpool" downstream="Birkenhead">
+    <Road length="5" maximum_speed="113" lanes="2"/>
+    <Rail length="4" maximum_speed="110" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Chester" downstream="Birkenhead">
+    <Road length="27" maximum_speed="113" lanes="3"/>
+    <Rail length="24" maximum_speed="110" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Chester" downstream="Colwyn Bay">
+    <Road length="64" maximum_speed="113" lanes="2"/>
+    <Rail length="65" maximum_speed="140" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="Colwyn Bay" downstream="Aberystwyth">
+    <Road length="138" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Telford" downstream="Aberystwyth">
+    <Road length="145" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Aberystwyth" downstream="Newport">
+    <Road length="159" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="Cardiff" downstream="Newport">
+    <Road length="23" maximum_speed="113" lanes="3"/>
+    <Rail length="19" maximum_speed="145" lanes="4" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Newport" downstream="Bristol">
+    <Road length="51" maximum_speed="113" lanes="3"/>
+    <Rail length="43" maximum_speed="145" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Newport" downstream="Gloucester">
+    <Road length="77" maximum_speed="113" lanes="2"/>
+  </Connection>
+  <Connection upstream="London" downstream="Farnborough">
+    <Road length="63" maximum_speed="113" lanes="3"/>
+    <Rail length="55" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Farnborough" downstream="Basingstoke">
+    <Road length="30" maximum_speed="113" lanes="3"/>
+    <Rail length="24" maximum_speed="160" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Farnborough" downstream="Reading">
+    <Road length="37" maximum_speed="97" lanes="1"/>
+  </Connection>
+  <Connection upstream="Tamworth" downstream="Nuneaton">
+    <Road length="26" maximum_speed="113" lanes="2"/>
+    <Rail length="21" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Nuneaton" downstream="Coventry">
+    <Road length="16" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="Nuneaton" downstream="Rugby">
+    <Road length="26" maximum_speed="113" lanes="3"/>
+    <Rail length="24" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Nuneaton" downstream="Leicester">
+    <Road length="31" maximum_speed="113" lanes="3"/>
+  </Connection>
+  <Connection upstream="London" downstream="Ashford">
+    <Rail length="90" maximum_speed="300" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Bedford" downstream="Leicester">
+    <Rail length="79" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Leicester" downstream="Derby">
+    <Rail length="48" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Leicester" downstream="Chesterfield">
+    <Rail length="86" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Sheffield" downstream="Leeds">
+    <Rail length="62" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Cheltenham" downstream="Birmingham">
+    <Rail length="73" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Tamworth" downstream="Burton upon Trent">
+    <Rail length="21" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="London" downstream="Milton Keynes">
+    <Rail length="80" maximum_speed="201" lanes="4" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Birmingham" downstream="Stoke-on-Trent">
+    <Rail length="72" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Liverpool" downstream="Manchester">
+    <Rail length="52" maximum_speed="144" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Carlisle" downstream="Motherwell">
+    <Rail length="187" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Carlisle" downstream="Edinburgh">
+    <Rail length="163" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Newcastle upon Tyne" downstream="Darlington">
+    <Rail length="58" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Darlington" downstream="York">
+    <Rail length="71" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="York" downstream="Doncaster">
+    <Rail length="52" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Doncaster" downstream="Peterborough">
+    <Rail length="128" maximum_speed="201" lanes="2" electrified="yes"/>
+  </Connection>
+  <Connection upstream="Basingstoke" downstream="Exeter">
+    <Rail length="275" maximum_speed="144" lanes="1" electrified="no"/>
+  </Connection>
+  <Connection upstream="Exeter" downstream="Plymouth">
+    <Rail length="84" maximum_speed="160" lanes="2" electrified="no"/>
+  </Connection>
+  <Connection upstream="High Wycombe" downstream="Royal Leamington Spa">
+    <Rail length="99" maximum_speed="160" lanes="2" electrified="no"/>
+  </Connection>
+</Map>
