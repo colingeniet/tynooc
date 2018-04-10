@@ -65,6 +65,9 @@ object Good {
   Rubber, Sand, Sheep, Steel, SteelWires, Textiles, Timber, Tyres, Vegetables,
   Vehicles, Wine, Woodchips, Wool)
 
+  /** Returns a HashMap making every good available
+  * @param q the quantity associated to any Good
+  */
   def any(q: Double) : HashMap[Good, Double] = {
 
     val a: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
@@ -72,40 +75,69 @@ object Good {
     a
   }
 
+  /** Returns a empty HashMap for containers
+  */
   def empty: HashMap[Good, DoubleProperty] = {
     val a: HashMap[Good, DoubleProperty] = InitHashMap[Good, DoubleProperty](_ => DoubleProperty(0))
     a
   }
 
+  /** Returns a empty HashMap for allowance
+  */
   def none: HashMap[Good, Double] = {
     val a: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
     a
   }
 
+  /** Returns a list of good having a certain property
+  * @param A The type of the property you want your goods to have.
+  * Might and can easily be improved with sort of "predicates"
+  */
   def filter[A <: GoodType:ClassTag]: List[Good] = {
     all.filter{g => g.hasProp[A]}
   }
 
+  /** Returns a HashMap of allowance of a certain quantity
+  * @param A the type to be allowed
+  * @param q the quantity associated to the type
+  */
   def anyWith[A <: GoodType:ClassTag](q: Double): HashMap[Good, Double] = {
     val a: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
     filter[A].foreach{ g => a(g) = q }
     a
   }
 
+  /** Modify the allowance of a certain type of a given HashMap
+  * @param A The type that you want to set the quantity to
+  * @param a The hashmap to set the quantity to
+  * @param q The quantity to set
+  */
   def setAnyWith[A <: GoodType:ClassTag](a: HashMap[Good, Double], q: Double): Unit = {
     filter[A].foreach{ g => a(g) = q }
   }
 
 }
 
+/** Represents an instance of a Good
+* It is not the same thing as a real good in the game. Goods aren't treated individually in the game.
+* This represents a certain good such as Water, etc ...
+* @param properties The properties that you want your good to have, ie Liquid, Solid, Perishable etc...
+*/
 class Good(val properties: List[GoodType]) {
 
   def basePrice: Double = 1
 
+  /** Updates a good according to it's properties
+  * @param room The room in what a group of this good is stored.
+  * @param dt The time since last update
+  */
   def update(room: Room, dt: Double) : Unit = {
     properties.foreach{ _.update(this, room, dt) }
   }
 
+  /** Check if a good has a certain property
+  * @param A The type you want to check if your good has
+  */
   def hasProp[A <: GoodType:ClassTag] : Boolean = {
     properties.foldLeft(false){(b, gtype) => gtype match {
       case _: A => true
@@ -117,22 +149,21 @@ class Good(val properties: List[GoodType]) {
 }
 
 //My objects
-
-// Necessary
+// Necessary for programming purposes
 object Stuff extends Good(List()) // A good for unknown factories
 
 //For fun
-object Chocolate extends Good(List(new Consumable(), new Perishable(0.01), new CityNeeded()))
-object Water extends Good(List(new Liquid(0.001), new Consumable(), new CityNeeded()))
+object Chocolate extends Good(List(new Consumable(), new Perishable(0.01), new CityNeeded())) //Everyone loves chocolate
+object Water extends Good(List(new Liquid(0.001), new Consumable(), new CityNeeded())) //Water is cheap to produce and necessary
 //object IronOre extends Good(List(new Solid()))
 //object Wood extends Good(List(new Solid(), new Flamable()))
 //object Food extends Good(List(new Solid(), new Consumable(), new Perishable()))
-object Gaz extends Good(List(new Gazeous(), new Dangerous(), new CityNeeded()))
+object Gaz extends Good(List(new Gazeous(), new Dangerous(), new CityNeeded())) // Same as water
 //object Coal extends Good(List(new Solid()))
 //object Oil extends Good(List(new Liquid(0), new Flamable()))
-object Uranium extends Good(List(new Solid(), new Dangerous(), new Expensive()))
-object Electricity extends Good(List(new CityNeeded(), new Elec()))
-object PhilosophalStone extends Good(List(new Solid(), new Expensive()))
+object Uranium extends Good(List(new Solid(), new Dangerous(), new Expensive())) //This allows to produce electricity cheaply without a furnisher but is hard to produce (except if you find certain easter eggs)
+object Electricity extends Good(List(new CityNeeded(), new Elec())) //Really necessary to produce, and none of the cities have a furnisher at the beginning ! Easy money
+object PhilosophalStone extends Good(List(new Solid(), new Expensive())) //One of the easter egg mentioned above
 
 //Juraj's
 object Aluminium extends Good(List(new Solid(), new CityNeeded()))
