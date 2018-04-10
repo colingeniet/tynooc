@@ -19,6 +19,7 @@ import collection.mutable.HashSet
   * @param vehicle The vehicle unit associated to the room.
  */
 class Room(val travel: Travel, val vehicle: VehicleUnit) {
+  /* Passengers per destination. */
   val passengers: HashMap[Town, Int] = new HashMap[Town, Int] {
     override def default(t: Town): Int = {
       this(t) = 0
@@ -26,6 +27,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     }
   }
 
+  /** Goods per destination. */
   val contents: HashMap[Town, HashMap[Good, Double]] =
     new HashMap[Town, HashMap[Good, Double]] {
       override def default(t: Town): HashMap[Good, Double] = {
@@ -39,6 +41,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
       }
     }
 
+  /** Space used by stored goods. */
   private var filled: Double = 0
 
   /** Maximum number of passengers in the room. */
@@ -100,6 +103,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     travel.company.credit(price(destination) * number)
   }
 
+  /** Embarks any appropriate passenger from `town` */
   def embarkAll(town: Town): Unit = {
     travel.remainingStops.foreach(dest => {
       val n = availablePlaces min (town.passengers(dest).floor.toInt)
@@ -108,9 +112,10 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     })
   }
 
-
+  /** Quantity of a given goods that can be loaded */
   def availableLoad(g: Good): Double = (1 - filled) * allowed(g)
 
+  /** Loads goods for a given destination */
   def load(g: Good, destination: Town, v: Double): Unit = {
     assert(v <= (1 - filled) * allowed(g))
 
@@ -118,6 +123,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     filled += v/allowed(g)
   }
 
+  /** Unloads goods for a given destination. */
   def unload(g: Good, destination: Town, v: Double): Unit = {
     assert(v <= contents(destination)(g))
 
@@ -126,12 +132,14 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     destination.sellGoods(travel.company, g, v)
   }
 
+  /** Unloads goods for a given destination. */
   def unload(g: Good, destination: Town): Unit = {
     if(allowed(g) > 0) {
       unload(g, destination, contents(destination)(g))
     }
   }
 
+  /** Loads all appropriate goods from `town` */
   def loadAll(town: Town): Unit = {
     travel.remainingStops.foreach(dest => {
       Good.all.foreach(g => {
@@ -145,10 +153,12 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     })
   }
 
+  /** Unloads all available goods for a given destination. */
   def unloadAll(destination: Town): Unit = {
     Good.all.foreach(unload(_, destination))
   }
 
+  /** Performs goods specific actions (rotting, ...) */
   def handleGoods(dt: Double) : Unit = {
     contents.values.foreach(_.foreach{case (g, v) => if (v > 0) g.update(this, dt)})
   }
