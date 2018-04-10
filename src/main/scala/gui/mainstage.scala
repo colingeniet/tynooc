@@ -33,14 +33,13 @@ extends JFXApp.PrimaryStage {
   private var gameScene: Game = null
 
   private var onNextChangeCallback: () => Unit = () => ()
-
   /* Stage configuration. */
   title.value = "Tynooc"
   scene = mainMenuScene
   width = 1024
   height = 720
-
-  /** Changes the scene displayed.
+  Resources.load
+   /** Changes the scene displayed.
    *
    *  @param newScene the scene to switch to.
    */
@@ -126,6 +125,11 @@ object MainStage {
 }
 
 object Resources {
-  val SoundPath: String = "src/main/resources/audio/clic.mp3"
-  val Sound = Try{ new AudioClip(new File(SoundPath).toURI().toString()) }.toOption
+  val soundPath: String = "src/main/resources/audio/clic.mp3"
+  val sound = Try{ new AudioClip(new File(soundPath).toURI().toString()) }.toOption
+  
+  def load: Unit = {
+    if(sound == None)
+      println("Impossible to load sound. Play will be without it.")
+  }
 }
