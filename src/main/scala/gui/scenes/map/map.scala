@@ -30,7 +30,7 @@ import logic.travel._
 import logic.company._
 import logic.vehicle._
 
-
+import scala.util.Try
 
 
 /* Actual content, inside a ZoomPane.
@@ -75,7 +75,7 @@ extends StackPane with ZoomPane {
         disable = true
         vehicleMap.children.remove(this)
         if(travel.company == company && Resources.Sound != None)
-          Resources.Sound.get.play()
+          Try(Resources.Sound.get.play())
       }
     }
 
