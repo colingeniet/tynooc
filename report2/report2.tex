@@ -63,12 +63,24 @@ will statically never be more than one vehicle stopped at a city at any given ti
 While we may have considered more complicated game mechanics that would take time into account,
 we did not have time to implement any such thing. 
 
-\subsection{Goods and factories}
+\subsection{Goods and prices}
 One of the features of the goods system we implemented is a trait system that allows to define some characteristics
 for goods. In particular, this system is used a general framework to implement mechanics such as food rotting or liquids evaporating.
 
+On the world scale, goods are stored by each town, consumed by the population, and produced (but also used) by factories.
+Goods have different prices in each town, which change based on the relative stocks of the towns, and on the consumption.
+This way, prices will significantly in a town if stocks are short, and consumption is high.
+
+Towns will decide to export goods to other towns based on price differences (exportation is towards towns with higher prices).
+Any company (i.e.\ the player or the AIs) will then be able to transport the goods to export, earning the prices difference.
+
+\subsection{Factories}
 As for factories, the most interesting feature is the production optimization.
-Our factories are defined by a set of production rules.
-Each 
+Our factories have a set of productions.
+Each production consumes a fixed quantity of some goods, and then after a delay produces a fixed quantity of other goods.
+
+At any time, each factory can run one of its productions.
+The choice of production is done to optimize the gain from production: the expected gain is calculated based on current prices,
+and the production with maximum gain is chosen.
 
 \end{document}
