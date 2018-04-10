@@ -127,7 +127,7 @@ class World {
     // only export to the most demanding towns for each good.
     val mostDemanding: HashMap[Good, List[Town]] = HashMap()
     Good.all.foreach { g =>
-      mostDemanding(g) = towns.toList.sortWith((t1, t2) => t1.goods_prices(g)() > t2.goods_prices(g)()).slice(0,5)
+      mostDemanding(g) = towns.toList.sortWith((t1, t2) => t1.goods_prices(g)() > t2.goods_prices(g)()).slice(0,15)
     }
 
     towns.foreach(_.update_economy(mostDemanding))
