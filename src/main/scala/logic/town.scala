@@ -265,6 +265,14 @@ class Town(
     }
   }
 
+  
+  def stationsFor(v: Vehicle): Set[Station] = {
+    facilities.filter {
+      case s: Station => s.accepts(v)
+      case _          => false
+    }.toSet.asInstanceOf[Set[Station]]
+  }
+
 
   def update_economy(mostDemanding: HashMap[Good, List[Town]]) : Unit = {
     val p = population()
