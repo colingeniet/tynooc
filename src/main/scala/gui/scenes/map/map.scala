@@ -53,6 +53,8 @@ extends StackPane with ZoomPane {
     }
   }
 
+  val routeMiddle: HashMap[Route, Point2D] = new HashMap()
+  
   class MapTravel(val travel: Travel, color: Double)
   extends ImageView(MapTravel.icon(travel)) {
     effect = new ColorAdjust(color, 0.0, 0.0, 0.0)
@@ -69,6 +71,7 @@ extends StackPane with ZoomPane {
       case _: Plane => rotate <== travel.heading
       case _ => ()
     }
+    
 
     private def deleteIfDone(): Unit = {
       if(travel.isDone()) {
@@ -79,28 +82,26 @@ extends StackPane with ZoomPane {
       }
     }
 
+    private def relativePosition(p: Double, start: Double, middle: Double, end: Double): Double = {
+      if(p < 0.5)
+        start + 2 * p * (middle - start)
+      else
+        middle + (p - 0.5) * 2 * (end - middle)
+    }
+    
     private def changePosition(): Unit = {
       travel.currentRoute() match {
         case Some(r) => {
-          val p = travel.currentRouteProportion.toDouble
-          val A = if(r.start.x < r.end.x) r.start else r.end
-          val B = if(A == r.start) r.end else r.start
-          val mil = milRoute(A, B, angles(r), XRouteDirection(r))
-          x <== scale * ({
-            val xMil = mil._1
-            if(p < 0.5)
-              r.start.x +  2 * p * (xMil - r.start.x)
-            else
-              xMil + (p - 0.5) * 2 * (r.end.x - xMil)
-            }) - image().getWidth()/2
-          y <== scale * ({
-            val yMil = mil._2
-            if(p < 0.5)
-              r.start.y +  2 * p * (yMil - r.start.y)
-            else
-              yMil + (p - 0.5) * 2 * (r.end.y - yMil)
-            }) - image().getHeight()/2
+          r match {
+            case a: Airway => ()
+            case _ => {
+              val p = travel.currentRouteProportion.toDouble
+              val middle = routeMiddle(r)
+              x <== scale * relativePosition(p, r.start.x, middle.x, r.end.x) - image().getWidth()/2
+              y <== scale * relativePosition(p, r.start.y, middle.y, r.end.y) - image().getHeight()/2
+            }
           }
+        }
         case _ => ()
       }
     }
@@ -108,27 +109,6 @@ extends StackPane with ZoomPane {
 
     travel.isDone.onChange(deleteIfDone())
     travel.currentRouteProportion.onChange(changePosition())
-  }
-
-  def angles(route: Route): Double = {
-    route match {
-      case r: Rail => Math.PI / 18
-      case c: Canal => Math.PI / 15
-      case r: River => Math.PI / 12
-      case s: Seaway => Math.PI / 9
-      case _         => 0
-    }
-  }
-
-  def routeColor(route: Route) = {
-    route match {
-      case r: Road => Black
-      case r: Rail => Gray
-      case c: Canal => RoyalBlue
-      case r: River => Aquamarine
-      case s: Seaway => Blue
-      case a: Airway => White
-    }
   }
 
   // the list of current travels
@@ -193,6 +173,27 @@ extends StackPane with ZoomPane {
     textMap.children.add(text)
   }
 
+  def angles(route: Route): Double = {
+    route match {
+      case r: Rail => Math.PI / 18
+      case c: Canal => Math.PI / 15
+      case r: River => Math.PI / 12
+      case s: Seaway => Math.PI / 9
+      case _         => 0
+    }
+  }
+
+  def routeColor(route: Route) = {
+    route match {
+      case r: Road => Black
+      case r: Rail => Gray
+      case c: Canal => RoyalBlue
+      case r: River => Aquamarine
+      case s: Seaway => Blue
+      case a: Airway => White
+    }
+  }
+  
   def XRouteDirection(route: Route): Int = {
     route match {
       case c: Canal  => -1
@@ -212,49 +213,29 @@ extends StackPane with ZoomPane {
     }
   }
 
-  def milRoute(A: Town, B: Town, alpha: Double, XDirection: Int): (Double, Double) = {
-    val Ax = A.x
-    val Ay = A.y
-    val Bx = B.x
-    val By = B.y
-
-    val Cx = (A.x + B.x) / 2
-    val Cy = (A.y + B.y) / 2
-
-    val distX = (B.x - A.x)
-    val distY = (B.y - A.y)
-    val dist = math.hypot(distX, distY)
-    val L = Math.tan(alpha) * (dist / 2)
-    val CDx = XDirection * L * (B.y - A.y) / dist
-    val CDy = - XDirection * L * (B.x - A.x) / dist
-
-    val ADx = Cx - Ax + CDx
-    val ADy = Cy - Ay + CDy
-
-    val Dx = ADx + Ax
-    val Dy = ADy + Ay
-    (Dx, Dy)
-  }
+  
   /** Display a route. */
   private def addRoute(route: Route): Unit = {
     val A = if(route.start.x < route.end.x) route.start else route.end
     val B = if(A == route.start) route.end else route.start
-    val Ax = A.x
-    val Ay = A.y
-    val Bx = B.x
-    val By = B.y
-
-    val mil = milRoute(A, B, angles(route), XRouteDirection(route))
-    val Dx = mil._1
-    val Dy = mil._2
-
+    val C = new Point2D((A.x + B.x) / 2, (A.y + B.y) / 2)
+    val distX = (B.x - A.x)
+    val distY = (B.y - A.y)
+    val dist = math.hypot(distX, distY)
+    val L = Math.tan(angles(route)) * (dist / 2)
+    val CD = new Point2D(XRouteDirection(route) * L * (B.y - A.y) / dist,
+                         - XRouteDirection(route) * L * (B.x - A.x) / dist)
+    val AD = new Point2D(C.x - A.x + CD.x, C.y - A.y + CD.y)
+    val middle =  new Point2D(AD.x + A.x, AD.y + A.y)
+    routeMiddle(route) = middle
+    
     val curve = new QuadCurve {
-      controlX <== scale * Dx
-      controlY <== scale * Dy
-      startX <== scale * Ax
-      startY <== scale * Ay
-      endX <== scale * Bx
-      endY <== scale * By
+      controlX <== scale * middle.x
+      controlY <== scale * middle.y
+      startX <== scale * A.x
+      startY <== scale * A.y
+      endX <== scale * B.x
+      endY <== scale * B.y
       stroke = routeColor(route)
       fill = null
       strokeWidth = routeStrokeWidth(route)
