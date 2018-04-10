@@ -38,8 +38,10 @@ extends JFXApp.PrimaryStage {
   scene = mainMenuScene
   width = 1024
   height = 720
-  Resources.load
-   /** Changes the scene displayed.
+  
+  //Resources.load
+  
+  /** Changes the scene displayed.
    *
    *  @param newScene the scene to switch to.
    */
@@ -124,6 +126,8 @@ object MainStage {
   extends scalafx.scene.Scene
 }
 
+/* Object to manage resources. Sound doesn’t work with too old JDK version, so
+   we delete it.
 object Resources {
   val soundPath: String = "src/main/resources/audio/clic.mp3"
   val sound = Try{ new AudioClip(new File(soundPath).toURI().toString()) }.toOption
@@ -132,4 +136,4 @@ object Resources {
     if(sound == None)
       println("Impossible to load sound. Play will be without it.")
   }
-}
+}*/
