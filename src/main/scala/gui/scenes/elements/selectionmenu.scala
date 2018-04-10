@@ -65,7 +65,7 @@ class SelectionMenu extends VBox(3) {
 }
 
 
-
+/** Selection list with automatic content update. */
 class SelectionListDynamic[A](
   list: ObservableBuffer[A],
   label: A => StringProperty,
@@ -103,6 +103,10 @@ extends ScrollPane {
 }
 
 
+/** Fixed names version.
+ *
+ *  It is not possible to overload the constructor of the previous class.
+ */
 class SelectionList[A](
   list: ObservableBuffer[A],
   label: A => String,

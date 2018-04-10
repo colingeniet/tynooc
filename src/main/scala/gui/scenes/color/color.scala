@@ -24,9 +24,7 @@ object Colors {
     colors(company) = Color.hsb(nextHue()*360, 1, 1)
   }
 
-  /** Get next color.
-   *
-   * @return the hue to use with scalafx. */
+  /** Get next color hue. */
   def nextHue(): Double = {
     // compute next hue between 0 and 1
     var hue: Double = 0.0

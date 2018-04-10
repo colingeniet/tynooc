@@ -7,6 +7,7 @@ import scalafx.event.subscriptions._
 import scala.collection.JavaConverters._
 
 
+/** Binds observable buffers through a function, map like. */
 object MapBind {
   def apply[A, B](
     l1: ObservableBuffer[A],

@@ -13,6 +13,7 @@ import formatter._
 import logic.vehicle._
 import logic.company._
 
+/* Generic vehicle statistics display. */
 
 class VehicleModelStats(model: VehicleUnitModel)
 extends BuyableModelStats(model) {

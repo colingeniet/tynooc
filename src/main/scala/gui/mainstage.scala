@@ -38,9 +38,9 @@ extends JFXApp.PrimaryStage {
   scene = mainMenuScene
   width = 1024
   height = 720
-  
+
   //Resources.load
-  
+
   /** Changes the scene displayed.
    *
    *  @param newScene the scene to switch to.
@@ -55,6 +55,7 @@ extends JFXApp.PrimaryStage {
       case MainStage.States.MainMenu => scene = mainMenuScene
       case MainStage.States.Game => {
         try {
+          // game initialization
           var mainPlayer: Player = gameInit()
           gameScene = new Game(Game.world, mainPlayer, changeScene)
           scene = gameScene
@@ -131,7 +132,7 @@ object MainStage {
 object Resources {
   val soundPath: String = "src/main/resources/audio/clic.mp3"
   val sound = Try{ new AudioClip(new File(soundPath).toURI().toString()) }.toOption
-  
+
   def load: Unit = {
     if(sound == None)
       println("Impossible to load sound. Play will be without it.")
