@@ -14,7 +14,7 @@ import scala.reflect.ClassTag
 
 
 trait GoodType {
-  def update(g: Good, owner: Room, dt : Double) = {}
+  def update(g: Good, owner: Room, dt : Double): Unit = ()
 }
 
 class Solid extends GoodType
@@ -30,7 +30,6 @@ class Gazeous extends GoodType
 class CityNeeded extends GoodType // Is used by cities
 class Consumable extends GoodType //Can be consumed
 class Perishable(val rate: Double) extends GoodType { //Can rot, same as Liquid for now
-
   override def update(g: Good, room: Room, dt: Double) = {
     room.contents.values.foreach(h => {h(g) -= rate*dt*h(g)})
   }

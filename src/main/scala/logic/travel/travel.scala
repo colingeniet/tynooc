@@ -205,6 +205,7 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
         case State.Launched => state() = State.Waiting
         case State.OnRoute => {
           currentRouteDistanceDone() += dt * vehicle.speed(currentRoute().get)
+          rooms.foreach(_.handleGoods(dt))
           if(currentRouteDistanceDone() >= currentRoute().get.length) {
             state() = State.Arrived
           }

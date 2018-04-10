@@ -150,6 +150,6 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   }
 
   def handleGoods(dt: Double) : Unit = {
-    //contents.foreach{ case (key, value) => if (value() > 0) key.update(this, dt) }
+    contents.values.foreach(_.foreach{case (g, v) => if (v > 0) g.update(this, dt)})
   }
 }
