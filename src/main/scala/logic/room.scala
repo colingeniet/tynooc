@@ -127,16 +127,20 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
   }
 
   def unload(g: Good, destination: Town): Unit = {
-    unload(g, destination, contents(destination)(g))
+    if(allowed(g) > 0) {
+      unload(g, destination, contents(destination)(g))
+    }
   }
 
   def loadAll(town: Town): Unit = {
     travel.remainingStops.foreach(dest => {
       Good.all.foreach(g => {
         val quantity = availableLoad(g) min town.toExport(dest)(g) min town.goods(g)()
-        load(g, dest, quantity)
-        town.buyGoods(travel.company, g, quantity)
-        town.toExport(dest)(g) = town.toExport(dest)(g) - quantity
+        if (quantity > 0) {
+          load(g, dest, quantity)
+          town.buyGoods(travel.company, g, quantity)
+          town.toExport(dest)(g) = town.toExport(dest)(g) - quantity
+        }
       })
     })
   }
