@@ -53,7 +53,8 @@ extends StackPane with ZoomPane {
     }
   }
 
-  val routeMiddle: HashMap[Route, Point2D] = new HashMap()
+  val routesMiddle: HashMap[Route, Point2D] = new HashMap()
+  val planesRoute: HashMap[Travel, Line] = new HashMap()
   
   class MapTravel(val travel: Travel, color: Double)
   extends ImageView(MapTravel.icon(travel)) {
@@ -79,6 +80,10 @@ extends StackPane with ZoomPane {
         vehicleMap.children.remove(this)
         /*if(travel.company == company)
           Try(Resources.sound.get.play(1.0))*/
+        travel.vehicle match {
+          case p: Plane => routesMap.children.remove(planesRoute(travel))
+          case _ => ()
+        }
       }
     }
 
@@ -96,7 +101,7 @@ extends StackPane with ZoomPane {
             case a: Airway => ()
             case _ => {
               val p = travel.currentRouteProportion.toDouble
-              val middle = routeMiddle(r)
+              val middle = routesMiddle(r)
               x <== scale * relativePosition(p, r.start.x, middle.x, r.end.x) - image().getWidth()/2
               y <== scale * relativePosition(p, r.start.y, middle.y, r.end.y) - image().getHeight()/2
             }
@@ -227,7 +232,7 @@ extends StackPane with ZoomPane {
                          - XRouteDirection(route) * L * (B.x - A.x) / dist)
     val AD = new Point2D(C.x - A.x + CD.x, C.y - A.y + CD.y)
     val middle =  new Point2D(AD.x + A.x, AD.y + A.y)
-    routeMiddle(route) = middle
+    routesMiddle(route) = middle
     
     val curve = new QuadCurve {
       controlX <== scale * middle.x
@@ -254,7 +259,22 @@ extends StackPane with ZoomPane {
     // scalafx expect shift between -1 and 1 (0 is no change)
     if (hue > 0.5) hue = 2 * hue - 2
     else hue = 2 * hue
-
+    travel.vehicle match {
+      case p: Plane => {
+        val line = new Line() {
+          startX <== scale * travel.currentRoute().get.start.x
+          startY <== scale * travel.currentRoute().get.start.y
+          endX <== scale * travel.currentRoute().get.end.x
+          endY <== scale * travel.currentRoute().get.end.y
+          stroke = Gray
+          strokeWidth = 3
+        }
+        line.getStrokeDashArray().addAll(2d, 18d);
+        routesMap.children.add(line)
+        planesRoute(travel) = line
+      }
+      case _ => ()
+    }
     vehicleMap.children.add(new MapTravel(travel, hue))
   }
 
