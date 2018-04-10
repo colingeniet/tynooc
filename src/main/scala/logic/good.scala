@@ -7,6 +7,7 @@ import scalafx.beans.binding.BindingIncludes._
 
 import logic.vehicle._
 import logic.room._
+import utils._
 
 import collection.mutable.HashMap
 
@@ -60,18 +61,18 @@ object Good {
 
   def any(q: Double) : HashMap[Good, Double] = {
 
-    val a: HashMap[Good, Double] = new HashMap()
+    val a: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
     all.foreach{ g => a(g) = q }
     a
   }
 
   def empty: HashMap[Good, DoubleProperty] = {
-    val a: HashMap[Good, DoubleProperty] = new HashMap()
+    val a: HashMap[Good, DoubleProperty] = InitHashMap[Good, DoubleProperty](_ => DoubleProperty(0))
     a
   }
 
   def none: HashMap[Good, Double] = {
-    val a: HashMap[Good, Double] = new HashMap()
+    val a: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
     a
   }
 
@@ -80,7 +81,7 @@ object Good {
   }
 
   def anyWith[A <: GoodType:ClassTag](q: Double): HashMap[Good, Double] = {
-    val a: HashMap[Good, Double] = new HashMap()
+    val a: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
     filter[A].foreach{ g => a(g) = q }
     a
   }

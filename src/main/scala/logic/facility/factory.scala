@@ -91,7 +91,7 @@ Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
   "forestry" -> new FactoryModel("Forestry", 500, List(),
     List(new ProductionCycle(HashMap(), HashMap(Timber -> 1), 0.5))),
   "alchemist_house" -> new FactoryModel("Alchemist House", 40, List(),
-    List(new ProductionCycle(HashMap(), HashMap(PhilosophalStone -> 1), 30))),
+    List(new ProductionCycle(HashMap(), HashMap(PhilosophalStone -> 1), 90))),
   "fruit_orchard" -> new FactoryModel("Fruit Orchard", 1500, List(),
     List(new ProductionCycle(HashMap(), HashMap(Fruit -> 20), 7))),
   "eden_garden" -> new FactoryModel("Eden Garden", 15000, List(),
@@ -157,7 +157,7 @@ Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
         new ProductionCycle(HashMap(Copper -> 2), HashMap(CopperWires -> 2), 2),
         new ProductionCycle(HashMap(Steel -> 2), HashMap(SteelWires -> 1), 0.5))),
   "metaphysical_factory" -> new FactoryModel("???", 42000, List(),
-    Good.all.map{ g => new ProductionCycle(HashMap(PhilosophalStone -> 1), HashMap(g -> 1), 1) })      
+    Good.all.map{ g => new ProductionCycle(HashMap(PhilosophalStone -> 1), HashMap(g -> 1), 1) })
   )
 
 
