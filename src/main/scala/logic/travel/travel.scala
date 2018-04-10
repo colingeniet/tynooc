@@ -15,6 +15,7 @@ import logic.route._
 import logic.company._
 import logic.game._
 import logic.good._
+import logic.facility._
 import utils._
 
 private object State {
@@ -212,6 +213,14 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
           company.debit(vehicle.consumption(currentRoute().get.length) * Game.world.fuelPrice)
           state() = State.Waiting
           if(currentTown().accepts(vehicle)) {
+            vehicle match {
+              case v: Truck => ()
+              case _         => {
+                val stations = currentTown().stationsFor(vehicle)
+                val s = stations.find(_.owner() == vehicle.owner()).getOrElse(stations.head)
+                s.onEnter(vehicle)
+              }
+            }
             landPassengers()
             unload()
           }
