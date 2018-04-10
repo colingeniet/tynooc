@@ -17,9 +17,13 @@ import logic.company._
 
 
 class ScriptInfo(script: Script) extends VBox(3) {
-  private val pause: ToggleButton = new ToggleButton("pause") {
-    selected <==> script.paused
-    selected.onChange({if(!selected()) script.start()})
+  private val pause: ToggleButton = new ToggleButton {
+    text <== createStringBinding(
+      () => if (script.started()) "pause" else "start",
+      script.started)
+
+    selected <==> script.started
+    selected.onChange({if(selected()) script.start()})
   }
 
   private val repeat: ToggleButton = new ToggleButton("repeat") {

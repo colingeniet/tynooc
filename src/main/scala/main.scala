@@ -26,7 +26,7 @@ object MainJFXApp extends JFXApp {
     */
   def company(name: String): Company = {
     val company = new Company(name, Game.world.towns.head)
-    company.credit(1000000)
+    company.credit(20000)
     company
   }
 

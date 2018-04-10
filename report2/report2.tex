@@ -86,4 +86,13 @@ and the production with maximum gain is chosen.
 This mechanic is relatively simple, and allowed us having to implement optimization without a linear optimization algorithm,
 which we lacked time to do.
 
+\subsection{Trips}
+Our previous trip system only allowed to order a vehicle to travel to a given town.
+To implement a complex trips system, we chose to keep the old system as the underlying layer.
+Complex travels are then composed of a series of simple `go to' instructions, which may additionally be repeated.
+In addition, a vehicle can also be instructed to wait during that sequence.
+
+This separation in two layer had the major advantage of not requiring any change to the existing travel system,
+and thus to the part of the logic engine depending on it.
+
 \end{document}

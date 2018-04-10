@@ -17,6 +17,9 @@ import gui.scenes.panes._
 import logic.vehicle._
 import logic.company._
 
+
+/* Trains are by far the most special vehicles, and thus require specific code */
+
 /** Train display panel.
  *
  *  @param train the train to display.

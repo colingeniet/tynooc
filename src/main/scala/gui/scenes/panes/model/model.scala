@@ -17,17 +17,23 @@ import formatter._
  *  @param m the object to display.
  */
 class Stats(m: Object) extends VBox(3) {
+  /** This method may be overloaded to avoid displaying some attributes. */
   def filter(a: java.lang.reflect.Field): Boolean = false
+
+  /** This method may be overloaded to change the display of some attributes. */
   def display(a: java.lang.reflect.Field): Node = {
     new Label(s"${StringFormatter.casePrettyPrint(a.getName())}: ${a.get(m).toString}")
   }
 
+  // display all attributes using reflexivity
   children = m.getClass().getDeclaredFields.toList.map {
       // obscure java stuff to access attributes
       a => { a.setAccessible(true); a }
     }.filterNot(this.filter(_)).map(this.display(_))
 }
 
+
+/** Model attributes display. */
 class ModelStats(m: Model) extends Stats(m) {
   override def display(a: java.lang.reflect.Field): Node = {
     if(a.getName() == "name") new Label(a.get(m).toString)
@@ -56,7 +62,7 @@ class BuyableModelShortStats(m: BuyableModel) extends ModelStats(m) {
 }
 
 
-
+/** Generic upgrade menu for buyable/upgradable objects. */
 class UpgradeMenu[Model <: BuyableModel](
   thing: Upgradable[Model],
   company: Company)
@@ -83,6 +89,7 @@ extends VBox(3) { menu =>
     disable <== thing.owner =!= company
   }
 
+  /** This function may be oveloaded to change the pane content. */
   def setChildren(): Unit = {
     children = List(upgradeButton)
   }

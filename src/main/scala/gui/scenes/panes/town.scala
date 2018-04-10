@@ -140,7 +140,7 @@ extends VBox(3) {
     })
 }
 
-
+/** Town goods stock display. */
 class TownStock(town: Town) extends ScrollPane {
   content = new VBox {
     children = Good.all.map(g => {
