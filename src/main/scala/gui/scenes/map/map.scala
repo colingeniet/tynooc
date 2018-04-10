@@ -65,9 +65,6 @@ extends StackPane with ZoomPane {
       }
     }
 
-    x <== scale * travel.posX - image().getWidth()/2
-    y <== scale * travel.posY - image().getHeight()/2
-
     travel.vehicle match {
       case _: Plane => rotate <== travel.heading
       case _ => ()
@@ -97,15 +94,15 @@ extends StackPane with ZoomPane {
     private def changePosition(): Unit = {
       travel.currentRoute() match {
         case Some(r) => {
-          r match {
-            case a: Airway => ()
-            case _ => {
-              val p = travel.currentRouteProportion.toDouble
-              val middle = routesMiddle(r)
-              x <== scale * relativePosition(p, r.start.x, middle.x, r.end.x) - image().getWidth()/2
-              y <== scale * relativePosition(p, r.start.y, middle.y, r.end.y) - image().getHeight()/2
-            }
+          val t = travel.currentRouteProportion.toDouble
+          val a = r.start
+          val c = r.end
+          val b = travel.vehicle match {
+            case p: Plane => new Point2D((a.x + c.x) / 2, (a.y + c.y) / 2)
+            case _ => routesMiddle(r)
           }
+          x <== { scale * ((1-t)*(1-t)*a.x + 2*t*(1-t)*b.x+t*t*c.x) - image().getWidth()/2 }
+          y <== { scale * ((1-t)*(1-t)*a.y + 2*t*(1-t)*b.y+t*t*c.y) - image().getWidth()/2 }
         }
         case _ => ()
       }
