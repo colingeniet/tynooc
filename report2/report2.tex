@@ -61,7 +61,7 @@ Indeed, vehicles in our game only stop for one game tick upon reaching a city, m
 will statically never be more than one vehicle stopped at a city at any given time, making such restrictions meaningless.
 
 While we may have considered more complicated game mechanics that would take time into account,
-we did not have time to implement any such thing. 
+we did not have time to implement any such thing.
 
 \subsection{Goods and prices}
 One of the features of the goods system we implemented is a trait system that allows to define some characteristics
@@ -82,5 +82,8 @@ Each production consumes a fixed quantity of some goods, and then after a delay 
 At any time, each factory can run one of its productions.
 The choice of production is done to optimize the gain from production: the expected gain is calculated based on current prices,
 and the production with maximum gain is chosen.
+
+This mechanic is relatively simple, and allowed us having to implement optimization without a linear optimization algorithm,
+which we lacked time to do.
 
 \end{document}
