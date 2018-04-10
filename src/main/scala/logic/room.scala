@@ -19,6 +19,7 @@ import collection.mutable.HashSet
   * @param vehicle The vehicle unit associated to the room.
  */
 class Room(val travel: Travel, val vehicle: VehicleUnit) {
+  /* Passengers per destination. */
   val passengers: HashMap[Town, Int] = new HashMap[Town, Int] {
     override def default(t: Town): Int = {
       this(t) = 0
@@ -26,6 +27,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     }
   }
 
+  /** Goods per destination. */
   val contents: HashMap[Town, HashMap[Good, Double]] =
     new HashMap[Town, HashMap[Good, Double]] {
       override def default(t: Town): HashMap[Good, Double] = {
@@ -39,6 +41,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
       }
     }
 
+  /** Space used by stored goods. */
   private var filled: Double = 0
 
   /** Maximum number of passengers in the room. */
@@ -111,13 +114,13 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     })
   }
 
-  /** Checks if a certain good can be allowed
+  /** Checks if a certain good can be allowed, returns the quantity that can be allowed.
   * @param g The good in question
   */
   def availableLoad(g: Good): Double = (1 - filled) * allowed(g)
 
 
-  /** Loads a certain quantity of a good
+  /** Loads a certain quantity of a good for a given destination
   * @param g The good to load on
   * @param destination The place where you load the good
   * @param v The quantity to load
@@ -129,7 +132,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     filled += v/allowed(g)
   }
 
-  /** Unloads a certain quantity of a good
+  /** Unloads a certain quantity of a good for a given destination
   * @param g The good to unload
   * @param destination The place where you unload the good
   * @param v The quantity to unload
@@ -142,7 +145,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     destination.sellGoods(travel.company, g, v)
   }
 
-  /** Unloads a certain good
+  /** Unloads a certain good for a given destination
   * @param g The good to unload
   * @param destination The place where you unload the good
   */
@@ -152,7 +155,7 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     }
   }
 
-  /** Try to load goods of every type
+  /** Loads all appropriate goods from `town`
   * @param town The town where you pick up the goods
   */
   def loadAll(town: Town): Unit = {
@@ -168,14 +171,14 @@ class Room(val travel: Travel, val vehicle: VehicleUnit) {
     })
   }
 
-  /** Unload everything a room carries.
+  /** Unload all available goods for a given destination
   * @param destination The town where you unload your content
   */
   def unloadAll(destination: Town): Unit = {
     Good.all.foreach(unload(_, destination))
   }
 
-  /** Update every goods.
+  /** Update every goods. ie performs goods specific actions (rotting, ...)
   * @param dt Time since last update
   */
   def handleGoods(dt: Double) : Unit = {

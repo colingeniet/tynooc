@@ -59,7 +59,7 @@ class Town(
   private val goods_last: HashMap[Good, Double] =
     InitHashMap[Good, Double](_ => 0)
 
-
+  // Goods to be exported
   val toExport: HashMap[Town, HashMap[Good, Double]] =
     InitHashMap[Town, HashMap[Good, Double]](_ => {
       InitHashMap[Good, Double](_ => 0)
@@ -147,7 +147,7 @@ class Town(
   }
 
 
-  /** Calculates the prices of goods
+  /** Recalculates the prices of goods
   */
   def update_prices(totals: HashMap[Good, Double]) : Unit = {
     Good.all.foreach{ g =>
@@ -248,13 +248,17 @@ class Town(
     _routes = route :: _routes
   }
 
-
+  /** Adds a new facility.
+    *
+    * @param f The facility to add to the town.
+    */
   def addFacility(f: Facility): Unit = {
     assert(f.town == this)
     facilities.add(f)
   }
 
-
+  /** Tests if a vehicle can stop at this town.
+   */
   def accepts(v: Vehicle): Boolean = {
     v match {
       case _: Truck => true
@@ -265,7 +269,8 @@ class Town(
     }
   }
 
-  
+  /** Stations that can be used by a vehicle.
+   */
   def stationsFor(v: Vehicle): Set[Station] = {
     facilities.filter {
       case s: Station => s.accepts(v)
@@ -274,6 +279,7 @@ class Town(
   }
 
 
+  /** Economic tick : update passengers, exportations, consumption */
   def update_economy(mostDemanding: HashMap[Good, List[Town]]) : Unit = {
     val p = population()
     Game.world.towns.foreach { destination =>
