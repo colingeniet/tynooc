@@ -74,7 +74,7 @@ extends StackPane with ZoomPane {
       if(travel.isDone()) {
         disable = true
         vehicleMap.children.remove(this)
-        if(travel.company == company)
+        if(travel.company == company && Resources.Sound != None)
           Resources.Sound.get.play()
       }
     }
