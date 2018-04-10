@@ -59,8 +59,14 @@ extends VehicleFromModel[TruckModel](_model, _town, _owner) {
 
   def modelNameMap(modelName: String): TruckModel = TruckModel(modelName)
 
+  /** Create a room for the travel to come. Because this is a truck it only has one room
+  * @param travel The travel the truck is going to do
+  */
   def createRooms(travel: Travel): List[Room] = List(new Room(travel, this))
 
+  /** Gives the max speed of the truck on the road 'road'
+  * @param road the road the truck is on
+  */
   override def speed(road: Route): Double = {
     road match {
       case r: Road => r.maximum_speed min super.speed(road)

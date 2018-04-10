@@ -14,10 +14,13 @@ trait StationModel extends FacilityModel {
 
 trait Station extends Facility {
 
-  val fee : Double = 5
+  val fee : Double = 5 // You pay 5 euros every time you go in a station that is not yours. The player might be able to modify it in the future
 
   def accepts(vehicle: Vehicle): Boolean
 
+  /** Credits the owner of a vehicle when it enters a station. Gives money to the owner of the station
+  * @param vehicle The vehicle in question.
+  */
   def onEnter(vehicle: Vehicle): Unit = {
     owner().credit(fee)
     vehicle.owner().debit(fee)
@@ -29,7 +32,6 @@ abstract class StationFromModel[Model <: StationModel] (
   town: Town,
   _owner: Company)
 extends FacilityFromModel[Model](model, town, _owner) with Station
-
 
 
 
@@ -70,7 +72,8 @@ extends StationModel
 
 object AirportModel extends ModelNameMap[AirportModel] {
  private val _models: HashMap[String, AirportModel] = HashMap(
-   "airport" -> new AirportModel("airport", 5000, List(), 2, 3000))
+   "airport" -> new AirportModel("airport", 5000, List("big_airport"), 2, 3000),
+   "big_airport" -> new AirportModel("big airport", 8000, List(), 4, 6500))
 
  override def models: HashMap[String, AirportModel] = _models
 }

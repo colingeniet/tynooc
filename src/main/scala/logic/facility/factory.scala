@@ -10,7 +10,10 @@ import logic.game._
 import logic.company._
 
 
-
+/** A rule of creation of a good for a certain factory
+* A1: n1, ... -> B1: m1, ...
+* in time cycleTime
+*/
 class ProductionCycle(
   val consumes: HashMap[Good, Double],
   val produces: HashMap[Good, Double],
@@ -32,9 +35,9 @@ object FactoryModel extends ModelNameMap[FactoryModel] {
    override def default(name: String) = default_model
  }
 
- /**
-Adds Chocolate, Water, Gaz, Uranium + amelioration + multiply production
- **/
+ /** All the factories available
+ * Every factories has different production cycles;
+ */
 
  _models += (
   "water_well" -> new FactoryModel("Water Well", 20, List(),

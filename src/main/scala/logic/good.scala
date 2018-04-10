@@ -13,7 +13,8 @@ import collection.mutable.HashMap
 
 import scala.reflect.ClassTag
 
-
+/** A base class for all good types. Used to tidy up code
+*/
 trait GoodType {
   def update(g: Good, owner: Room, dt : Double): Unit = ()
 }
@@ -21,6 +22,12 @@ trait GoodType {
 class Solid extends GoodType
 
 class Liquid(val rate: Double) extends GoodType { //Evaporates
+
+  /** Make the liquid evaporate over time
+  * @param g The good who is evaporating (it thus have a liquid property)
+  * @param room The room the good is in
+  * @param dt Time since last update
+  */
   override def update(g: Good, room: Room, dt: Double) = {
     room.contents.values.foreach(h => {
       h(g) -= rate*dt*h(g)
@@ -34,6 +41,12 @@ class Gazeous extends GoodType
 class CityNeeded extends GoodType // Is used by cities
 class Consumable extends GoodType //Can be consumed
 class Perishable(val rate: Double) extends GoodType { //Can rot, same as Liquid for now
+
+  /** Make the persihable rot over time
+  * @param g The good who is rotting (it thus have a persihable property)
+  * @param room The room the good is in
+  * @param dt Time since last update
+  */
   override def update(g: Good, room: Room, dt: Double) = {
     room.contents.values.foreach(h => {
       h(g) -= rate*dt*h(g)

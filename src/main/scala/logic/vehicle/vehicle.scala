@@ -83,6 +83,9 @@ trait Vehicle extends VehicleUnit {
 
   def consumption(distance: Double): Double
 
+  /** Starts a new travel to a certain town
+  * @param to The town you want to go to
+  */
   def launchTravel(to: Town): Travel = {
     assert(!this.onTravel())
     val routes = Game.world.findPath(this.town(), to, this)
@@ -92,6 +95,9 @@ trait Vehicle extends VehicleUnit {
     newTravel
   }
 
+  /** Used to create rooms at the beginning of a travel
+  * @param travel The travel you're going to do
+  */
   def createRooms(travel: Travel): List[Room]
 }
 

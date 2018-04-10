@@ -99,33 +99,52 @@ class Town(
     goods(g)() += q
   }
 
+  /** Tries to buy a good from a certain company
+  * @param company The company the town will buy the good from
+  * @param v The quantity corresponding.
+  */
   def sellGoods(company: Company, g: Good, v: Double): Unit = {
     company.credit(goods_prices(g)() * v)
     goods(g)() = goods(g)() + v
   }
 
+  /** Tries to buy goods from a certain company
+  * @param company The company the town will buy it's goods from
+  * @param h The (hashmap) set of goods to sell and the quantity corresponding.
+  */
   def sellGoods(company: Company, h: HashMap[Good, Double]): Unit = {
     h.foreach{ case (g, v) => sellGoods(company, g, v) }
   }
 
   /** Consume goods of every type every time it's called.
+  * It is called every economy economy tick.
+  * (~3h when i'm writing this)
   */
   def consume_daily(): Unit = {
     val a = needs()
     goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
   }
 
+  /** Says if a certain quantity of a certain good is available
+  * @param g The good in question
+  * @param v The quantity of this good
+  */
   def available(g: Good, v: Double): Boolean = {
     goods(g)() >= v
   }
 
   /** Test if goods are available.
-   */
+  * @param h The set of goods & quantity you want to check the availability of
+  */
   def available(h: HashMap[Good, Double]): Boolean = {
     h.forall{ case (g, v) => available(g, v) }
   }
 
-
+  /** Sell goods of the town
+  * @param company The company the town will sell goods to
+  * @param g The good it sells
+  * @param v The quantity of the good
+  */
   def buyGoods(company: Company, g: Good, v: Double): Boolean = {
     if (available(g, v) && company.money() >= goods_prices(g)() * v) {
       company.debit(goods_prices(g)() * v)
@@ -134,8 +153,8 @@ class Town(
     } else false
   }
 
-  /** Consume a certain quantity of good, if available.
-   *
+  /** Sell a certain quantity of good, if available.
+    * @param company The company the town sells to
    *  @param h The goods to consume associated with the quantities
    *  @return true on success, false if goods are unavailable
    */
@@ -148,6 +167,7 @@ class Town(
 
 
   /** Recalculates the prices of goods
+  * @param totals The totals of each good in the world
   */
   def update_prices(totals: HashMap[Good, Double]) : Unit = {
     Good.all.foreach{ g =>
@@ -258,7 +278,8 @@ class Town(
   }
 
   /** Tests if a vehicle can stop at this town.
-   */
+  * @param v The vehicle to test
+  */
   def accepts(v: Vehicle): Boolean = {
     v match {
       case _: Truck => true
@@ -270,7 +291,8 @@ class Town(
   }
 
   /** Stations that can be used by a vehicle.
-   */
+  * @param v The vehicle in question
+  */
   def stationsFor(v: Vehicle): Set[Station] = {
     facilities.filter {
       case s: Station => s.accepts(v)
@@ -279,7 +301,9 @@ class Town(
   }
 
 
-  /** Economic tick : update passengers, exportations, consumption */
+  /** Economic tick : update passengers, exportations, consumption
+  * @param mostDemanding The towns that needs goods the most
+  */
   def update_economy(mostDemanding: HashMap[Good, List[Town]]) : Unit = {
     val p = population()
     Game.world.towns.foreach { destination =>

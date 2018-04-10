@@ -147,7 +147,9 @@ extends VehicleFromModel[EngineModel](_model, _town, _owner) {
       () => carriages.isEmpty(),
       carriages)
 
-  /** Adds a carriage at the end of the train. */
+  /** Adds a carriage at the end of the train.
+  * @param c The cariage to add
+  */
   def addCarriage(c: Carriage): Unit = {
     assert(!c.isUsed() && !onTravel() && town() == c.town())
     c.train() = Some(this)
@@ -180,6 +182,9 @@ extends VehicleFromModel[EngineModel](_model, _town, _owner) {
     super.launchTravel(to)
   }
 
+  /** Returns the maximum speed over a certain route
+  * @param route The route you're on
+  */
   override def speed(route: Route): Double = {
     route match {
       case r: Rail => r.maximum_speed min super.speed(route)
@@ -187,12 +192,17 @@ extends VehicleFromModel[EngineModel](_model, _town, _owner) {
     }
   }
 
+  /** Create a room for the travel to come. Because this is an train it has a room for each carriage it has !
+  * @param travel The travel the train is going to do
+  */
   def createRooms(travel: Travel): List[Room] =
     carriages.toList.map(new Room(travel, _))
 
   def modelNameMap(name: String): EngineModel = EngineModel(name)
 
-
+  /** Upgrades the vehicle to one of it's upgrades
+  * @param newModel The model you want to upgrade to
+  */
   override def upgradeTo(newModel: EngineModel): Unit = {
     super.upgradeTo(newModel)
 

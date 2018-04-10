@@ -60,5 +60,8 @@ extends VehicleFromModel[ShipModel](_model, _town, _owner) {
 
   def modelNameMap(modelName: String): ShipModel = ShipModel(modelName)
 
+  /** Create a room for the travel to come. Because this is a ship it only has one room.
+  * @param travel The travel the ship is going to do
+  */
   def createRooms(travel: Travel): List[Room] = List(new Room(travel, this))
 }

@@ -73,5 +73,8 @@ extends VehicleFromModel[PlaneModel](_model, _town, _owner) {
     newTravel
   }
 
+  /** Create a room for the travel to come. Because this is an airplane it only has one room
+  * @param travel The travel the plane is going to do
+  */
   def createRooms(travel: Travel): List[Room] = List(new Room(travel, this))
 }
