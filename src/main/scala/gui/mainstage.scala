@@ -1,5 +1,7 @@
 package gui
 
+import collection.mutable.HashMap
+
 import scalafx.Includes._
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert._
@@ -8,6 +10,7 @@ import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
 import scalafx.scene.media._
+import scalafx.scene.image.Image
 import scalafx.scene.paint.Color
 
 import gui.scenes._
@@ -17,6 +20,7 @@ import logic.game._
 import ai._
 import player._
 import parser._
+import logic.vehicle._
 
 import java.io.File
 import scala.util.Try
@@ -39,7 +43,7 @@ extends JFXApp.PrimaryStage {
   width = 1024
   height = 720
 
-  //Resources.load
+  Resources.load
 
   /** Changes the scene displayed.
    *
@@ -128,13 +132,41 @@ object MainStage {
 }
 
 /* Object to manage resources. Sound doesn’t work with too old JDK version, so
-   we delete it.
+   we delete it.*/
 object Resources {
   val soundPath: String = "src/main/resources/audio/clic.mp3"
+
+  /* It would be better to load these strings from a file. */
+  val iconsPath: HashMap[String, String] = HashMap(
+    "basic engine"      -> "src/main/resources/icons/train.png",
+    "advanced engine"   -> "src/main/resources/icons/train.png",
+
+    "basic truck"       -> "src/main/resources/icons/truck.png",
+    "advanced truck"    -> "src/main/resources/icons/truck.png",
+    "jeep"              -> "src/main/resources/icons/truck.png",
+    "cheap truck"       -> "src/main/resources/icons/truck.png",
+
+    "basic plane"       -> "src/main/resources/icons/plane.png",
+    "advanced plane"    ->  "src/main/resources/icons/plane.png",
+    "fast supply plane" ->  "src/main/resources/icons/plane.png",
+
+    "basic ship"        -> "src/main/resources/icons/ship.png",
+    "advanced ship"     -> "src/main/resources/icons/ship.png",
+
+    "cargo"             -> "src/main/resources/icons/ship.png",
+    "huge cargo"        -> "src/main/resources/icons/ship.png"
+  )
+
+  val icons = iconsPath.mapValues { p => new Image(new File(p).toURI().toString()) }
+
   val sound = Try{ new AudioClip(new File(soundPath).toURI().toString()) }.toOption
 
   def load: Unit = {
     if(sound == None)
       println("Impossible to load sound. Play will be without it.")
+    if(icons.values.exists(_.error())) /* TODO : throw exception. */
+      println("Impossible to load some icons")
   }
-}*/
+
+  def images(vehicle: Vehicle): Image = icons(vehicle.model.name)
+}
