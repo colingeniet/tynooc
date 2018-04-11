@@ -42,22 +42,12 @@ class MapContent(
   displayRoute: Route => Unit,
   displayTravel: Travel => Unit)
 extends StackPane with ZoomPane {
-  object MapTravel {
-    def icon(travel: Travel): String = {
-      travel.vehicle match {
-        case _: Engine => "/icons/train.png"
-        case _: Plane => "/icons/plane.png"
-        case _: Truck => "/icons/truck.png"
-        case _: Ship => "/icons/ship.png"
-      }
-    }
-  }
 
   val routesMiddle: HashMap[Route, Point2D] = new HashMap()
   val planesRoute: HashMap[Travel, Line] = new HashMap()
   
   class MapTravel(val travel: Travel, color: Double)
-  extends ImageView(MapTravel.icon(travel)) {
+  extends ImageView(Resources.images(travel.vehicle)) {
     effect = new ColorAdjust(color, 0.0, 0.0, 0.0)
     onMouseClicked = new EventHandler[MouseEvent] {
       override def handle(event: MouseEvent) {
@@ -84,6 +74,9 @@ extends StackPane with ZoomPane {
       }
     }
 
+    x <== scale * travel.posX
+    y <== scale * travel.posY
+          
     private def relativePosition(p: Double, start: Double, middle: Double, end: Double): Double = {
       if(p < 0.5)
         start + 2 * p * (middle - start)
