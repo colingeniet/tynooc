@@ -38,9 +38,9 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 3000)
+      if(company.money() > 3000 && company.engines.size < 20)
         company.buy(Engine("basic", company))
-      if(company.money() > 2000)
+      if(company.money() > 2000 && company.carriages.size < 100)
         company.buy(Carriage("basic", company))
       val engines = company.enginesAvailable
       if(!engines.isEmpty) {
@@ -64,6 +64,8 @@ extends Player(company) with AI {
   }
 }
 
+/* TODO : create a BasicAI[VehicleModel] class. */
+
 class BasicPlaneAI(
   company: Company,
   val actionDelay: Double,
@@ -75,7 +77,7 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 1000)
+      if(company.money() > 1000 && company.vehicles.size < 20)
         company.buy(Plane("basic", company))
       val planes = company.vehicles.toList.filter {!_.isUsed()}
       if(!planes.isEmpty) {
@@ -101,7 +103,7 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 1000)
+      if(company.money() > 1000 && company.vehicles.size < 20)
         company.buy(Truck("basic", company))
       val trucks = company.vehicles.toList.filter {!_.isUsed()}
       if(!trucks.isEmpty) {
@@ -110,6 +112,32 @@ extends Player(company) with AI {
         if (!towns.isEmpty) {
           val direction = Random.shuffle(towns).head
           company.launchTravel(truck, direction)
+        }
+      }
+    }
+  }
+}
+
+class BasicShipAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
+
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      if(company.money() > 1000 && company.vehicles.size < 20)
+        company.buy(Ship("basic", company))
+      val ships = company.vehicles.toList.filter {!_.isUsed()}
+      if(!ships.isEmpty) {
+        val ship = Random.shuffle(ships).head
+        val towns = world.townsAccessibleFrom(ship.town(), ship).filter(_ != ship.town())
+        if (!towns.isEmpty) {
+          val direction = Random.shuffle(towns).head
+          company.launchTravel(ship, direction)
         }
       }
     }
