@@ -33,7 +33,7 @@ import scala.util.Try
 class MainStage(gameInit: () => Player)
 extends JFXApp.PrimaryStage {
   /* Actual scenes displayed. */
-  private var mainMenuScene: MainMenu = new MainMenu(changeScene)
+  private var mainMenuScene: MainMenu = new MainMenu(changeScene, this)
   private var gameScene: Game = null
 
   private var onNextChangeCallback: () => Unit = () => ()

@@ -6,6 +6,8 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
 import scalafx.geometry._
+import scalafx.stage._
+import javafx.stage.FileChooser.ExtensionFilter
 
 import gui.MainStage
 
@@ -13,13 +15,24 @@ import logic.game._
 
 /** Game main menu.
  */
-class MainMenu(sceneModifier: MainStage.States.Val => Unit)
+class MainMenu(sceneModifier: MainStage.States.Val => Unit, window: Window)
 extends MainStage.Scene(sceneModifier) {
   private var gameBtn = sceneSwitchButton("Play", MainStage.States.Game)
-  private var mapField: TextField = new TextField {
-    text = Game.mapPath
-    text.onChange({ Game.mapPath = text() })
-    maxWidth = 300
+  private var mapBtn = new Button("Select Map") {
+    onAction = (event: ActionEvent) => {
+      val fileChooser = new FileChooser {
+        title = "open map file"
+        initialDirectory = Game.mapPath.getParentFile()
+        extensionFilters ++= Seq(
+          new ExtensionFilter("XML Files", "*.xml"),
+          new ExtensionFilter("All Files", "*.*"))
+      }
+
+      val file = fileChooser.showOpenDialog(window)
+      if (file != null) {
+        Game.mapPath = file
+      }
+    }
   }
   private var quitBtn = sceneSwitchButton("Quit", MainStage.States.Quit)
 
@@ -37,7 +50,7 @@ extends MainStage.Scene(sceneModifier) {
     children = List(
       title,
       gameBtn,
-      mapField,
+      mapBtn,
       quitBtn)
   }
 

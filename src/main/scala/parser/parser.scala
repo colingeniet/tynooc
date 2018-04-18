@@ -11,6 +11,7 @@ import logic.facility._
 import logic.good._
 
 import java.util.{List => JList}
+import java.io.File
 import collection.JavaConverters._
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
@@ -174,7 +175,7 @@ object Parser {
     *
     * @param filename The path of the file to parse.
     */
-  def readWorldInformations(filename: String): World = {
+  def readWorldInformations(filename: File): World = {
     val file = Source.fromFile(filename)
     val yaml = file.getLines.mkString("\n")
     file.close()

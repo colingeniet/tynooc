@@ -4,6 +4,7 @@ import scalafx.beans.property._
 
 import scala.collection.mutable.PriorityQueue
 import scala.math.Ordering.Implicits._
+import java.io.File
 
 import logic.world._
 import logic.company._
@@ -28,7 +29,7 @@ object Game {
   var timeAcceleration: Double = 1
   val economyTick: Double = 3
   /** Path of the map file. */
-  var mapPath: String = "map/map.xml"
+  var mapPath: File = new File("map/map.xml")
 
   var bigBrother = new Company("Big Brother", null)
 
