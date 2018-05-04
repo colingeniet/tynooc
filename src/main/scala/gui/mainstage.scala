@@ -66,10 +66,11 @@ extends JFXApp.PrimaryStage {
           Colors.init(mainPlayer.company)
           Colors(Game.bigBrother) = Color.Black
 
+          var runMainLoop: Boolean = true
           // launch background game loop when the game scene is selected
           val mainLoopThread: Thread = new Thread {
             override def run {
-              while(true) {
+              while(runMainLoop) {
                 Platform.runLater(() => {
                   Game.update()
                 })
@@ -78,7 +79,7 @@ extends JFXApp.PrimaryStage {
             }
           }
           // kill background thread when leaving
-          onNextChangeCallback = () => mainLoopThread.stop()
+          onNextChangeCallback = () => runMainLoop = false
           mainLoopThread.start()
 
         } catch {
