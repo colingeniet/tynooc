@@ -13,6 +13,7 @@ import logic.vehicle._
 import logic.game._
 import logic.town._
 import logic.company._
+import logic.good._
 
 
 
@@ -35,6 +36,8 @@ class ScriptInfo(script: Script) extends VBox(3) {
     instr match {
       case script.TravelTo(town) => s"go to ${town.name}"
       case script.Wait(delay) => s"wait ${TimeFormatter.timeToHourString(delay)}"
+      case script.Buy(g, q) => s"buy ${q} ${g.name}"
+      case script.Sell(g, q) => s"sell ${q} ${g.name}"
     }
   }
 
@@ -61,6 +64,35 @@ class ScriptInfo(script: Script) extends VBox(3) {
     }
   }
 
+  private def goodSelectionList(f: Good => Unit) : SelectionList[Good] = new SelectionList[Good](
+    Good.all,
+    _.name,
+    f)
+
+    private val buyButton: Button = new Button("buy") {
+      onAction = (event: ActionEvent) => {
+
+        setChildren()
+
+        children.add(goodSelectionList(g => {
+          script.instructions.add(new script.Buy(g, timeField.value()))
+          setChildren()
+        }))
+      }
+    }
+
+    private val sellButton: Button = new Button("buy") {
+      onAction = (event: ActionEvent) => {
+
+        setChildren()
+
+        children.add(goodSelectionList(g => {
+          script.instructions.add(new script.Sell(g, timeField.value()))
+          setChildren()
+        }))
+      }
+    }
+
   private val waitButton: Button = new Button("wait") {
     onAction = (event: ActionEvent) => {
       script.instructions.add(new script.Wait(timeField.value()))
@@ -83,8 +115,9 @@ class ScriptInfo(script: Script) extends VBox(3) {
   }
 
   private def setChildren(): Unit = {
-    children = List(pause, repeat, list, travelToButton, waitButton, timeField, deleteButton, clearButton)
+    children = List(pause, repeat, list, travelToButton, buyButton, sellButton, waitButton, timeField, deleteButton, clearButton)
   }
+
   setChildren()
 }
 

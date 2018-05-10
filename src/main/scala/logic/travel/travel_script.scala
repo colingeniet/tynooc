@@ -5,6 +5,7 @@ import logic.game._
 import logic.company._
 import logic.vehicle._
 import logic.game._
+import logic.good._
 
 import scalafx.collections._
 import scalafx.beans.property._
@@ -37,9 +38,23 @@ class Script(val company: Company, val vehicle: Vehicle) {
   case class Wait(val delay: Double)
   extends TravelInstruction {
     def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit = {
-      Game.delayAction(delay, onCompleted)
+      Game.delayAction(delay, () => onCompleted())
     }
   }
+
+case class Buy(val good: Good, quantity: Double)
+extends TravelInstruction {
+  def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit = {
+      Game.delayAction(0, () => onCompleted())
+    }
+  }
+
+case class Sell(val good: Good, quantity: Double)
+extends TravelInstruction {
+  def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit = {
+    Game.delayAction(0, () => onCompleted())
+  }
+}
 
 
   val instructions: ObservableBuffer[TravelInstruction] = ObservableBuffer()
