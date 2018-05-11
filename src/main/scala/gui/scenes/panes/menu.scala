@@ -6,20 +6,40 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.scene.image._
 import scalafx.event._
+import scalafx.stage._
+import javafx.stage.FileChooser.ExtensionFilter
 
 import gui.MainStage
 import formatter._
 import logic.game._
 
+import java.io._
+
 /** Game top menu bar. */
-class TopMenu(sceneModifier: MainStage.States.Val => Unit)
+class TopMenu(window: Window, sceneModifier: MainStage.States.Val => Unit)
 extends BorderPane {
   // left side : quit button
-  left = new HBox {
+  left = new HBox(3) {
     children = List(
       new Button ("Quit") {
-        onAction =
-          (event: ActionEvent) => sceneModifier(MainStage.States.MainMenu)
+        onAction = (event: ActionEvent) => sceneModifier(MainStage.States.MainMenu)
+      },
+      new Button ("Save") {
+        onAction = (event: ActionEvent) => {
+          val fileChooser = new FileChooser {
+            title = "open save file"
+            extensionFilters ++= Seq(
+              new ExtensionFilter("All Files", "*"))
+          }
+
+          val file = fileChooser.showSaveDialog(window)
+          if(file != null) {
+
+            val stream = new ObjectOutputStream(new FileOutputStream(file))
+            Game.save_game(stream)
+            stream.close()
+          }
+        }
       }
     )
   }

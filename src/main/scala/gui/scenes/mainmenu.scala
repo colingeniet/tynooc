@@ -58,7 +58,7 @@ extends MainStage.Scene(sceneModifier) {
   private var loadLastBtn = new Button("Load last save") {
     onAction = (event: ActionEvent) => {
       // game initialization
-      val stream = new ObjectInputStream(new FileInputStream("autosave.tys"))
+      val stream = new ObjectInputStream(new FileInputStream("autosave"))
       Game.load_game(stream)
       stream.close()
       Colors.init(Game.mainPlayer.get.company)
@@ -72,8 +72,7 @@ extends MainStage.Scene(sceneModifier) {
       val fileChooser = new FileChooser {
         title = "open save file"
         extensionFilters ++= Seq(
-          new ExtensionFilter("Tynooc Save Files", "*.tys"),
-          new ExtensionFilter("All Files", "*.*"))
+          new ExtensionFilter("All Files", "*"))
       }
 
       val file = fileChooser.showOpenDialog(window)
@@ -107,7 +106,7 @@ extends MainStage.Scene(sceneModifier) {
         initialDirectory = Game.mapPath.getParentFile()
         extensionFilters ++= Seq(
           new ExtensionFilter("XML Files", "*.xml"),
-          new ExtensionFilter("All Files", "*.*"))
+          new ExtensionFilter("All Files", "*"))
       }
 
       val file = fileChooser.showOpenDialog(window)

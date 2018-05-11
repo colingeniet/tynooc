@@ -6,6 +6,7 @@ import scalafx.scene.control._
 import scalafx.event._
 import scalafx.scene.layout._
 import scalafx.geometry._
+import scalafx.stage._
 
 import gui.MainStage
 import gui.scenes.map._
@@ -30,6 +31,7 @@ import player._
  *  @param player the player.
  */
 class Game(
+  window: Window,
   val world: World,
   val player: Player,
   sceneModifier: MainStage.States.Val => Unit)
@@ -47,7 +49,7 @@ extends MainStage.Scene(sceneModifier) {
     center = new StackPane {
       children = List(map, messagesBox)
     }
-    top = new TopMenu(sceneModifier)
+    top = new TopMenu(window, sceneModifier)
   }
   displayCompany()
 

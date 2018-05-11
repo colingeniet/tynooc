@@ -55,7 +55,7 @@ extends JFXApp.PrimaryStage {
     newScene match {
       case MainStage.States.MainMenu => scene = mainMenuScene
       case MainStage.States.Game => {
-        gameScene = new Game(Game.world, Game.mainPlayer.get, changeScene)
+        gameScene = new Game(this, Game.world, Game.mainPlayer.get, changeScene)
         scene = gameScene
 
         var runMainLoop: Boolean = true
@@ -73,7 +73,7 @@ extends JFXApp.PrimaryStage {
         // kill background thread and save when leaving
         onNextChangeCallback = () => {
           runMainLoop = false
-          val stream = new ObjectOutputStream(new FileOutputStream("autosave.tys"))
+          val stream = new ObjectOutputStream(new FileOutputStream("autosave"))
           Game.save_game(stream)
           stream.close()
         }
