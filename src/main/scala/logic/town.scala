@@ -15,6 +15,7 @@ import utils.InitHashMap
 
 import collection.mutable.HashMap
 import java.util.Random
+import java.io._
 
 
 /** A town in the world.
@@ -25,34 +26,29 @@ import java.util.Random
   * @param y The y position of the town.
   * @param welcomingLevel The welcoming level of a town (between 0 and 1).
   */
+@SerialVersionUID(0L)
 class Town(
   val name: String,
   val x: Double,
   val y: Double,
-  val welcomingLevel: Double) {
+  val welcomingLevel: Double)
+extends Serializable {
   private var _routes: List[Route] = List()
 
   /** The town population. */
-  val population: IntegerProperty = IntegerProperty(0)
+  @transient var population: IntegerProperty = IntegerProperty(0)
   /** The passengers number of the town. */
   val passengers: HashMap[Town, Double] = InitHashMap[Town, Double](_ => 0)
 
-  val passengersNumber: DoubleProperty = DoubleProperty(0)
+  @transient var passengersNumber: DoubleProperty = DoubleProperty(0)
 
 
   //Gives the quantity of good inside the city
-  val goods: HashMap[Good, DoubleProperty] =
-    new HashMap[Good, DoubleProperty] {
-
-      override def default(g: Good): DoubleProperty = {
-        // initialize empty entries
-        this(g) = DoubleProperty(0)
-        this(g)
-      }
-    }
+  @transient var goods: HashMap[Good, DoubleProperty] =
+    InitHashMap[Good, DoubleProperty](g => DoubleProperty(0))
 
   // Gives the prices of goods in this city
-  val goods_prices: HashMap[Good, DoubleProperty] =
+  @transient var goods_prices: HashMap[Good, DoubleProperty] =
     InitHashMap[Good, DoubleProperty](g => DoubleProperty(g.basePrice))
 
   // Stocks at last tick. Used to estimate consumption
@@ -76,7 +72,7 @@ class Town(
   }
 
 
-  val facilities: ObservableBuffer[Facility] = ObservableBuffer()
+  @transient var facilities: ObservableBuffer[Facility] = ObservableBuffer()
 
 
   /** Returns a hashmap containing the needs of the population
@@ -334,5 +330,34 @@ class Town(
       case f: Factory => if(!f.working()) f.startCycle()
       case _ => ()
     })
+  }
+
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.population.toInt)
+    stream.writeObject(this.passengersNumber.toDouble)
+    stream.writeObject(this.goods.map{ case(g,v) => (g,v.toDouble) })
+    stream.writeObject(this.goods_prices.map{ case(g,v) => (g,v.toDouble) })
+    stream.writeObject(this.facilities.toList)
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.population = IntegerProperty(stream.readObject().asInstanceOf[Int])
+    this.passengersNumber = DoubleProperty(stream.readObject().asInstanceOf[Double])
+
+    this.goods = InitHashMap[Good, DoubleProperty](g => DoubleProperty(0))
+    val new_goods = stream.readObject().asInstanceOf[HashMap[Good,Double]]
+    new_goods.foreach{ case (g,v) => this.goods(g)() = v }
+
+    this.goods_prices = InitHashMap[Good, DoubleProperty](g => DoubleProperty(g.basePrice))
+    val new_goods_prices = stream.readObject().asInstanceOf[HashMap[Good,Double]]
+    new_goods_prices.foreach{ case (g,v) => this.goods_prices(g)() = v }
+
+    this.facilities = ObservableBuffer[Facility](stream.readObject().asInstanceOf[List[Facility]])
   }
 }

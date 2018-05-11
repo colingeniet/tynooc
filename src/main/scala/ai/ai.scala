@@ -46,7 +46,7 @@ extends Player(company) with AI {
       if(!engines.isEmpty) {
         val train = engines.head
         val carriages = company.carriagesStoredAt(train.town()).filter { c =>
-          train.weight() + c.model.weight < train.model.power
+          train.weight.toDouble + c.model.weight < train.model.power
         }
         if(!carriages.isEmpty)
           company.addCarriageToTrain(train, carriages.head)

@@ -13,6 +13,8 @@ import collection.mutable.HashMap
 import scalafx.beans.binding._
 import scalafx.beans.property._
 
+import java.io._
+
 /** A truck model. */
 class TruckModel(
   val name: String,
@@ -55,7 +57,14 @@ class Truck(
   _town: Town,
   _owner: Company)
 extends VehicleFromModel[TruckModel](_model, _town, _owner) {
-  val name: StringProperty = StringProperty("truck")
+  @transient var name: StringProperty = StringProperty("truck")
+  @transient var travel: ObjectProperty[Option[Travel]] = ObjectProperty(None)
+  /* Initialization is done through the initBindings() method */
+  @transient var onTravel: BooleanBinding = null
+  @transient var isAvailable: BooleanBinding = null
+  @transient var isUsed: BooleanBinding = null
+
+  this.initBindings()
 
   def modelNameMap(modelName: String): TruckModel = TruckModel(modelName)
 
@@ -72,5 +81,25 @@ extends VehicleFromModel[TruckModel](_model, _town, _owner) {
       case r: Road => r.maximum_speed min super.speed(road)
       case _ => super.speed(road)
     }
+  }
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.owner())
+    stream.writeObject(this.town())
+    stream.writeObject(this.name())
+    stream.writeObject(this.travel())
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.owner = ObjectProperty(stream.readObject().asInstanceOf[Company])
+    this.town = ObjectProperty(stream.readObject().asInstanceOf[Town])
+    this.name = StringProperty(stream.readObject().asInstanceOf[String])
+    this.travel = ObjectProperty(stream.readObject().asInstanceOf[Option[Travel]])
+    this.initBindings()
   }
 }

@@ -1,11 +1,14 @@
 package logic.facility
 
 import scala.collection.mutable.HashMap
+import scalafx.beans.property._
 
 import logic.model._
 import logic.town._
 import logic.vehicle._
 import logic.company._
+
+import java.io._
 
 
 trait StationModel extends FacilityModel {
@@ -59,6 +62,19 @@ extends StationFromModel[TrainStationModel](model, town, _owner) {
   }
 
   def modelNameMap(name: String): TrainStationModel = TrainStationModel(name)
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.owner())
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.owner = ObjectProperty(stream.readObject().asInstanceOf[Company])
+  }
 }
 
 
@@ -88,6 +104,19 @@ extends StationFromModel[AirportModel](model, town, _owner) {
   }
 
   def modelNameMap(name: String): AirportModel = AirportModel(name)
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.owner())
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.owner = ObjectProperty(stream.readObject().asInstanceOf[Company])
+  }
 }
 
 
@@ -116,4 +145,17 @@ extends StationFromModel[PortModel](model, town, _owner) {
   }
 
   def modelNameMap(name: String): PortModel = PortModel(name)
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.owner())
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.owner = ObjectProperty(stream.readObject().asInstanceOf[Company])
+  }
 }

@@ -17,6 +17,7 @@ import logic.good._
 import logic.room._
 
 import collection.mutable.HashMap
+import java.io._
 
 
 /** Template for a vehicle model class. */
@@ -93,14 +94,32 @@ object Carriage {
  */
 class Carriage(_model: CarriageModel, _town: Town, _owner: Company)
 extends VehicleUnitFromModel[CarriageModel](_model, _town, _owner) {
-  val train: ObjectProperty[Option[Engine]] = ObjectProperty(None)
-
-  val isUsed: BooleanBinding =
-    Bindings.createBooleanBinding(
-      () => train().isDefined,
-      train)
+  @transient var train: ObjectProperty[Option[Engine]] = ObjectProperty(None)
+  @transient var isUsed: BooleanBinding = Bindings.createBooleanBinding(
+    () => train().isDefined,
+    train)
 
   def modelNameMap(name: String): CarriageModel = CarriageModel(name)
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.owner())
+    stream.writeObject(this.town())
+    stream.writeObject(this.train())
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.owner = ObjectProperty(stream.readObject().asInstanceOf[Company])
+    this.town = ObjectProperty(stream.readObject().asInstanceOf[Town])
+    this.train = ObjectProperty(stream.readObject().asInstanceOf[Option[Engine]])
+    this.isUsed = Bindings.createBooleanBinding(
+      () => train().isDefined,
+      train)
+  }
 }
 
 
@@ -126,26 +145,31 @@ class Engine(
   _owner: Company,
   _carriages: List[Carriage] = List())
 extends VehicleFromModel[EngineModel](_model, _town, _owner) {
-  val name: StringProperty = StringProperty("train")
-  val carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
+  @transient var name: StringProperty = StringProperty("train")
+  @transient var travel: ObjectProperty[Option[Travel]] = ObjectProperty(None)
+  @transient var carriages: ObservableBuffer[Carriage] = ObservableBuffer(_carriages)
+  /* Initialization is done through the initBindings() method */
+  @transient var onTravel: BooleanBinding = null
+  @transient var isAvailable: BooleanBinding = null
+  @transient var isUsed: BooleanBinding = null
+  @transient var weight: NumberBinding = null
+  @transient var tooHeavy: BooleanBinding = null
+  @transient var isEmpty: BooleanBinding = null
 
-  val weight: DoubleProperty = DoubleProperty(0)
-  weight <== Bindings.createDoubleBinding(
+  override protected def initBindings(): Unit = {
+    super.initBindings()
+    this.weight = Bindings.createDoubleBinding(
       () => carriages.foldLeft[Double](model.weight)(_ + _.model.weight),
       carriages)
-
-  var tooHeavy: BooleanBinding =
-    jfxBooleanBinding2sfx(weight > model.power)
-
-  override val isAvailable: BooleanBinding =
-    jfxBooleanBinding2sfx(
+    this.tooHeavy = jfxBooleanBinding2sfx(weight > model.power)
+    this.isAvailable = jfxBooleanBinding2sfx(
       jfxBooleanBinding2sfx(!tooHeavy) && jfxBooleanBinding2sfx(!onTravel))
-
-
-  val isEmpty: BooleanBinding =
-    Bindings.createBooleanBinding(
+    this.isEmpty = Bindings.createBooleanBinding(
       () => carriages.isEmpty(),
       carriages)
+  }
+
+  this.initBindings()
 
   /** Adds a carriage at the end of the train.
   * @param c The cariage to add
@@ -206,10 +230,32 @@ extends VehicleFromModel[EngineModel](_model, _town, _owner) {
   override def upgradeTo(newModel: EngineModel): Unit = {
     super.upgradeTo(newModel)
 
-    weight <== Bindings.createDoubleBinding(
+    weight = Bindings.createDoubleBinding(
         () => carriages.foldLeft[Double](model.weight)(_ + _.model.weight),
         carriages)
 
     tooHeavy = jfxBooleanBinding2sfx(weight > model.power)
+  }
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.owner())
+    stream.writeObject(this.town())
+    stream.writeObject(this.carriages.toList)
+    stream.writeObject(this.name())
+    stream.writeObject(this.travel())
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.owner = ObjectProperty(stream.readObject().asInstanceOf[Company])
+    this.town = ObjectProperty(stream.readObject().asInstanceOf[Town])
+    this.carriages = ObservableBuffer[Carriage](stream.readObject().asInstanceOf[List[Carriage]])
+    this.name = StringProperty(stream.readObject().asInstanceOf[String])
+    this.travel = ObjectProperty(stream.readObject().asInstanceOf[Option[Travel]])
+    this.initBindings()
   }
 }

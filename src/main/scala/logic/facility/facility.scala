@@ -18,5 +18,5 @@ abstract class FacilityFromModel[Model <: FacilityModel](
   val town: Town,
   _owner: Company)
 extends FromBuyableModel[Model](_model) with Facility {
-  val owner: ObjectProperty[Company] = ObjectProperty(_owner)
+  @transient var owner: ObjectProperty[Company] = ObjectProperty(_owner)
 }

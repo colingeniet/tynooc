@@ -45,7 +45,7 @@ extends StackPane with ZoomPane {
 
   val routesMiddle: HashMap[Route, Point2D] = new HashMap()
   val planesRoute: HashMap[Travel, Line] = new HashMap()
-  
+
   class MapTravel(val travel: Travel, color: Double)
   extends ImageView(Resources.images(travel.vehicle)) {
     effect = new ColorAdjust(color, 0.0, 0.0, 0.0)
@@ -59,7 +59,7 @@ extends StackPane with ZoomPane {
       case _: Plane => rotate <== travel.heading
       case _ => ()
     }
-    
+
 
     private def deleteIfDone(): Unit = {
       if(travel.isDone()) {
@@ -76,14 +76,14 @@ extends StackPane with ZoomPane {
 
     x <== scale * travel.posX
     y <== scale * travel.posY
-          
+
     private def relativePosition(p: Double, start: Double, middle: Double, end: Double): Double = {
       if(p < 0.5)
         start + 2 * p * (middle - start)
       else
         middle + (p - 0.5) * 2 * (end - middle)
     }
-    
+
     private def changePosition(): Unit = {
       travel.currentRoute() match {
         case Some(r) => {
@@ -188,7 +188,7 @@ extends StackPane with ZoomPane {
       case a: Airway => White
     }
   }
-  
+
   def XRouteDirection(route: Route): Int = {
     route match {
       case c: Canal  => -1
@@ -208,7 +208,7 @@ extends StackPane with ZoomPane {
     }
   }
 
-  
+
   /** Display a route. */
   private def addRoute(route: Route): Unit = {
     val A = if(route.start.x < route.end.x) route.start else route.end
@@ -223,7 +223,7 @@ extends StackPane with ZoomPane {
     val AD = new Point2D(C.x - A.x + CD.x, C.y - A.y + CD.y)
     val middle =  new Point2D(AD.x + A.x, AD.y + A.y)
     routesMiddle(route) = middle
-    
+
     val curve = new QuadCurve {
       controlX <== scale * middle.x
       controlY <== scale * middle.y
@@ -268,6 +268,7 @@ extends StackPane with ZoomPane {
     vehicleMap.children.add(new MapTravel(travel, hue))
   }
 
+  world.travels.foreach(addTravel(_))
   world.onAddTravel = addTravel
 
   // focus more on less on the map

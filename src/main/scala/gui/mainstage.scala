@@ -3,18 +3,14 @@ package gui
 import collection.mutable.HashMap
 
 import scalafx.Includes._
-import scalafx.scene.control.Alert
-import scalafx.scene.control.Alert._
 import scalafx.stage.Modality
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
 import scalafx.scene.media._
 import scalafx.scene.image.Image
-import scalafx.scene.paint.Color
 
 import gui.scenes._
-import gui.scenes.color._
 import logic.world._
 import logic.game._
 import ai._
@@ -22,7 +18,7 @@ import player._
 import parser._
 import logic.vehicle._
 
-import java.io.File
+import java.io._
 import scala.util.Try
 
 
@@ -30,10 +26,11 @@ import scala.util.Try
  *
  *  Handles, displays and switch between menus and game screens.
  */
-class MainStage(gameInit: () => Player)
+class MainStage(gameInit: () => Unit)
 extends JFXApp.PrimaryStage {
   /* Actual scenes displayed. */
-  private var mainMenuScene: MainMenu = new MainMenu(changeScene, this)
+  private var mainMenuScene: MainMenu =
+    new MainMenu(this, changeScene, gameInit)
   private var gameScene: Game = null
 
   private var onNextChangeCallback: () => Unit = () => ()
@@ -58,48 +55,29 @@ extends JFXApp.PrimaryStage {
     newScene match {
       case MainStage.States.MainMenu => scene = mainMenuScene
       case MainStage.States.Game => {
-        try {
-          // game initialization
-          var mainPlayer: Player = gameInit()
-          gameScene = new Game(Game.world, mainPlayer, changeScene)
-          scene = gameScene
-          Colors.init(mainPlayer.company)
-          Colors(Game.bigBrother) = Color.Black
+        gameScene = new Game(Game.world, Game.mainPlayer.get, changeScene)
+        scene = gameScene
 
-          var runMainLoop: Boolean = true
-          // launch background game loop when the game scene is selected
-          val mainLoopThread: Thread = new Thread {
-            override def run {
-              while(runMainLoop) {
-                Platform.runLater(() => {
-                  Game.update()
-                })
-                Thread.sleep(12)
-              }
+        var runMainLoop: Boolean = true
+        // launch background game loop when the game scene is selected
+        val mainLoopThread: Thread = new Thread {
+          override def run {
+            while(runMainLoop) {
+              Platform.runLater(() => {
+                Game.update()
+              })
+              Thread.sleep(12)
             }
           }
-          // kill background thread when leaving
-          onNextChangeCallback = () => runMainLoop = false
-          mainLoopThread.start()
-
-        } catch {
-          case e: java.io.FileNotFoundException => {
-            new Alert(AlertType.Error) {
-              title = "file error"
-              headerText = "Map file not found"
-              contentText = e.getMessage()
-              initModality(Modality.None)
-            }.show()
-          }
-          case e: BadFileFormatException => {
-            new Alert(AlertType.Error) {
-              title = "file error"
-              headerText = "Invalid map file"
-              contentText = e.getMessage()
-              initModality(Modality.None)
-            }.show()
-          }
         }
+        // kill background thread and save when leaving
+        onNextChangeCallback = () => {
+          runMainLoop = false
+          val stream = new ObjectOutputStream(new FileOutputStream("save"))
+          Game.save_game(stream)
+          stream.close()
+        }
+        mainLoopThread.start()
       }
       case MainStage.States.Quit => Platform.exit()
     }
