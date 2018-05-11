@@ -55,15 +55,48 @@ extends MainStage.Scene(sceneModifier) {
     }
   }
 
-  private var loadBtn = new Button("Load last save") {
+  private var loadLastBtn = new Button("Load last save") {
     onAction = (event: ActionEvent) => {
       // game initialization
-      val stream = new ObjectInputStream(new FileInputStream("save"))
+      val stream = new ObjectInputStream(new FileInputStream("autosave.tys"))
       Game.load_game(stream)
       stream.close()
       Colors.init(Game.mainPlayer.get.company)
       Colors(Game.bigBrother) = Color.Black
       sceneModifier(MainStage.States.Game)
+    }
+  }
+
+  private var loadBtn = new Button("Load save") {
+    onAction = (event: ActionEvent) => {
+      val fileChooser = new FileChooser {
+        title = "open save file"
+        extensionFilters ++= Seq(
+          new ExtensionFilter("Tynooc Save Files", "*.tys"),
+          new ExtensionFilter("All Files", "*.*"))
+      }
+
+      val file = fileChooser.showOpenDialog(window)
+      if (file != null) {
+        // game initialization
+        try {
+          val stream = new ObjectInputStream(new FileInputStream(file))
+          Game.load_game(stream)
+          Colors.init(Game.mainPlayer.get.company)
+          Colors(Game.bigBrother) = Color.Black
+          sceneModifier(MainStage.States.Game)
+          stream.close()
+        } catch {
+          case e: java.io.IOException => {
+            new Alert(AlertType.Error) {
+              title = "file error"
+              headerText = "Invalid save file"
+              contentText = e.getMessage()
+              initModality(Modality.None)
+            }.show()
+          }
+        }
+      }
     }
   }
 
@@ -103,6 +136,7 @@ extends MainStage.Scene(sceneModifier) {
     children = List(
       title,
       gameBtn,
+      loadLastBtn,
       loadBtn,
       mapBtn,
       quitBtn)

@@ -73,7 +73,7 @@ extends JFXApp.PrimaryStage {
         // kill background thread and save when leaving
         onNextChangeCallback = () => {
           runMainLoop = false
-          val stream = new ObjectOutputStream(new FileOutputStream("save"))
+          val stream = new ObjectOutputStream(new FileOutputStream("autosave.tys"))
           Game.save_game(stream)
           stream.close()
         }
