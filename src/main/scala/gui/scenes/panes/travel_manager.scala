@@ -53,7 +53,7 @@ class ScriptInfo(script: Script) extends VBox(3) {
         _.name,
         town => {
           script.instructions.add(new script.TravelTo(town))
-          children = List(pause, repeat, list, travelToButton, timeField, waitButton, deleteButton, clearButton)
+          children = List(pause, repeat, list, travelToButton, waitButton, timeField, deleteButton, clearButton)
         })
       // display new selection list upon button pressed
       children = List(pause, repeat, list, travelToButton, waitButton, timeField, selectionList, deleteButton, clearButton)

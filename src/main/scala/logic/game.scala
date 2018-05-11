@@ -4,7 +4,7 @@ import scalafx.beans.property._
 
 import scala.collection.mutable.PriorityQueue
 import scala.math.Ordering.Implicits._
-import java.io.File
+import java.io._
 
 import logic.world._
 import logic.company._
@@ -31,14 +31,14 @@ object Game {
   /** Path of the map file. */
   var mapPath: File = new File("map/map.xml")
 
-  var bigBrother = new Company("Big Brother", null)
+  var bigBrother: Company = new Company("Big Brother", null)
 
   var printMessage: String => Unit = (_ => ())
 
 
   private val queueOrdering = Ordering.by[(Double, () => Unit), Double](_._1).reverse
 
-  private val actionQueue: PriorityQueue[(Double, () => Unit)] =
+  private var actionQueue: PriorityQueue[(Double, () => Unit)] =
     new PriorityQueue[(Double, () => Unit)]()(queueOrdering)
 
   /** Execute an action at a given in game time. */
@@ -96,4 +96,46 @@ object Game {
 
   def realToVirtualTime(t: Double): Double = t / virtualToRealRatio
   def virtualToRealTime(t: Double): Double = t * virtualToRealRatio
+
+
+  @SerialVersionUID(0L)
+  private class GameData(
+    val world: World,
+    val time: Double,
+    val nextDay: Double,
+    val players: List[Player],
+    val mainPlayer: Option[Player],
+    val bigBrother: Company,
+    val actionQueue: PriorityQueue[(Double, () => Unit)])
+  extends Serializable
+
+  private def game_data: GameData = {
+    new GameData(
+      world,
+      time.toDouble,
+      nextDay,
+      players,
+      mainPlayer,
+      bigBrother,
+      actionQueue)
+  }
+
+  private def game_data_=(data: GameData): Unit = {
+    world = data.world
+    time() = data.time
+    last = System.currentTimeMillis()
+    nextDay = data.nextDay
+    players = data.players
+    mainPlayer = data.mainPlayer
+    bigBrother = data.bigBrother
+    actionQueue = data.actionQueue
+  }
+
+  def save_game(stream: ObjectOutputStream): Unit = {
+    stream.writeObject(game_data)
+  }
+
+  def load_game(stream: ObjectInputStream): Unit = {
+    game_data = stream.readObject().asInstanceOf[GameData]
+  }
 }

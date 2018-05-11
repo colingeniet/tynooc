@@ -9,7 +9,7 @@ import player._
 
 object MainJFXApp extends JFXApp {
   /** Initializes the game and return the main player. */
-  def gameInit(): Player = {
+  def gameInit(): Unit = {
     Game.init()
     Game.players = List(new Player(company("Company name")),
                         new BasicTrainAI(company("AI 1 company"), 1.7, 0.5),
@@ -18,7 +18,6 @@ object MainJFXApp extends JFXApp {
                         new BasicShipAI( company("AI 4 company"), 1.8, 0.7))
     Game.players.foreach { p => Game.world.addCompany(p.company) }
     Game.mainPlayer = Some(Game.players(0))
-    Game.mainPlayer.get
   }
 
   /** Creates a new company.

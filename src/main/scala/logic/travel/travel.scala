@@ -18,16 +18,20 @@ import logic.good._
 import logic.facility._
 import utils._
 
+import java.io._
+
 private object State {
   sealed trait Val
   case object Launched extends Val
   case object Waiting extends Val //Waiting for passengers
   case object OnRoute extends Val
-  case object Arrived extends Val //Passengers are leaving now
+  case object Arrived extends Val //Passengers are leaving nows
 }
 
 /** A travel. */
-class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
+@SerialVersionUID(0L)
+class Travel(val vehicle: Vehicle, private val routes: List[Route])
+extends Serializable {
   val company = vehicle.owner()
 
   private val rooms: List[Room] = vehicle.createRooms(this)
@@ -36,12 +40,12 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
   private val distance: Double = (routes.map { _.length }).sum
 
   /** Position on the current route, as a distance. */
-  private val currentRouteDistanceDone: DoubleProperty = DoubleProperty(0)
+  @transient private var currentRouteDistanceDone: DoubleProperty = DoubleProperty(0)
 
   /** Remaining routes, including the current one. */
-  private val remainingRoutes: ObservableBuffer[Route] = ObservableBuffer(routes)
+  @transient private var remainingRoutes: ObservableBuffer[Route] = ObservableBuffer(routes)
 
-  private val state: ObjectProperty[State.Val] = ObjectProperty(State.Launched)
+  @transient private var state: ObjectProperty[State.Val] = ObjectProperty(State.Launched)
 
   /** Travel destination. */
   val destination: Town = routes.last.end
@@ -49,27 +53,120 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
   var onCompleted: () => Unit = () => ()
 
   /** Current travel route. */
-  val currentRoute: ObjectBinding[Option[Route]] =
-    createObjectBinding(
-      () => remainingRoutes.headOption,
-      remainingRoutes)
-
+  @transient var currentRoute: ObjectBinding[Option[Route]] = null
   /** The next town to reach. */
-  val nextTown: ObjectBinding[Town] =
-    createObjectBinding(
-      () => currentRoute() match {
-        case Some(r) => r.end
-        case None => destination
-      },
-      currentRoute)
+  @transient var nextTown: ObjectBinding[Town] = null
 
   /** Last town reached. */
-  val currentTown: ObjectProperty[Town] = vehicle.town
-
+  @transient var currentTown: ObjectProperty[Town] = null
   /** Destination reached. */
-  val isDone: BooleanBinding = createBooleanBinding(
-    () => remainingRoutes.isEmpty,
-    remainingRoutes)
+  @transient var isDone: BooleanBinding = null
+
+  /** Distance remaining until destination. */
+  /* bindings are calculated lazily */
+  @transient var totalRemainingDistance: NumberBinding = null
+  /** Distance remaining until next stop. */
+  @transient var remainingDistance: NumberBinding = null
+
+  /** Time remaining until destination, without stop time. */
+  @transient var totalRemainingTime: NumberBinding = null
+  /** Time remaining until next stop. */
+  @transient var remainingTime: NumberBinding = null
+
+  /** Position on the current route, as a proportion. */
+  @transient var currentRouteProportion: NumberBinding = null
+  @transient var posX: NumberBinding = null
+  @transient var posY: NumberBinding = null
+  @transient var heading: NumberBinding = null
+
+  /** Number of passengers in the vehicle. */
+  @transient var passengerNumber: IntegerProperty = IntegerProperty(0)
+  @transient var contents: HashMap[Good, DoubleProperty] =
+    InitHashMap[Good, DoubleProperty](_ => DoubleProperty(0))
+
+  @transient var isWaiting: BooleanBinding = null
+  @transient var isLaunched: BooleanBinding = null
+  @transient var isOnRoute: BooleanBinding = null
+  @transient var isArrived: BooleanBinding = null
+
+
+  private def initBindings(): Unit = {
+    currentRoute = createObjectBinding(
+        () => remainingRoutes.headOption,
+        remainingRoutes)
+
+    nextTown = createObjectBinding(
+        () => currentRoute() match {
+          case Some(r) => r.end
+          case None => destination
+        },
+        currentRoute)
+
+    currentTown = vehicle.town
+    isDone = createBooleanBinding(
+      () => remainingRoutes.isEmpty,
+      remainingRoutes)
+
+    totalRemainingDistance =
+      jfxNumberBinding2sfx(createDoubleBinding(
+        () => remainingRoutes.toList.map(_.length).sum - currentRouteDistanceDone(),
+        remainingRoutes,
+        currentRouteDistanceDone))
+
+    remainingDistance =
+      jfxNumberBinding2sfx(createDoubleBinding(
+        () => currentRoute() match {
+          case Some(r) => r.length - currentRouteDistanceDone()
+          case None => 0
+        },
+        currentRoute,
+        currentRouteDistanceDone))
+
+    totalRemainingTime = totalRemainingDistance / vehicle.speed
+    remainingTime = remainingDistance / vehicle.speed
+
+    currentRouteProportion =
+      jfxNumberBinding2sfx(createDoubleBinding(
+        () => currentRoute() match {
+          case Some(r) => currentRouteDistanceDone() / r.length
+          case None => 0
+        },
+        currentRoute,
+        currentRouteDistanceDone))
+
+    posX = jfxNumberBinding2sfx(createDoubleBinding(
+      () => currentRoute() match {
+        case Some(r) => {
+          val p: Double = currentRouteProportion.toDouble
+          r.start.x * (1-p) + r.end.x * p
+        }
+        case None => 0
+      },
+      currentRoute,
+      currentRouteProportion))
+    posY = jfxNumberBinding2sfx(createDoubleBinding(
+      () => currentRoute() match {
+        case Some(r) => {
+          val p: Double = currentRouteProportion.toDouble
+          r.start.y * (1-p) + r.end.y * p
+        }
+        case None => 0
+      },
+      currentRoute,
+      currentRouteProportion))
+    heading = jfxNumberBinding2sfx(createDoubleBinding(
+      () => currentRoute() match {
+        case Some(r) => math.atan2(r.end.x - r.start.x, r.start.y - r.end.y).toDegrees
+        case None => 0
+      },
+      currentRoute))
+
+    isWaiting = jfxBooleanBinding2sfx(state === State.Waiting)
+    isLaunched = jfxBooleanBinding2sfx(state === State.Launched)
+    isOnRoute = jfxBooleanBinding2sfx(state === State.OnRoute)
+    isArrived = jfxBooleanBinding2sfx(state === State.Arrived)
+  }
+  initBindings()
 
 
   def remainingStops: List[Town] = {
@@ -82,25 +179,6 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
   def stopsAt(t: Town): Boolean = {
     remainingStops.contains(t)
   }
-
-  /** Distance remaining until destination. */
-  /* bindings are calculated lazily */
-  val totalRemainingDistance: NumberBinding =
-    jfxNumberBinding2sfx(createDoubleBinding(
-      () => remainingRoutes.toList.map(_.length).sum - currentRouteDistanceDone(),
-      remainingRoutes,
-      currentRouteDistanceDone))
-
-
-  /** Distance remaining until next stop. */
-  val remainingDistance: NumberBinding =
-    jfxNumberBinding2sfx(createDoubleBinding(
-      () => currentRoute() match {
-        case Some(r) => r.length - currentRouteDistanceDone()
-        case None => 0
-      },
-      currentRoute,
-      currentRouteDistanceDone))
 
   /** Distance remaining until <code>destination</code>.
     *
@@ -119,64 +197,6 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
   }
 
   def remainingTimeTo(to: Town): Double = remainingDistanceTo(to) / vehicle.speed
-
-  /** Time remaining until destination, without stop time. */
-  val totalRemainingTime: NumberBinding = totalRemainingDistance / vehicle.speed
-  /** Time remaining until next stop. */
-  val remainingTime: NumberBinding = remainingDistance / vehicle.speed
-
-  /** Position on the current route, as a proportion. */
-  val currentRouteProportion: NumberBinding =
-    jfxNumberBinding2sfx(createDoubleBinding(
-      () => currentRoute() match {
-        case Some(r) => currentRouteDistanceDone() / r.length
-        case None => 0
-      },
-      currentRoute,
-      currentRouteDistanceDone))
-
-  val posX: NumberBinding =
-    jfxNumberBinding2sfx(createDoubleBinding(
-      () => currentRoute() match {
-        case Some(r) => {
-          val p: Double = currentRouteProportion.toDouble
-          r.start.x * (1-p) + r.end.x * p
-        }
-        case None => 0
-      },
-      currentRoute,
-      currentRouteProportion))
-
-  val posY: NumberBinding =
-    jfxNumberBinding2sfx(createDoubleBinding(
-      () => currentRoute() match {
-        case Some(r) => {
-          val p: Double = currentRouteProportion.toDouble
-          r.start.y * (1-p) + r.end.y * p
-        }
-        case None => 0
-      },
-      currentRoute,
-      currentRouteProportion))
-
-  val heading: NumberBinding =
-    jfxNumberBinding2sfx(createDoubleBinding(
-      () => currentRoute() match {
-        case Some(r) => math.atan2(r.end.x - r.start.x, r.start.y - r.end.y).toDegrees
-        case None => 50
-      },
-      currentRoute))
-
-
-  /** Number of passengers in the vehicle. */
-  val passengerNumber: IntegerProperty = IntegerProperty(0)
-  val contents: HashMap[Good, DoubleProperty] =
-    InitHashMap[Good, DoubleProperty](_ => DoubleProperty(0))
-
-  val isWaiting: BooleanBinding = jfxBooleanBinding2sfx(state === State.Waiting)
-  val isLaunched: BooleanBinding = jfxBooleanBinding2sfx(state === State.Launched)
-  val isOnRoute: BooleanBinding = jfxBooleanBinding2sfx(state === State.OnRoute)
-  val isArrived: BooleanBinding = jfxBooleanBinding2sfx(state === State.Arrived)
 
   def isWaitingAt(town: Town): Boolean = {
     (isWaiting() || isLaunched()) && currentTown() == town && town.accepts(vehicle)
@@ -244,5 +264,31 @@ class Travel(val vehicle: Vehicle, private val routes: List[Route]) {
         }
       }
     }
+  }
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.currentRouteDistanceDone.toDouble)
+    stream.writeObject(this.remainingRoutes.toList)
+    stream.writeObject(this.state())
+    stream.writeObject(this.passengerNumber.toInt)
+    stream.writeObject(this.contents.map{ case(g,v) => (g,v.toDouble) })
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.currentRouteDistanceDone = DoubleProperty(stream.readObject().asInstanceOf[Double])
+    this.remainingRoutes = ObservableBuffer[Route](stream.readObject().asInstanceOf[List[Route]])
+    this.state = ObjectProperty(stream.readObject().asInstanceOf[State.Val])
+    this.passengerNumber = IntegerProperty(stream.readObject().asInstanceOf[Integer])
+
+    this.contents = InitHashMap[Good, DoubleProperty](_ => DoubleProperty(0))
+    val new_contents = stream.readObject().asInstanceOf[HashMap[Good,Double]]
+    new_contents.foreach{ case (g,v) => this.contents(g)() = v }
+
+    this.initBindings()
   }
 }

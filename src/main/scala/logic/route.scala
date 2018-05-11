@@ -5,7 +5,8 @@ import logic.town._
 import logic.vehicle._
 
 /** Generic route trait. */
-trait Route {
+@SerialVersionUID(0L)
+trait Route extends Serializable {
   val start: Town
   val end: Town
   val length: Double

@@ -9,14 +9,19 @@ import logic.game._
 import scalafx.collections._
 import scalafx.beans.property._
 
+import java.io._
+
 
 /** Complex travel instructions.
  *
  *  Complex travels are done through a list of simple instructions:
  *  go to a town or wait.
  */
-class Script(val company: Company, val vehicle: Vehicle) {
-  sealed trait TravelInstruction {
+@SerialVersionUID(0L)
+class Script(val company: Company, val vehicle: Vehicle)
+extends Serializable {
+  @SerialVersionUID(0L)
+  sealed trait TravelInstruction extends Serializable {
     def execute(onCompleted: () => Unit, onFailed: String => Unit): Unit
   }
 
@@ -42,12 +47,12 @@ class Script(val company: Company, val vehicle: Vehicle) {
   }
 
 
-  val instructions: ObservableBuffer[TravelInstruction] = ObservableBuffer()
-  val repeat: BooleanProperty = BooleanProperty(false)
-  val started: BooleanProperty = BooleanProperty(false)
+  @transient var instructions: ObservableBuffer[TravelInstruction] = ObservableBuffer()
+  @transient var repeat: BooleanProperty = BooleanProperty(false)
+  @transient var started: BooleanProperty = BooleanProperty(false)
   private var onTravel = false
 
-  val ip: IntegerProperty = IntegerProperty(0)
+  @transient var instrPointer: IntegerProperty = IntegerProperty(0)
 
   /** next travel step. */
   private def next(
@@ -55,16 +60,16 @@ class Script(val company: Company, val vehicle: Vehicle) {
     travelCompleted: () => Unit,
     onFailed: String => Unit): Unit = {
     // reset when reaching the last instruction, if `repeat` is set
-    if(ip() >= instructions.length && repeat()) ip() = 0
+    if(instrPointer() >= instructions.length && repeat()) instrPointer() = 0
 
-    if(ip() < instructions.length) {
+    if(instrPointer() < instructions.length) {
       // next instruction
-      instructions(ip()).execute(stepCompleted, onFailed)
+      instructions(instrPointer()).execute(stepCompleted, onFailed)
     } else {
       // travel completed
       started() = false
       onTravel = false
-      ip() = 0
+      instrPointer() = 0
       travelCompleted()
     }
   }
@@ -73,7 +78,7 @@ class Script(val company: Company, val vehicle: Vehicle) {
   private def step(): Unit = {
     if(started()) {
       next(
-        () => {ip() = ip() + 1; step()},
+        () => {instrPointer() = instrPointer() + 1; step()},
         () => (),
         msg => {started() = false; Game.printMessage(msg)})
     } else {
@@ -88,5 +93,25 @@ class Script(val company: Company, val vehicle: Vehicle) {
       onTravel = true
       step()
     }
+  }
+
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.instructions.toList)
+    stream.writeObject(this.repeat())
+    stream.writeObject(this.started())
+    stream.writeObject(this.instrPointer.toInt)
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.instructions = ObservableBuffer[TravelInstruction](stream.readObject().asInstanceOf[List[TravelInstruction]])
+    this.repeat = BooleanProperty(stream.readObject().asInstanceOf[Boolean])
+    this.started = BooleanProperty(stream.readObject().asInstanceOf[Boolean])
+    this.instrPointer = IntegerProperty(stream.readObject().asInstanceOf[Integer])
   }
 }

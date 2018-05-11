@@ -15,7 +15,8 @@ import scala.reflect.ClassTag
 
 /** A base class for all good types. Used to tidy up code
 */
-trait GoodType {
+@SerialVersionUID(0L)
+trait GoodType extends Serializable {
   def update(g: Good, owner: Room, dt : Double): Unit = ()
 }
 
@@ -136,7 +137,8 @@ object Good {
 * This represents a certain good such as Water, etc ...
 * @param properties The properties that you want your good to have, ie Liquid, Solid, Perishable etc...
 */
-class Good(val properties: List[GoodType]) {
+@SerialVersionUID(0L)
+class Good(val properties: List[GoodType]) extends Serializable {
 
   def basePrice: Double = 1
 

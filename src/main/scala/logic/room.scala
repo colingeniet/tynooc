@@ -18,7 +18,9 @@ import collection.mutable.HashSet
   * @param travel The travel in which this room is present.
   * @param vehicle The vehicle unit associated to the room.
  */
-class Room(val travel: Travel, val vehicle: VehicleUnit) {
+@SerialVersionUID(0L)
+class Room(val travel: Travel, val vehicle: VehicleUnit)
+extends Serializable {
   /* Passengers per destination. */
   val passengers: HashMap[Town, Int] = new HashMap[Town, Int] {
     override def default(t: Town): Int = {

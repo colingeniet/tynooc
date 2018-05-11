@@ -14,6 +14,7 @@ import collection.mutable.HashMap
 import collection.mutable.HashSet
 
 import scala.math.Ordering.Implicits._
+import java.io._
 
 
 
@@ -24,7 +25,8 @@ import scala.math.Ordering.Implicits._
  *
  * @constructor Creates an empty world with its height and its width.
  */
-class World {
+@SerialVersionUID(0L)
+class World extends Serializable {
   /** The fuel price in the world. */
   var fuelPrice = 0.05
 
@@ -42,7 +44,7 @@ class World {
     *
     *  This is used to signal the new travel to the gui.
     */
-  var onAddTravel: Travel => Unit = {_ => ()}
+  @transient var onAddTravel: Travel => Unit = {_ => ()}
 
   /** The towns in the world. */
   def towns: HashSet[Town] = _towns
@@ -201,5 +203,13 @@ class World {
         closed.toList.filter(_.accepts(vehicle))
       }
     }
+  }
+
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    onAddTravel = {_ => ()}
   }
 }

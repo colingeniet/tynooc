@@ -7,17 +7,66 @@ import scalafx.scene.layout._
 import scalafx.event._
 import scalafx.geometry._
 import scalafx.stage._
+import scalafx.scene.control.Alert
+import scalafx.scene.control.Alert._
+import scalafx.scene.paint.Color
 import javafx.stage.FileChooser.ExtensionFilter
 
 import gui.MainStage
-
+import gui.scenes.color._
+import parser._
 import logic.game._
+
+import java.io._
 
 /** Game main menu.
  */
-class MainMenu(sceneModifier: MainStage.States.Val => Unit, window: Window)
+class MainMenu(
+  window: Window,
+  sceneModifier: MainStage.States.Val => Unit,
+  gameInit: () => Unit)
 extends MainStage.Scene(sceneModifier) {
-  private var gameBtn = sceneSwitchButton("Play", MainStage.States.Game)
+  private var gameBtn = new Button("Play") {
+    onAction = (event: ActionEvent) => {
+      try {
+        // game initialization
+        gameInit()
+        Colors.init(Game.mainPlayer.get.company)
+        Colors(Game.bigBrother) = Color.Black
+        sceneModifier(MainStage.States.Game)
+      } catch {
+        case e: java.io.FileNotFoundException => {
+          new Alert(AlertType.Error) {
+            title = "file error"
+            headerText = "Map file not found"
+            contentText = e.getMessage()
+            initModality(Modality.None)
+          }.show()
+        }
+        case e: BadFileFormatException => {
+          new Alert(AlertType.Error) {
+            title = "file error"
+            headerText = "Invalid map file"
+            contentText = e.getMessage()
+            initModality(Modality.None)
+          }.show()
+        }
+      }
+    }
+  }
+
+  private var loadBtn = new Button("Load last save") {
+    onAction = (event: ActionEvent) => {
+      // game initialization
+      val stream = new ObjectInputStream(new FileInputStream("save"))
+      Game.load_game(stream)
+      stream.close()
+      Colors.init(Game.mainPlayer.get.company)
+      Colors(Game.bigBrother) = Color.Black
+      sceneModifier(MainStage.States.Game)
+    }
+  }
+
   private var mapBtn = new Button("Select Map") {
     onAction = (event: ActionEvent) => {
       val fileChooser = new FileChooser {
@@ -34,7 +83,11 @@ extends MainStage.Scene(sceneModifier) {
       }
     }
   }
-  private var quitBtn = sceneSwitchButton("Quit", MainStage.States.Quit)
+  private var quitBtn = new Button("Quit") {
+    onAction = (event: ActionEvent) => {
+      sceneModifier(MainStage.States.Quit)
+    }
+  }
 
   private var title = new Label("Welcome to Tynooc") {
     padding = Insets(10.0)
@@ -50,16 +103,8 @@ extends MainStage.Scene(sceneModifier) {
     children = List(
       title,
       gameBtn,
+      loadBtn,
       mapBtn,
       quitBtn)
-  }
-
-  /** Creates a button to switch to another scene. */
-  private def sceneSwitchButton(text: String, newScene: MainStage.States.Val): Button = {
-    var button: Button = new Button(text)
-    button.onAction = (event: ActionEvent) => {
-      sceneModifier(newScene)
-    }
-    button
   }
 }

@@ -33,8 +33,8 @@ trait VehicleUnitModel extends BuyableModel {
 }
 
 trait VehicleUnit extends Upgradable[VehicleUnitModel] {
-  val town: ObjectProperty[Town]
-  val isUsed: BooleanBinding
+  var town: ObjectProperty[Town]
+  var isUsed: BooleanBinding
 
   def capacity: Int = model.capacity
   def comfort: Double = model.comfort
@@ -46,8 +46,9 @@ abstract class VehicleUnitFromModel[Model <: VehicleUnitModel](
   _town: Town,
   _owner: Company)
 extends FromBuyableModel[Model](_model) with VehicleUnit {
-  val town: ObjectProperty[Town] = ObjectProperty(_town)
-  val owner: ObjectProperty[Company] = ObjectProperty(_owner)
+  @transient var town: ObjectProperty[Town] = ObjectProperty(_town)
+  @transient var owner: ObjectProperty[Company]  = ObjectProperty(_owner)
+  @transient var isUsed: BooleanBinding
 
   override def upgradeTo(newModel: Model): Unit = {
     assert(!this.isUsed())
@@ -66,17 +67,19 @@ trait VehicleModel extends VehicleUnitModel {
 }
 
 trait Vehicle extends VehicleUnit {
-  val name: StringProperty
-  val travel: ObjectProperty[Option[Travel]] = ObjectProperty(None)
+  var name: StringProperty
+  var travel: ObjectProperty[Option[Travel]]
 
-  val onTravel: BooleanBinding =
-    Bindings.createBooleanBinding(
-      () => travel().isDefined,
-      travel)
+  var onTravel: BooleanBinding
+  var isAvailable: BooleanBinding
 
-  val isUsed: BooleanBinding = onTravel
-
-  val isAvailable: BooleanBinding = jfxBooleanBinding2sfx(!onTravel)
+  protected def initBindings(): Unit = {
+    this.onTravel = Bindings.createBooleanBinding(
+      () => this.travel().isDefined,
+      this.travel)
+    this.isUsed = this.onTravel
+    this.isAvailable = jfxBooleanBinding2sfx(!this.onTravel)
+  }
 
   def speed: Double
   def speed(route: Route): Double
@@ -106,8 +109,6 @@ abstract class VehicleFromModel[Model <: VehicleModel](
   _town: Town,
   _owner: Company)
 extends VehicleUnitFromModel(_model, _town, _owner) with Vehicle {
-  val name: StringProperty
-
   def speed: Double = model.speed
   def speed(route: Route): Double = speed
 

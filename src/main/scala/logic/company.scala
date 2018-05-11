@@ -15,6 +15,7 @@ import logic.model._
 import logic.facility._
 
 import collection.mutable.HashMap
+import java.io._
 
 /** An object to manage prices. */
 object PriceSimulation {
@@ -34,20 +35,22 @@ object PriceSimulation {
   * @param name The name of the company.
   * @param fabricTown The town in which the company rolling stock is produced.
   */
-class Company(var _name: String, val fabricTown: Town) {
-  val name: StringProperty = StringProperty(_name)
+@SerialVersionUID(0L)
+class Company(var _name: String, val fabricTown: Town)
+extends Serializable {
+  @transient var name: StringProperty = StringProperty(_name)
 
   /** The company trains. */
-  val vehicles: ObservableBuffer[Vehicle] = ObservableBuffer()
+  @transient var vehicles: ObservableBuffer[Vehicle] = ObservableBuffer()
   /** The company carriages. */
-  val vehicleUnits: ObservableBuffer[VehicleUnit] = ObservableBuffer()
+  @transient var vehicleUnits: ObservableBuffer[VehicleUnit] = ObservableBuffer()
   /** The company money. */
-  val money: DoubleProperty = DoubleProperty(0)
+  @transient var money: DoubleProperty = DoubleProperty(0)
 
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
-  val travelScripts: ObservableBuffer[Script] = ObservableBuffer()
+  @transient var travelScripts: ObservableBuffer[Script] = ObservableBuffer()
 
   /** Credits the player with <code>amount</code> euros.
     *
@@ -185,5 +188,27 @@ class Company(var _name: String, val fabricTown: Town) {
   /** Returns true if this company owns <code>vehicle</code>. */
   def owns[Model <: BuyableModel](thing: Upgradable[Model]): Boolean = {
     thing.owner() == this
+  }
+
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.name())
+    stream.writeObject(this.vehicles.toList)
+    stream.writeObject(this.vehicleUnits.toList)
+    stream.writeObject(this.money.toDouble)
+    stream.writeObject(this.travelScripts.toList)
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.name = StringProperty(stream.readObject().asInstanceOf[String])
+    this.vehicles = ObservableBuffer[Vehicle](stream.readObject().asInstanceOf[List[Vehicle]])
+    this.vehicleUnits = ObservableBuffer[VehicleUnit](stream.readObject().asInstanceOf[List[VehicleUnit]])
+    this.money = DoubleProperty(stream.readObject().asInstanceOf[Double])
+    this.travelScripts = ObservableBuffer[Script](stream.readObject().asInstanceOf[List[Script]])
   }
 }
