@@ -60,6 +60,7 @@ object Game {
 
       if (time() >= nextDay) {
         world.update_towns()
+        players.foreach(_.company.historyStep())
         nextDay += economyTick
       }
 

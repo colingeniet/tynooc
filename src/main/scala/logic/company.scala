@@ -2,6 +2,7 @@ package logic.company
 
 import scalafx.beans.property._
 import scalafx.collections._
+import scalafx.scene.chart.XYChart
 
 import scala.collection.mutable.HashSet
 
@@ -46,6 +47,18 @@ extends Serializable {
   @transient var vehicleUnits: ObservableBuffer[VehicleUnit] = ObservableBuffer()
   /** The company money. */
   @transient var money: DoubleProperty = DoubleProperty(0)
+
+  val moneyHistoryLength: Integer = 50
+  @transient var moneyHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
+    new ObservableBuffer()
+
+  /** Save current company statistics in history. */
+  def historyStep(): Unit = {
+    moneyHistory.append(XYChart.Data[Number, Number](
+      new java.lang.Double(Game.time()),
+      new java.lang.Double(money())))
+    if(moneyHistory.length > moneyHistoryLength) moneyHistory.remove(0)
+  }
 
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
@@ -210,5 +223,8 @@ extends Serializable {
     this.vehicleUnits = ObservableBuffer[VehicleUnit](stream.readObject().asInstanceOf[List[VehicleUnit]])
     this.money = DoubleProperty(stream.readObject().asInstanceOf[Double])
     this.travelScripts = ObservableBuffer[Script](stream.readObject().asInstanceOf[List[Script]])
+
+    // not saved fields
+    this.moneyHistory = new ObservableBuffer()
   }
 }

@@ -3,7 +3,7 @@ package gui
 import collection.mutable.HashMap
 
 import scalafx.Includes._
-import scalafx.stage.Modality
+import scalafx.stage._
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.application.Platform
@@ -70,9 +70,15 @@ extends JFXApp.PrimaryStage {
             }
           }
         }
+
+        val statsWindow = new StatsWindow(Game.players.map(_.company))
+        statsWindow.show()
+        statsWindow.toBack()
+
         // kill background thread and save when leaving
         onNextChangeCallback = () => {
           runMainLoop = false
+          statsWindow.close()
           val stream = new ObjectOutputStream(new FileOutputStream("autosave"))
           Game.save_game(stream)
           stream.close()
