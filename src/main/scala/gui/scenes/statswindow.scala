@@ -10,4 +10,5 @@ class StatsWindow(companies: List[Company]) extends Stage {
   scene = new Scene {
     content = new CompaniesStats(companies)
   }
+  title = "Tynooc - Companies Stats"
 }
