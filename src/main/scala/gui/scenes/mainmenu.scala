@@ -81,10 +81,10 @@ extends MainStage.Scene(sceneModifier) {
         try {
           val stream = new ObjectInputStream(new FileInputStream(file))
           Game.load_game(stream)
+          stream.close()
           Colors.init(Game.mainPlayer.get.company)
           Colors(Game.bigBrother) = Color.Black
           sceneModifier(MainStage.States.Game)
-          stream.close()
         } catch {
           case e: java.io.IOException => {
             new Alert(AlertType.Error) {

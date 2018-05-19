@@ -48,8 +48,10 @@ extends Serializable {
   /** The company money. */
   @transient var money: DoubleProperty = DoubleProperty(0)
 
-  val moneyHistoryLength: Integer = 50
+  val historyLength: Integer = 50
   @transient var moneyHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
+    new ObservableBuffer()
+  @transient var vehiclesHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
     new ObservableBuffer()
 
   /** Save current company statistics in history. */
@@ -57,7 +59,12 @@ extends Serializable {
     moneyHistory.append(XYChart.Data[Number, Number](
       new java.lang.Double(Game.time()),
       new java.lang.Double(money())))
-    if(moneyHistory.length > moneyHistoryLength) moneyHistory.remove(0)
+    if(moneyHistory.length > historyLength) moneyHistory.remove(0)
+
+    vehiclesHistory.append(XYChart.Data[Number, Number](
+      new java.lang.Double(Game.time()),
+      new java.lang.Integer(vehicleUnits.length)))
+    if(vehiclesHistory.length > historyLength) vehiclesHistory.remove(0)
   }
 
   /** Current travels for this company. */
@@ -226,5 +233,6 @@ extends Serializable {
 
     // not saved fields
     this.moneyHistory = new ObservableBuffer()
+    this.vehiclesHistory = new ObservableBuffer()
   }
 }

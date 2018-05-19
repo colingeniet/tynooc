@@ -9,9 +9,10 @@ import scalafx.collections._
 import logic.company._
 import utils._
 
+
 class CompaniesStats(companies: List[Company])
-extends VBox(3) {
-  private val statsData: List[javafx.scene.chart.XYChart.Series[Number, Number]] =
+extends HBox(10) {
+  private val moneyData: List[javafx.scene.chart.XYChart.Series[Number, Number]] =
     companies.map(c => {
       val s = new XYChart.Series[Number, Number]()
       MapBind(c.moneyHistory, s.data(), {
@@ -21,19 +22,43 @@ extends VBox(3) {
       s.delegate
     })
 
-  private val xAxis = new NumberAxis {
+  private val vehiclesData: List[javafx.scene.chart.XYChart.Series[Number, Number]] =
+    companies.map(c => {
+      val s = new XYChart.Series[Number, Number]()
+      MapBind(c.vehiclesHistory, s.data(), {
+        x: javafx.scene.chart.XYChart.Data[Number,Number] => x
+      })
+      s.name <== c.name
+      s.delegate
+    })
+
+  private val moneyXAxis = new NumberAxis {
     label = "time"
+    forceZeroInRange = false
+    animated = false
   }
-  private val yAxis = new NumberAxis {
+  private val moneyYAxis = new NumberAxis {
     label = "money"
   }
-  xAxis.forceZeroInRange = false
-  xAxis.animated = false
 
-  private val stats: XYChart[Number, Number] = new LineChart(
-    xAxis,
-    yAxis,
-    ObservableBuffer(statsData))
+  private val vehiclesXAxis = new NumberAxis {
+    label = "time"
+    forceZeroInRange = false
+    animated = false
+  }
+  private val vehiclesYAxis = new NumberAxis {
+    label = "vehicles"
+  }
 
-  children = stats
+  private val moneyChart: XYChart[Number, Number] = new LineChart(
+    moneyXAxis,
+    moneyYAxis,
+    ObservableBuffer(moneyData))
+
+  private val vehiclesChart: XYChart[Number, Number] = new LineChart(
+    vehiclesXAxis,
+    vehiclesYAxis,
+    ObservableBuffer(vehiclesData))
+
+  children = List(moneyChart, vehiclesChart)
 }
