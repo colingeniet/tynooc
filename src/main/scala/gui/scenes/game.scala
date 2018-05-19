@@ -79,7 +79,7 @@ extends MainStage.Scene(sceneModifier) {
   }
 
   private def displayTravel(travel: Travel): Unit = {
-    pane.right = new TravelInfo(travel)
+    pane.right = new TravelInfo(travel.vehicle)
   }
 
   private def displayVehicle(vehicle: VehicleUnit): Unit = {
