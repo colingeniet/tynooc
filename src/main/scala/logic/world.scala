@@ -30,10 +30,10 @@ class World extends Serializable {
   /** The fuel price in the world. */
   var fuelPrice = 0.05
 
-  private var _towns: HashSet[Town] = HashSet()
+  var towns: HashSet[Town] = HashSet()
 
-  private var _travels: HashSet[Travel] = HashSet()
-  private var _companies: HashSet[Company] = HashSet()
+  var travels: HashSet[Travel] = HashSet()
+  var companies: HashSet[Company] = HashSet()
 
   var minX: Double = 0
   var minY: Double = 0
@@ -46,15 +46,6 @@ class World extends Serializable {
     */
   @transient var onAddTravel: Travel => Unit = {_ => ()}
 
-  /** The towns in the world. */
-  def towns: HashSet[Town] = _towns
-
-  /** The current travels in the world. */
-  def travels: HashSet[Travel] = _travels
-
-  /** The train companies in the world. */
-  def companies: HashSet[Company] = _companies
-
   /** Total world population. */
   var population: Int = 0
 
@@ -63,7 +54,7 @@ class World extends Serializable {
     * @param town The town to add.
     */
   def addTown(town: Town): Unit = {
-    _towns.add(town)
+    towns.add(town)
     population += town.population()
     minX = minX min town.x
     maxX = maxX max town.x
@@ -87,7 +78,7 @@ class World extends Serializable {
     * @param company The new company.
     */
   def addCompany(company: Company): Unit = {
-    _companies.add(company)
+    companies.add(company)
   }
 
   /** Adds a new travel in the world.
@@ -95,7 +86,7 @@ class World extends Serializable {
     * @param travel The travel to add.
     */
   def addTravel(travel:Travel): Unit = {
-    _travels.add(travel)
+    travels.add(travel)
     // callback
     onAddTravel(travel)
   }
@@ -114,7 +105,7 @@ class World extends Serializable {
    */
   def update(dt: Double): Unit = {
     travels.foreach(_.update(dt))
-    _travels = travels.filter(!_.isDone())
+    travels = travels.filter(!_.isDone())
     towns.foreach(_.update(dt))
   }
 

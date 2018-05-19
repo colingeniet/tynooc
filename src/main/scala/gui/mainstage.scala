@@ -9,6 +9,7 @@ import scalafx.scene.Scene
 import scalafx.application.Platform
 import scalafx.scene.media._
 import scalafx.scene.image.Image
+import javafx.event._
 
 import gui.scenes._
 import logic.world._
@@ -71,14 +72,17 @@ extends JFXApp.PrimaryStage {
           }
         }
 
-        val statsWindow = new StatsWindow(Game.players.map(_.company))
-        statsWindow.show()
-        statsWindow.toBack()
+        val companyStats = new CompanyStatsWindow(Game.players.map(_.company))
+        val townStats = new TownStatsWindow(Game.world.towns.toList)
+        companyStats.show()
+        townStats.show()
+        this.toFront()
 
         // kill background thread and save when leaving
         onNextChangeCallback = () => {
           runMainLoop = false
-          statsWindow.close()
+          companyStats.close()
+          townStats.close()
           val stream = new ObjectOutputStream(new FileOutputStream("autosave"))
           Game.save_game(stream)
           stream.close()
@@ -89,7 +93,12 @@ extends JFXApp.PrimaryStage {
     }
   }
 
-  // run callback on exit
+  onCloseRequest = new EventHandler[javafx.stage.WindowEvent]() {
+      def handle(e: javafx.stage.WindowEvent): Unit = {
+        onExit()
+      }
+    }
+
   def onExit(): Unit = {
     onNextChangeCallback()
   }

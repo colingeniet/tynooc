@@ -10,7 +10,7 @@ import logic.company._
 import utils._
 
 
-class CompaniesStats(companies: List[Company])
+class CompanyStats(companies: List[Company])
 extends HBox(10) {
   private val moneyData: List[javafx.scene.chart.XYChart.Series[Number, Number]] =
     companies.map(c => {
