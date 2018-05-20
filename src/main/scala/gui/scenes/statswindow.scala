@@ -27,7 +27,11 @@ class CompanyStatsWindow(companies: List[Company]) extends Stage {
 
 class TownStatsWindow(towns: List[Town]) extends Stage {
   scene = new Scene {
-    root = new TownStats(towns)
+    root = new ScrollPane {
+      content = new TownStats(towns)
+      fitToHeight = true
+      fitToWidth = true
+    }
   }
   title = "Tynooc - Towns Stats"
 
@@ -35,7 +39,7 @@ class TownStatsWindow(towns: List[Town]) extends Stage {
   onCloseRequest = new EventHandler[javafx.stage.WindowEvent]() {
       def handle(event: javafx.stage.WindowEvent): Unit = {
         event.consume()
-        delegate.setIconified(true) // don't ask me why this is not in scalafx
+        delegate.setIconified(true)
       }
     }
 }
