@@ -121,7 +121,7 @@ object MainStage {
    *  @param sceneModifier a callback that can be used to switch to
    *    a different scene.
    */
-  abstract class Scene(sceneModifier: States.Val=>Unit)
+  abstract class Scene(sceneModifier: States.Val => Unit)
   extends scalafx.scene.Scene
 }
 

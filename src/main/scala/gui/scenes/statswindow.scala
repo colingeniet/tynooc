@@ -11,16 +11,14 @@ import logic.town._
 
 class CompanyStatsWindow(companies: List[Company]) extends Stage {
   scene = new Scene {
-    content = new CompanyStats(companies)
+    root = new CompanyStats(companies)
   }
   title = "Tynooc - Companies Stats"
 }
 
 class TownStatsWindow(towns: List[Town]) extends Stage {
   scene = new Scene {
-    content = new ScrollPane {
-      content = new TownStats(towns)
-    }
+    root = new TownStats(towns)
   }
   title = "Tynooc - Towns Stats"
 }
