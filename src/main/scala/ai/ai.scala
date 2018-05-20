@@ -6,6 +6,10 @@ import logic.world._
 import scala.util.Random
 import player._
 
+import logic.travel._
+import logic.town._
+import logic.route._
+
 /** A trait representing an AI. */
 trait AI {
   val company: Company
@@ -140,6 +144,118 @@ extends Player(company) with AI {
           company.launchTravel(ship, direction)
         }
       }
+    }
+  }
+}
+
+
+
+class JurajAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
+
+  type Data = (logic.vehicle.Vehicle, List[logic.town.Town])
+
+  val N = 7 // Size of a path
+  val M = 50 // Number of path generated
+  val K = 15 // We intertwin optimal path with these random path
+  val Q = 4 // The number of cities that will be taken from the random_path
+
+  def comparison_function(a : (Data, Integer), b : (Data, Integer)) = {
+    a._2 > b._2
+  }
+
+  /**
+  * This function generates a random list of accessibles cities as opposed to the other one.
+  * The other one generates a list of connected cities, thus making the number of cities traversed exactly n.
+  **/
+  def gen_path_1(world: World, n: Integer, v:Vehicle) : List[Town]= {
+    var p: List[Town] = List()
+    val w = world.townsAccessibleFrom(v.town(), v).toArray
+
+    if(w.length <= 1)
+      return List()
+
+    else {
+      var prec = v.town()
+
+      for(i <- 1 to n) {
+        var c = w(Random.nextInt(w.length))
+        while(prec == c) {
+          c = w(Random.nextInt(w.length))
+        }
+        p = c::p
+      }
+      return p.reverse
+    }
+  }
+
+  def routes_from_towns(path : Data, world: World) : List[Route] = {
+
+    return path._2.tail.foldLeft((path._2.head, List() : List[Route])){case ((f: Town, l: List[Route]), t: Town) =>
+      world.findPath(f, t, path._1) match {
+        case None => throw new IllegalArgumentException("Erreur de programmation, deux villes non reliées")
+        case Some (e : List[Route]) => (t, e:::l)
+      }
+    }._2
+
+  }
+
+  def estimated_cost_1(path:  Data) : Integer = {
+    return 0
+  }
+
+  def fuse(opt : List[(Vehicle, List[Town])], rnd : List[(Vehicle, List[Town])]) :  List[(Vehicle, List[Town])] = {
+
+    opt.zip(rnd).map { case (p1 : Data, p2 : Data) =>
+      val inds = Random.shuffle((1 to p1._2.length)).takeRight(Q)
+      var i = -1
+
+      (p1._1, p1._2.zip(p2._2).map{ case (a : Town, b : Town) =>
+        i = i + 1
+        if(inds.contains(i)) //This could be a bit optimized if we decide to take a huge Q
+          b
+        else
+          a
+      })
+    }
+
+  }
+
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      //buy_vehicles()
+
+      val vehicles = company.vehicles.toList.filter {!_.isUsed()}
+
+      var path_list : List[(Vehicle, List[Town])] = List()
+
+      for(i <- 1 to M) {
+        val v = Random.shuffle(vehicles).head //Might prove to be inneficient, see if we can optimize
+        path_list = (v, gen_path_1(world, N, v))::path_list
+      }
+
+      var wp = path_list.map{t => (t, estimated_cost_1(t)) }
+      wp = wp.sortWith(comparison_function).reverse
+
+      wp = wp.takeRight(K)
+      var wp2 = wp.map{case (a : Data, b : Integer) => a}
+      wp2 = fuse(wp2, wp2.map{t : Data => (t._1, gen_path_1(world, N, t._1)) })
+
+      var wp3 = wp2.map{t => (t, estimated_cost_1(t))}
+      wp3 = wp3.sortWith(comparison_function)
+
+      val wp4 = wp3.map{case (a : Data, b : Integer) => a}
+      val path = wp4.head //The optimal one
+
+      val route = routes_from_towns(path, world)
+
+      world.addTravel(new Travel(path._1, route.reverse))
     }
   }
 }
