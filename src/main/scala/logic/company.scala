@@ -49,7 +49,7 @@ extends Serializable {
   /** The company money. */
   @transient var money: DoubleProperty = DoubleProperty(0)
 
-  var missions: List[Mission] = List()
+  @transient var missions: ObservableBuffer[Mission] = ObservableBuffer()
 
   val historyLength: Integer = 50
   @transient var moneyHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
@@ -57,10 +57,10 @@ extends Serializable {
   @transient var vehiclesHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
     new ObservableBuffer()
 
-  def addMission(m : Mission) = { missions = m::missions }
+  def addMission(m: Mission) = missions += m
 
-  def completeMission(m : Mission) = {
-    missions = missions.filterNot(e => e ==m)
+  def completeMission(m: Mission) = {
+    missions -= m
     this.credit(m.reward)
   }
 
@@ -228,6 +228,7 @@ extends Serializable {
     stream.writeObject(this.vehicles.toList)
     stream.writeObject(this.vehicleUnits.toList)
     stream.writeObject(this.money.toDouble)
+    stream.writeObject(this.missions.toList)
     stream.writeObject(this.travelScripts.toList)
   }
 
@@ -239,6 +240,7 @@ extends Serializable {
     this.vehicles = ObservableBuffer[Vehicle](stream.readObject().asInstanceOf[List[Vehicle]])
     this.vehicleUnits = ObservableBuffer[VehicleUnit](stream.readObject().asInstanceOf[List[VehicleUnit]])
     this.money = DoubleProperty(stream.readObject().asInstanceOf[Double])
+    this.missions = ObservableBuffer[Mission](stream.readObject().asInstanceOf[List[Mission]])
     this.travelScripts = ObservableBuffer[Script](stream.readObject().asInstanceOf[List[Script]])
 
     // not saved fields
