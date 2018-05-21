@@ -18,11 +18,9 @@ Multiple types of missions ?
 
 4- Redistribution
     Transport n Cargos from X to X1,...,Xn
-
-
 */
 
-class Mission(
+abstract class Mission(
   val reward: Double,
   val from: Town,
   val to: Town,

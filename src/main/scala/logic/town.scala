@@ -3,6 +3,7 @@ package logic.town
 import scalafx.beans.binding._
 import scalafx.beans.property._
 import scalafx.collections._
+import scala.util.Random
 
 import logic.route._
 import logic.game._
@@ -15,7 +16,7 @@ import logic.mission._
 import utils.InitHashMap
 
 import collection.mutable.HashMap
-import java.util.Random
+//import java.util.Random
 import java.io._
 
 
@@ -73,7 +74,6 @@ extends Serializable {
 
 
   @transient var facilities: ObservableBuffer[Facility] = ObservableBuffer()
-
 
   /** Returns a hashmap containing the needs of the population
   */

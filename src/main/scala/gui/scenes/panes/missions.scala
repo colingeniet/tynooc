@@ -10,7 +10,6 @@ import gui.scenes.panes.model._
 import gui.scenes.elements._
 import logic.mission._
 import logic.company._
-import logic.world._
 
 
 class MissionDetail(mission: Mission)

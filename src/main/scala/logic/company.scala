@@ -50,6 +50,7 @@ extends Serializable {
   @transient var money: DoubleProperty = DoubleProperty(0)
 
   @transient var missions: ObservableBuffer[Mission] = ObservableBuffer()
+  var waitingMissions: List[Mission] = List()
 
   val historyLength: Integer = 50
   @transient var moneyHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
@@ -59,6 +60,7 @@ extends Serializable {
 
   def addMission(m: Mission) = missions += m
 
+  def addWaitingMission(m : Mission) = {waitingMissions = m::waitingMissions}
   def completeMission(m: Mission) = {
     missions -= m
     this.credit(m.reward)
