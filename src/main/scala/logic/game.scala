@@ -20,6 +20,9 @@ object Game {
   var world: World = new World()
   var time: DoubleProperty = DoubleProperty(0)
   private var nextDay: Double = 0
+
+  var bigBrother: Player = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
+
   /** List of the players */
   var players: List[Player] = List()
   /** Main player of the game. */
@@ -30,8 +33,6 @@ object Game {
   val economyTick: Double = 3
   /** Path of the map file. */
   var mapPath: File = new File("map/map.xml")
-
-  var bigBrother: Player = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
 
   var printMessage: String => Unit = (_ => ())
 
@@ -81,9 +82,11 @@ object Game {
 
 
   /** Init game state. */
-  def init(): Unit = {
+  def init(playerList : List[Player]): Unit = {
     bigBrother = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
+    players =  bigBrother::playerList
     world = Parser.readWorldInformations(mapPath)
+    Game.players.foreach { p => Game.world.addCompany(p.company) }
     time() = 0
     nextDay = 0
     paused = false
