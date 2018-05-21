@@ -14,6 +14,7 @@ import logic.world._
 import logic.good._
 import logic.model._
 import logic.facility._
+import logic.mission._
 
 import collection.mutable.HashMap
 import java.io._
@@ -48,11 +49,20 @@ extends Serializable {
   /** The company money. */
   @transient var money: DoubleProperty = DoubleProperty(0)
 
+  var missions: List[Mission] = List()
+
   val historyLength: Integer = 50
   @transient var moneyHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
     new ObservableBuffer()
   @transient var vehiclesHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
     new ObservableBuffer()
+
+  def addMission(m : Mission) = { missions = m::missions }
+
+  def completeMission(m : Mission) = {
+    missions = missions.filterNot(e => e ==m)
+    this.credit(m.reward)
+  }
 
   /** Save current company statistics in history. */
   def historyStep(): Unit = {
