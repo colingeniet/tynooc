@@ -68,6 +68,13 @@ extends Serializable {
     }
   }
 
+  def rejectMission(m: Mission) = {
+    if(waitingMissions.contains(m)) {
+      waitingMissions -= m
+      Game.world.sendMission(m)
+    }
+  }
+
   def completeMission(m: Mission) = {
     missions -= m
     this.credit(m.reward)
