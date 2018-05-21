@@ -50,6 +50,7 @@ extends Serializable {
   @transient var money: DoubleProperty = DoubleProperty(0)
 
   var missions: List[Mission] = List()
+  var waitingMissions: List[Mission] = List()
 
   val historyLength: Integer = 50
   @transient var moneyHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
@@ -58,6 +59,8 @@ extends Serializable {
     new ObservableBuffer()
 
   def addMission(m : Mission) = { missions = m::missions }
+
+  def addWaitingMission(m : Mission) = {waitingMissions = m::waitingMissions}
 
   def completeMission(m : Mission) = {
     missions = missions.filterNot(e => e ==m)

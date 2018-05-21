@@ -19,8 +19,6 @@ import scala.math.Ordering.Implicits._
 import scala.util.Random
 import java.io._
 
-
-
 /** The game world representation.
  *
  *  The world is a graph, with vertices being towns, and edges being routes.
@@ -52,6 +50,8 @@ class World extends Serializable {
   /** Total world population. */
   var population: Int = 0
 
+  var todoMissions : List[Mission] = List()
+
   def generateMissionCompanyCandidate(m : Mission) : Company = {
 
     val p = m match {
@@ -77,6 +77,15 @@ class World extends Serializable {
     */
     /*
     */
+  }
+
+  def addMission(m: Mission) = {
+    todoMissions = m::todoMissions
+  }
+
+  //Should be called every X tick
+  def sendMissions() : Unit = {
+    todoMissions.foreach{ m => generateMissionCompanyCandidate(m).addWaitingMission(m) }
   }
 
   /** Adds a new town.
