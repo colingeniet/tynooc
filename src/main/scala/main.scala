@@ -15,7 +15,8 @@ object MainJFXApp extends JFXApp {
                         new BasicTrainAI(company("Train AI"), 1.7, 0.5),
                         new BasicTruckAI(company("Truck AI"), 2, 0.6),
                         new BasicPlaneAI(company("Plane AI"), 1.9, 0.6),
-                        new BasicShipAI( company("Ship AI"), 1.8, 0.7))
+                        new BasicShipAI(company("Ship AI"), 1.8, 0.7),
+                        new GeneticAI(company("Advanced AI"), 3, 0))
     Game.players.foreach { p => Game.world.addCompany(p.company) }
     Game.mainPlayer = Some(Game.players(0))
   }

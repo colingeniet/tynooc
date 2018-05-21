@@ -150,7 +150,7 @@ extends Player(company) with AI {
 
 
 
-class JurajAI(
+class GeneticAI(
   company: Company,
   val actionDelay: Double,
   var lastAction: Double)
@@ -172,7 +172,6 @@ extends Player(company) with AI {
   * The other one generates a list of connected cities, thus making the number of cities traversed exactly n.
   **/
   def gen_path_1(world: World, n: Integer, v:Vehicle) : List[Town]= {
-    var p: List[Town] = List()
     val w = world.townsAccessibleFrom(v.town(), v).toArray
 
     if(w.length <= 1)
@@ -180,6 +179,7 @@ extends Player(company) with AI {
 
     else {
       var prec = v.town()
+      var p: List[Town] = List(v.town())
 
       for(i <- 1 to n) {
         var c = w(Random.nextInt(w.length))
@@ -192,15 +192,13 @@ extends Player(company) with AI {
     }
   }
 
-  def routes_from_towns(path : Data, world: World) : List[Route] = {
-
+  def routes_from_towns(path : Data, world: World): List[Route] = {
     return path._2.tail.foldLeft((path._2.head, List() : List[Route])){case ((f: Town, l: List[Route]), t: Town) =>
       world.findPath(f, t, path._1) match {
-        case None => throw new IllegalArgumentException("Erreur de programmation, deux villes non reliées")
-        case Some (e : List[Route]) => (t, e:::l)
+        case None => throw new IllegalArgumentException("AI error: path not found")
+        case Some (e : List[Route]) => (t, e reverse_::: l)
       }
-    }._2
-
+    }._2.reverse
   }
 
   def estimated_cost_1(path:  Data) : Integer = {
@@ -208,7 +206,6 @@ extends Player(company) with AI {
   }
 
   def fuse(opt : List[(Vehicle, List[Town])], rnd : List[(Vehicle, List[Town])]) :  List[(Vehicle, List[Town])] = {
-
     opt.zip(rnd).map { case (p1 : Data, p2 : Data) =>
       val inds = Random.shuffle((1 to p1._2.length)).takeRight(Q)
       var i = -1
@@ -221,7 +218,11 @@ extends Player(company) with AI {
           a
       })
     }
+  }
 
+  def buy_vehicles(): Unit = {
+    if(company.money() > 5000 && company.vehicles.size < 20)
+      company.buy(Truck("basic", company))
   }
 
   def play(world: World, dt: Double): Unit = {
@@ -229,7 +230,7 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      //buy_vehicles()
+      buy_vehicles()
 
       val vehicles = company.vehicles.toList.filter {!_.isUsed()}
 
@@ -255,7 +256,7 @@ extends Player(company) with AI {
 
       val route = routes_from_towns(path, world)
 
-      world.addTravel(new Travel(path._1, route.reverse))
+      world.addTravel(new Travel(path._1, route))
     }
   }
 }
