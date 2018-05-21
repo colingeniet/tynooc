@@ -106,18 +106,18 @@ object Parser {
 
     if(c.factories != null) {
       c.factories.asScala.foreach { f =>
-        t.addFacility(new Factory(FactoryModel(f._type), t, Game.bigBrother))
+        t.addFacility(new Factory(FactoryModel(f._type), t, Game.bigBrother.company))
       }
     }
 
     if(c.airport != null) {
-      t.addFacility(new Airport(AirportModel("airport"), t, Game.bigBrother))
+      t.addFacility(new Airport(AirportModel("airport"), t, Game.bigBrother.company))
     }
     if(c.port != null) {
-      t.addFacility(new Port(PortModel("port"), t, Game.bigBrother))
+      t.addFacility(new Port(PortModel("port"), t, Game.bigBrother.company))
     }
     if(c.trainStation != null) {
-      t.addFacility(new TrainStation(TrainStationModel("train station"), t, Game.bigBrother))
+      t.addFacility(new TrainStation(TrainStationModel("train station"), t, Game.bigBrother.company))
     }
     t
   }

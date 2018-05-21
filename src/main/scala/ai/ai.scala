@@ -9,6 +9,8 @@ import player._
 import logic.travel._
 import logic.town._
 import logic.route._
+import logic.good._
+import logic.mission._
 
 /** A trait representing an AI. */
 trait AI {
@@ -148,7 +150,35 @@ extends Player(company) with AI {
   }
 }
 
+class BigBrotherAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
 
+  def specialTruckModel(good: Good, quantity: Double) : TruckModel = {
+    val h = Good.none
+    h(good) = quantity
+    return new TruckModel("Big Brother Truck", 50, List(), 180, 3, 0, 0,h)
+  }
+
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      company.waitingMissions.foreach{ m =>
+        m match {
+          case (m : HelpMission) =>
+            company.acceptMission(m)
+            val t = new Truck(specialTruckModel(m.good, m.quantity), m.from, company)
+            company.launchTravel(t, m.to)
+          case ( m : FretMission) =>
+        }
+      }
+    }
+  }
+}
 
 class GeneticAI(
   company: Company,
