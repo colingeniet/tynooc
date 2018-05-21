@@ -50,8 +50,6 @@ class World extends Serializable {
   /** Total world population. */
   var population: Int = 0
 
-  var todoMissions : List[Mission] = List()
-
   def generateMissionCompanyCandidate(m : Mission) : Company = {
 
     val p = m match {
@@ -79,13 +77,9 @@ class World extends Serializable {
     */
   }
 
-  def addMission(m: Mission) = {
-    todoMissions = m::todoMissions
-  }
-
   //Should be called every X tick
-  def sendMissions() : Unit = {
-    todoMissions.foreach{ m => generateMissionCompanyCandidate(m).addWaitingMission(m) }
+  def sendMission(m : Mission) : Unit = {
+    generateMissionCompanyCandidate(m).addWaitingMission(m)
   }
 
   /** Adds a new town.
