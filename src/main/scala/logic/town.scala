@@ -260,8 +260,8 @@ extends Serializable {
       q = toExport(to)(g) / 2
       val mission_reward = q * 3
       val mission = new HelpMission(mission_reward, this, to, Game.time() + 24, g, q)
-      // TODO Game.world.addMission(mission)
-      //toExport(to)(g) /= 2
+      Game.world.sendMission(mission)
+      toExport(to)(g) /= 2
     }
   }
 

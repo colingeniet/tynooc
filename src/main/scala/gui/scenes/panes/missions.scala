@@ -33,12 +33,23 @@ extends VBox(3) {
 }
 
 
-class NewMissionDetail(mission: Mission, accept: Mission => Unit)
+class NewMissionDetail(
+  mission: Mission,
+  accept: Mission => Unit,
+  decline: Mission => Unit
+)
 extends VBox(3) {
   children = List(
     new MissionDetail(mission),
-    new Button("accept") {
-      onAction = (event: ActionEvent) => accept(mission)
+    new HBox(3) {
+      children = List(
+        new Button("accept") {
+          onAction = (event: ActionEvent) => accept(mission)
+        },
+        new Button("decline") {
+          onAction = (event: ActionEvent) => decline(mission)
+        }
+      )
     }
   )
 }
@@ -56,6 +67,12 @@ extends VBox(3) {
 
   /** Displays a specific engine. */
   private def detailMission(mission: Mission): Unit = {
-    children = List(list, sep, new NewMissionDetail(mission, company.acceptMission(_)))
+    children = List(
+      list,
+      sep,
+      new NewMissionDetail(
+        mission,
+        company.acceptMission(_),
+        company.rejectMission(_)))
   }
 }

@@ -58,24 +58,24 @@ extends Serializable {
   @transient var vehiclesHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
     new ObservableBuffer()
 
-  def addMission(m: Mission) = missions += m
-  def addWaitingMission(m : Mission) = waitingMissions += m
+  def addMission(m: Mission): Unit = missions += m
+  def addWaitingMission(m : Mission): Unit = waitingMissions += m
 
-  def acceptMission(m: Mission) = {
+  def acceptMission(m: Mission): Unit = {
     if(waitingMissions.contains(m)) {
       waitingMissions -= m
       addMission(m)
     }
   }
 
-  def rejectMission(m: Mission) = {
+  def rejectMission(m: Mission): Unit = {
     if(waitingMissions.contains(m)) {
       waitingMissions -= m
       Game.world.sendMission(m)
     }
   }
 
-  def completeMission(m: Mission) = {
+  def completeMission(m: Mission): Unit = {
     missions -= m
     this.credit(m.reward)
   }

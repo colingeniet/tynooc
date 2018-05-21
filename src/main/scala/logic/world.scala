@@ -67,7 +67,6 @@ class World extends Serializable {
      Game.bigBrother
   }
 
-  //Should be called every X tick
   def sendMission(m : Mission) : Unit = {
     generateMissionCompanyCandidate(m).company.addWaitingMission(m)
   }
