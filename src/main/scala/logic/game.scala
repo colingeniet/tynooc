@@ -31,7 +31,7 @@ object Game {
   /** Path of the map file. */
   var mapPath: File = new File("map/map.xml")
 
-  var bigBrother: Company = new Company("Big Brother", null)
+  var bigBrother: Player = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
 
   var printMessage: String => Unit = (_ => ())
 
@@ -82,7 +82,7 @@ object Game {
 
   /** Init game state. */
   def init(): Unit = {
-    bigBrother = new Company("Big Brother", null)
+    bigBrother = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
     world = Parser.readWorldInformations(mapPath)
     time() = 0
     nextDay = 0
@@ -106,7 +106,7 @@ object Game {
     val nextDay: Double,
     val players: List[Player],
     val mainPlayer: Option[Player],
-    val bigBrother: Company,
+    val bigBrother: Player,
     val actionQueue: PriorityQueue[(Double, () => Unit)])
   extends Serializable
 

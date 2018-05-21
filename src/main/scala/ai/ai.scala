@@ -148,7 +148,42 @@ extends Player(company) with AI {
   }
 }
 
+class BigBrotherAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
 
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      if(company.money() > 3000 && company.engines.size < 20)
+        company.buy(Engine("basic", company))
+      if(company.money() > 2000 && company.carriages.size < 100)
+        company.buy(Carriage("basic", company))
+      val engines = company.enginesAvailable
+      if(!engines.isEmpty) {
+        val train = engines.head
+        val carriages = company.carriagesStoredAt(train.town()).filter { c =>
+          train.weight.toDouble + c.model.weight < train.model.power
+        }
+        if(!carriages.isEmpty)
+          company.addCarriageToTrain(train, carriages.head)
+      }
+      val trains = company.trainsAvailable.filter { !_.isEmpty() }
+      if(!trains.isEmpty) {
+        val train = Random.shuffle(trains).head
+        val possibleDirections =
+          world.townsAccessibleFrom(train.town(), train) diff List(train.town())
+
+        if(!possibleDirections.isEmpty)
+          company.launchTravel(train, Random.shuffle(possibleDirections).head)
+      }
+    }
+  }
+}
 
 class GeneticAI(
   company: Company,

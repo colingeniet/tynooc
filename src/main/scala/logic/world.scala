@@ -11,6 +11,7 @@ import logic.vehicle._
 import logic.good._
 import logic.mission._
 import logic.game._
+import player._
 
 import collection.mutable.HashMap
 import collection.mutable.HashSet
@@ -50,7 +51,7 @@ class World extends Serializable {
   /** Total world population. */
   var population: Int = 0
 
-  def generateMissionCompanyCandidate(m : Mission) : Company = {
+  def generateMissionCompanyCandidate(m : Mission) : Player = {
 
     val p = m match {
       case (_ : HelpMission) => 0.8
@@ -60,26 +61,15 @@ class World extends Serializable {
     val v = Random.nextInt()
     if (v >= p) {
       val h = Random.nextInt(Game.players.length)
-      return Game.players(h).company
+      return Game.players(h)
     }
     else
      Game.bigBrother
   }
 
-  def generateMission() = {
-
-    /* On regarde tout ce que les villes veulent etc... */
-    /* On génere les missions correspondantes qu'on concatene avec la liste des missions todo */
-    /*
-      On demande a un joueur pour une mission, s'il accepte on l'ajoute chez lui, s'il refuse on la met dans la liste des missions todo
-    */
-    /*
-    */
-  }
-
   //Should be called every X tick
   def sendMission(m : Mission) : Unit = {
-    generateMissionCompanyCandidate(m).addWaitingMission(m)
+    generateMissionCompanyCandidate(m).company.addWaitingMission(m)
   }
 
   /** Adds a new town.
