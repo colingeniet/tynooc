@@ -10,6 +10,7 @@ import scalafx.beans.property._
 import logic.world._
 import logic.town._
 import logic.good._
+import formatter._
 
 class TownStats(towns: List[Town]) extends TableView(ObservableBuffer(towns)) {
   val nameColumn = new TableColumn[Town, String]("Town") {
@@ -23,8 +24,9 @@ class TownStats(towns: List[Town]) extends TableView(ObservableBuffer(towns)) {
       cellValueFactory = {
         c: TableColumn.CellDataFeatures[Town, String] =>
           createStringBinding(
-            () => f"${c.value.goods(g).toDouble}%.2f",
-            c.value.goods(g))
+            () => f"${c.value.goods(g)()}%.0f (${MoneyFormatter.format(c.value.goods_prices(g)())})",
+            c.value.goods(g),
+            c.value.goods_prices(g))
       }
     }.delegate
   }
