@@ -1,8 +1,13 @@
 package logic.mission
 
+import scalafx.beans.property._
+
 import logic.town._
 import logic.good._
 import logic.vehicle._
+
+import java.io._
+
 /*
 
 Multiple types of missions ?
@@ -30,8 +35,22 @@ extends Serializable {
 
 
 /* The basic mission: you send X ressource to a city */
-class HelpMission(reward: Double, from: Town, to: Town, time: Double, val g: Good, val quantity: Double)
+class HelpMission(reward: Double, from: Town, to: Town, time: Double, val good: Good, val quantity: Double)
 extends Mission(reward, from, to, time) {
+  @transient var done: DoubleProperty = DoubleProperty(0)
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.done.toDouble)
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.done = DoubleProperty(stream.readObject().asInstanceOf[Double])
+  }
 }
 
 /* You wait until full load and then go to a city and then come back to your original city */

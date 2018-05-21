@@ -77,7 +77,11 @@ extends Serializable {
 
   def completeMission(m: Mission): Unit = {
     missions -= m
-    this.credit(m.reward)
+    if(Game.time() <= m.time) {
+      this.credit(m.reward)
+    } else {
+      this.credit(m.reward / 5)
+    }
   }
 
   /** Save current company statistics in history. */
