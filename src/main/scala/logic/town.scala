@@ -261,7 +261,6 @@ extends Serializable {
       val mission_reward = 300
       val mission = new HelpMission(mission_reward, this, to, Game.time() + 24, g, q)
       Game.world.sendMission(mission)
-      toExport(to)(g) -= q
     }
   }
 

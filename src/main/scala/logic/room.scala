@@ -132,6 +132,7 @@ extends Serializable {
 
     contents(destination)(g) += v
     filled += v/allowed(g)
+    vehicle.owner().advanceMissions(vehicle.town(), destination, g, v)
   }
 
   /** Unloads a certain quantity of a good for a given destination
