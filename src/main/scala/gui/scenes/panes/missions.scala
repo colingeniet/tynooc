@@ -33,20 +33,20 @@ extends VBox(3) {
 }
 
 
-class NewMissionDetail(mission: Mission)
+class NewMissionDetail(mission: Mission, accept: Mission => Unit)
 extends VBox(3) {
   children = List(
     new MissionDetail(mission),
     new Button("accept") {
-      onAction = (event: ActionEvent) => () // accept or whatever
+      onAction = (event: ActionEvent) => accept(mission)
     }
   )
 }
 
-class NewMissions(world: World)
+class NewMissions(company: Company)
 extends VBox(3) {
   private var list: Node = new SelectionList[Mission](
-    List(), // TODO world.missions,
+    company.waitingMissions,
     { m: Mission => (s"${m.from} -> ${m.to}") },
     detailMission(_))
 
@@ -56,6 +56,6 @@ extends VBox(3) {
 
   /** Displays a specific engine. */
   private def detailMission(mission: Mission): Unit = {
-    children = List(list, sep, new NewMissionDetail(mission))
+    children = List(list, sep, new NewMissionDetail(mission, company.acceptMission(_)))
   }
 }
