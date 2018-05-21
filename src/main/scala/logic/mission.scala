@@ -45,7 +45,7 @@ extends Mission(reward, from, to, time) {
     done() = done() + q
   }
 
-  var completed: BooleanBinding = jfxBooleanBinding2sfx(done >= quantity)
+  @transient var completed: BooleanBinding = jfxBooleanBinding2sfx(done >= quantity)
 
   @throws(classOf[IOException])
   private def writeObject(stream: ObjectOutputStream): Unit = {
