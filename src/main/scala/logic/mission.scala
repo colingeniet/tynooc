@@ -1,4 +1,8 @@
+package logic.mission
 
+import logic.town._
+import logic.good._
+import logic.vehicle._
 /*
 
 Multiple types of missions ?
@@ -18,28 +22,25 @@ Multiple types of missions ?
 
 */
 
-/*
-
-class Mission(val bonus: Double) extends Serializable {
+class Mission(val reward: Double, val from: Town, to: Town, time: Double) extends Serializable {
 }
 
 
-class GatheringMission(val bonus: Double) extends Mission {
+/* The basic mission: you send X ressource to a city */
+class HelpMission(reward: Double, from: Town, to: Town, time: Double, val g: Good, val quantity: Double) extends Mission(reward, from, to, time) {
 }
 
-class FretMission(val bonus: Double) extends Mission {
+/* You wait until full load and then go to a city and then come back to your original city */
+/**
+  The states gives you carriages with specific capacities
+  You stay and fill them, when they're all full you're ready to go.
+**/
+class FretMission(reward: Double, from: Town, to: Town, time: Double, val carriages : List[Carriage]) extends Mission(reward, from, to, time) {
 }
-
-class RedistributionMission(val bonus: Double) extends Mission {
-}
-
-class CommissionMission(val bonus: Double) extends Mission {
-}
-*/
 
 /**
 
-Rapport discussion Yoann:
+Rapport discussion Yoan:
 
 Les villes génèrent des missions. On voudrait que le joueur a 2 a 3 missions proposées max par jour.
 Refuser = no prob. Accepter et echouer = baisse repu.
@@ -48,6 +49,5 @@ Reputation influe sur proba d'être choisi pour une mission. 50% Big Brother, 50
 Quand génère t'on des missions ?
 
 On regarde au début les villes qu'on classe par population. On en en prend 1/7 dans X. Regarde ensuite toute
-
 
 **/
