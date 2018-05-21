@@ -80,10 +80,20 @@ object Game {
   }
 
 
-  /** Init game state. */
-  def init(): Unit = {
-    bigBrother = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
+  /* Init game state. */
+
+  def initWorld(): Unit = {
     world = Parser.readWorldInformations(mapPath)
+  }
+
+  def initPlayers(player_list: List[Player], main_player: Player) = {
+    bigBrother = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
+    players = bigBrother :: player_list
+    mainPlayer = Some(main_player)
+    Game.players.foreach { p => Game.world.addCompany(p.company) }
+  }
+
+  def initTime(): Unit = {
     time() = 0
     nextDay = 0
     paused = false
