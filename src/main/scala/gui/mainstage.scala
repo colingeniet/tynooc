@@ -148,7 +148,9 @@ object Resources {
     "advanced ship"     -> "src/main/resources/icons/ship.png",
 
     "cargo"             -> "src/main/resources/icons/ship.png",
-    "huge cargo"        -> "src/main/resources/icons/ship.png"
+    "huge cargo"        -> "src/main/resources/icons/ship.png",
+
+    "Big Brother Tank" -> "src/main/resources/icons/truck.png"
   )
 
   val icons = iconsPath.mapValues { p => new Image(new File(p).toURI().toString()) }

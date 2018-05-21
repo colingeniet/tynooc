@@ -197,6 +197,7 @@ class World extends Serializable {
   def townsAccessibleFrom(from: Town, vehicle: Vehicle): List[Town] = {
     vehicle match {
       case p: Plane => { towns.toList.filter(_.accepts(vehicle)) }
+      case _: Tank => towns.toList
       case _        => {
         val closed: HashSet[Town] = new HashSet()
         val open: HashSet[Town] = new HashSet()

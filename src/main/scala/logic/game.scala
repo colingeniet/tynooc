@@ -21,7 +21,7 @@ object Game {
   var time: DoubleProperty = DoubleProperty(0)
   private var nextDay: Double = 0
 
-  var bigBrother: Player = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
+  var bigBrother: Player = new BigBrotherAI(new Company("Big Brother", null), 10, 5)
 
   /** List of the players */
   var players: List[Player] = List()
@@ -88,7 +88,7 @@ object Game {
   }
 
   def initPlayers(player_list: List[Player], main_player: Player) = {
-    bigBrother = new BigBrotherAI(new Company("Big Brother", null), 0.1, 0)
+    bigBrother = new BigBrotherAI(new Company("Big Brother", world.towns.head), 10, 5)
     players = bigBrother :: player_list
     mainPlayer = Some(main_player)
     Game.players.foreach { p => Game.world.addCompany(p.company) }

@@ -30,6 +30,7 @@ extends Route {
   def accepts(vehicle: Vehicle): Boolean = {
     vehicle match {
       case _: Truck => true
+      case _: Tank => true
       case _ => false
     }
   }
@@ -43,6 +44,7 @@ extends Route {
   def accepts(vehicle: Vehicle): Boolean = {
     vehicle match {
       case _: Plane => true
+      case _: Tank => true
       case _ => false
     }
   }

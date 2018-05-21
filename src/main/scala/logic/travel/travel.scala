@@ -224,6 +224,8 @@ extends Serializable {
       state() match {
         case State.Launched => state() = State.Waiting
         case State.OnRoute => {
+          assert(currentRoute != null)
+          println("Yes")
           currentRouteDistanceDone() += dt * vehicle.speed(currentRoute().get)
           rooms.foreach(_.handleGoods(dt))
           if(currentRouteDistanceDone() >= currentRoute().get.length) {
@@ -236,6 +238,7 @@ extends Serializable {
           if(currentTown().accepts(vehicle)) {
             vehicle match {
               case v: Truck => ()
+              case v: Tank => ()
               case _         => {
                 val stations = currentTown().stationsFor(vehicle)
                 val s = stations.find(_.owner() == vehicle.owner()).getOrElse(stations.head)

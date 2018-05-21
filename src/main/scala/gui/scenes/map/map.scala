@@ -92,6 +92,7 @@ extends StackPane with ZoomPane {
           val c = r.end
           val b = travel.vehicle match {
             case p: Plane => new Point2D((a.x + c.x) / 2, (a.y + c.y) / 2)
+            case p: Tank => new Point2D((a.x + c.x) / 2, (a.y + c.y) / 2)
             case _ => routesMiddle(r)
           }
           x <== { scale * ((1-t)*(1-t)*a.x + 2*t*(1-t)*b.x+t*t*c.x) - image().getWidth()/2 }

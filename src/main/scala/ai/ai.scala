@@ -156,23 +156,23 @@ class BigBrotherAI(
   var lastAction: Double)
 extends Player(company) with AI {
 
-  def specialTruckModel(good: Good, quantity: Double) : TruckModel = {
-    val h = Good.none
-    h(good) = quantity
-    return new TruckModel("Big Brother Truck", 50, List(), 180, 3, 0, 0,h)
-  }
-
   def play(world: World, dt: Double): Unit = {
     lastAction += dt
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      company.waitingMissions.foreach{ m =>
+      val max = 10
+      var i = company.missions.length
+
+      while(!company.waitingMissions.isEmpty && i < 10) {
+        val m = company.waitingMissions.head
         m match {
           case (m : HelpMission) =>
             company.acceptMission(m)
-            val t = new Truck(specialTruckModel(m.good, m.quantity), m.from, company)
-            company.launchTravel(t, m.to)
+            i = i+1
+            val v = new Tank(TankModel.specialTankModel(m.good, m.quantity), m.from, company)
+            company.buy(v)
+            company.launchTravel(v, m.to)
           case ( m : FretMission) =>
         }
       }

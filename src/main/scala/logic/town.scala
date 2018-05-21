@@ -256,12 +256,12 @@ extends Serializable {
     val to_price: Double = to.goods_prices(g)()
     var q = goods(g)() * 0.2 * ((((to_price / from_price) - 1) max 0) min 2)
     toExport(to)(g) += q
-    if(to_price / (from_price + 1) > 10 && toExport(to)(g) > 1000) {
-      q = 100
-      val mission_reward = 300
+    if(to_price / (from_price + 1) > 5 && toExport(to)(g) > 20) {
+      q = toExport(to)(g) / 2
+      val mission_reward = q * 3
       val mission = new HelpMission(mission_reward, this, to, Game.time() + 24, g, q)
       Game.world.sendMission(mission)
-      toExport(to)(g) -= q
+      toExport(to)(g) /= 2
     }
   }
 
@@ -289,6 +289,7 @@ extends Serializable {
   def accepts(v: Vehicle): Boolean = {
     v match {
       case _: Truck => true
+      case _: Tank => true
       case _ => facilities.exists( _ match {
         case s: Station => s.accepts(v)
         case _ => false
