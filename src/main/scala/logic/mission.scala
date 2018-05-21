@@ -22,7 +22,12 @@ Multiple types of missions ?
 
 */
 
-class Mission(val reward: Double, val from: Town, to: Town, time: Double) extends Serializable {
+class Mission(
+  val reward: Double,
+  val from: Town,
+  val to: Town,
+  val time: Double)
+extends Serializable {
 }
 
 
