@@ -9,6 +9,8 @@ import player._
 import logic.travel._
 import logic.town._
 import logic.route._
+import logic.good._
+import logic.mission._
 
 /** A trait representing an AI. */
 trait AI {
@@ -154,32 +156,25 @@ class BigBrotherAI(
   var lastAction: Double)
 extends Player(company) with AI {
 
+  def specialTruckModel(good: Good, quantity: Double) : TruckModel = {
+    val h = Good.none
+    h(good) = quantity
+    return new TruckModel("Big Brother Truck", 50, List(), 180, 3, 0, 0,h)
+  }
+
   def play(world: World, dt: Double): Unit = {
     lastAction += dt
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 3000 && company.engines.size < 20)
-        company.buy(Engine("basic", company))
-      if(company.money() > 2000 && company.carriages.size < 100)
-        company.buy(Carriage("basic", company))
-      val engines = company.enginesAvailable
-      if(!engines.isEmpty) {
-        val train = engines.head
-        val carriages = company.carriagesStoredAt(train.town()).filter { c =>
-          train.weight.toDouble + c.model.weight < train.model.power
+      company.waitingMissions.foreach{ m =>
+        m match {
+          case (m : HelpMission) =>
+            company.acceptMission(m)
+            val t = new Truck(specialTruckModel(m.good, m.quantity), m.from, company)
+            company.launchTravel(t, m.to)
+          case ( m : FretMission) =>
         }
-        if(!carriages.isEmpty)
-          company.addCarriageToTrain(train, carriages.head)
-      }
-      val trains = company.trainsAvailable.filter { !_.isEmpty() }
-      if(!trains.isEmpty) {
-        val train = Random.shuffle(trains).head
-        val possibleDirections =
-          world.townsAccessibleFrom(train.town(), train) diff List(train.town())
-
-        if(!possibleDirections.isEmpty)
-          company.launchTravel(train, Random.shuffle(possibleDirections).head)
       }
     }
   }

@@ -30,7 +30,7 @@ extends Serializable {
 
 
 /* The basic mission: you send X ressource to a city */
-class HelpMission(reward: Double, from: Town, to: Town, time: Double, val g: Good, val quantity: Double)
+class HelpMission(reward: Double, from: Town, to: Town, time: Double, val good: Good, val quantity: Double)
 extends Mission(reward, from, to, time) {
 }
 
