@@ -50,10 +50,7 @@ class World extends Serializable {
   /** Total world population. */
   var population: Int = 0
 
-  var todoMissions : List[Mission] = List()
-
   def generateMissionCompanyCandidate(m : Mission) : Company = {
-
     val p = m match {
       case (_ : HelpMission) => 0.8
       case (_ : FretMission) => 0.5
@@ -68,24 +65,8 @@ class World extends Serializable {
      Game.bigBrother
   }
 
-  def generateMission() = {
-
-    /* On regarde tout ce que les villes veulent etc... */
-    /* On génere les missions correspondantes qu'on concatene avec la liste des missions todo */
-    /*
-      On demande a un joueur pour une mission, s'il accepte on l'ajoute chez lui, s'il refuse on la met dans la liste des missions todo
-    */
-    /*
-    */
-  }
-
-  def addMission(m: Mission) = {
-    todoMissions = m::todoMissions
-  }
-
-  //Should be called every X tick
-  def sendMissions() : Unit = {
-    todoMissions.foreach{ m => generateMissionCompanyCandidate(m).addWaitingMission(m) }
+  def sendMission(m : Mission) : Unit = {
+    generateMissionCompanyCandidate(m).addWaitingMission(m)
   }
 
   /** Adds a new town.

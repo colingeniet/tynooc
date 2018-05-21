@@ -68,7 +68,12 @@ extends Serializable {
     }
   }
 
-  def rejectMission(m: Mission): Unit = ()
+  def rejectMission(m: Mission): Unit = {
+    if(waitingMissions.contains(m)) {
+      waitingMissions -= m
+      Game.world.sendMission(m)
+    }
+  }
 
   def completeMission(m: Mission): Unit = {
     missions -= m
