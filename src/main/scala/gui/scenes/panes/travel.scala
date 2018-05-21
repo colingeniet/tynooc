@@ -46,6 +46,17 @@ class TravelInfo(vehicle: Vehicle) extends VBox(3) {
   private val sep2: Separator = new Separator()
 
 
+  private def setContents(travel: Travel): Unit = {
+    contents.content = new VBox {
+      children = Good.all.filter(travel.contents(_)() > 0).map(g => {
+        new Label {
+          text <== createStringBinding(
+            () => f"${g.name}: ${travel.contents(g)()}%.1f",
+            travel.contents(g))
+        }
+      })
+    }
+  }
 
   private def onNewTravel(travel: Travel): Unit = {
     destName.text = s" ${travel.destination.name}"
@@ -70,17 +81,9 @@ class TravelInfo(vehicle: Vehicle) extends VBox(3) {
       () => s"pass. : ${travel.passengerNumber.toInt}",
       travel.passengerNumber)
 
-    contents = new ScrollPane {
-      content = new VBox {
-        children = Good.all.map(g => {
-          new Label {
-            text <== createStringBinding(
-              () => f"${g.name}: ${travel.contents(g)()}%.1f",
-              travel.contents(g))
-          }
-        })
-      }
-    }
+    setContents(travel)
+    // Vehicles may only load/unload when their status changes
+    travel.isOnRoute.onChange(setContents(travel))
 
     children = List(
       company,

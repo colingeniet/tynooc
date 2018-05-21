@@ -41,8 +41,10 @@ class HelpMission(reward: Double, from: Town, to: Town, time: Double, val good: 
 extends Mission(reward, from, to, time) {
   @transient var done: DoubleProperty = DoubleProperty(0)
 
-  def advance(q: Double): Unit = {
+  def advance(q: Double): Double = {
+    val q = quantity min (quantity - done())
     done() = done() + q
+    q
   }
 
   @transient var completed: BooleanBinding = jfxBooleanBinding2sfx(done >= quantity)

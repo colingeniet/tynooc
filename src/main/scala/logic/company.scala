@@ -84,6 +84,22 @@ extends Serializable {
     }
   }
 
+  def advanceMissions(from: Town, to: Town, good: Good, quantity: Double): Unit = {
+    var q = quantity
+    var completedMissions: List[Mission] = List()
+    missions.foreach(_ match {
+      case m: HelpMission => {
+        if(m.from == from && m.to == to && m.good == good) {
+          q -= m.advance(q)
+          if(m.completed()) completedMissions = m :: completedMissions
+          if(q <= 0) return ()
+        }
+      }
+      case _ => ()
+    })
+    completedMissions.foreach(completeMission(_))
+  }
+
   /** Save current company statistics in history. */
   def historyStep(): Unit = {
     moneyHistory.append(XYChart.Data[Number, Number](
