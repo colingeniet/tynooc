@@ -164,12 +164,12 @@ extends Player(company) with AI {
       val max = 10
       var i = company.missions.length
 
-      while(!company.waitingMissions.isEmpty && i < 10) {
+      if(!company.waitingMissions.isEmpty && i < max) {
+        i = company.missions.length
         val m = company.waitingMissions.head
         m match {
           case (m : HelpMission) =>
             company.acceptMission(m)
-            i = i+1
             val v = new Tank(TankModel.specialTankModel(m.good, m.quantity), m.from, company)
             company.buy(v)
             company.launchTravel(v, m.to)

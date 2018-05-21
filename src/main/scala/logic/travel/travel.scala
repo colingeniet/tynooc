@@ -225,7 +225,6 @@ extends Serializable {
         case State.Launched => state() = State.Waiting
         case State.OnRoute => {
           assert(currentRoute != null)
-          println("Yes")
           currentRouteDistanceDone() += dt * vehicle.speed(currentRoute().get)
           rooms.foreach(_.handleGoods(dt))
           if(currentRouteDistanceDone() >= currentRoute().get.length) {
