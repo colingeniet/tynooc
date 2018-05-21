@@ -25,7 +25,8 @@ abstract class Mission(val reward: Double, val from: Town, to: Town, time: Doubl
 
 
 /* The basic mission: you send X ressource to a city */
-class HelpMission(reward: Double, from: Town, to: Town, time: Double, val g: Good, val quantity: Double) extends Mission(reward, from, to, time) {
+class HelpMission(reward: Double, from: Town, to: Town, time: Double, val g: Good, val quantity: Double)
+extends Mission(reward, from, to, time) {
 }
 
 /* You wait until full load and then go to a city and then come back to your original city */
@@ -33,7 +34,8 @@ class HelpMission(reward: Double, from: Town, to: Town, time: Double, val g: Goo
   The states gives you carriages with specific capacities
   You stay and fill them, when they're all full you're ready to go.
 **/
-class FretMission(reward: Double, from: Town, to: Town, time: Double, val carriages : List[Carriage]) extends Mission(reward, from, to, time) {
+class FretMission(reward: Double, from: Town, to: Town, time: Double, val carriages : List[Carriage])
+extends Mission(reward, from, to, time) {
 }
 
 /**

@@ -12,6 +12,7 @@ import logic.good._
 import logic.facility._
 import logic.vehicle._
 import logic.company._
+import logic.mission._
 import utils.InitHashMap
 
 import collection.mutable.HashMap
@@ -61,7 +62,6 @@ extends Serializable {
     InitHashMap[Town, HashMap[Good, Double]](_ => {
       InitHashMap[Good, Double](_ => 0)
     })
-
 
   // Coeff used for consumation
   val consume_coeffs: HashMap[Good, Double] = {
@@ -251,8 +251,18 @@ extends Serializable {
     (pop - pass) * (1 + to.note - note) * coef * dt
   }
 
-  def generateExports(to: Town, g: Good, dt: Double): Double = {
-    goods(g)() * 0.2 * ((((to.goods_prices(g)() / goods_prices(g)()) - 1) max 0) min 2)
+  def generateExports(to: Town, g: Good): Unit = {
+    val from_price: Double = goods_prices(g)()
+    val to_price: Double = to.goods_prices(g)()
+    var q = goods(g)() * 0.2 * ((((to_price / from_price) - 1) max 0) min 2)
+    toExport(to)(g) += q
+    if(to_price / (from_price + 1) > 5 && toExport(to)(g) > 20) {
+      q = toExport(to)(g) / 2
+      val mission_reward = q * 3
+      val mission = new HelpMission(mission_reward, this, to, Game.time() + 24, g, q)
+      // TODO Game.world.addMission(mission)
+      toExport(to)(g) /= 2
+    }
   }
 
   /** Adds a new route.
@@ -312,8 +322,7 @@ extends Serializable {
     Good.all.foreach { g =>
       mostDemanding(g).foreach { destination =>
         if(destination != this) {
-          val quantity = generateExports(destination, g, Game.economyTick)
-          toExport(destination)(g) += quantity
+          generateExports(destination, g)
         }
       }
     }
