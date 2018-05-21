@@ -146,7 +146,7 @@ class TownStock(town: Town) extends ScrollPane {
     children = Good.all.map(g => {
       new Label {
         text <== createStringBinding(
-          () => f"${g.name}: ${town.goods(g)()}%.1f (${MoneyFormatter.format(town.goods_prices(g)())})",
+          () => f"${g.name}: ${town.goods(g)()}%.0f (${MoneyFormatter.format(town.goods_prices(g)())})",
           town.goods(g),
           town.goods_prices(g))
       }
