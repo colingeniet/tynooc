@@ -287,7 +287,7 @@ extends Serializable {
   /** Economic tick : update passengers, exportations, consumption
   * @param mostDemanding The towns that needs goods the most
   */
-  def update_economy(mostDemanding: HashMap[Good, List[Town]]) : Unit = {
+  def update_economy() : Unit = {
     val p = population()
     Game.world.towns.foreach { destination =>
       if(destination != this) {
