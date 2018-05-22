@@ -1,13 +1,16 @@
 package logic
 
-/** Provides graph manipulation class. */
-package object graph
-
 /** Provides world map definition. */
 package object world
 
-/** Provides trains definition. */
-package object train
+/** Provides generic model system. */
+package object model
+
+/** Provides various buildings and facilities definitions. */
+package object facility
+
+/** Provides vehicle definition. */
+package object vehicle
 
 /** Provides company definition. */
 package object company

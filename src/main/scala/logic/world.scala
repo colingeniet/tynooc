@@ -1,79 +1,89 @@
 package logic.world
 
-import logic.graph._
+import scalafx.application.Platform
+
 import logic.town._
 import logic.travel._
 import logic.room._
 import logic.company._
 import logic.route._
+import logic.vehicle._
+import logic.good._
+import logic.mission._
+import logic.game._
+import player._
 
 import collection.mutable.HashMap
 import collection.mutable.HashSet
 
-/** An object enumeration for people status. */
-object Status {
-  var _id = 0
-
-  sealed class Val(val id: Int) {
-    _id += 1
-    def this() { this(_id) }
-  }
-  
-  /** Represents rich people. */
-  object Rich extends Status.Val
-  /** Represents poor people. */
-  object Poor extends Status.Val
-  /** Represents well-off people. */
-  object Well extends Status.Val
-}
+import scala.math.Ordering.Implicits._
+import scala.util.Random
+import java.io._
 
 /** The game world representation.
  *
  *  The world is a graph, with vertices being towns, and edges being routes.
  *  This class handles all travels, as well as town population.
+ *
+ * @constructor Creates an empty world with its height and its width.
  */
-class World {
-  /** List of the status available in the world. */
-  val status = Array(Status.Rich, Status.Poor, Status.Well)
-  /** Criteria used to choose a room. */
-  val statusCriteria = Array((d:Town) => (r:Room) => r.comfort,
-                             (d:Town) => (r:Room) => r.price(d),
-                             (d:Town) => (r:Room) => r.comfort / (r.price(d)+1))
-  /** The number of status in the world. */
-  val statusNumber = status.length
+@SerialVersionUID(0L)
+class World extends Serializable {
   /** The fuel price in the world. */
-  var fuelPrice = 1
+  var fuelPrice = 0.05
 
-  private var _towns: HashSet[Town] = HashSet()
+  var towns: HashSet[Town] = HashSet()
 
-  private var _travels: HashSet[Travel] = HashSet()
-  private var _companies: HashSet[Company] = HashSet()
-  
+  var travels: HashSet[Travel] = HashSet()
+  var companies: HashSet[Company] = HashSet()
+
+  var minX: Double = 0
+  var minY: Double = 0
+  var maxX: Double = 0
+  var maxY: Double = 0
+
   /** Callback called any time a new travel is added.
     *
-    *  This is used to signal the new travel to the gui. 
+    *  This is used to signal the new travel to the gui.
     */
-  var onAddTravel: Travel => Unit = {_ => ()}
+  @transient var onAddTravel: Travel => Unit = {_ => ()}
 
-  /** The towns in the world. */
-  def towns: HashSet[Town] = _towns
-
-  /** The current travels in the world. */
-  def travels: HashSet[Travel] = _travels
-
-  /** The train companies in the world. */
-  def companies: HashSet[Company] = _companies
-  
   /** Total world population. */
-  def population: Int = towns.foldLeft[Int](0) { _ + _.population }
+  var population: Int = 0
 
-  /** Adds a new town. 
+  def generateMissionCompanyCandidate(m : Mission) : Player = {
+
+    val p = m match {
+      case (_ : HelpMission) => 0.8
+    }
+
+    val v = Random.nextDouble()
+    if (v > p) {
+      val h = Random.nextInt(Game.players.length)
+      return Game.players(h)
+    }
+    else
+     Game.bigBrother
+  }
+
+  def sendMission(m : Mission) : Unit = {
+    generateMissionCompanyCandidate(m).company.addWaitingMission(m)
+  }
+
+  /** Adds a new town.
     *
     * @param town The town to add.
     */
-  def addTown(town: Town): Unit = _towns.add(town)
+  def addTown(town: Town): Unit = {
+    towns.add(town)
+    population += town.population()
+    minX = minX min town.x
+    maxX = maxX max town.x
+    minY = minY min town.y
+    maxY = maxY max town.y
+  }
 
-  /** Creates and add a new town. 
+  /** Creates and add a new town.
     *
     * @param name The name of the town.
     * @param x the x position of the town.
@@ -84,62 +94,31 @@ class World {
     addTown(new Town(name, x, y, welcomingLevel))
   }
 
-  /** Adds a new company to the world 
+  /** Adds a new company to the world
     *
-    * @param company The new company.    
+    * @param company The new company.
     */
   def addCompany(company: Company): Unit = {
-    _companies.add(company)
+    companies.add(company)
   }
-  
-  /** Adds a new travel in the world. 
+
+  /** Adds a new travel in the world.
     *
     * @param travel The travel to add.
     */
   def addTravel(travel:Travel): Unit = {
-    _travels.add(travel)
+    travels.add(travel)
     // callback
     onAddTravel(travel)
   }
 
-  /** Gets all travels of a specific company in the world. 
+  /** Gets all travels of a specific company in the world.
     *
     * @param company The company.
     */
   def travelsOf(company: Company): HashSet[Travel] =
     travels.filter { _.company == company }
 
-  /** Try to send some passengers from <code>start</code> to
-    * <code>destination</code>. 
-    *
-    * @param start The start town.
-    * @param destination The destination town.
-    * @param migrantByStatus The number of passengers by status.
-    */
-  def tryTravel(
-    start: Town,
-    destination: Town,
-    migrantByStatus: Array[Int]): Unit = {
-    val availableTravels = travels.toList.filter {
-      t => t.isWaitingAt(start) && t.stopsAt(destination)
-    }
-    var rooms = availableTravels.flatMap { _.availableRooms }
-    status.foreach { status =>
-      var takenPlacesNumber = 0
-      var p = migrantByStatus(status.id)
-      rooms = rooms.sortBy { statusCriteria(status.id)(destination) }
-      while(takenPlacesNumber < p && !rooms.isEmpty) {
-        val room = rooms.head
-        val nb = Math.min(p, room.availablePlaces)
-        room.takePlaces(nb, destination, status)
-        takenPlacesNumber += nb
-        p -= nb
-        if(!room.isAvailable)
-          rooms = rooms.tail
-      }
-      start.deletePassengers(takenPlacesNumber, status, destination)
-    }
-  }
 
   /** Update the state of all travels and towns.
    *
@@ -147,8 +126,13 @@ class World {
    */
   def update(dt: Double): Unit = {
     travels.foreach(_.update(dt))
-    _travels = travels.filter(!_.isDone)
+    travels = travels.filter(!_.isDone())
     towns.foreach(_.update(dt))
+  }
+
+  def update_towns(): Unit = {
+    towns.foreach(_.update_prices())
+    towns.foreach(_.update_economy())
   }
 
   /** Find the shortest path between two towns.
@@ -157,19 +141,19 @@ class World {
    * @param to   end town.
    * @return The list of vertices in the path, in order.
    */
-  def findPath(from: Town, to: Town) : Option[List[Route]] = {
+  def findPath(from: Town, to: Town, vehicle: Vehicle) : Option[List[Route]] = {
     // Dijkstra
-    var closed: HashSet[Town] = new HashSet()
-    var open: HashSet[Town] = new HashSet()
-    var dist: HashMap[Town, Double] = new HashMap()
-    var path: HashMap[Town, List[Route]] = new HashMap()
+    val closed: HashSet[Town] = new HashSet()
+    val open: HashSet[Town] = new HashSet()
+    val dist: HashMap[Town, Double] = new HashMap()
+    val path: HashMap[Town, List[Route]] = new HashMap()
     dist(from) = 0
     open.add(from)
     path(from) = List()
 
     while(!open.isEmpty && !closed(to)) {
-      var town: Town = open.minBy[Double](dist(_))
-      town.routes.foreach { route =>
+      val town: Town = open.minBy[Double](dist(_))
+      town.routes.filter(_.accepts(vehicle)).foreach { route =>
         if(!open(route.end) && !closed(route.end)) {
           open.add(route.end)
           dist(route.end) = dist(town) + route.length
@@ -194,21 +178,39 @@ class World {
     *
     * @param from The town.
     */
-  def townsAccessibleFrom(from: Town): List[Town] = {
-    var closed: Set[Town] = Set()
-    var open: Set[Town] = Set(from)
-    var accessibles: Set[Town] = Set()
-    while (!open.isEmpty) {
-      val town = open.head
-      closed += town
-      open -= town
-      town.neighbours.foreach { n =>
-        if(!closed.contains(n)) {
-          open = open + n
-          accessibles += n;
+  def townsAccessibleFrom(from: Town, vehicle: Vehicle): List[Town] = {
+    vehicle match {
+      case p: Plane => { towns.toList.filter(_.accepts(vehicle)) }
+      case _: Tank => towns.toList
+      case _        => {
+        val closed: HashSet[Town] = new HashSet()
+        val open: HashSet[Town] = new HashSet()
+        open.add(from)
+
+        while (!open.isEmpty) {
+          val town = open.head
+
+          town.routes.filter(_.accepts(vehicle)).foreach { route =>
+            if(!open(route.end) && !closed(route.end)) {
+              open += (route.end)
+            }
+          }
+          open.remove(town)
+          closed.add(town)
         }
+        closed.toList.filter(_.accepts(vehicle))
       }
     }
-    accessibles.toList
+  }
+
+  def searchDealers(to: Town, g: Good): List[Town] = {
+    towns.filter(_.toExport(g) > 0).toList.sortBy(-_.toExport(g)).take(5)
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    onAddTravel = {_ => ()}
   }
 }

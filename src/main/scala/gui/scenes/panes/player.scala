@@ -7,11 +7,9 @@ import scalafx.scene.layout._
 import scalafx.event._
 
 
-
-import gui.draw._
 import gui.scenes.elements._
 import logic.company._
-import logic.train._
+import logic.vehicle._
 import logic.world._
 import formatter._
 
@@ -27,69 +25,107 @@ import formatter._
 class CompanyInfo(
   company: Company,
   world: World,
-  detailTrain: Train => Unit,
-  detailEngine: Engine => Unit,
-  detailCarriage: Carriage => Unit)
-extends DrawableVBox {
-  private val money: Label = new Label()
-  private val sep1: Separator = new Separator()
-  private val menu: SelectionMenu = new SelectionMenu()
-  private val sep2: Separator = new Separator()
-  private var panel: Node = new Pane()
-  private val nameField: TextField = new TextField() {
-      text = company.name
+  detailVehicle: VehicleUnit => Unit)
+extends VBox(5) {
+  private val nameField: TextField = new TextField {
+      text <==> company.name
       onAction = (event: ActionEvent) => {
-        company.name = text()
         parent.value.requestFocus()
       }
     }
+  private val money: Label = new Label {
+    text <== createStringBinding(
+      () => MoneyFormatter.format(company.money()),
+      company.money)
+  }
+  private val sep1: Separator = new Separator()
+  private val menu: SelectionMenu = new SelectionMenu()
+  private val sep2: Separator = new Separator()
 
-  menu.addMenu("rolling stock", displayStock())
-  menu.addMenu("catalog", displayModels())
+  menu.addMenu("vehicles", displayVehicles())
+  menu.addMenu("catalog", displayCatalog())
+  menu.addMenu("travels", displayTravels())
+  menu.addMenu("active missions", displayMissions())
+  menu.addMenu("new missions", displayNewMissions())
 
-  // stock subpanel
-  private var stock: CompanyStock =
-    new CompanyStock(company, world, detailTrain, detailEngine, detailCarriage)
+  children = List(nameField, money, sep1, menu, sep2)
 
-  // model catalog subpanel
-  private val models: ModelsList = new ModelsList(company, updateStock)
+  private val vehicleList = new VehicleList(company, detailVehicle)
 
-  spacing = 5
-  draw()
-  setChildren()
+  private val catalog = new Catalog(company)
 
-  /* Updates children list from attributes. */
-  private def setChildren(): Unit = {
+  private val travels = new TravelManager(company, detailVehicle)
+
+  private val missions = new CurrentMissions(company)
+
+  private val newMissions = new NewMissions(company)
+
+  /** Displays vehicles panel. */
+  private def displayVehicles(): Unit = {
     children = List(
       nameField,
       money,
       sep1,
       menu,
       sep2,
-      panel)
-  }
-
-  /** Displays stock panel. */
-  private def displayStock(): Unit = {
-    panel = stock
-    setChildren()
+      vehicleList)
   }
 
   /** Displays catalog panel. */
-  private def displayModels(): Unit = {
-    panel = models
-    setChildren()
+  private def displayCatalog(): Unit = {
+    children = List(
+      nameField,
+      money,
+      sep1,
+      menu,
+      sep2,
+      catalog)
   }
 
-  /** Update the stock subpanel. */
-  private def updateStock(): Unit = {
-    stock =
-      new CompanyStock(company, world, detailTrain, detailEngine, detailCarriage)
-    money.text = MoneyFormatter.format(company.money)
+  private def displayTravels(): Unit = {
+    children = List(
+      nameField,
+      money,
+      sep1,
+      menu,
+      sep2,
+      travels)
   }
 
-  override def draw(): Unit = {
-    money.text = MoneyFormatter.format(company.money)
-    stock.draw()
+  private def displayMissions(): Unit = {
+    children = List(
+      nameField,
+      money,
+      sep1,
+      menu,
+      sep2,
+      missions)
   }
+
+  private def displayNewMissions(): Unit = {
+    children = List(
+      nameField,
+      money,
+      sep1,
+      menu,
+      sep2,
+      newMissions)
+  }
+}
+
+
+class CompanySummary(company: Company, detail: () => Unit) extends VBox(3) {
+  private val name: Label = new Label {
+    text <== company.name
+  }
+  private val money: Label = new Label {
+    text <== createStringBinding(
+      () => MoneyFormatter.format(company.money()),
+      company.money)
+  }
+  private val detailButton: Button = new Button("detail") {
+    onAction = (event: ActionEvent) => detail()
+  }
+
+  children = List(name, money, detailButton)
 }

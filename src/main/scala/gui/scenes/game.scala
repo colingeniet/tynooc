@@ -6,17 +6,21 @@ import scalafx.scene.control._
 import scalafx.event._
 import scalafx.scene.layout._
 import scalafx.geometry._
+import scalafx.stage._
 
 import gui.MainStage
-import gui.draw._
 import gui.scenes.map._
 import gui.scenes.panes._
+import gui.scenes.panes.vehicle._
+import gui.scenes.panes.facility._
 import gui.scenes.elements._
 import logic.world._
 import logic.town._
 import logic.route._
-import logic.train._
+import logic.vehicle._
 import logic.travel._
+import logic.game._
+import logic.facility._
 
 import player._
 
@@ -27,74 +31,68 @@ import player._
  *  @param player the player.
  */
 class Game(
+  window: Window,
   val world: World,
   val player: Player,
   sceneModifier: MainStage.States.Val => Unit)
-extends MainStage.Scene(sceneModifier) with Drawable {
-  // panes contents
-  private var top: TopMenu = new TopMenu(sceneModifier)
-  private var left: DrawableVBox = new CompanyInfo(
-    player.company,
+extends MainStage.Scene(sceneModifier) {
+  private var map = new Map(
     world,
-    displayTrain,
-    displayEngine,
-    displayCarriage)
-  // empty by default
-  private var right: DrawableVBox = new DrawableVBox()
-  private var bottom: DrawableHBox = new DrawableHBox()
-  private var center: Map = new Map(world, player.company,displayTown, displayRoute,
-                                    displayTravel)
+    player.company,
+    displayTown,
+    displayRoute,
+    displayTravel)
+  private var messagesBox = new MessagesBox(5)
 
   // set content
-  private var pane: BorderPane = new BorderPane(
-    center,
-    top,
-    right,
-    bottom,
-    left)
+  private var pane: BorderPane = new BorderPane {
+    center = new StackPane {
+      children = List(map, messagesBox)
+    }
+    top = new TopMenu(window, sceneModifier)
+  }
+  displayCompany()
+
   root = pane
 
   stylesheets += this.getClass.getResource("/css/main.css").toExternalForm
   stylesheets += this.getClass.getResource("/css/game.css").toExternalForm
 
   /* Content display methods */
+  private def displayCompany(): Unit = {
+    pane.left = new CompanyInfo(player.company, world, displayVehicle)
+  }
 
   private def displayTown(town: Town): Unit = {
-    bottom = new TownInfo(town, displayRoute)
-    pane.bottom = bottom
+    pane.left = new VBox(3) {
+      children = List(
+        new CompanySummary(player.company, () => displayCompany()),
+        new Separator(),
+        new TownInfo(town, player.company, displayRoute, displayFacility))
+    }
+
+    pane.right = new TownStock(town)
   }
 
   private def displayRoute(route: Route): Unit = {
-    bottom = new RouteInfo(route, displayTown)
-    pane.bottom = bottom
-  }
-
-  private def displayTrain(train: Train): Unit = {
-    right = new TrainDetail(train)
-    pane.right = right
+    pane.right = new RouteInfo(route, displayTown)
   }
 
   private def displayTravel(travel: Travel): Unit = {
-    right = new TravelInfo(travel)
-    pane.right = right
+    pane.right = new TravelInfo(travel.vehicle)
   }
 
-  private def displayEngine(engine: Engine): Unit = {
-    right = new EngineDetail(engine)
-    pane.right = right
+  private def displayVehicle(vehicle: VehicleUnit): Unit = {
+    pane.right = VehicleUnitDetail(vehicle)
   }
 
-  private def displayCarriage(carriage: Carriage): Unit = {
-    right = new CarriageDetail(carriage)
-    pane.right = right
+  private def displayFacility(facility: Facility): Unit = {
+    pane.right = FacilityDetail(facility)
   }
 
-  // update content
-  override def draw(): Unit = {
-    center.draw()
-    top.draw()
-    left.draw()
-    right.draw()
-    bottom.draw()
+  private def printMessage(message: String): Unit = {
+    messagesBox.print(message)
   }
+
+  Game.printMessage = this.printMessage
 }

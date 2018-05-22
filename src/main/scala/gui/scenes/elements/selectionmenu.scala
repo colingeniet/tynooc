@@ -5,6 +5,10 @@ import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.event._
+import scalafx.beans.property._
+import scalafx.collections._
+
+import utils._
 
 /** A list of submenus, only one of which can be selected at a time.
  *
@@ -14,17 +18,44 @@ class SelectionMenu extends VBox(3) {
 
   /** Add a new submenu.
    *
+   *  @param button the button to add as a submenu.
+   */
+  def addMenu(button: ToggleButton): Unit = {
+    button.styleClass.remove("toggle-button")
+    button.styleClass.add("link")
+    group.toggles.add(button)
+    children.add(button)
+  }
+
+  /** Add a new submenu.
+   *
    *  @param text the title of the submenu.
    *  @param action a callback called when the submenu is selected.
    */
   def addMenu(text: String, action: => Unit): Unit = {
-    val button = new RadioButton(text) {
-      onAction = (event: ActionEvent) => action
-      styleClass.remove("radio-button")
-      styleClass.add("link")
+    val button = new ToggleButton(text) {
+      onAction = (event: ActionEvent) => {
+        action
+        selected = true
+      }
     }
-    group.toggles.add(button)
-    children.add(button)
+    addMenu(button)
+  }
+
+  /** Add a new submenu.
+   *
+   *  @param textProp the title of the submenu, as a string property.
+   *  @param action a callback called when the submenu is selected.
+   */
+  def addMenu(textProp: StringProperty, action: => Unit): Unit = {
+    val button = new ToggleButton {
+      text <== textProp
+      onAction = (event: ActionEvent) => {
+        action
+        selected = true
+      }
+    }
+    addMenu(button)
   }
 
   /** Deselect all entries. */
@@ -33,20 +64,54 @@ class SelectionMenu extends VBox(3) {
   }
 }
 
-/** Creates a SelectionMenu automatically from a list of objects.
- *
- *  @param list the list of objects, each of which correspond to a submenu.
- *  @param text the title of the submenus, function of the corresponding object.
- *  @param action the action of the submenus, function of the corresponding object.
- */
-class SelectionList[A](
-  list: List[A],
-  text: A => String,
+
+/** Selection list with automatic content update. */
+class SelectionListDynamic[A](
+  list: ObservableBuffer[A],
+  label: A => StringProperty,
   action: A => Unit)
 extends ScrollPane {
-  private var menu: SelectionMenu = new SelectionMenu()
-  list.foreach(a => menu.addMenu(text(a), action(a)))
-  content = menu
+  private val group: ToggleGroup = new ToggleGroup()
 
-  def deselect(): Unit = menu.deselect()
+  private def createButton(a: A): ToggleButton = {
+    val button = new ToggleButton {
+      text <== label(a)
+      onAction = (event: ActionEvent) => {
+        action(a)
+        selected = true
+      }
+      styleClass.remove("toggle-button")
+      styleClass.add("link")
+    }
+    button
+  }
+
+  private val buttonList: ObservableBuffer[ToggleButton] = ObservableBuffer[ToggleButton]()
+  MapBind(list, buttonList, createButton(_))
+
+  private val contentBox: VBox = new VBox(3)
+  content = contentBox
+
+  MapBind(buttonList, contentBox.children, (b: ToggleButton) => b.delegate)
+  MapBind(buttonList, group.toggles, (b: ToggleButton) => b.delegate)
+
+  def this(list: List[A], label: A => StringProperty, action: A => Unit) =
+    this(ObservableBuffer(list), label, action)
+
+  def nth(n: Int): ToggleButton = buttonList(n)
+  def deselect(): Unit = buttonList.foreach(_.selected = false)
+}
+
+
+/** Fixed names version.
+ *
+ *  It is not possible to overload the constructor of the previous class.
+ */
+class SelectionList[A](
+  list: ObservableBuffer[A],
+  label: A => String,
+  action: A => Unit)
+extends SelectionListDynamic(list, (a: A) => StringProperty(label(a)), action) {
+  def this(list: List[A], label: A => String, action: A => Unit) =
+    this(ObservableBuffer(list), label, action)
 }

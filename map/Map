@@ -9,34 +9,34 @@ Town : Valentin, 670, 320, 0.8, 1000, 3000, 6000
 Town : Colin, 450, 600, 0.5, 800, 1500, 4000
 Town : LSV, 50, 100, 0.7, 2000, 3000, 9000
 Town : Med, 250, 550, 1, 2000, 3000, 8000
-# Route C411 -> C421 de distance 40 et causant 0.2 de dégâts quand on la parcourt
-Route : 0, 1, 40, 0.2
-Route : 1, 0, 40, 0.2
-Route : 1, 2, 70, 0.3
-Route : 2, 1, 70, 0.3
-Route : 0, 2, 70, 0.3
-Route : 2, 0, 70, 0.3
-Route : 0, 3, 150, 0.5
-Route : 3, 0, 150, 0.5
-Route : 2, 9, 500, 2
-Route : 9, 2, 500, 2
-Route : 6, 7, 30, 0.1
-Route : 7, 6, 30, 0.1
-Route : 0, 6, 120, 0.4
-Route : 6, 0, 120, 0.4
-Route : 8, 5, 320, 0.9
-Route : 5, 8, 320, 0.9
-Route : 7, 5, 350, 1.1
-Route : 5, 7, 350, 1.1
-Route : 7, 8, 400, 1
-Route : 8, 7, 400, 1
-Route : 8, 10, 140, 0.4
-Route : 10, 8, 140, 0.4
-Route : 4, 9, 400, 1.3
-Route : 9, 4, 400, 1.3
-Route : 8, 2, 450, 1.4
-Route : 2, 8, 450, 1.4
-Route : 3, 6, 180, 0.6
-Route : 6, 3, 180, 0.6
-Route : 4, 10, 120, 0.3
-Route : 10, 4, 120, 0.3
+# Route C411 -> C421 de distance 40
+Route : 0, 1, 40
+Route : 1, 0, 40
+Route : 1, 2, 70
+Route : 2, 1, 70
+Route : 0, 2, 70
+Route : 2, 0, 70
+Route : 0, 3, 150
+Route : 3, 0, 150
+Route : 2, 9, 500
+Route : 9, 2, 500
+Route : 6, 7, 30
+Route : 7, 6, 30
+Route : 0, 6, 120
+Route : 6, 0, 120
+Route : 8, 5, 320
+Route : 5, 8, 320
+Route : 7, 5, 350
+Route : 5, 7, 350
+Route : 7, 8, 400
+Route : 8, 7, 400
+Route : 8, 10, 140
+Route : 10, 8, 140
+Route : 4, 9, 400
+Route : 9, 4, 400
+Route : 8, 2, 450
+Route : 2, 8, 450
+Route : 3, 6, 180
+Route : 6, 3, 180
+Route : 4, 10, 120
+Route : 10, 4, 120

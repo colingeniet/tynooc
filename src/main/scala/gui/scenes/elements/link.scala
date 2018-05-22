@@ -11,8 +11,8 @@ import scalafx.event._
  *  @param text the label text.
  *  @param callback the function called on click.
  */
-class Link(text: String)(callback: => Unit) extends Button(text) {
-  onAction = (event: ActionEvent) => callback
+class Link(text: String, callback: () => Unit) extends Button(text) {
+  onAction = (event: ActionEvent) => callback()
   styleClass.remove("button")
   styleClass.add("link")
 }

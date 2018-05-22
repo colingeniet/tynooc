@@ -6,12 +6,18 @@ import scalafx.Includes._
 import scalafx.scene._
 import scalafx.scene.control._
 import scalafx.scene.layout._
+import scalafx.event._
 import scalafx.geometry._
 
-import gui.draw._
-import gui.scenes.elements.Link
+import gui.scenes.elements._
+import gui.scenes.panes.model._
+import gui.scenes.panes.facility._
+import formatter._
 import logic.town._
 import logic.route._
+import logic.facility._
+import logic.company._
+import logic.good._
 
 
 /** Town display panel.
@@ -19,34 +25,99 @@ import logic.route._
  *  @param town the town to display.
  *  @param displayRoute callback used to display a route.
  */
-class TownInfo(town: Town, displayRoute: Route => Unit)
-extends DrawableHBox {
-  // needs to be updated at redraw
-  private val popLbl = new Label()
-  private val pasLbl = new Label()
-
-  children = List(
-    new Label(town.name),
-    new Separator{ orientation = Orientation.Vertical },
-    popLbl,
-    pasLbl,
-    new Separator{ orientation = Orientation.Vertical },
-    new Label("Routes to : "))
-
-  // add all clickable routes
-  town.routes.foreach { route =>
-    val label: Link = new Link(route.end.name + "(" + route.length + "), ")(
-      displayRoute(route))
-    children.add(label)
+class TownInfo(
+  town: Town,
+  company: Company,
+  displayRoute: Route => Unit,
+  displayFacility: Facility => Unit)
+extends VBox(3) {
+  private val popLbl = new Label {
+    text <== createStringBinding(
+      () => s"Population: ${town.population.toInt}",
+      town.population)
+  }
+  private val pasLbl = new Label {
+    text <== createStringBinding(
+      () => s"Passengers: ${town.passengersNumber.toInt}",
+      town.passengersNumber)
   }
 
-  spacing = 3
-
-  // Only update population
-  override def draw(): Unit = {
-    popLbl.text = "Population : " + town.population
-    pasLbl.text = ", Passengers : " + town.passengersNumber
+  private val routes = new VBox {
+    children = new Label("Routes to:") :: town.routes.map{ route => new Link(
+        f"${route.end.name} - ${route.length}%.0f (${route.name})",
+        () => displayRoute(route))
+    }
   }
+
+  private val facilities = new SelectionList[Facility](
+    town.facilities,
+    _.model.name,
+    detailFacility(_))
+
+  private val buyFacility = new Button("new factory") {
+    onAction = (event: ActionEvent) => {
+      val selectionList = new SelectionList[FactoryModel](
+        FactoryModel.models.values.toList,
+        m => s"${m.name}(${MoneyFormatter.format(m.price)})",
+        model => {
+          if (company.money() >= model.price) {
+            val f: Factory = new Factory(model, town, company)
+            company.buy(f)
+            town.facilities.add(f)
+            setChildren()
+          }
+        })
+
+      setChildren()
+      children.add(selectionList)
+    }
+  }
+
+  private val buyStation = new Button("new station") {
+    onAction = (event: ActionEvent) => {
+      val selectionList = new SelectionList[StationModel](
+        TrainStationModel.models.values.toList :::
+        PortModel.models.values.toList :::
+        AirportModel.models.values.toList,
+        m => s"${m.name}(${MoneyFormatter.format(m.price)})",
+        model => {
+          if (company.money() >= model.price) {
+            val s: Station = model match {
+              case m: TrainStationModel => new TrainStation(m, town, company)
+              case m: PortModel => new Port(m, town, company)
+              case m: AirportModel => new Airport(m, town, company)
+            }
+            company.buy(s)
+            town.facilities.add(s)
+            setChildren()
+          }
+        })
+
+      setChildren()
+      children.add(selectionList)
+    }
+  }
+
+
+  private def setChildren(): Unit = {
+    children = List(
+      new Label(town.name),
+      popLbl,
+      pasLbl,
+      routes,
+      facilities,
+      buyFacility,
+      buyStation)
+  }
+
+  private def detailFacility(facility: Facility): Unit = {
+    setChildren()
+    children.add(new Separator())
+    children.add(FacilityMenu(facility, company))
+    displayFacility(facility)
+  }
+
+  setChildren()
 }
 
 /** Town display panel.
@@ -55,13 +126,30 @@ extends DrawableHBox {
  *  @param displayTown callback used to display a town.
  */
 class RouteInfo(route: Route, displayTown: Town => Unit)
-extends DrawableHBox {
+extends VBox(3) {
   children = List(
-    new Link(route.start.name)(displayTown(route.start)),
-    new Label("-"),
-    new Link(route.end.name)(displayTown(route.end)),
-    new Separator{ orientation = Orientation.Vertical },
-    new Label("Distance : " + route.length))
+    new Label(route.name),
+    new Link(route.start.name, () => displayTown(route.start)),
+    new Link(route.end.name, () => displayTown(route.end)),
+    new Label(f"length: ${route.length}%.0f"),
+    new Stats(route) {
+      override def filter(a: java.lang.reflect.Field): Boolean = {
+        a.getName() == "start" || a.getName() == "end" ||
+          a.getName() == "length" || super.filter(a)
+      }
+    })
+}
 
-  spacing = 3
+/** Town goods stock display. */
+class TownStock(town: Town) extends ScrollPane {
+  content = new VBox {
+    children = Good.all.map(g => {
+      new Label {
+        text <== createStringBinding(
+          () => f"${g.name}: ${town.goods(g)()}%.0f (${MoneyFormatter.format(town.goods_prices(g)())})",
+          town.goods(g),
+          town.goods_prices(g))
+      }
+    })
+  }
 }

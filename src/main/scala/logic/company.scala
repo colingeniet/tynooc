@@ -1,13 +1,23 @@
 package logic.company
 
-import collection.mutable.HashSet
+import scalafx.beans.property._
+import scalafx.collections._
+import scalafx.scene.chart.XYChart
 
-import logic.train._
+import scala.collection.mutable.HashSet
+
+import logic.vehicle._
 import logic.travel._
 import logic.town._
 import logic.game._
 import logic.world._
-import logic.graph._
+import logic.good._
+import logic.model._
+import logic.facility._
+import logic.mission._
+
+import collection.mutable.HashMap
+import java.io._
 
 /** An object to manage prices. */
 object PriceSimulation {
@@ -16,20 +26,10 @@ object PriceSimulation {
     * @param from The old model.
     * @param to The upgraded model.
     */
-  def upgradePrice[Model <: VehicleModel](
-    from: VehicleFromModel[Model],
-    to: Model): Double = {
-    (to.price - from.model.price) * 1.2
+  def upgradePrice[Model <: BuyableModel](from: Upgradable[Model], to: String): Double = {
+    (from.modelNameMap(to).price - from.model.price) * 1.2
   }
 }
-
-/** An exception which could be throwed if a player try to launchTravel
-  * a travel to an unattainable destination.
-  */
-final case class PathNotFoundException(
-  private val message: String = "",
-  private val cause: Throwable = None.orNull)
-extends Exception(message, cause)
 
 
 /** A company.
@@ -37,109 +37,179 @@ extends Exception(message, cause)
   * @param name The name of the company.
   * @param fabricTown The town in which the company rolling stock is produced.
   */
-class Company(var name: String, val fabricTown: Town) {
+@SerialVersionUID(0L)
+class Company(var _name: String, val fabricTown: Town)
+extends Serializable {
+  @transient var name: StringProperty = StringProperty(_name)
+
   /** The company trains. */
-  val trains: HashSet[Train] = HashSet()
+  @transient var vehicles: ObservableBuffer[Vehicle] = ObservableBuffer()
   /** The company carriages. */
-  val vehicles: HashSet[Vehicle] = HashSet()
+  @transient var vehicleUnits: ObservableBuffer[VehicleUnit] = ObservableBuffer()
   /** The company money. */
-  var money: Double = 0
+  @transient var money: DoubleProperty = DoubleProperty(0)
+
+  @transient var missions: ObservableBuffer[Mission] = ObservableBuffer()
+  @transient var waitingMissions: ObservableBuffer[Mission] = ObservableBuffer()
+
+  val historyLength: Integer = 50
+  @transient var moneyHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
+    new ObservableBuffer()
+  @transient var vehiclesHistory: ObservableBuffer[javafx.scene.chart.XYChart.Data[Number, Number]] =
+    new ObservableBuffer()
+
+  def addMission(m: Mission): Unit = missions += m
+  def addWaitingMission(m : Mission): Unit = {
+    waitingMissions += m
+    Game.addAction(m.time, () => waitingMissions -= m)
+  }
+
+  def acceptMission(m: Mission): Unit = {
+    if(waitingMissions.contains(m)) {
+      waitingMissions -= m
+      addMission(m)
+    }
+  }
+
+  def rejectMission(m: Mission): Unit = {
+    if(waitingMissions.contains(m)) {
+      waitingMissions -= m
+      Game.world.sendMission(m)
+    }
+  }
+
+
+  def rewardMission(m: Mission): Unit = {
+    if(Game.time() <= m.time) {
+      this.credit(m.reward)
+    } else {
+      this.credit(m.reward / 5)
+    }
+  }
+
+  def completeMission(m: Mission): Unit = {
+    rewardMission(m)
+    missions -= m
+  }
+
+  def completeMission(m: List[Mission]): Unit = {
+    m.foreach(rewardMission(_))
+    missions --= m
+  }
+
+  def advanceMissions(from: Town, to: Town, good: Good, quantity: Double): Unit = {
+    var q = quantity
+    var completedMissions: List[Mission] = List()
+    missions.foreach(_ match {
+      case m: HelpMission => {
+        if(m.from == from && m.to == to && m.good == good) {
+          q -= m.advance(q)
+          if(m.completed()) {
+            completedMissions = m :: completedMissions
+          }
+        }
+      }
+      case _ => ()
+    })
+    completeMission(completedMissions)
+  }
+
+  /** Save current company statistics in history. */
+  def historyStep(): Unit = {
+    moneyHistory.append(XYChart.Data[Number, Number](
+      new java.lang.Double(Game.time()),
+      new java.lang.Double(money())))
+    if(moneyHistory.length > historyLength) moneyHistory.remove(0)
+
+    vehiclesHistory.append(XYChart.Data[Number, Number](
+      new java.lang.Double(Game.time()),
+      new java.lang.Integer(vehicleUnits.length)))
+    if(vehiclesHistory.length > historyLength) vehiclesHistory.remove(0)
+  }
+
   /** Current travels for this company. */
   def travels: HashSet[Travel] = Game.world.travelsOf(this)
 
+  @transient var travelScripts: ObservableBuffer[Script] = ObservableBuffer()
+
   /** Credits the player with <code>amount</code> euros.
     *
-    * @param amount The money to add to the company’s current amount.
+    * @param amount The money to add to the company's current amount.
     */
-  def credit(amount: Double): Unit = money += amount
+  def credit(amount: Double): Unit = money() = money() + amount
 
   /** Debit the player of <code>amount</code> euros.
     *
-    * @param amount The money to delete to the company’s current amount.
+    * @param amount The money to delete to the company's current amount.
     */
   def debit(amount: Double): Unit = {
     // interest rate
-    money -= (amount + (0.02*Math.max(0, amount-money)))
+    money() = money() - (amount + (0.02*Math.max(0, amount-money())))
   }
 
   /** Returns the carriages of this company. */
-  def carriages: HashSet[Carriage] = vehicles.flatMap {
+  def carriages: ObservableBuffer[Carriage] = vehicleUnits.flatMap {
     case c: Carriage => Some(c)
     case _ => None
   }
 
   /** Returns the available carriages of this company.
-    * A carriage is available if not in a train and not damaged.
+    * A carriage is available if not in a train.
     */
-  def carriagesAvailable: HashSet[Carriage] = carriages.filter(_.isAvailable)
+  def carriagesAvailable: ObservableBuffer[Carriage] = carriages.filter(!_.isUsed())
 
-  /** Returns the carriages of this company available in a town. 
+  /** Returns the carriages of this company available in a town.
     *
     * @param town The town.
     */
-  def carriagesStoredAt(town: Town): HashSet[Carriage] =
-    carriages.filter(c => !c.isUsed && c.town == town)
+  def carriagesStoredAt(town: Town): ObservableBuffer[Carriage] =
+    carriages.filter(c => !c.isUsed() && c.town() == town)
 
   /** Returns the engines of this company. */
-  def engines: HashSet[Engine] = vehicles.flatMap {
+  def engines: ObservableBuffer[Engine] = vehicleUnits.flatMap {
     case e: Engine => Some(e)
     case _ => None
   }
 
   /** Returns the available engines of this company.
-    * An engine is available if not in a train and not damaged.
+    * An engine is available if not in a train.
     */
-  def enginesAvailable: HashSet[Engine] = engines.filter(_.isAvailable)
+  def enginesAvailable: ObservableBuffer[Engine] = engines.filter(!_.isUsed())
 
-  /** Returns the engines of this company available in a town. 
+  /** Returns the engines of this company available in a town.
     *
     * @param town The town.
     */
-  def enginesStoredAt(town: Town): HashSet[Engine] =
-    engines.filter(e => !e.isUsed && e.town == town)
+  def enginesStoredAt(town: Town): ObservableBuffer[Engine] =
+    engines.filter(e => !e.isUsed() && e.town() == town)
+
+
+  /** Returns the engines of this company. */
+  def trains: ObservableBuffer[Engine] = vehicles.flatMap {
+    case e: Engine => Some(e)
+    case _ => None
+  }
 
   /** Returns the available trains of this company. */
-  def trainsAvailable: HashSet[Train] = trains.filter { _.isAvailable }
+  def trainsAvailable: ObservableBuffer[Engine] = trains.filter { _.isAvailable() }
 
-  /** Buy an engine and add it to the company’s engines.
-    *
-    * @param name The name of the engine to buy.
-    */
-  def buyEngine(name: String): Unit = {
-    val model = EngineModel(name)
-    if (model.price <= money) {
-      debit(model.price)
-      vehicles.add(new Engine(model, fabricTown, this))
+
+  def buy(vehicle: VehicleUnit): Unit = {
+    if (vehicle.model.price <= money()) {
+      debit(vehicle.model.price)
+      vehicle match {
+        case v: Vehicle => vehicles.add(v); travelScripts.add(new Script(this, v))
+        case _ => ()
+      }
+      vehicleUnits.add(vehicle)
     }
   }
 
-  /** Buy a carriage and add it to the company’s carriages.
-    *
-    * @param name The name of the carriage to buy.
-    */
-  def buyCarriage(name: String): Unit = {
-    val model = CarriageModel(name)
-    if (model.price <= money) {
-      debit(model.price)
-      vehicles.add(new Carriage(model, fabricTown, this))
+  def buy(facility: Facility): Unit = {
+    if (facility.model.price <= money()) {
+      debit(facility.model.price)
+      facility.owner() = this
     }
-  }
-
-  /** Creates a new train, with only an engine.
-    *
-    * @param engine The engine of the new train.
-    */
-  def createTrainFromEngine(engine: Engine): Train = {
-    if (!ownsVehicle(engine)) {
-      throw new IllegalArgumentException("Company doesn’t own the engine")
-    }
-    if (engine.isUsed) {
-      throw new IllegalArgumentException("Engine is in use")
-    }
-    val train = new Train(engine, List(), engine.town, this)
-    engine.train = Some(train)
-    trains.add(train)
-    train
   }
 
   /** Adds a carriage at the tail of an existing train.
@@ -147,62 +217,27 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train to extend.
     * @param carriage The carriage to add to <code>train</code>.
     */
-  def addCarriageToTrain(train: Train, carriage: Carriage): Unit = {
-    if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn’t own the train")
-    }
-    if (train.onRoute) {
-      throw new IllegalArgumentException("Train is in use")
-    }
-    if (!ownsVehicle(carriage)) {
-      throw new IllegalArgumentException("Company doesn’t own the carriage")
-    }
-    if (carriage.isUsed) {
-      throw new IllegalArgumentException("Carriage is in use")
-    }
-    if (train.town != carriage.town) {
-      throw new IllegalArgumentException("Train and Carriage in different locations")
-    }
-
+  def addCarriageToTrain(train: Engine, carriage: Carriage): Unit = {
+    assert(owns(train) && owns(carriage))
     train.addCarriage(carriage)
-    carriage.train = Some(train)
   }
 
   /** Removes the tail carriage of an existing train.
     *
     * @param train The train.
     */
-  def removeCarriageFromTrain(train: Train): Unit = {
-    if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn’t own the train")
-    }
-    if (train.onRoute) {
-      throw new IllegalArgumentException("Train is in use")
-    }
-    val carriage: Carriage = train.removeCarriage()
-    carriage.train = None
-    carriage.town = train.town
+  def removeCarriageFromTrain(train: Engine): Unit = {
+    assert(owns(train))
+    train.removeCarriage()
   }
 
   /** Completely disassemble an existing train.
     *
     * @param train The train to disassemble.
     */
-  def disassembleTrain(train: Train): Unit = {
-    if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn’t own the train")
-    }
-    if (train.onRoute) {
-      throw new IllegalArgumentException("Train is in use")
-    }
-    train.engine.town = train.town
-    train.engine.train = None
-
-    train.carriages.foreach{ c =>
-      c.town = train.town
-      c.train = None
-    }
-    trains.remove(train)
+  def disassembleTrain(train: Engine): Unit = {
+    assert(owns(train))
+    train.disassemble()
   }
 
   /** Start a new travel (starting town will be the train's current town.)
@@ -210,38 +245,11 @@ class Company(var name: String, val fabricTown: Town) {
     * @param train The train to launch.
     * @param to The destination of the travel.
     */
-  def launchTravel(train: Train, to: Town): Unit = {
-    if (!ownsTrain(train)) {
-      throw new IllegalArgumentException("Company doesn’t own the train")
-    }
-    if (train.onRoute) {
-      throw new IllegalArgumentException("Train is in use")
-    }
-    if (train.tooHeavy) {
-      throw new IllegalArgumentException("Train is too heavy")
-    }
-    if (train.isDamaged) {
-      throw new IllegalArgumentException("Train is damaged")
-    }
-    val routes = Game.world.findPath(train.town, to).getOrElse(throw new PathNotFoundException)
-    val travel = new Travel(train, routes, this)
-    train.travel = Some(travel)
+  def launchTravel(vehicle: Vehicle, to: Town, _onCompleted: () => Unit = () => ()): Unit = {
+    assert(owns(vehicle))
+    val travel = vehicle.launchTravel(to)
+    travel.onCompleted = _onCompleted
     Game.world.addTravel(travel)
-  }
-
-  /** Repair a vehicle (a carriage or an engine).
-    *
-    * @param vehicle The vehicle to repair.
-    */
-  def repair(vehicle: Vehicle): Unit = {
-    if (!ownsVehicle(vehicle)) {
-      throw new IllegalArgumentException("Company doesn’t own the vehicle")
-    }
-    if (vehicle.isUsed) {
-      throw new IllegalArgumentException("Vehicle is in use")
-    }
-    debit(vehicle.repairPrice)
-    vehicle.repair()
   }
 
   /** Upgrade a vehicle (a carriage or an engine).
@@ -249,21 +257,46 @@ class Company(var name: String, val fabricTown: Town) {
     * @param old The vehicle to upgrade.
     * @param model The upgraded model.
     */
-  def upgrade[Model <: VehicleModel](old: VehicleFromModel[Model], model: Model): Unit = {
-    if (!ownsVehicle(old)) {
-      throw new IllegalArgumentException("Company doesn’t own the vehicle")
-    }
-    if (old.isUsed) {
-      throw new IllegalArgumentException("Vehicle is in use")
-    }
-    if (money >= PriceSimulation.upgradePrice(old, model)) {
+  def upgrade[Model <: BuyableModel](old: Upgradable[Model], model: String): Unit = {
+    assert(owns(old))
+    if (money() >= PriceSimulation.upgradePrice(old, model)) {
       debit(PriceSimulation.upgradePrice(old, model))
-      old.model = model
+      old.upgradeTo(model)
     }
   }
 
-  /** Returns true if this company owns <code>train</code>. */
-  def ownsTrain(train: Train): Boolean = train.owner == this
   /** Returns true if this company owns <code>vehicle</code>. */
-  def ownsVehicle(vehicle: Vehicle): Boolean = vehicle.owner == this
+  def owns[Model <: BuyableModel](thing: Upgradable[Model]): Boolean = {
+    thing.owner() == this
+  }
+
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.name())
+    stream.writeObject(this.vehicles.toList)
+    stream.writeObject(this.vehicleUnits.toList)
+    stream.writeObject(this.money.toDouble)
+    stream.writeObject(this.missions.toList)
+    stream.writeObject(this.waitingMissions.toList)
+    stream.writeObject(this.travelScripts.toList)
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.name = StringProperty(stream.readObject().asInstanceOf[String])
+    this.vehicles = ObservableBuffer[Vehicle](stream.readObject().asInstanceOf[List[Vehicle]])
+    this.vehicleUnits = ObservableBuffer[VehicleUnit](stream.readObject().asInstanceOf[List[VehicleUnit]])
+    this.money = DoubleProperty(stream.readObject().asInstanceOf[Double])
+    this.missions = ObservableBuffer[Mission](stream.readObject().asInstanceOf[List[Mission]])
+    this.waitingMissions = ObservableBuffer[Mission](stream.readObject().asInstanceOf[List[Mission]])
+    this.travelScripts = ObservableBuffer[Script](stream.readObject().asInstanceOf[List[Script]])
+
+    // not saved fields
+    this.moneyHistory = new ObservableBuffer()
+    this.vehiclesHistory = new ObservableBuffer()
+  }
 }

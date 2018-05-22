@@ -6,20 +6,40 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.scene.image._
 import scalafx.event._
+import scalafx.stage._
+import javafx.stage.FileChooser.ExtensionFilter
 
-import gui.draw._
 import gui.MainStage
+import formatter._
 import logic.game._
 
+import java.io._
+
 /** Game top menu bar. */
-class TopMenu(sceneModifier: MainStage.States.Val => Unit)
-extends BorderPane with Drawable {
+class TopMenu(window: Window, sceneModifier: MainStage.States.Val => Unit)
+extends BorderPane {
   // left side : quit button
-  left = new HBox {
+  left = new HBox(3) {
     children = List(
       new Button ("Quit") {
-        onAction =
-          (event: ActionEvent) => sceneModifier(MainStage.States.MainMenu)
+        onAction = (event: ActionEvent) => sceneModifier(MainStage.States.MainMenu)
+      },
+      new Button ("Save") {
+        onAction = (event: ActionEvent) => {
+          val fileChooser = new FileChooser {
+            title = "open save file"
+            extensionFilters ++= Seq(
+              new ExtensionFilter("All Files", "*"))
+          }
+
+          val file = fileChooser.showSaveDialog(window)
+          if(file != null) {
+
+            val stream = new ObjectOutputStream(new FileOutputStream(file))
+            Game.save_game(stream)
+            stream.close()
+          }
+        }
       }
     )
   }
@@ -29,7 +49,11 @@ extends BorderPane with Drawable {
 
   // right side : time control
   /** Current time. */
-  val timeLabel = new Label()
+  val timeLabel = new Label {
+    text <== createStringBinding(
+      () => TimeFormatter.timeToDateString(Game.time()),
+      Game.time)
+  }
 
   // control buttons
   val pauseButton = new ToggleButton {
@@ -53,7 +77,7 @@ extends BorderPane with Drawable {
   }
   val buttonX3 = new ToggleButton {
     graphic = new ImageView {image = new Image(this, "/icons/time3.png")}
-    onAction = (event: ActionEvent) => Game.timeAcceleration = 6
+    onAction = (event: ActionEvent) => Game.timeAcceleration = 8
     styleClass.remove("radio-button")
     styleClass.add("toggle-button")
   }
@@ -66,10 +90,5 @@ extends BorderPane with Drawable {
       buttonX1,
       buttonX2,
       buttonX3)
-  }
-
-  // update current time
-  override def draw(): Unit = {
-    timeLabel.text = Game.timeToDateString(Game.time)
   }
 }
