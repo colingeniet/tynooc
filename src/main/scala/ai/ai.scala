@@ -190,7 +190,6 @@ extends Player(company) with AI {
       }
 
       var i = company.missions.length
-      println(i)
 
       if(!company.waitingMissions.isEmpty && i < max) {
         i = company.missions.length
@@ -287,7 +286,7 @@ extends Player(company) with AI {
         value -= n * 10
       }
     }
-    /* The cost depends on the the consumption on the path. 
+    /* The cost depends on the the consumption on the path.
        Search the potential (re)quest that could be accomplished, and retire
        their number (modulo a coefficient).
        Could be better to use the note of the town. That way, the note should be
