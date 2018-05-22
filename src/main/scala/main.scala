@@ -21,7 +21,7 @@ object MainJFXApp extends JFXApp {
       new BasicPlaneAI(company("Plane AI", startTown), 1.9, 0.6),
       new MiddleShipAI(company("Middle Ship AI", startTown), 1.8, 0.7),
       new BasicShipAI(company("Ship AI", startTown), 1.8, 0.7),
-      new GeneticAI(company("Advanced AI", startTown), 3, 0))
+      new GeneticTruckAI(company("Advanced AI", startTown), 3, 0))
     Game.initPlayers(players, player)
   }
 
