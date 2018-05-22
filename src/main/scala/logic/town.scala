@@ -170,6 +170,12 @@ extends Serializable {
   def routes: List[Route] = _routes
   /** The neighbours towns. */
 
+  def toExportNumber: Double = {
+    var n = 0d
+    toExport.foreach { case(g, v) => n += v }
+    return n
+  }
+  
   def neighbours: List[Town] = routes.map { _.end }
 
   /** The note of the town. */
