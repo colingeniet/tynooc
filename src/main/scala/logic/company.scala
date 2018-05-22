@@ -59,7 +59,10 @@ extends Serializable {
     new ObservableBuffer()
 
   def addMission(m: Mission): Unit = missions += m
-  def addWaitingMission(m : Mission): Unit = waitingMissions += m
+  def addWaitingMission(m : Mission): Unit = {
+    waitingMissions += m
+    Game.addAction(m.time, () => waitingMissions -= m)
+  }
 
   def acceptMission(m: Mission): Unit = {
     if(waitingMissions.contains(m)) {
