@@ -75,8 +75,8 @@ extends Serializable {
     }
   }
 
-  def completeMission(m: Mission): Unit = {
-    missions -= m
+
+  def rewardMission(m: Mission): Unit = {
     if(Game.time() <= m.time) {
       this.credit(m.reward)
     } else {
@@ -84,8 +84,13 @@ extends Serializable {
     }
   }
 
+  def completeMission(m: Mission): Unit = {
+    rewardMission(m)
+    missions -= m
+  }
+
   def completeMission(m: List[Mission]): Unit = {
-    m.foreach({ m: Mission => this.credit(m.reward) })
+    m.foreach(rewardMission(_))
     missions --= m
   }
 
@@ -96,8 +101,9 @@ extends Serializable {
       case m: HelpMission => {
         if(m.from == from && m.to == to && m.good == good) {
           q -= m.advance(q)
-          if(m.completed()) completedMissions = m :: completedMissions
-          if(q <= 0) return ()
+          if(m.completed()) {
+            completedMissions = m :: completedMissions
+          }
         }
       }
       case _ => ()
