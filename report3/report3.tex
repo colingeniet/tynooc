@@ -1,0 +1,32 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{enumitem}
+
+\begin{document}
+\title{Tynooc --- A Tycoon clone \\ \large{Project report --- part 3}}
+\author{Valentin Maestracci \and Yoan Geran \and Colin Geniet}
+\maketitle
+\tableofcontents
+
+\section{Save Files System}
+We chose to implement the saves system with Scala built-in binary serialization
+(trait \verb|Serializable|). This makes saving relatively easy, as most of it
+is done automatically by the JVM : the whole state of the game logic engine is
+saved in one file.
+
+The main problem however is that ScalaFX components can not be serialized.
+Thus, only the game engine, and not the GUI must be saved.
+Thankfully, the separation was clear enough in our game to avoid problems.
+The only difficulties were in saving ScalaFX properties and bindings
+(which are not serializable). This was achieved by only saving the property
+values, as only the GUI listen to properties, making unnecessary to save any
+listener associated with a property.
+
+\section{}
+
+\section{}
+
+\end{document}
