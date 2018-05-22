@@ -30,10 +30,14 @@ class Liquid(val rate: Double) extends GoodType { //Evaporates
   * @param dt Time since last update
   */
   override def update(g: Good, room: Room, dt: Double) = {
-    room.contents.values.foreach(h => {
-      h(g) -= rate*dt*h(g)
-      room.travel.contents(g)() -= rate*dt*h(g)
-    })
+    room.vehicle match {
+      case _:Tank =>
+      case _:_ =>
+        room.contents.values.foreach(h => {
+        h(g) -= rate*dt*h(g)
+        room.travel.contents(g)() -= rate*dt*h(g)
+      }
+    }
   }
 }
 
@@ -49,10 +53,14 @@ class Perishable(val rate: Double) extends GoodType { //Can rot, same as Liquid 
   * @param dt Time since last update
   */
   override def update(g: Good, room: Room, dt: Double) = {
-    room.contents.values.foreach(h => {
-      h(g) -= rate*dt*h(g)
-      room.travel.contents(g)() -= rate*dt*h(g)
-    })
+    room.vehicle match {
+      case _:Tank =>
+      case _:_ =>
+        room.contents.values.foreach(h => {
+        h(g) -= rate*dt*h(g)
+        room.travel.contents(g)() -= rate*dt*h(g)
+      })
+    }
   }
 }
 

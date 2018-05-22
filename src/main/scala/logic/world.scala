@@ -219,6 +219,9 @@ class World extends Serializable {
     }
   }
 
+  def searchDealers(to: Town, g: Good): List[Town] = {
+    towns.filter(_.toExport(g) > 0).toList.sortBy(_.toExport(g))
+  }
 
   @throws(classOf[IOException])
   @throws(classOf[ClassNotFoundException])
