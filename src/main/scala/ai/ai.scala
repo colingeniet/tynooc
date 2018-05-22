@@ -44,9 +44,9 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 3000 && company.engines.size < 20)
+      if(company.money() > 3000 && company.engines.size < 10)
         company.buy(Engine("basic", company))
-      if(company.money() > 2000 && company.carriages.size < 100)
+      if(company.money() > 2000 && company.carriages.size < 50)
         company.buy(Carriage("basic", company))
       val engines = company.enginesAvailable
       if(!engines.isEmpty) {
@@ -83,7 +83,7 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 1000 && company.vehicles.size < 20)
+      if(company.money() > 1000 && company.vehicles.size < 10)
         company.buy(Plane("basic", company))
       val planes = company.vehicles.toList.filter {!_.isUsed()}
       if(!planes.isEmpty) {
@@ -109,7 +109,7 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 1000 && company.vehicles.size < 20)
+      if(company.money() > 1000 && company.vehicles.size < 10)
         company.buy(Truck("basic", company))
       val trucks = company.vehicles.toList.filter {!_.isUsed()}
       if(!trucks.isEmpty) {
@@ -135,7 +135,7 @@ extends Player(company) with AI {
     if(lastAction > actionDelay) {
       lastAction = 0
 
-      if(company.money() > 1000 && company.vehicles.size < 20)
+      if(company.money() > 1000 && company.vehicles.size < 10)
         company.buy(Ship("basic", company))
       val ships = company.vehicles.toList.filter {!_.isUsed()}
       if(!ships.isEmpty) {
@@ -251,7 +251,7 @@ extends Player(company) with AI {
   }
 
   def buy_vehicles(): Unit = {
-    if(company.money() > 5000 && company.vehicles.size < 20)
+    if(company.money() > 5000 && company.vehicles.size < 10)
       company.buy(Truck("basic", company))
   }
 
@@ -286,7 +286,9 @@ extends Player(company) with AI {
 
       val route = routes_from_towns(path, world)
 
-      world.addTravel(new Travel(path._1, route))
+      val travel = new Travel(path._1, route)
+      path._1.travel() = Some(travel)
+      world.addTravel(travel)
     }
   }
 }

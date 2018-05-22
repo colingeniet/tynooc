@@ -84,6 +84,11 @@ extends Serializable {
     }
   }
 
+  def completeMission(m: List[Mission]): Unit = {
+    m.foreach({ m: Mission => this.credit(m.reward) })
+    missions --= m
+  }
+
   def advanceMissions(from: Town, to: Town, good: Good, quantity: Double): Unit = {
     var q = quantity
     var completedMissions: List[Mission] = List()
@@ -97,7 +102,7 @@ extends Serializable {
       }
       case _ => ()
     })
-    completedMissions.foreach(completeMission(_))
+    completeMission(completedMissions)
   }
 
   /** Save current company statistics in history. */

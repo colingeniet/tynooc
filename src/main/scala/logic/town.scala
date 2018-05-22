@@ -3,7 +3,6 @@ package logic.town
 import scalafx.beans.binding._
 import scalafx.beans.property._
 import scalafx.collections._
-import scala.util.Random
 
 import logic.route._
 import logic.game._
@@ -16,7 +15,7 @@ import logic.mission._
 import utils.InitHashMap
 
 import collection.mutable.HashMap
-//import java.util.Random
+import scala.util.Random
 import java.io._
 
 
@@ -257,11 +256,10 @@ extends Serializable {
     var q = goods(g)() * 0.2 * ((((to_price / from_price) - 1) max 0) min 2)
     toExport(to)(g) += q
     if(to_price / (from_price + 1) > 5 && toExport(to)(g) > 20) {
-      q = toExport(to)(g) / 2
-      val mission_reward = q * 3
+      q = 100
+      val mission_reward = 300
       val mission = new HelpMission(mission_reward, this, to, Game.time() + 24, g, q)
       Game.world.sendMission(mission)
-      //toExport(to)(g) /= 2
     }
   }
 
