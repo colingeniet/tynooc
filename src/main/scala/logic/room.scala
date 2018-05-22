@@ -130,7 +130,6 @@ extends Serializable {
   */
   def load(g: Good, destination: Town, v: Double): Unit = {
     assert(v <= (1 - filled) * allowed(g))
-
     contents(destination)(g) += v
     filled += v/allowed(g)
     vehicle.owner().advanceMissions(vehicle.town(), destination, g, v)
@@ -170,19 +169,22 @@ extends Serializable {
     }.asInstanceOf[List[HelpMission]]
     val missions = helpMissions.filter { m => m.from == town && travel.remainingStops.contains(m.to) }
     missions.foreach { m =>
-      val q = (m.quantity min availableLoad(m.good)) min town.toExport(m.good)
-      load(m.good, m.to, q)
-      travel.company.credit(price(m.to) * q)
-      town.exportGood(m.good, q)
+      val q = availableLoad(m.good) min town.toExport(m.good)
+      if(q > 0) {   
+        load(m.good, m.to, q)
+        travel.company.credit(price(m.to) * q)
+        town.exportGood(m.good, q)
+      }
     }
     goods.foreach(g => {
       val towns = travel.remainingStops.filter(_.requestsTime(g) > 0)
       towns.foreach {t => 
         val quantity = availableLoad(g) min town.toExport(g)
-                           
-        load(g, t, quantity)
-        travel.company.credit(price(t) * quantity)
-        town.exportGood(g, quantity)
+        if(quantity > 0) {                   
+          load(g, t, quantity)
+          travel.company.credit(price(t) * quantity)
+          town.exportGood(g, quantity)
+        }
       }
         
     })
