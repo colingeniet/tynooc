@@ -220,7 +220,7 @@ class World extends Serializable {
   }
 
   def searchDealers(to: Town, g: Good): List[Town] = {
-    towns.filter(_.toExport(g) > 0).toList.sortBy(_.toExport(g))
+    towns.filter(_.toExport(g) > 0).toList.sortBy(-_.toExport(g)).take(5)
   }
 
   @throws(classOf[IOException])
