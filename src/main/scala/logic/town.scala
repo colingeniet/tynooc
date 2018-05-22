@@ -60,9 +60,9 @@ extends Serializable {
   val toExport: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
 
   var requestsTime: HashMap[Good, Int] = InitHashMap[Good, Int](_ => 0)
-      
 
-  def needs(g: Good): Double = population() * consume_coeffs(g)                                                               
+
+  def needs(g: Good): Double = population() * consume_coeffs(g)
   // Coeff used for consumation
   val consume_coeffs: HashMap[Good, Double] = {
     val a = InitHashMap[Good, Double](_ => 0)
@@ -78,12 +78,12 @@ extends Serializable {
   def addGood(g: Good, q: Double) = {
     val t = q / 4
     goods(g)() += (q - t)
-    toExport(g) += t   
+    toExport(g) += t
     if(needs(g) > goods(g)()) { requestsTime(g) = 0 }
   }
 
   def deleteGood(g: Good, q: Double) = goods(g)() -= q
-  
+
   def exportGood(g: Good, q: Double) = toExport(g) -= q
   /** Tries to buy a good from a certain company
   * @param company The company the town will buy the good from
@@ -124,13 +124,12 @@ extends Serializable {
       h.foreach{ case (g, v) => buyGoods(company, g, v) }
       true
     } else false
-  }                   
+  }
   /** Consume goods of every type every time it's called.
   * It is called every economy economy tick.
   * (~3h when i'm writing this)
   */
   def consume_daily(): Unit = {
-                   
     goods.foreach{ case (key, value) => goods(key)() = (value() - needs(key)) max 0 }
   }
 
@@ -283,7 +282,7 @@ extends Serializable {
       case _          => false
     }.toSet.asInstanceOf[Set[Station]]
   }
-  
+
 
   /** Economic tick : update passengers, exportations, consumption
   * @param mostDemanding The towns that needs goods the most
@@ -300,7 +299,7 @@ extends Serializable {
     val requestedGoods = Good.all.filter{ g =>  needs(g) > goods(g)() }
     requestedGoods.foreach { g => requestsTime(g) += 1 }
     requestedGoods.filter(requestsTime(_) > 3).toList.sortBy(-requestsTime(_))
-    requestedGoods.take(10).foreach { g =>
+    requestedGoods.take(5).foreach { g =>
       val dealers = Game.world.searchDealers(this, g)
       if(!dealers.isEmpty) {
         val d = Random.shuffle(dealers).head
