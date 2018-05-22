@@ -25,7 +25,6 @@ class TravelInfo(vehicle: Vehicle) extends VBox(3) {
     text <== vehicle.owner().name
     styleClass.remove("label")
     textFill = Colors(vehicle.owner())
-    println(Colors(vehicle.owner()))
   }
 
   private val dest: Label = new Label("destination :")
