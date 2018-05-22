@@ -61,7 +61,6 @@ extends Serializable {
 
   var requestsTime: HashMap[Good, Int] = InitHashMap[Good, Int](_ => 1)
 
-
   def needs(g: Good): Double = population() * consume_coeffs(g)
   // Coeff used for consumation
   val consume_coeffs: HashMap[Good, Double] = {
@@ -305,7 +304,8 @@ extends Serializable {
       if(!dealers.isEmpty) {
         val d = Random.shuffle(dealers).head
         requestsTime(g) -= 3
-        val q = d.goods(g)()
+        val q = d.toExport(g) min 100
+        d.exportGood(g, q)
         val mission_reward = q * 3
         val mission = new HelpMission(mission_reward, d, this, Game.time() + 24, g, q)
         Game.world.sendMission(mission)
