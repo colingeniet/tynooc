@@ -31,7 +31,7 @@ class Liquid(val rate: Double) extends GoodType { //Evaporates
   */
   override def update(g: Good, room: Room, dt: Double) = {
     room.vehicle match {
-      case _:Tank =>
+      case _: Tank =>
       case _ =>
         room.contents.values.foreach(h => {
         h(g) -= rate*dt*h(g)
