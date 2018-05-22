@@ -303,7 +303,7 @@ extends Serializable {
     requestedGoods.take(10).foreach { g =>
       val dealers = Game.world.searchDealers(this, g)
       if(!dealers.isEmpty) {
-        val d = dealers.head
+        val d = Random.shuffle(dealers).head
         requestsTime(g) -= 3
         val q = needs(g) * 2
         val mission_reward = q * 3
