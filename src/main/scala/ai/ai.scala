@@ -185,8 +185,6 @@ extends Player(company) with AI {
           case (m : HelpMission) =>
             if(!sav(m).isUsed())
               launchVehicle(m)
-
-          case (m : FretMission) =>
         }
       }
 
@@ -199,8 +197,6 @@ extends Player(company) with AI {
           case (m : HelpMission) =>
               company.acceptMission(m)
               launchVehicle(m)
-
-          case ( m : FretMission) =>
         }
       }
     }

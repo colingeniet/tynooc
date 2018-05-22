@@ -55,7 +55,6 @@ class World extends Serializable {
 
     val p = m match {
       case (_ : HelpMission) => 0.8
-      case (_ : FretMission) => 0.5
     }
 
     val v = Random.nextDouble()
