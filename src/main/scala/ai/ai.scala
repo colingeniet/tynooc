@@ -12,6 +12,7 @@ import logic.route._
 import logic.good._
 import logic.mission._
 
+import java.io._
 import collection.mutable.WeakHashMap
 
 /** A trait representing an AI. */
@@ -158,7 +159,7 @@ class BigBrotherAI(
   var lastAction: Double)
 extends Player(company) with AI {
 
-  val sav = WeakHashMap[Mission, Vehicle]()
+  @transient var sav = WeakHashMap[Mission, Vehicle]()
 
   def launchVehicle(m: HelpMission) = {
     val v = new Tank(TankModel.specialTankModel(m.good, m.quantity), m.from, company)
@@ -203,6 +204,22 @@ extends Player(company) with AI {
         }
       }
     }
+  }
+
+
+  @throws(classOf[IOException])
+  private def writeObject(stream: ObjectOutputStream): Unit = {
+    stream.defaultWriteObject()
+    stream.writeObject(this.sav.toMap)
+  }
+
+  @throws(classOf[IOException])
+  @throws(classOf[ClassNotFoundException])
+  private def readObject(stream: ObjectInputStream): Unit = {
+    stream.defaultReadObject()
+    this.sav = new WeakHashMap()
+    val new_sav = stream.readObject().asInstanceOf[Map[Mission, Vehicle]]
+    new_sav.foreach{ case (m,v) => this.sav(m) = v }
   }
 }
 
