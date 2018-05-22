@@ -59,7 +59,7 @@ extends Serializable {
   // Goods to be exported
   val toExport: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
 
-  var requestsTime: HashMap[Good, Int] = InitHashMap[Good, Int](_ => 0)
+  var requestsTime: HashMap[Good, Int] = InitHashMap[Good, Int](_ => 1)
 
 
   def needs(g: Good): Double = population() * consume_coeffs(g)
@@ -91,7 +91,9 @@ extends Serializable {
   */
   def sellGoods(company: Company, g: Good, v: Double): Unit = {
     company.credit(goods_prices(g)() * v)
-    goods(g)() = goods(g)() + v
+    val q = v / 2
+    goods(g)() = goods(g)() + q
+    toExport(g) += v - q
   }
 
   /** Tries to buy goods from a certain company
@@ -283,7 +285,6 @@ extends Serializable {
     }.toSet.asInstanceOf[Set[Station]]
   }
 
-
   /** Economic tick : update passengers, exportations, consumption
   * @param mostDemanding The towns that needs goods the most
   */
@@ -299,12 +300,12 @@ extends Serializable {
     val requestedGoods = Good.all.filter{ g =>  needs(g) > goods(g)() }
     requestedGoods.foreach { g => requestsTime(g) += 1 }
     requestedGoods.filter(requestsTime(_) > 3).toList.sortBy(-requestsTime(_))
-    requestedGoods.take(5).foreach { g =>
+    requestedGoods.take(10).foreach { g =>
       val dealers = Game.world.searchDealers(this, g)
       if(!dealers.isEmpty) {
         val d = Random.shuffle(dealers).head
         requestsTime(g) -= 3
-        val q = needs(g) * 2
+        val q = d.goods(g)()
         val mission_reward = q * 3
         val mission = new HelpMission(mission_reward, d, this, Game.time() + 24, g, q)
         Game.world.sendMission(mission)
