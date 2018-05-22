@@ -75,8 +75,8 @@ extends Serializable {
 
   @transient var facilities: ObservableBuffer[Facility] = ObservableBuffer()
 
-  def addGood(g: Good, q: Double) = {
-    val t = q / 4
+  def addGood(g: Good, q: Double) = { 
+    val t = if(goods(g)() + q > needs(g) / 4) (q / 4) else 0
     goods(g)() += (q - t)
     toExport(g) += t
     if(needs(g) > goods(g)()) { requestsTime(g) = 0 }
