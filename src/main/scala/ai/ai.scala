@@ -12,6 +12,8 @@ import logic.route._
 import logic.good._
 import logic.mission._
 
+import collection.mutable.WeakHashMap
+
 /** A trait representing an AI. */
 trait AI {
   val company: Company
@@ -156,23 +158,47 @@ class BigBrotherAI(
   var lastAction: Double)
 extends Player(company) with AI {
 
+  val sav = WeakHashMap[Mission, Vehicle]()
+
+  def launchVehicle(m: HelpMission) = {
+    val v = new Tank(TankModel.specialTankModel(m.good, m.quantity), m.from, company)
+    sav(m) = v
+    company.buy(v)
+    company.launchTravel(v, m.to)
+  }
+
   def play(world: World, dt: Double): Unit = {
     lastAction += dt
     if(lastAction > actionDelay) {
       lastAction = 0
 
       val max = 10
+
+      // We delete all vehicles, they will thus disapear once their trip is done (and be garbage collected).
+      company.vehicles.clear()
+
+      // We try again unfinished missions
+      company.missions.foreach{ m =>
+        m match {
+          case (m : HelpMission) =>
+            if(!sav(m).isUsed())
+              launchVehicle(m)
+
+          case ( m : FretMission) =>
+        }
+      }
+
       var i = company.missions.length
+      println(i)
 
       if(!company.waitingMissions.isEmpty && i < max) {
         i = company.missions.length
         val m = company.waitingMissions.head
         m match {
           case (m : HelpMission) =>
-            company.acceptMission(m)
-            val v = new Tank(TankModel.specialTankModel(m.good, m.quantity), m.from, company)
-            company.buy(v)
-            company.launchTravel(v, m.to)
+              company.acceptMission(m)
+              launchVehicle(m)
+
           case ( m : FretMission) =>
         }
       }
