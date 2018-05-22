@@ -90,6 +90,15 @@ extends Serializable {
   @transient var isArrived: BooleanBinding = null
 
 
+  private var atTownCallbackMap: HashMap[Town, List[() => Unit]] =
+    InitHashMap(_ => List())
+
+  /** Execute [[callback]] upon reaching [[town]] */
+  def atTownCallback(town: Town, callback: () => Unit): Unit = {
+    atTownCallbackMap(town) = callback :: atTownCallbackMap(town)
+  }
+
+
   private def initBindings(): Unit = {
     currentRoute = createObjectBinding(
         () => remainingRoutes.headOption,
@@ -234,6 +243,7 @@ extends Serializable {
         case State.Arrived => {
           company.debit(vehicle.consumption(currentRoute().get.length) * Game.world.fuelPrice)
           state() = State.Waiting
+
           if(currentTown().accepts(vehicle)) {
             vehicle match {
               case v: Truck => ()
@@ -247,6 +257,10 @@ extends Serializable {
             landPassengers()
             unload()
           }
+
+          atTownCallbackMap(currentTown()).foreach(_())
+          atTownCallbackMap(currentTown()) = List()
+
           remainingRoutes.remove(0)
           currentRouteDistanceDone() = 0
           if(isDone()) {

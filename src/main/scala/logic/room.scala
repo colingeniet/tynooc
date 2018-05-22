@@ -133,7 +133,10 @@ extends Serializable {
 
     contents(destination)(g) += v
     filled += v/allowed(g)
-    vehicle.owner().advanceMissions(vehicle.town(), destination, g, v)
+
+    travel.atTownCallback(
+      destination,
+      () => vehicle.owner().advanceMissions(vehicle.town(), destination, g, v))
   }
 
   /** Unloads a certain quantity of a good for a given destination
@@ -169,7 +172,7 @@ extends Serializable {
     }.asInstanceOf[List[HelpMission]]
     val missions = helpMissions.filter { m => m.from == town && travel.remainingStops.contains(m.to) }
     missions.foreach { m =>
-      val q = availableLoad(m.good) min m.quantity 
+      val q = availableLoad(m.good) min m.quantity
       if(q > 0) {
         load(m.good, m.to, q)
         travel.company.credit(price(m.to) * q)

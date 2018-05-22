@@ -177,6 +177,7 @@ extends Player(company) with AI {
 
       // We delete all vehicles, they will thus disapear once their trip is done (and be garbage collected).
       company.vehicles.clear()
+      company.vehicleUnits.clear()
 
       // We try again unfinished missions
       company.missions.foreach{ m =>
@@ -185,12 +186,11 @@ extends Player(company) with AI {
             if(!sav(m).isUsed())
               launchVehicle(m)
 
-          case ( m : FretMission) =>
+          case (m : FretMission) =>
         }
       }
 
       var i = company.missions.length
-      println(i)
 
       if(!company.waitingMissions.isEmpty && i < max) {
         i = company.missions.length
