@@ -8,6 +8,7 @@ import logic.game._
 import logic.world._
 import logic.town._
 import logic.good._
+import logic.mission._
 
 import collection.mutable.HashMap
 import collection.mutable.HashSet
@@ -128,7 +129,7 @@ extends Serializable {
   * @param v The quantity to load
   */
   def load(g: Good, destination: Town, v: Double): Unit = {
-    assert(v <= (1 - filled) * allowed(g))
+    assert(v <= availableLoad(g))
 
     contents(destination)(g) += v
     filled += v/allowed(g)
@@ -163,16 +164,29 @@ extends Serializable {
   */
   def loadAll(town: Town): Unit = {
     val goods = town.toExport.filter { case(g, v) => v > 0 }.keySet
+    val helpMissions = travel.company.missions.toList.filter{
+      case _: HelpMission => true
+      case _              => false
+    }.asInstanceOf[List[HelpMission]]
+    val missions = helpMissions.filter { m => m.from == town && travel.remainingStops.contains(m.to) }
+    missions.foreach { m =>
+      val q = availableLoad(m.good) min town.toExport(m.good)
+      if(q > 0) {
+        load(m.good, m.to, q)
+        travel.company.credit(price(m.to) * q)
+        town.exportGood(m.good, q)
+      }
+    }
     goods.foreach(g => {
       val towns = travel.remainingStops.filter(_.requestsTime(g) > 0)
-      towns.foreach {t => 
+      towns.foreach {t =>
         val quantity = availableLoad(g) min town.toExport(g)
-                           
-        load(g, t, quantity)
-        travel.company.credit(price(t) * quantity)
-        town.exportGood(g, quantity)
+        if(quantity > 0) {
+          load(g, t, quantity)
+          travel.company.credit(price(t) * quantity)
+          town.exportGood(g, quantity)
+        }
       }
-        
     })
   }
 
