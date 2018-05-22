@@ -25,8 +25,44 @@ The only difficulties were in saving ScalaFX properties and bindings
 values, as only the GUI listen to properties, making unnecessary to save any
 listener associated with a property.
 
-\section{}
+\section{AI}
+\subsection{Genetic AI}
+The most interesting AI we created is a so-called genetic AI.
+The basic idea is to generate `interesting' travels by generating a number
+of random paths, then select the bests based on some heuristic.
+To improve results, this is done in two phases:
+\begin{itemize}
+  \item Several random paths of fixed length are generated.
+  \item A few are selected based on the heuristic.
+  \item The selected paths are randomly `mutated'.
+  \item The best of the mutated paths is selected.
+\end{itemize}
 
-\section{}
+The heuristic we use estimates the cost and rewards of the trip based on current
+world status (goods availability and prices, \dots).
+
+\subsection{Scripted AI}
+
+
+\section{Economy rework}
+\subsection{New economy}
+The economy system was reworked since part 2 to make it simpler and more efficient.
+Previously, at each economic tick (separated by a few in game hours), for every
+pair of towns and every goods, a quantity of that goods to be transported
+between those two towns was calculated.
+
+Now, every town simply calculates an amount to export and import for each goods.
+The choice of transporting goods from a town to another is delayed until a
+vehicle actually travels. Only then is the amount to transport calculated.
+
+\subsection{Missions}
+An additional feature is the addition of missions: under some circumstances
+(important requests from a town), missions are generated, requiring the player
+to transport a given amount of goods between two given towns. Upon completion,
+the player will earn an additional reward compared to a normal trip.
+
+Missions have a deadline that negates the reward if not respected. The player
+may choose to accept or decline any mission they are proposed.
+
 
 \end{document}

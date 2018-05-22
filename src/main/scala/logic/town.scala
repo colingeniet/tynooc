@@ -35,7 +35,8 @@ class Town(
   val welcomingLevel: Double)
 extends Serializable {
   private var _routes: List[Route] = List()
-
+  private val maxQuantityMission = 642
+  
   /** The town population. */
   @transient var population: IntegerProperty = IntegerProperty(0)
   /** The passengers number of the town. */
@@ -301,7 +302,7 @@ extends Serializable {
       if(!dealers.isEmpty) {
         val d = Random.shuffle(dealers).head
         requestsTime(g) -= 3
-        val q = d.toExport(g) min 100
+        val q = d.toExport(g) min maxQuantityMission
         d.exportGood(g, q)
         val mission_reward = q * 3
         val mission = new HelpMission(mission_reward, d, this, Game.time() + 24, g, q)

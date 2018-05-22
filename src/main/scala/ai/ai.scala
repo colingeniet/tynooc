@@ -27,6 +27,17 @@ trait AI {
     * @param dt The time passed since the last call of <code>play</code>.
     */
   def play(world: World, dt: Double)
+  
+  def cost(from: Town, to: Town): Double = {
+    val exports = from.toExport.filter{ case(g, v) => v > 0 }
+    var n = 0d
+    exports.foreach { case(g, v) =>
+      if(to.requestsTime(g) > 0) {
+        n = n + v 
+      }
+    }
+    return -n
+  }
 }
 
 /** A basic AI which plays randomly.
@@ -153,6 +164,84 @@ extends Player(company) with AI {
   }
 }
 
+class MiddleShipAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
+  
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      if(company.money() > 1000 && company.vehicles.size < 10)
+        company.buy(Ship("basic", company))
+      val ships = (company.vehicles.toList.filter {!_.isUsed()}).sortBy(-_.town().toExportNumber)
+      if(!ships.isEmpty) {
+        val ship = ships.head
+        val towns = world.townsAccessibleFrom(ship.town(), ship).filter(_ != ship.town())
+        if (!towns.isEmpty) {
+          val to = towns.sortBy(-cost(ship.town(), _)).head
+          company.launchTravel(ship, to)
+        }
+      }
+    }
+  }
+}
+  
+class MiddlePlaneAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
+  
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      if(company.money() > 1000 && company.vehicles.size < 10)
+        company.buy(Plane("basic", company))
+      val planes = (company.vehicles.toList.filter {!_.isUsed()}).sortBy(-_.town().toExportNumber)
+      if(!planes.isEmpty) {
+        val plane = planes.head
+        val towns = world.townsAccessibleFrom(plane.town(), plane).filter(_ != plane.town())
+        if (!towns.isEmpty) {
+          val to = towns.sortBy(-cost(plane.town(), _)).head
+          company.launchTravel(plane, to)
+        }
+      }
+    }
+  }
+}
+
+class MiddleTruckAI(
+  company: Company,
+  val actionDelay: Double,
+  var lastAction: Double)
+extends Player(company) with AI {
+  
+  def play(world: World, dt: Double): Unit = {
+    lastAction += dt
+    if(lastAction > actionDelay) {
+      lastAction = 0
+
+      if(company.money() > 1000 && company.vehicles.size < 10)
+        company.buy(Truck("basic", company))
+      val trucks = (company.vehicles.toList.filter {!_.isUsed()}).sortBy(-_.town().toExportNumber)
+      if(!trucks.isEmpty) {
+        val truck = trucks.head
+        val towns = world.townsAccessibleFrom(truck.town(), truck).filter(_ != truck.town())
+        if (!towns.isEmpty) {
+          val to = towns.sortBy(-cost(truck.town(), _)).head
+          company.launchTravel(truck, to)
+        }
+      }
+    }
+  }
+}
+
 class BigBrotherAI(
   company: Company,
   val actionDelay: Double,
@@ -219,7 +308,7 @@ extends Player(company) with AI {
   }
 }
 
-class GeneticAI(
+class GeneticTruckAI(
   company: Company,
   val actionDelay: Double,
   var lastAction: Double)

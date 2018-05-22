@@ -17,11 +17,11 @@ object MainJFXApp extends JFXApp {
     val player = new Player(company("Company name", startTown))
     val players: List[Player] = List(
       player,
-      new BasicTrainAI(company("Train AI", startTown), 1.7, 0.5),
       new BasicTruckAI(company("Truck AI", startTown), 2, 0.6),
       new BasicPlaneAI(company("Plane AI", startTown), 1.9, 0.6),
+      new MiddleShipAI(company("Middle Ship AI", startTown), 1.8, 0.7),
       new BasicShipAI(company("Ship AI", startTown), 1.8, 0.7),
-      new GeneticAI(company("Advanced AI", startTown), 3, 0))
+      new GeneticTruckAI(company("Advanced AI", startTown), 3, 0))
     Game.initPlayers(players, player)
   }
 
