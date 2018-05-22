@@ -145,7 +145,7 @@ extends Serializable {
 
     contents(destination)(g) -= v
     filled -= v/allowed(g) max 0
-    destination.sellGoods(travel.company, g, v)
+    destination.addGood(g, v)
   }
 
   /** Unloads a certain good for a given destination
@@ -162,15 +162,17 @@ extends Serializable {
   * @param town The town where you pick up the goods
   */
   def loadAll(town: Town): Unit = {
-    travel.remainingStops.foreach(dest => {
-      Good.all.foreach(g => {
-        val quantity = availableLoad(g) min town.toExport(dest)(g) min town.goods(g)()
-        if (quantity > 0) {
-          load(g, dest, quantity)
-          town.buyGoods(travel.company, g, quantity)
-          town.toExport(dest)(g) = town.toExport(dest)(g) - quantity
-        }
-      })
+    val goods = town.toExport.filter { case(g, v) => v > 0 }.keySet
+    goods.foreach(g => {
+      val towns = travel.remainingStops.filter(_.requestsTime(g) > 0)
+      towns.foreach {t => 
+        val quantity = availableLoad(g) min town.toExport(g)
+                           
+        load(g, t, quantity)
+        travel.company.credit(price(t) * quantity)
+        town.exportGood(g, quantity)
+      }
+        
     })
   }
 
