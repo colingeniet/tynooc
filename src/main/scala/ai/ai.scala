@@ -335,14 +335,14 @@ extends Player(company) with AI {
       }
 
       var wp = path_list.map{t => (t, estimated_cost_1(t, world)) }
-      wp = wp.sortWith(comparison_function).reverse
+      wp = wp.sortWith(comparison_function)
 
       wp = wp.takeRight(K)
       var wp2 = wp.map{case (a : Data, b : Double) => a}
       wp2 = fuse(wp2, wp2.map{t : Data => (t._1, gen_path_1(world, N, t._1)) })
 
       var wp3 = wp2.map{t => (t, estimated_cost_1(t, world))}
-      wp3 = wp3.sortWith(comparison_function)
+      wp3 = wp3.sortWith(comparison_function).reverse
 
       val wp4 = wp3.map{case (a : Data, b : Double) => a}
       val path = wp4.head //The optimal one

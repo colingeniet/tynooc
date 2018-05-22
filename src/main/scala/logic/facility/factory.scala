@@ -177,7 +177,7 @@ extends FacilityFromModel[FactoryModel](_model, _town, _owner) {
 
   def production_factor(h: HashMap[Good, Double]) : HashMap[Good, Double] = {
     val r = HashMap[Good, Double]()
-    h.foreach {case (g,v) => r(g) = 10.93*v} //The value is experimental
+    h.foreach {case (g,v) => r(g) = 30.98*v} //The value is experimental
     r
   }
 

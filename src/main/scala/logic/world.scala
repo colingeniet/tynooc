@@ -58,8 +58,8 @@ class World extends Serializable {
       case (_ : FretMission) => 0.5
     }
 
-    val v = Random.nextInt()
-    if (v >= p) {
+    val v = Random.nextDouble()
+    if (v > p) {
       val h = Random.nextInt(Game.players.length)
       return Game.players(h)
     }

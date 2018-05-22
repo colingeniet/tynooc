@@ -72,17 +72,3 @@ extends Mission(reward, from, to, time) {
 class FretMission(reward: Double, from: Town, to: Town, time: Double, val carriages : List[Carriage])
 extends Mission(reward, from, to, time) {
 }
-
-/**
-
-Rapport discussion Yoan:
-
-Les villes génèrent des missions. On voudrait que le joueur a 2 a 3 missions proposées max par jour.
-Refuser = no prob. Accepter et echouer = baisse repu.
-Reputation influe sur proba d'être choisi pour une mission. 50% Big Brother, 50% players avec reputation (par exemple on prend reputation/(2*sommerepu))...
-
-Quand génère t'on des missions ?
-
-On regarde au début les villes qu'on classe par population. On en en prend 1/7 dans X. Regarde ensuite toute
-
-**/
