@@ -42,6 +42,11 @@ The heuristic we use estimates the cost and rewards of the trip based on current
 world status (goods availability and prices, \dots).
 
 \subsection{Scripted AI}
+Another AI we implemented relies on a more fixed behavior:
+when starting a new travel, the town with the most goods to export is selected
+as the depart. Then, the town with the most goods requested among the ones exported
+is selected as the destination. Thus, the behavior is deterministic, unlike the
+genetic AI.
 
 
 \section{Economy rework}
