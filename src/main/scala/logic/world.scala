@@ -139,16 +139,7 @@ class World extends Serializable {
 
     towns.foreach(_.update_prices(totalGoods))
 
-    // only export to the most demanding towns for each good.
-    // This is done to keep calculation to an acceptable level:
-    // exporting to all towns results in a quadratic complexity, which
-    // is too much on big maps
-    val mostDemanding: HashMap[Good, List[Town]] = HashMap()
-    Good.all.foreach { g =>
-      mostDemanding(g) = towns.toList.sortWith((t1, t2) => t1.goods_prices(g)() > t2.goods_prices(g)()).slice(0,5)
-    }
-
-    towns.foreach(_.update_economy(mostDemanding))
+    towns.foreach(_.update_economy())
   }
 
   /** Find the shortest path between two towns.
