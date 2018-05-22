@@ -84,11 +84,12 @@ object Game {
   /* Init game state. */
 
   def initWorld(): Unit = {
+    // required to initialize factories
+    bigBrother = new BigBrotherAI(new Company("Big Brother", null), 0.3, 2)
     world = Parser.readWorldInformations(mapPath)
   }
 
   def initPlayers(player_list: List[Player], main_player: Player) = {
-    bigBrother = new BigBrotherAI(new Company("Big Brother", world.towns.head), 0.3, 2)
     players = bigBrother :: player_list
     mainPlayer = Some(main_player)
     Game.players.foreach { p => Game.world.addCompany(p.company) }

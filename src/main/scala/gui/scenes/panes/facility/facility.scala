@@ -39,6 +39,8 @@ class FacilityDetail(facility: Facility) extends VBox(3) {
     textFill <== createObjectBinding[javafx.scene.paint.Paint](
       () => Colors(facility.owner()).delegate,
       facility.owner)
+
+    println(Colors(facility.owner()))
   }
 
   children = List(
