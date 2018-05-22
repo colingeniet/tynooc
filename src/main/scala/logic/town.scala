@@ -57,11 +57,12 @@ extends Serializable {
     InitHashMap[Good, Double](_ => 0)
 
   // Goods to be exported
-  val toExport: HashMap[Town, HashMap[Good, Double]] =
-    InitHashMap[Town, HashMap[Good, Double]](_ => {
-      InitHashMap[Good, Double](_ => 0)
-    })
+  val toExport: HashMap[Good, Double] = InitHashMap[Good, Double](_ => 0)
 
+  var requestsTime: HashMap[Good, Int] = InitHashMap[Good, Int](_ => 0)
+      
+
+  def needs(g: Good): Double = population() * consume_coeffs(g)                                                               
   // Coeff used for consumation
   val consume_coeffs: HashMap[Good, Double] = {
     val a = InitHashMap[Good, Double](_ => 0)
@@ -74,26 +75,16 @@ extends Serializable {
 
   @transient var facilities: ObservableBuffer[Facility] = ObservableBuffer()
 
-  /** Returns a hashmap containing the needs of the population
-  */
-  def needs() : HashMap[Good, Double] = {
-    val a: HashMap[Good, Double] = HashMap()
-    Good.all.foreach{ g =>
-      if(population()*consume_coeffs(g) <= goods(g)())
-        a(g) = population.toDouble * consume_coeffs(g)
-      else {
-        a(g) = goods(g)()
-        Game.printMessage(s"Good Lord! The people of ${name} are severly lacking ${g.name}!")
-        //Do something related to happiness
-      }
-    }
-    a
-  }
-
   def addGood(g: Good, q: Double) = {
-    goods(g)() += q
+    val t = q / 4
+    goods(g)() += (q - t)
+    toExport(g) += t   
+    if(needs(g) > goods(g)()) { requestsTime(g) = 0 }
   }
 
+  def deleteGood(g: Good, q: Double) = goods(g)() -= q
+  
+  def exportGood(g: Good, q: Double) = toExport(g) -= q
   /** Tries to buy a good from a certain company
   * @param company The company the town will buy the good from
   * @param v The quantity corresponding.
@@ -110,32 +101,7 @@ extends Serializable {
   def sellGoods(company: Company, h: HashMap[Good, Double]): Unit = {
     h.foreach{ case (g, v) => sellGoods(company, g, v) }
   }
-
-  /** Consume goods of every type every time it's called.
-  * It is called every economy economy tick.
-  * (~3h when i'm writing this)
-  */
-  def consume_daily(): Unit = {
-    val a = needs()
-    goods.foreach{ case (key, value) => goods(key)() = value() - a(key) }
-  }
-
-  /** Says if a certain quantity of a certain good is available
-  * @param g The good in question
-  * @param v The quantity of this good
-  */
-  def available(g: Good, v: Double): Boolean = {
-    goods(g)() >= v
-  }
-
-  /** Test if goods are available.
-  * @param h The set of goods & quantity you want to check the availability of
-  */
-  def available(h: HashMap[Good, Double]): Boolean = {
-    h.forall{ case (g, v) => available(g, v) }
-  }
-
-  /** Sell goods of the town
+                                                     /** Sell goods of the town
   * @param company The company the town will sell goods to
   * @param g The good it sells
   * @param v The quantity of the good
@@ -158,7 +124,32 @@ extends Serializable {
       h.foreach{ case (g, v) => buyGoods(company, g, v) }
       true
     } else false
+  }                   
+  /** Consume goods of every type every time it's called.
+  * It is called every economy economy tick.
+  * (~3h when i'm writing this)
+  */
+  def consume_daily(): Unit = {
+                   
+    goods.foreach{ case (key, value) => goods(key)() = (value() - needs(key)) max 0 }
   }
+
+  /** Says if a certain quantity of a certain good is available
+  * @param g The good in question
+  * @param v The quantity of this good
+  */
+  def available(g: Good, v: Double): Boolean = {
+    goods(g)() >= v
+  }
+
+  /** Test if goods are available.
+  * @param h The set of goods & quantity you want to check the availability of
+  */
+  def available(h: HashMap[Good, Double]): Boolean = {
+    h.forall{ case (g, v) => available(g, v) }
+  }
+
+
 
 
   /** Recalculates the prices of goods
@@ -250,18 +241,6 @@ extends Serializable {
     (pop - pass) * (1 + to.note - note) * coef * dt
   }
 
-  def generateExports(to: Town, g: Good): Unit = {
-    val from_price: Double = goods_prices(g)()
-    val to_price: Double = to.goods_prices(g)()
-    var q = goods(g)() * 0.2 * ((((to_price / from_price) - 1) max 0) min 2)
-    toExport(to)(g) += q
-    if(to_price / (from_price + 1) > 5 && toExport(to)(g) > 20) {
-      q = 100
-      val mission_reward = 300
-      val mission = new HelpMission(mission_reward, this, to, Game.time() + 24, g, q)
-      Game.world.sendMission(mission)
-    }
-  }
 
   /** Adds a new route.
     *
@@ -304,7 +283,7 @@ extends Serializable {
       case _          => false
     }.toSet.asInstanceOf[Set[Station]]
   }
-
+  
 
   /** Economic tick : update passengers, exportations, consumption
   * @param mostDemanding The towns that needs goods the most
@@ -318,11 +297,18 @@ extends Serializable {
         passengers(destination) += migrantNumber
       }
     }
-    Good.all.foreach { g =>
-      mostDemanding(g).foreach { destination =>
-        if(destination != this) {
-          generateExports(destination, g)
-        }
+    val requestedGoods = Good.all.filter{ g =>  needs(g) > goods(g)() }
+    requestedGoods.foreach { g => requestsTime(g) += 1 }
+    requestedGoods.filter(requestsTime(_) > 3).toList.sortBy(-requestsTime(_))
+    requestedGoods.take(10).foreach { g =>
+      val dealers = Game.world.searchDealers(this, g)
+      if(!dealers.isEmpty) {
+        val d = dealers.head
+        requestsTime(g) -= 3
+        val q = needs(g) * 2
+        val mission_reward = q * 3
+        val mission = new HelpMission(mission_reward, d, this, Game.time() + 24, g, q)
+        Game.world.sendMission(mission)
       }
     }
 
