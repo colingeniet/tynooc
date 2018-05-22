@@ -61,7 +61,6 @@ extends Serializable {
 
   var requestsTime: HashMap[Good, Int] = InitHashMap[Good, Int](_ => 1)
 
-
   def needs(g: Good): Double = population() * consume_coeffs(g)
   // Coeff used for consumation
   val consume_coeffs: HashMap[Good, Double] = {
@@ -154,24 +153,15 @@ extends Serializable {
 
 
   /** Recalculates the prices of goods
-  * @param totals The totals of each good in the world
   */
-  def update_prices(totals: HashMap[Good, Double]) : Unit = {
+  def update_prices() : Unit = {
     Good.all.foreach{ g =>
-      val local = goods(g)()
-      val total = totals(g)
-      val avg = total / Game.world.towns.size
-
-      val world_coef = (((avg + 1.0) / (local + 1.0)) max 0.2) min 4.0
-
-      val pop_required = population.toDouble * consume_coeffs(g)
-      val pop_needs_coef = (1.0 / ((((local + 2.0) / (pop_required + 1.0)) - 1.0) max 0.1)) max 1.0
-
-      val consumed = goods_last(g) - local
-      val needs_coef = 1.0 / ((((local + 2.0) / (consumed + 1.0)) - 1.0) max 0.2)
-
-      goods_prices(g)() = g.basePrice * world_coef * needs_coef * pop_needs_coef
-      goods_last(g) = local
+      val base = g.basePrice
+      //val avg = totals(g) / Game.world.towns.size
+      //val price = basePrice + 0.3 * basePrice * ((-1d max (avg - goods(g)())/(totals(g) + 1)) min 1d) + 2 / (totals(g) + 1)
+      val price = base * (1 + 0.3 * ((needs(g) - goods(g)()) / (1 + (needs(g) max goods(g)())))) +
+                  1 / (goods(g)() + 1)
+      goods_prices(g)() = price
     }
   }
 
@@ -288,7 +278,7 @@ extends Serializable {
   /** Economic tick : update passengers, exportations, consumption
   * @param mostDemanding The towns that needs goods the most
   */
-  def update_economy(mostDemanding: HashMap[Good, List[Town]]) : Unit = {
+  def update_economy() : Unit = {
     val p = population()
     Game.world.towns.foreach { destination =>
       if(destination != this) {
@@ -305,7 +295,8 @@ extends Serializable {
       if(!dealers.isEmpty) {
         val d = Random.shuffle(dealers).head
         requestsTime(g) -= 3
-        val q = d.goods(g)()
+        val q = d.toExport(g) min 100
+        d.exportGood(g, q)
         val mission_reward = q * 3
         val mission = new HelpMission(mission_reward, d, this, Game.time() + 24, g, q)
         Game.world.sendMission(mission)

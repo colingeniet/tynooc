@@ -236,7 +236,7 @@ extends Player(company) with AI {
   val K = 15 // We intertwin optimal path with these random path
   val Q = 4 // The number of cities that will be taken from the random_path
 
-  def comparison_function(a : (Data, Integer), b : (Data, Integer)) = {
+  def comparison_function(a : (Data, Double), b : (Data, Double)) = {
     a._2 > b._2
   }
 
@@ -274,8 +274,27 @@ extends Player(company) with AI {
     }._2.reverse
   }
 
-  def estimated_cost_1(path:  Data) : Integer = {
-    return 0
+  def estimated_cost_1(path: Data, world: World) : Double = {
+    val vehicle = path._1
+    val towns = path._2.toArray
+    val l = towns.length
+    val routes = routes_from_towns(path, world)
+    var value = routes.foldLeft(0d)(_ + _.length)
+    for(i <- 0 to l - 2) {
+      val exports = towns(i).toExport.filter{ case(g, v) => v > 0 }
+      for(j <- i + 1 to l - 1) {
+        val n = (towns(j).requestsTime.filter { case(g, v) => v > 0 && exports.contains(g) }).size
+        value -= n * 10
+      }
+    }
+    /* The cost depends on the the consumption on the path. 
+       Search the potential (re)quest that could be accomplished, and retire
+       their number (modulo a coefficient).
+       Could be better to use the note of the town. That way, the note should be
+       updated to take into account the goods of the town. Then, the best path
+       would be the path with the better gradient of note.
+    */
+    return value
   }
 
   def fuse(opt : List[(Vehicle, List[Town])], rnd : List[(Vehicle, List[Town])]) :  List[(Vehicle, List[Town])] = {
@@ -315,17 +334,17 @@ extends Player(company) with AI {
         path_list = (v, gen_path_1(world, N, v))::path_list
       }
 
-      var wp = path_list.map{t => (t, estimated_cost_1(t)) }
+      var wp = path_list.map{t => (t, estimated_cost_1(t, world)) }
       wp = wp.sortWith(comparison_function).reverse
 
       wp = wp.takeRight(K)
-      var wp2 = wp.map{case (a : Data, b : Integer) => a}
+      var wp2 = wp.map{case (a : Data, b : Double) => a}
       wp2 = fuse(wp2, wp2.map{t : Data => (t._1, gen_path_1(world, N, t._1)) })
 
-      var wp3 = wp2.map{t => (t, estimated_cost_1(t))}
+      var wp3 = wp2.map{t => (t, estimated_cost_1(t, world))}
       wp3 = wp3.sortWith(comparison_function)
 
-      val wp4 = wp3.map{case (a : Data, b : Integer) => a}
+      val wp4 = wp3.map{case (a : Data, b : Double) => a}
       val path = wp4.head //The optimal one
 
       val route = routes_from_towns(path, world)

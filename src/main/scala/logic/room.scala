@@ -163,20 +163,21 @@ extends Serializable {
   * @param town The town where you pick up the goods
   */
   def loadAll(town: Town): Unit = {
-    val goods = town.toExport.filter { case(g, v) => v > 0 }.keySet
     val helpMissions = travel.company.missions.toList.filter{
       case _: HelpMission => true
       case _              => false
     }.asInstanceOf[List[HelpMission]]
     val missions = helpMissions.filter { m => m.from == town && travel.remainingStops.contains(m.to) }
     missions.foreach { m =>
-      val q = availableLoad(m.good) min town.toExport(m.good)
+      val q = availableLoad(m.good) min m.quantity 
       if(q > 0) {
         load(m.good, m.to, q)
         travel.company.credit(price(m.to) * q)
-        town.exportGood(m.good, q)
+        /* Not necesary to call town.exportGood. */
       }
     }
+    /* Maybe sort the goods to export by demanding time. */
+    val goods = town.toExport.filter { case(g, v) => v > 0 }.keySet
     goods.foreach(g => {
       val towns = travel.remainingStops.filter(_.requestsTime(g) > 0)
       towns.foreach {t =>

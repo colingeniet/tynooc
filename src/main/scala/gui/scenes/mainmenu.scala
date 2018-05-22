@@ -61,7 +61,6 @@ extends MainStage.Scene(sceneModifier) {
       Game.load_game(stream)
       stream.close()
       Colors.init(Game.mainPlayer.get.company)
-      Colors(Game.bigBrother.company) = Color.Black
       sceneModifier(MainStage.States.Game)
     }
   }
@@ -82,7 +81,6 @@ extends MainStage.Scene(sceneModifier) {
           Game.load_game(stream)
           stream.close()
           Colors.init(Game.mainPlayer.get.company)
-          Colors(Game.bigBrother.company) = Color.Black
           sceneModifier(MainStage.States.Game)
         } catch {
           case e: java.io.IOException => {
