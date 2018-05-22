@@ -263,6 +263,7 @@ extends Player(company) with AI {
       buy_vehicles()
 
       val vehicles = company.vehicles.toList.filter {!_.isUsed()}
+      if(vehicles.isEmpty) return ()
 
       var path_list : List[(Vehicle, List[Town])] = List()
 
