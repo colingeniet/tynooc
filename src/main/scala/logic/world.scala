@@ -132,13 +132,7 @@ class World extends Serializable {
   }
 
   def update_towns(): Unit = {
-    val totalGoods: HashMap[Good, Double] = HashMap()
-    Good.all.foreach { g =>
-      totalGoods(g) = towns.map(_.goods(g)()).sum
-    }
-
-    towns.foreach(_.update_prices(totalGoods))
-
+    towns.foreach(_.update_prices())
     towns.foreach(_.update_economy())
   }
 
