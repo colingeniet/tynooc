@@ -28,14 +28,15 @@ trait AI {
     */
   def play(world: World, dt: Double)
   
-  def cost(from: Town, to: Town): Double = {
+  def cost(from: Town, to: Town, vehicle: VehicleUnit): Double = {
     val exports = from.toExport.filter{ case(g, v) => v > 0 }
     var n = 0d
     exports.foreach { case(g, v) =>
       if(to.requestsTime(g) > 0) {
-        n = n + v 
+        n = n + (v min vehicle.allowed(g))
       }
     }
+    n = n + (from.passengers(to) min vehicle.capacity)
     return -n
   }
 }
@@ -182,7 +183,7 @@ extends Player(company) with AI {
         val ship = ships.head
         val towns = world.townsAccessibleFrom(ship.town(), ship).filter(_ != ship.town())
         if (!towns.isEmpty) {
-          val to = towns.sortBy(-cost(ship.town(), _)).head
+          val to = towns.sortBy(cost(ship.town(), _, ship)).head
           company.launchTravel(ship, to)
         }
       }
@@ -208,7 +209,7 @@ extends Player(company) with AI {
         val plane = planes.head
         val towns = world.townsAccessibleFrom(plane.town(), plane).filter(_ != plane.town())
         if (!towns.isEmpty) {
-          val to = towns.sortBy(-cost(plane.town(), _)).head
+          val to = towns.sortBy(cost(plane.town(), _, plane)).head
           company.launchTravel(plane, to)
         }
       }
@@ -234,13 +235,14 @@ extends Player(company) with AI {
         val truck = trucks.head
         val towns = world.townsAccessibleFrom(truck.town(), truck).filter(_ != truck.town())
         if (!towns.isEmpty) {
-          val to = towns.sortBy(-cost(truck.town(), _)).head
+          val to = towns.sortBy(cost(truck.town(), _, truck)).head
           company.launchTravel(truck, to)
         }
       }
     }
   }
 }
+
 
 class BigBrotherAI(
   company: Company,
